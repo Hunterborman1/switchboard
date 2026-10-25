@@ -3,6 +3,8 @@ import type { Access } from './gate';
 export interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
+  /** Agent Ops platform store. Only src/worker/platform/** may touch it. */
+  PLATFORM_DB: D1Database;
   KV: KVNamespace;
   VECTORS: VectorizeIndex;
   AI: Ai;

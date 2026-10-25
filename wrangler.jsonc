@@ -25,7 +25,8 @@
   },
 
   "d1_databases": [
-    { "binding": "DB", "database_name": "invoca-signal-loop", "database_id": "a1500102-37e1-485c-9287-12eb0ec22afb", "migrations_dir": "migrations" }
+    { "binding": "DB", "database_name": "invoca-signal-loop", "database_id": "a1500102-37e1-485c-9287-12eb0ec22afb", "migrations_dir": "migrations" },
+    { "binding": "PLATFORM_DB", "database_name": "invoca-agent-ops", "database_id": "35b74275-27f6-47ac-83b8-e6d548b94066", "migrations_dir": "migrations-platform" }
   ],
   "kv_namespaces": [{ "binding": "KV", "id": "a9e5f55e3f7e41ec82af029a0bf3ca1c" }],
   "vectorize": [{ "binding": "VECTORS", "index_name": "invoca-signal-loop" }],
