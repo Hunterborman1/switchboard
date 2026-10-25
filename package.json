@@ -1,0 +1,52 @@
+{
+  "name": "invoca-signal-loop",
+  "version": "1.0.0",
+  "description": "Signal Loop: CSM conversations to routed, evidence-backed product insight. Invoca take-home.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:worker": "wrangler dev --port 8797",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.worker.json",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "db:migrate:local": "wrangler d1 migrations apply invoca-signal-loop --local",
+    "deploy": "node scripts/deploy.ts",
+    "sign-link": "node scripts/sign-link.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@floating-ui/react": "^0.27.20",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/inter-tight": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@openrouter/ai-sdk-provider": "^3.1.0",
+    "@xyflow/react": "^12.12.0",
+    "ai": "^7.0.153",
+    "fastest-levenshtein": "^1.0.16",
+    "hono": "^4.13.13",
+    "motion": "^14.6.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.23.0",
+    "@cloudflare/workers-types": "^5.20261025.1",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.152.0"
+  },
+  "private": true
+}

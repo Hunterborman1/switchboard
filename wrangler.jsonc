@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "invoca-signal-loop",
+  "account_id": "b33453696f318f27ad9c4036bd3f089d",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // A path route under repos.hunterborman.com, like every other repo on the host. No
+  // workers.dev or preview URL: either would be a second, ungated door onto the build.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "repos.hunterborman.com/repo/invoca", "zone_name": "hunterborman.com" },
+    { "pattern": "repos.hunterborman.com/repo/invoca/*", "zone_name": "hunterborman.com" }
+  ],
+
+  // run_worker_first: the Worker authorises and strips /repo/invoca before any asset is
+  // served. Assets served ahead of the Worker would bypass the gate.
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist",
+    "run_worker_first": true,
+    "not_found_handling": "single-page-application"
+  },
+
+  "d1_databases": [
+    { "binding": "DB", "database_name": "invoca-signal-loop", "database_id": "a1500102-37e1-485c-9287-12eb0ec22afb", "migrations_dir": "migrations" }
+  ],
+  "kv_namespaces": [{ "binding": "KV", "id": "a9e5f55e3f7e41ec82af029a0bf3ca1c" }],
+  "vectorize": [{ "binding": "VECTORS", "index_name": "invoca-signal-loop" }],
+  "ai": { "binding": "AI" },
+
+  "workflows": [{ "name": "signal-loop-pipeline", "binding": "PIPELINE", "class_name": "PipelineWorkflow" }],
+
+  // Abuse limits on run creation (per workspace); the $15 budget ledger is the hard stop.
+  "ratelimits": [{ "name": "RL_RUNS", "namespace_id": "4201", "simple": { "limit": 12, "period": 60 } }],
+
+  "vars": {
+    "MODEL_PRIMARY": "deepseek/deepseek-v4.1-flash",
+    "MODEL_SECONDARY": "anthropic/claude-haiku-5.5",
+    "BUDGET_LIMIT_USD": "15"
+  },
+
+  "observability": { "enabled": true }
+
+  // Secrets (scripts/deploy.ts pushes them from .env):
+  //   INVOCA_PASSWORD, LINK_SIGNING_SECRET, SITE_PASSWORD (owner bypass), OPENROUTER_API_KEY (the $15 runtime key)
+}
