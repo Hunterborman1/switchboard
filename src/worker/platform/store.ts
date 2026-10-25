@@ -144,7 +144,7 @@ export async function rollForward(db: Db, now: Date, force = false): Promise<num
     ).bind(old),
     db.prepare(`UPDATE meta SET value = date(value, '${mod}') WHERE key = 'sim_from' AND ${guard}`).bind(old),
     db.prepare(`UPDATE meta SET value = date(value, '${mod}') WHERE key = 'sim_to' AND value = ?`).bind(old),
-    db.prepare(`UPDATE meta SET value = CAST(CAST(value AS INTEGER) + ? AS TEXT) WHERE key = 'rolled_days' AND (SELECT value FROM meta WHERE key = 'sim_to') = date(?, '${mod}')`).bind(days, old),
+    db.prepare(`UPDATE meta SET value = CAST(CAST(value AS INTEGER) + CAST(? AS INTEGER) AS TEXT) WHERE key = 'rolled_days' AND (SELECT value FROM meta WHERE key = 'sim_to') = date(?, '${mod}')`).bind(days, old),
   ]);
   return days;
 }

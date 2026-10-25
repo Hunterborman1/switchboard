@@ -70,7 +70,7 @@ export function Cost() {
           <div style={{ display: 'grid', gap: 14 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
               <b style={{ fontSize: 'var(--fs-metric-xl)', fontWeight: 300, lineHeight: 1 }} className="ao-num" data-testid="live-budget-spent">
-                {f.money(lb.spentUsd, { precise: lb.spentUsd < 10 })}
+                {f.money(lb.spentUsd, { precise: lb.spentUsd > 0 && lb.spentUsd < 10 })}
               </b>
               <span className="ao-muted">of {f.money(lb.limitUsd)} used</span>
             </div>

@@ -35,6 +35,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
   const title = resolveCopy(step.title, ctx);
   const body = resolveCopy(step.body, ctx);
   const moreText = step.more ? resolveCopy(step.more, ctx) : null;
+  const actions = typeof step.actions === 'function' ? step.actions(ctx) : step.actions;
   const waiting = step.waitFor && step.waitFor !== 'next';
   const hint = waiting && typeof step.waitFor === 'object' ? step.waitFor.hint : undefined;
   const ready = tour.isReady;
@@ -116,11 +117,11 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
             <span />
           )}
           <div className="t-callout__actions">
-            {step.actions && step.actions.length > 0 ? (
-              step.actions.map((a, i) => (
+            {actions && actions.length > 0 ? (
+              actions.map((a, i) => (
                 <Button
                   key={a.label}
-                  ref={i === step.actions!.length - 1 ? primaryRef : undefined}
+                  ref={i === actions.length - 1 ? primaryRef : undefined}
                   variant={a.variant ?? 'ghost'}
                   size="sm"
                   arrow={a.variant === 'primary'}

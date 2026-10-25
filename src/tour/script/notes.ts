@@ -66,7 +66,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
       'What you’re watching is the real execution. Every step writes a row and the UI animates from those rows.',
       'Redaction first: only redacted text reaches a model.',
       'Screen is a cheap check before the expensive one.',
-      'Grounding is the moment: the model wrote a plausible sentence the customer never said, and code caught it. Dropped, counted, never shown as fact.',
+      'Grounding is the moment. Read the real number off the callout: on Brightline it is usually every quote matched (14 of 14 on the recorded run), one of them across an interruption, because code checks the words, not the model\u2019s word. Anything that doesn\u2019t match is dropped and counted. Across all 48 recordings exactly one quote failed; click See a rejected quote to show it.',
       'The gate decides who sees it next. Anything high stakes goes to a person.',
     ],
     click: ['→ through each step as it completes; stop on the dropped quote.'],
@@ -92,7 +92,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   ch5: {
     time: '1:00',
     say: [
-      'One complaint is an anecdote. Seven accounts saying it is a pattern.',
+      'One complaint is an anecdote. Read the theme off the screen: the top one is Google Ads offline conversions arriving late, from several accounts, with ARR attached. That is a pattern.',
       'Membership is deterministic: embeddings and a similarity threshold. The model only names it.',
       'ARR at stake, the trend, and quotes that click back to the exact turn.',
     ],
@@ -110,8 +110,8 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '1:20',
     say: [
       'Measured, not vibes: precision and recall per type, against hand-labelled golden files.',
-      'Sliced by mess level, because level 5 is where systems quietly break.',
-      'The candidate prompt is better on average. Try to promote it: blocked, because recall dropped on the messiest files. Averages hide regressions.',
+      'Sliced by mess level, because the messiest files are where systems quietly break. The current prompt holds 90% recall even on level 5.',
+      'The candidate prompt is cheaper. Try to promote it: blocked, because precision fell about 29 points. It invented insights customers never raised. One regression blocks promotion, whatever it saves.',
       'And the cost: a hard cap on live AI. Past it, it replays recorded runs. Never an outage.',
     ],
     click: ['Click Promote on the candidate.', 'Then the budget gauge on Health.'],
@@ -171,7 +171,7 @@ export const STEP_NOTES: Record<string, string> = {
   'ch2.privacy': 'Have them toggle before/after. Tokens keep meaning, drop identity.',
   'ch2.screen': 'Security path: the planted instruction is inert data; schema-only output, no tools, audit row.',
   'ch2.extract': 'No quote, no insight. Negative path: zero insights is the correct answer.',
-  'ch2.ground': 'Stop here. The model wrote a plausible sentence nobody said; code caught it.',
+  'ch2.ground': 'Stop here. Say the grounded count out loud, then offer See a rejected quote: the one quote out of 48 recordings that the customer never said.',
   'ch2.messy': 'Noise lowers confidence, so more goes to a person, not into a backlog.',
   'ch2.gate': '0.80 auto, 0.55 review, below held. Sev-1 bugs and churn risk always reviewed.',
   'ch2.trace': 'Read the cost and time out loud. Nothing is a black box.',

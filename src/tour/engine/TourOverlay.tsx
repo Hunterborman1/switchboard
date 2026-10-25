@@ -81,7 +81,13 @@ function OverlayInner() {
   const lastBox = useRef<Box | null>(null);
   if (liveBox) lastBox.current = liveBox;
   // keep the hole where it was while the next anchor mounts, so it springs instead of blinking
-  const box = liveBox ?? (anchor.status === 'waiting' ? lastBox.current : null);
+  const [holdLast, setHoldLast] = useState(true);
+  useEffect(() => {
+    setHoldLast(true);
+    const t = window.setTimeout(() => setHoldLast(false), 650);
+    return () => window.clearTimeout(t);
+  }, [step.id]);
+  const box = liveBox ?? (anchor.status === 'waiting' && holdLast ? lastBox.current : null);
   const highlights = useHighlights(step.highlight);
   const idle = useIdle(6000, step.id);
   const [shakeKey, setShakeKey] = useState(0);
@@ -92,9 +98,13 @@ function OverlayInner() {
   const missing = !!step.target && anchor.status === 'missing';
   // Large targets (a full dialog) leave no room beside them: dock the callout in the free
   // gutter on the left when there is one, otherwise anchor with a height cap.
-  const dockWidth = liveBox ? Math.min(320, liveBox.x - 32) : 0;
+  // (When the gutter is narrower than a callout, it docks anyway and overlaps the target's edge.)
+  const gutterL = liveBox ? liveBox.x : 0;
+  const gutterR = liveBox ? window.innerWidth - (liveBox.x + liveBox.w) : 0;
+  const dockRight = gutterR > gutterL + 40;
+  const dockWidth = liveBox ? Math.max(300, Math.min(340, Math.max(gutterL, gutterR) - 32)) : 0;
   const big = !!liveBox && (liveBox.h > window.innerHeight * 0.6 || liveBox.w > window.innerWidth * 0.7);
-  const docked = !isSheet && big && dockWidth >= 260;
+  const docked = !isSheet && big;
   const anchored = !!anchor.el && !isSheet && !docked;
   // While the anchor mounts, hold the callout ~0.7s (avoids a centre→target jump), then show it centred.
   const [patience, setPatience] = useState(false);
@@ -107,12 +117,19 @@ function OverlayInner() {
   // bring the target into view once
   useEffect(() => {
     if (!anchor.el) return;
-    const r = anchor.el.getBoundingClientRect();
-    if (r.top < 64 || r.bottom > window.innerHeight - 40) anchor.el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const el = anchor.el;
+    // Re-check a few times: product dialogs closing or focus returning can scroll it away again.
+    const ensure = (smooth: boolean) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < 64 || r.bottom > window.innerHeight - 40) el.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
+    };
+    ensure(true);
+    const timers = [450, 1200].map((ms) => window.setTimeout(() => ensure(false), ms));
     if (waitingOnUser && interact !== 'none') {
       const f = anchor.el.matches('button, a, input, select, textarea, [tabindex]') ? anchor.el : anchor.el.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
       window.setTimeout(() => f?.focus({ preventScroll: true }), 80);
     }
+    return () => timers.forEach((t) => window.clearTimeout(t));
   }, [anchor.el, waitingOnUser, interact]);
 
   useEffect(() => setShakeKey(0), [step.id]);
@@ -145,8 +162,8 @@ function OverlayInner() {
   // On phones the callout is a sheet; if the target sits in the lower half, the sheet goes to the top.
   const sheetTop = mode === 'sheet' && !!liveBox && liveBox.y + liveBox.h / 2 > window.innerHeight * 0.5;
   const style = useMemo(
-    () => (mode === 'anchored' ? floatingStyles : mode === 'dock' ? { width: dockWidth } : sheetTop ? { top: 96, bottom: 'auto' } : undefined),
-    [mode, floatingStyles, dockWidth, sheetTop],
+    () => (mode === 'anchored' ? floatingStyles : mode === 'dock' ? (dockRight ? { width: dockWidth, left: 'auto', right: 16 } : { width: dockWidth }) : sheetTop ? { top: 96, bottom: 'auto' } : undefined),
+    [mode, floatingStyles, dockWidth, dockRight, sheetTop],
   );
 
   return (

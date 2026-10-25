@@ -84,14 +84,15 @@ If they pick something else, name the branch:
 
 ## Ch2 · Watch it think (2:30)
 
-**Click:** → as each step completes. Stop on the dropped quote.
+**Click:** → as each step completes. Stop on Ground. If every quote grounded (the usual case on Brightline), click **See a rejected quote**, then **Back to my run**.
 
 **Say:**
 > What you're watching is the real execution. Every step writes a row and the UI animates from those rows.
 > Redaction first. Only redacted text reaches a model; the original never leaves the Worker.
 > Screen is a cheap check before the expensive one: is it actionable, what language, is anyone trying to steer the model.
 > Extraction returns a fixed schema. No quote, no insight.
-> *(On the dropped quote)* This is the moment. The model wrote a plausible sentence the customer never said, and code caught it. It's dropped and counted as a hallucination, never shown as fact.
+> *(On Ground)* This is the moment. Fourteen of fourteen quotes matched the transcript (read the real count off the callout). One of them was interrupted mid-sentence and still matched, because grounding checks the words, not the model's word.
+> *(See a rejected quote)* Across all 48 recordings exactly one quote failed. Here it is: a plausible sentence the customer never said. The closest span scored under 0.90, so the insight was dropped and counted, never shown as fact.
 > The gate decides who sees it next. 0.80 and up routes itself; anything high stakes goes to a person.
 > Every step logs model, tokens, cost and time. Nothing is a black box.
 
@@ -119,7 +120,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 **Click:** open the highlighted theme.
 
 **Say:**
-> One complaint is an anecdote. Seven accounts saying it is a pattern.
+> One complaint is an anecdote. The same thing from nine accounts is a pattern. (Read the theme off the screen: the top one is “Google Ads offline conversions arrive late”, 36 insights.)
 > Membership is deterministic, embeddings and a similarity threshold. The model only names it.
 > ARR at stake, an eight-week trend, and quotes that click back to the exact turn.
 
@@ -137,8 +138,8 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 
 **Say:**
 > Precision and recall per insight type, against 48 hand-labelled golden files.
-> Sliced by mess level, because level 5 is where systems quietly break.
-> The candidate is better on average. Try to promote it. Blocked: recall dropped on the messiest files. Averages hide regressions.
+> Sliced by mess level, because the messiest files are where systems quietly break. The current prompt still holds 90% recall on level 5.
+> The candidate is cheaper. Try to promote it. Blocked: precision fell 29 points, from 88.6% to 59.7%. The cheaper prompt invented insights customers never raised. One regression blocks promotion, whatever it saves.
 > Cost: viewers share a hard $15 cap. Past it, runs replay recorded real executions. Never an outage.
 
 ## Ch8 · Operate it (2:30)
@@ -194,7 +195,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 The cost backup (`/backup/cost`) shows the measured per-call cost from the ledger. It's a fraction of a cent per call; extraction is about 70% of it. At a few thousand CSM calls a month that's tens of dollars, which is noise next to the CSM time it returns. The real cost is people time for review, which is why the gate exists.
 
 **2. How do you stop it hallucinating?**
-I don't trust the model to police itself. Every insight needs a verbatim quote, and grounding is code: exact, normalised, then a fuzzy window at 0.90. If a quote isn't in the transcript, the insight is dropped and counted. You saw one dropped live.
+I don't trust the model to police itself. Every insight needs a verbatim quote, and grounding is code: exact, normalised, then a fuzzy window at 0.90. If a quote isn't in the transcript, the insight is dropped and counted. On Brightline every quote grounded; across all 48 recordings exactly one failed, and I showed it.
 
 **3. What about PII and PHI?**
 Redaction runs before any model call, with reversible tokens. The original never leaves the Worker and the browser only sees masked previews. Providers are restricted to zero-retention routing. In production I'd add a labelled PHI set and make redaction recall a release gate, plus a formal data review with Security.

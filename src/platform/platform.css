@@ -382,7 +382,7 @@
 .ao-app .ao-score .pips { display: inline-flex; gap: 2px; }
 .ao-app .ao-score .pips i { width: 6px; height: 12px; border-radius: 2px; background: var(--cn-success); }
 .ao-app .ao-score .pips i.off { background: #F0C4BE; }
-.ao-app .ao-matrix th.chk { text-align: center; white-space: normal; min-width: 92px; vertical-align: bottom; line-height: 1.3; }
+.ao-app .ao-matrix th.chk { text-align: center; white-space: normal; min-width: 74px; max-width: 96px; padding-left: 6px; padding-right: 6px; vertical-align: bottom; line-height: 1.3; }
 .ao-app .ao-matrix td.chk { text-align: center; }
 .ao-app .ao-mcell { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; border: 0; }
 .ao-app .ao-mcell.pass { background: var(--cn-success-soft); color: var(--cn-success-txt); }

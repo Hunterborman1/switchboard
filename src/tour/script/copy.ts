@@ -66,28 +66,38 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
 export function groundCopy(ctx: TourCtx): { title: string; body: string; more: string } {
   const run = ctx.run;
   const more =
-    'Grounding is code, not the model. Normalise both texts, try an exact substring, then slide a window scored with Levenshtein. 0.90 or better passes. Anything else is dropped and counted as a hallucination.';
+    'Grounding is code, not the model. Normalise both texts, try an exact substring, then slide a window scored with Levenshtein; 0.90 or better passes. Anything that doesn’t match is dropped and counted as a hallucination, never shown as fact.';
   if (!run) return { title: 'Ground every quote', body: 'Each quote must exist in the transcript. If it doesn’t, the insight is dropped, never shown as fact.', more };
   const ev = allEvidence(run);
-  const exact = ev.filter((e) => e.method === 'exact' || e.method === 'normalized').length;
-  const fuzzy = ev.filter((e) => e.method === 'fuzzy').length;
   const failed = ev.filter((e) => e.method === 'failed').length;
-  const dropped = Math.max(run.run.droppedCount, run.insights.filter((i) => i.status === 'dropped_ungrounded').length);
-  const groundStep = run.steps.find((s) => s.key === 'ground');
-  const stitched = JSON.stringify(groundStep?.detail ?? {}).toLowerCase().includes('stitch');
-  if (dropped > 0 || failed > 0) {
-    const d = Math.max(dropped, failed);
+  const dropped = Math.max(run.run.droppedCount, run.insights.filter((i) => i.status === 'dropped_ungrounded').length, failed);
+  const fuzzy = ev.filter((e) => e.method === 'fuzzy').length;
+  const grounded = ev.length - failed;
+  if (ev.length === 0) return { title: 'Nothing to ground', body: 'No insights means no quotes to check. Grounding still ran, and passed trivially.', more };
+  if (dropped > 0) {
     return {
-      title: d === 1 ? 'One quote didn’t survive' : `${d} quotes didn’t survive`,
-      body: `${plural(exact, 'quote')} matched exactly${fuzzy ? `, ${fuzzy} through fuzzy repair` : ''}; ${d === 1 ? '1 was' : `${d} were`} ${stitched ? 'stitched from two turns' : 'not in the transcript'} and failed grounding: dropped.`,
+      title: dropped === 1 ? 'One quote didn’t survive' : `${dropped} quotes didn’t survive`,
+      body: `${grounded} of ${ev.length} quotes matched the transcript. ${dropped === 1 ? 'One didn’t match anything said on the call, so its insight was' : `${dropped} didn’t match, so their insights were`} dropped.`,
       more,
     };
   }
-  if (ev.length === 0) return { title: 'Nothing to ground', body: 'No insights means no quotes to check. Grounding still ran, and passed trivially.', more };
-  if (fuzzy > 0) {
-    return { title: 'Grounded through the noise', body: `${plural(exact, 'quote')} matched exactly and ${fuzzy} through fuzzy matching ≥ 0.90. Nothing invented survives.`, more };
-  }
-  return { title: 'Every quote is real', body: 'Every quote matched the transcript word for word. When one doesn’t, it’s dropped, never shown as fact.', more };
+  return {
+    title: `${ev.length} of ${ev.length} quotes are real`,
+    body: `Every quote matched the transcript${fuzzy ? `, ${fuzzy === 1 ? 'one' : fuzzy} through fuzzy matching across an interruption` : ' word for word'}. Anything that doesn’t is dropped, never shown as fact.`,
+    more,
+  };
+}
+
+/** The optional beat: a real rejected quote from another run. */
+export function rejectedCopy(ctx: TourCtx): { title: string; body: string } {
+  const p = ctx.peek;
+  const bad = p?.insights.flatMap((i) => i.evidence).find((e) => e.method === 'failed');
+  if (!p || !bad) return { title: 'What a rejected quote looks like', body: 'When a quote can’t be found in the transcript, its insight is dropped and counted. It never reaches a person as fact.' };
+  const q = bad.quote.length > 90 ? `${bad.quote.slice(0, 88)}…` : bad.quote;
+  return {
+    title: 'A quote the customer never said',
+    body: `“${q}” The closest span scored ${bad.score.toFixed(2)}, under 0.90, so the insight was dropped.`,
+  };
 }
 
 export function gateCopy(ctx: TourCtx): string {
@@ -115,16 +125,47 @@ export function messyCopy(ctx: TourCtx): string {
   return `Average confidence ${avg.toFixed(2)}, ${run.run.reviewCount} to review. Noise sends work to a person, not into a backlog.`;
 }
 
+const pct = (v: number | null | undefined) => (v == null ? '—' : `${(v * 100).toFixed(1)}%`);
+
+export function candidateCopy(ctx: TourCtx): string {
+  const c = ctx.evals?.candidate;
+  const l = ctx.evals?.latest;
+  if (!c) return 'A cheaper candidate prompt is ready. Should it ship?';
+  const cheaper = l && c.costUsd < l.costUsd ? ` It’s cheaper to run (${usd(c.costUsd)} vs ${usd(l.costUsd)} for the eval set).` : '';
+  return `${c.promptVersion} is the candidate.${cheaper} Should it ship?`;
+}
+
 export function promoteCopy(ctx: TourCtx): { title: string; body: string } {
   const cand = ctx.evals?.candidate;
+  const latest = ctx.evals?.latest;
   const promoted = ctx.counters.promoted ?? cand?.promoted ?? false;
   if (promoted) {
-    return { title: 'Promoted', body: `Every per-level threshold held, so ${cand?.promptVersion ?? 'the candidate'} ships. The gate checks each slice, not the average.` };
+    return { title: 'Promoted', body: `Every slice held its threshold, so ${cand?.promptVersion ?? 'the candidate'} ships. The gate checks each slice, not the average.` };
+  }
+  const failed = cand?.metrics.filter((m) => m.passed === false) ?? [];
+  const reg = failed.find((m) => m.key.startsWith('regression.'));
+  const key = reg ? reg.key.replace('regression.', '') : failed[0]?.key;
+  const now = cand?.metrics.find((m) => m.key === key);
+  const before = latest?.metrics.find((m) => m.key === key);
+  if (now && now.value != null) {
+    const label = now.label.replace(/\s*\(.*\)\s*$/, '');
+    const drop = before?.value != null ? Math.round((before.value - now.value) * 100) : reg?.value != null ? Math.round(-reg.value * 100) : null;
+    const why = key?.startsWith('precision') ? 'It flagged things customers never raised.' : key?.startsWith('recall') ? 'It missed real insights.' : 'One slice regressed.';
+    return {
+      title: 'PROMOTION BLOCKED',
+      body: drop != null ? `${label} fell ${drop} points (${pct(before?.value)} → ${pct(now.value)}). ${why} One regression blocks promotion.` : `${label} is ${pct(now.value)}, under its threshold. ${why}`,
+    };
   }
   const reason = cand?.blockedReasons[0];
+  return { title: 'PROMOTION BLOCKED', body: reason ? `${reason}. One regression blocks promotion.` : 'A slice regressed against the current prompt, so the gate held. One regression blocks promotion.' };
+}
+
+export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
+  const t = ctx.theme;
+  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the theme.', arr: 'Summed across distinct accounts. That’s the number that moves a roadmap.' };
   return {
-    title: 'PROMOTION BLOCKED',
-    body: reason ? `${reason}. Better on average, worse where it matters. Averages hide regressions.` : 'Recall dropped on level-5 files. Better on average, worse where it matters. Averages hide regressions.',
+    intro: `“${t.name}”: ${plural(t.insightCount, 'insight')} from ${plural(t.accountCount, 'account')}. Open it.`,
+    arr: `${compactUsd(t.arrUsd)} of ARR across ${plural(t.accountCount, 'account')}, counted once each. That’s what moves a roadmap.`,
   };
 }
 

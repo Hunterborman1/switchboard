@@ -19,11 +19,11 @@ type StateMsg = Extract<PresenterMsg, { type: 'state' }>;
 function fakeCtx(s: StateMsg | null): TourCtx {
   return {
     path: s?.path ?? 'main', fileId: null, runId: null, themeId: null, explored: s?.explored ?? [], counters: { ...EMPTY_COUNTERS },
-    run: null, evals: null, budget: null, ops: null, pathname: '/', lastEvent: null,
+    run: null, evals: null, budget: null, ops: null, peek: null, theme: null, pathname: '/', lastEvent: null,
   };
 }
 
-const sign = (ms: number) => `${ms >= 0 ? '+' : '−'}${fmtClock(Math.abs(ms))}`;
+const sign = (ms: number) => (Math.abs(ms) < 5000 ? 'on time' : `${fmtClock(Math.abs(ms))} ${ms > 0 ? 'behind' : 'ahead'}`);
 
 export function Presenter() {
   const [state, setState] = useState<StateMsg | null>(null);

@@ -8,7 +8,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { listen, type SignalEvent } from '../../shared/events';
-import type { Budget, RunDetail } from '../../shared/contracts';
+import type { Budget, RunDetail, Theme } from '../../shared/contracts';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type OverviewReport, type AgentRecord, type AgentImpact, type UsageReport, type LogEntry } from '../../shared/platform-contracts';
 import { STEPS, STEP_BY_ID, FIRST_STEP, MAIN_ORDER } from '../script/steps';
 import { tourApi } from '../api';
@@ -109,6 +109,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const [evals, setEvals] = useState<EvalsData | null>(null);
   const [budget, setBudget] = useState<Budget | null>(null);
   const [ops, setOps] = useState<OpsData | null>(null);
+  const [peek, setPeek] = useState<RunDetail | null>(null);
+  const [theme, setTheme] = useState<Theme | null>(null);
   const [lastEvent, setLastEvent] = useState<SignalEvent | null>(null);
   const [checkpoint, setCheckpoint] = useState<CheckpointShow | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -126,8 +128,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const pathname = stripBase(location.pathname);
   const step = STEP_BY_ID[state.stepId] ?? STEPS[0]!;
   const ctx: TourCtx = useMemo(
-    () => ({ ...state.ctx, run, evals, budget, ops, pathname, lastEvent }),
-    [state.ctx, run, evals, budget, ops, pathname, lastEvent],
+    () => ({ ...state.ctx, run, evals, budget, ops, peek, theme, pathname, lastEvent }),
+    [state.ctx, run, evals, budget, ops, peek, theme, pathname, lastEvent],
   );
 
   const ref = useRef({ state, step, ctx });
@@ -159,7 +161,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   const setCtx = useCallback<TourApi['setCtx']>((patch) => {
     setState((prev) => {
-      const { run: _r, evals: _e, budget: _b, ops: _o, pathname: _p, lastEvent: _l, ...rest } = patch as Partial<TourCtx>;
+      const { run: _r, evals: _e, budget: _b, ops: _o, peek: _k, theme: _t, pathname: _p, lastEvent: _l, ...rest } = patch as Partial<TourCtx>;
       return { ...prev, ctx: { ...prev.ctx, ...rest } };
     });
   }, []);
@@ -191,7 +193,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
       return true;
     }
     if (s.waitFor && s.waitFor !== 'next') return false;
-    if (s.actions?.length) return false; // a choice: pick one
+    const acts = typeof s.actions === 'function' ? s.actions(c) : s.actions;
+    if (acts?.length) return false; // a choice: pick one
     if (!isReadyFn(s, c)) return false;
     skip();
     return true;
@@ -345,6 +348,41 @@ export function TourProvider({ children }: { children: ReactNode }) {
         .then((h) => setBudget(h.budget))
         .catch(() => tourApi.session().then((s) => setBudget(s.budget)).catch(() => undefined));
   }, [step.chapter, state.status, evals, budget]);
+
+  // ch2: find a real run with a rejected quote (for the optional "see a rejected quote" beat)
+  useEffect(() => {
+    if (state.status !== 'active' || step.chapter !== 'ch2' || peek) return;
+    let alive = true;
+    tourApi
+      .runs(200)
+      .then((runs) => {
+        const r = runs.filter((x) => x.droppedCount > 0 && x.id !== state.ctx.runId).sort((a, b) => b.droppedCount - a.droppedCount)[0];
+        return r ? tourApi.run(r.id) : null;
+      })
+      .then((d) => alive && d && setPeek(d))
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [step.chapter, state.status, peek, state.ctx.runId]);
+
+  // ch5: the theme the viewer's insight joined, else the biggest theme
+  useEffect(() => {
+    if (state.status !== 'active' || step.chapter !== 'ch5') return;
+    let alive = true;
+    const wanted = state.ctx.themeId ?? run?.insights.find((i) => i.themeId)?.themeId ?? null;
+    if (theme && (!wanted || theme.id === wanted)) return;
+    tourApi
+      .themes()
+      .then((all) => {
+        const t = all.find((x) => x.id === wanted) ?? [...all].sort((a, b) => b.insightCount - a.insightCount)[0] ?? null;
+        if (alive && t) setTheme(t);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [step.chapter, state.status, state.ctx.themeId, run, theme]);
 
   useEffect(() => {
     if (state.status !== 'active' || step.chapter !== 'ch8' || ops) return;

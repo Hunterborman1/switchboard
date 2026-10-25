@@ -9,14 +9,21 @@ import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import {
   budgetCopy, extractCopy, gateCopy, groundCopy, messyCopy, opsAttentionCopy, opsKpiCopy, opsLiveCopy, opsLogsCopy,
   opsRegistryCopy, opsStandardCopy, promoteCopy, redactCopy, runSettled, screenCopy, stepDone, traceCopy, usd,
+  rejectedCopy, candidateCopy, themeCopy,
 } from './copy';
 
 const runRoute = (ctx: TourCtx) => (ctx.runId ? R.run(ctx.runId) : null);
 const has = (ctx: TourCtx, p: TourPath) => ctx.path === p;
+/** Stay on a theme page if we're on one; otherwise open the viewer's theme (or the top theme). */
+const themeRoute = (ctx: TourCtx) => {
+  if (/^\/app\/themes\/.+/.test(ctx.pathname)) return null;
+  const id = ctx.themeId ?? ctx.theme?.id;
+  return id ? R.theme(id) : null;
+};
 const anchorPresent = (id: string) => typeof document !== 'undefined' && !!document.querySelector(`[data-tour="${id}"]`);
 
 const PATH_INTRO: Record<TourPath, { title: string; body: string }> = {
-  main: { title: 'Run the pipeline', body: 'A real QBR: four product signals buried in forty minutes of conversation. Press Run.' },
+  main: { title: 'Run the pipeline', body: 'A real QBR: forty minutes of conversation with product signals buried in it. Press Run.' },
   clean: { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones. Press Run.' },
   messy: { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest. Press Run.' },
   security: { title: 'This one is hostile', body: 'Somebody planted an instruction in the transcript. Watch what the system does with it. Press Run.' },
@@ -128,7 +135,22 @@ export const STEPS: Step[] = [
     title: (ctx) => groundCopy(ctx).title, body: (ctx) => groundCopy(ctx).body, more: (ctx) => groundCopy(ctx).more,
     ready: (ctx) => stepDone(ctx.run, 'ground'), readyLabel: 'Grounding quotes…',
     waitFor: 'next', next: (ctx) => (has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate'),
-    notes: 'This is the moment. Stop on the dropped quote. Say: the model wrote a plausible sentence the customer never said, and code caught it.',
+    actions: (ctx) => {
+      const dropped = ctx.run ? ctx.run.run.droppedCount + ctx.run.insights.flatMap((i) => i.evidence).filter((e) => e.method === 'failed').length : 0;
+      if (!ctx.run || dropped > 0 || !ctx.peek || !stepDone(ctx.run, 'ground')) return undefined;
+      return [
+        { label: 'See a rejected quote', to: 'ch2.rejected', variant: 'ghost' },
+        { label: 'Continue', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' },
+      ];
+    },
+    notes: 'Data-driven: on Brightline every quote usually grounds. Say the number out loud, then offer the rejected-quote example from another run.',
+  },
+  {
+    id: 'ch2.rejected', chapter: 'ch2', kind: 'product', route: (ctx) => (ctx.peek ? R.run(ctx.peek.run.id) : null), target: 'run.dropped', placement: 'left', anchorTimeoutMs: 5000,
+    title: (ctx) => rejectedCopy(ctx).title, body: (ctx) => rejectedCopy(ctx).body,
+    more: 'This is a different, real run. The model returned a plausible sentence; code looked for it in the transcript and couldn’t find it, so it never reached a reviewer.',
+    waitFor: 'next', next: (ctx) => (has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate'),
+    actions: (ctx) => [{ label: 'Back to my run', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' }],
   },
   {
     id: 'ch2.messy', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.insights', placement: 'left',
@@ -233,26 +255,26 @@ export const STEPS: Step[] = [
   // ============================================================ ch5 · patterns
   {
     id: 'ch5.intro', chapter: 'ch5', kind: 'product', route: R.themes, target: 'theme.c1042', placement: 'right',
-    title: 'One complaint is an anecdote', body: 'Seven accounts saying it is a pattern. Open the theme your insight joined.',
+    title: 'One complaint is an anecdote', body: (ctx) => themeCopy(ctx).intro,
     more: 'Membership is deterministic: embeddings plus nearest neighbours above a similarity threshold. The model only names the theme.',
     waitFor: { event: 'theme.opened', hint: 'Open the highlighted theme' },
     next: 'ch5.arr',
   },
   {
-    id: 'ch5.arr', chapter: 'ch5', kind: 'product', target: 'theme.arr', placement: 'bottom',
-    title: 'ARR at stake', body: 'Summed across distinct accounts. That’s the number that moves a roadmap.',
+    id: 'ch5.arr', chapter: 'ch5', kind: 'product', route: themeRoute, target: 'theme.arr', placement: 'bottom',
+    title: 'ARR at stake', body: (ctx) => themeCopy(ctx).arr,
     waitFor: 'next', next: 'ch5.trend',
   },
   {
-    id: 'ch5.trend', chapter: 'ch5', kind: 'product', target: 'theme.trend', placement: 'bottom',
+    id: 'ch5.trend', chapter: 'ch5', kind: 'product', route: themeRoute, target: 'theme.trend', placement: 'bottom',
     title: 'Growing or fading?', body: 'Eight weeks of trend. Every bar links to the insights behind it.',
     waitFor: 'next', next: 'ch5.quotes',
   },
   {
-    id: 'ch5.quotes', chapter: 'ch5', kind: 'product', target: 'theme.quotes', placement: 'top',
+    id: 'ch5.quotes', chapter: 'ch5', kind: 'product', route: themeRoute, target: 'theme.quotes', placement: 'top',
     title: 'In the customer’s words', body: 'Representative quotes, each one traceable back to the exact turn in the transcript.',
     waitFor: 'next', next: 'ch6.ship',
-    checkpoint: () => ({ value: 1, label: 'anecdote became a pattern', sub: 'with ARR and quotes attached' }),
+    checkpoint: (ctx) => (ctx.theme ? { value: ctx.theme.accountCount, label: 'accounts in one theme', sub: `${ctx.theme.insightCount} insights · ARR attached` } : { value: 1, label: 'anecdote became a pattern', sub: 'with ARR and quotes attached' }),
   },
 
   // ============================================================ ch6 · close the loop
@@ -288,7 +310,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch7.candidate', chapter: 'ch7', kind: 'product', route: R.evals, target: 'evals.candidate', placement: 'left',
-    title: 'A better prompt?', body: (ctx) => `${ctx.evals?.candidate?.promptVersion ?? 'The candidate'} scores higher on average. Should it ship?`,
+    title: 'A cheaper prompt?', body: candidateCopy,
     waitFor: 'next', next: 'ch7.promote',
   },
   {
@@ -395,4 +417,4 @@ export const STEP_BY_ID: Record<string, Step> = Object.fromEntries(STEPS.map((s)
 export const FIRST_STEP = 'cold-open';
 export const firstStepOf = (chapter: string): string => STEPS.find((s) => s.chapter === chapter)?.id ?? FIRST_STEP;
 /** The main-path order, for progress. */
-export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.messy', 'ch2.clean', 'ch1.open'].includes(s.id)).map((s) => s.id);
+export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.messy', 'ch2.clean', 'ch2.rejected', 'ch1.open'].includes(s.id)).map((s) => s.id);

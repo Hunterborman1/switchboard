@@ -58,7 +58,7 @@ function Swimlane({ beat }: { beat: number }) {
   return (
     <svg className="sc-states__svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={future ? 'Future state: each handoff is sealed by the system, and the loop closes back to the CSM and the customer.' : 'Current state: a relay of handoffs from customer to CSM to notes, Slack, product and leadership, leaking at every step.'}>
       <defs>
-        <filter id="st-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id="st-glow" filterUnits="userSpaceOnUse" x="0" y="0" width={W} height={H}>
           <feGaussianBlur stdDeviation="5" result="b" />
           <feMerge>
             <feMergeNode in="b" />

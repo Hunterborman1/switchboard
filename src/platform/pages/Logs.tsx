@@ -76,7 +76,8 @@ export function Logs() {
   };
   const levels = (params.get('level') ?? '').split(',').filter(Boolean);
   const toggleLevel = (l: string) => {
-    const next = levels.includes(l) ? levels.filter((x) => x !== l) : [...levels, l];
+    const current = levels.length ? levels : [...LEVELS];
+    const next = current.includes(l) ? current.filter((x) => x !== l) : [...current, l];
     set('level', next.length && next.length < 4 ? next.join(',') : null);
   };
   const rows = pages.flatMap((p) => p.rows);
