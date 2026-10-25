@@ -1,55 +1,59 @@
 # Signal Loop Narrative
 
-The presentation layer: editorial dark, one luminous accent, slow deliberate motion. It is
-deliberately separate from the product's HB Systems theme (`--cn-*`): everything here is
-`--n-*` tokens and `n-*` classes, declared on `.sl-n` (pages) and `.sl-n-portal` (tour UI
-portalled over the product), so the two never collide.
+The presentation layer: the hub, the walkthrough scenes, the walkthrough overlay, the
+presenter view, the write-up and the Q&A pages. It follows `docs/DESIGN.md`: one light, flat
+theme, Inter only, no gradients, glows or blur, short functional motion. Everything here is
+`--n-*` tokens and `n-*` classes, declared on `.sl-n` (pages) and `.sl-n-portal` (walkthrough UI
+portalled over the product), so it never collides with the product's own tokens.
 
 ## Tokens (`tokens.css`)
 
 | Group | Tokens |
 |---|---|
-| Colour | `--n-bg #0A231E` · `--n-bg-2 #0E2C26` · `--n-raised #12352E` · `--n-ink #F2F5E4` · `--n-ink-2` 68% · `--n-ink-3` 48% · `--n-line` 12% · `--n-accent #8EE58E` (+ `-glow`, `-wash`) · `--n-mint #D1FFD1` · `--n-indigo #5E74E3` (sparingly) · `--n-danger #FF9C8C` · `--n-amber` (assumptions only) |
-| Type | `--n-font-display` Instrument Serif · `--n-font-body` Inter Tight · `--n-font-mono` JetBrains Mono · sizes `--n-text-xs…xl`, `--n-display-sm…xl` (fluid clamps) |
-| Space | `--n-s-1…9` (4px base) · `--n-gutter` · `--n-safe-top/bottom` |
-| Radius | `--n-r-sm 6` · `md 10` · `lg 16` · `xl 24` · `pill` |
-| Elevation | `--n-e-1…3` (inset highlight + soft drop) · `--n-glow` |
-| Motion | `--n-ease` cubic-bezier(.22,1,.36,1) · `--n-d-fast 160` · `ui 280` · `product 400` · `slow 600` · `slower 700`. All durations collapse to 0 under `prefers-reduced-motion`. |
+| Colour | `--n-bg #FFF` · `--n-bg-subtle` · `--n-bg-muted` · `--n-border` · `--n-border-strong` · `--n-text` · `--n-text-2` · `--n-text-3` · `--n-accent #008463` (+ `-hover`, `-text`, `-subtle`) · `--n-success` / `--n-warning` / `--n-danger` / `--n-info` (+ `-subtle`) · `--n-scrim` rgba(17,22,20,.45) |
+| Type | `--n-font-body` Inter Variable (also `--n-font-display`) · `--n-font-mono` only for IDs and code · `--n-text-xs…3xl` (12–32) · `--n-display-sm/md/lg` (headlines up to 56) |
+| Space | `--n-s-1…9` (4px grid) · `--n-gutter` · `--n-column` 1120px |
+| Radius | `--n-r-xs 4` (badges) · `--n-r-sm 6` (buttons) · `--n-r-md 8` (cards) |
+| Elevation | `--n-shadow-1` (cards, optional) · `--n-shadow-2` (popovers, callout, menus) |
+| Motion | `--n-ease` cubic-bezier(0.2,0,0,1) · `--n-ease-exit` · `--n-d-press 120` · `--n-d-ui 180` · `--n-d-layout 240` · `--n-d-data 600`. All collapse to 0 under `prefers-reduced-motion`. |
 | Layers | `--n-z-overlay 9000` · `callout 9010` · `hud 9020` · `menu 9030` |
 
-`motion.ts` mirrors the motion tokens for Motion (`EASE`, `DUR`, `STAGGER` ≤ 120 ms, the
-`reveal` blur-in variant and its reduced-motion twin). Story transitions are 500–700 ms;
-anything on top of the product stays ≤ 400 ms.
+`motion.ts` mirrors these for Motion (`EASE`, `DUR`, `reveal` fade-up 6px and its reduced
+twin). Nothing loops except an honest spinner while something is running.
 
 ## Components (`components.tsx`, `Scene.tsx`)
 
-- **Scene**: full-bleed stage with safe area, hairline footer (key hints, beat dots, advance). Clicking empty stage advances; interactive children opt out with `data-no-advance`.
-- **Backdrop**: radial light, vignette and a subtle SVG grain. No gimmicks.
-- **Eyebrow / Display / Lede / Kicker**: mono eyebrow, serif display with an italic mint emphasis word (`<em>`), body lede.
-- **Reveal / Reveal.Item**: staggered blur-reveal.
-- **Stat**: count-up figure (`useCountUp`), optional accent glow.
-- **Card / PersonaCard**: surfaces; the persona card flips (click or Enter) to job, struggles, success and emotional job.
-- **Callout** (with `assumption` / `danger` tones), **Chip**, **Divider**, **Button** (primary lime / ghost / quiet), **Progress**, **Beats**, **Key / KeyHint**, **Mark / LoopGlyph**.
+- **Scene**: still top bar (mark, part / chapter, "4 of 17"), the 1120px column, still bottom bar
+  (progress line, key hints, Back / Next). Clicking empty stage advances; interactive children
+  opt out with `data-no-advance`. Only the stage cross-fades between scenes (180 ms).
+- **SceneHead**: one headline and one supporting line; cross-fades when its key changes.
+- **Display / Lede / Eyebrow**: sentence-case Inter headings and secondary text.
+- **Reveal / Reveal.Item**: short fade-up sequence.
+- **Stat**: tabular number that counts up once (600 ms).
+- **Card / Callout** (`assumption`, `danger`) / **Chip** / **Button** (primary, ghost, quiet) /
+  **Progress / Beats / Key / KeyHint / Mark / LoopGlyph / Check**.
+- **PersonaCard**: the job on the front; click or Enter reveals struggles and success (180 ms
+  crossfade, no flip).
 
 Hooks (`hooks.ts`): `useCalm()` (reduced motion, or `?motion=reduced`), `useCountUp`,
 `useSize`, `useMediaQuery`.
 
 ## Scenes (`scenes/`)
 
-Each scene is `({ beat, beats }) => JSX`, registered in `scenes/index.ts`. Visuals are SVG
-+ Motion (the black hole is the one canvas particle field). Every scene renders a static,
-fully composed frame under reduced motion and stacks to a single column at 390 px.
+Each scene is `({ beat, beats }) => JSX`, registered in `scenes/index.ts`. Every scene is a head
+plus one visual, renders its final frame at once under reduced motion, and stacks to one
+column at 390px.
 
-| Scene | Beats |
+| Scene | Steps |
 |---|---|
-| ColdOpen | live waveform → loop mark + "Every call is a signal." |
-| BlackHole | particles from calls; ~4 in 10 reach an owner (labelled assumption) |
-| Why | Invoca Signal AI row, mirrored onto Invoca's own CSM calls |
-| Jtbd | four flip cards, then the emotional job |
-| States | swimlane: relay → leaks drip → morph and seal → loop closes |
-| Rollout | phases → adoption + hours returned → operate it (cadence, standard, enablement) |
-| Horizon | 12–18 month horizon line, then what doesn't change |
-| Production | POC pieces slide into their production slots |
+| ColdOpen | a recorded 13-minute QBR with the 06:00 quote highlighted → "Every call is a signal." and what that sentence becomes |
+| BlackHole | where feedback comes from → 100 pieces through three handoffs, losses shown at each → total and the labelled assumption |
+| Why | Invoca Signal AI row → the same shape for Signal Loop → four reasons |
+| Jtbd | four persona cards (open each) → the emotional job as the headline |
+| States | swimlane relay → leaks appear one by one → Signal Loop seals them → the loop closes |
+| Rollout | four phases → what is measured and reported → the operating loop and how it's run |
+| Horizon | six milestones over 18 months → what doesn't change |
+| Production | today's stack → the production column fills in row by row |
 | Scorecard | real numbers from the viewer's workspace and Agent Ops |
 
-Backup (Q&A) scenes live in `backup/` and are deep-linkable at `/backup/:topic`.
+Q&A pages live in `backup/` and are deep-linkable at `/backup/:topic`.

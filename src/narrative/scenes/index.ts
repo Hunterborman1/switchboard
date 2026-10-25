@@ -22,7 +22,7 @@ export const SCENES: Record<SceneId, SceneDef> = {
   'black-hole': { component: BlackHole },
   why: { component: Why },
   jtbd: { component: Jtbd },
-  states: { component: States, exitLabel: 'Into the system' },
+  states: { component: States, exitLabel: 'Open the product' },
   rollout: { component: Rollout },
   horizon: { component: Horizon },
   production: { component: Production, exitLabel: 'Scorecard' },

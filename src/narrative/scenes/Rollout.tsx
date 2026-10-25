@@ -1,63 +1,43 @@
 /**
- * 13 · Earning trust: rollout. "Build it, then operate it."
- * Beat 0: phased timeline. Beat 1: adoption measured + hours returned to execs.
+ * Part 13 · Earning trust: rollout. "Build it, then operate it."
+ * Beat 0: phased timeline. Beat 1: adoption measured and hours returned.
  * Beat 2: operating it: review cadence, the agent standard, builder enablement.
  */
-import { AnimatePresence, motion } from 'motion/react';
-import { Callout, Chip, Display, Lede, Reveal, Stat } from '../components';
+import { motion } from 'motion/react';
+import { Arrow, Callout, Check, SceneHead, Stat } from '../components';
 import { useCalm } from '../hooks';
-import { EASE } from '../motion';
+import { DUR, EASE } from '../motion';
 
 const PHASES = [
-  { wk: 'Week 0', name: 'Discovery', items: ['Shadow two CSMs on real calls', '2-week time study replaces my assumptions', 'Co-design the taxonomy with CSMs and PMs'] },
-  { wk: 'Weeks 1–2', name: 'Shadow mode', items: ['Runs silently on real calls', 'CSMs compare it with their own notes', 'Nothing routes automatically'] },
-  { wk: 'Weeks 3–6', name: 'Champions', items: ['2–3 volunteer CSMs and one PM', 'Weekly calibration: what it missed, what was noise', 'Thresholds tuned on their labels'] },
-  { wk: 'Week 7+', name: 'Team', items: ['Auto-route above 0.80, review below', 'High-stakes items always reviewed', 'Expand area by area'] },
+  { wk: 'Week 0', name: 'Discovery', items: ['Shadow two CSMs on real calls', 'A two-week time study replaces my assumptions', 'Agree the categories with CSMs and PMs'] },
+  { wk: 'Weeks 1–2', name: 'Shadow mode', items: ['Runs quietly on real calls', 'CSMs compare it with their own notes', 'Nothing is sent automatically'] },
+  { wk: 'Weeks 3–6', name: 'Champions', items: ['Two or three volunteer CSMs and one PM', 'Weekly review of what it missed and what was noise', 'Thresholds tuned on their feedback'] },
+  { wk: 'Week 7+', name: 'Whole team', items: ['Confident items go straight to the owner', 'Anything high stakes is always reviewed', 'Expand one area at a time'] },
 ];
 
-const TRUST = ['A quote on every insight', 'One-click “this is wrong”', 'Precision published weekly', 'CSMs credited when it ships'];
+const TRUST = ['A quote on every insight', 'One click to say “this is wrong”', 'Accuracy published weekly', 'CSMs credited when it ships'];
 
 const CYCLE = ['Build', 'Launch', 'Measure', 'Review', 'Improve'];
-const TRACK = 'M 90 20 H 1110 A 40 40 0 0 1 1110 100 H 90 A 40 40 0 0 1 90 20 Z';
 
-/** The operating loop: build → launch → measure → review → improve → build. */
-function OperatingLoop() {
-  const calm = useCalm();
-  return (
-    <svg className="sc-ro__loop" viewBox="0 0 1200 120" role="img" aria-label="The operating loop: build, launch, measure, review, improve, and back to build.">
-      <motion.path d={TRACK} fill="none" stroke="rgb(142 229 142 / 0.35)" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={calm ? { duration: 0 } : { duration: 1.4, ease: EASE }} />
-      {!calm && (
-        <circle r="5" fill="#8EE58E" style={{ filter: 'drop-shadow(0 0 6px #8EE58E)' }}>
-          <animateMotion dur="7s" repeatCount="indefinite" path={TRACK} />
-        </circle>
-      )}
-      {CYCLE.map((c, i) => {
-        const x = 150 + i * 225;
-        return (
-          <motion.g key={c} initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={calm ? { duration: 0 } : { duration: 0.5, delay: 0.3 + i * 0.12, ease: EASE }}>
-            <rect x={x - 70} y={4} width={140} height={32} rx={16} fill="#0E2C26" stroke="rgb(142 229 142 / 0.5)" />
-            <text x={x} y={25} textAnchor="middle" className="sc-ro__cyc">{c.toUpperCase()}</text>
-          </motion.g>
-        );
-      })}
-      <text x={600} y={78} textAnchor="middle" className="sc-ro__cycsub">every agent, on a calendar, with an owner</text>
-    </svg>
-  );
-}
+const OPERATE = [
+  { k: 'Review cadence', v: 'Every agent is reviewed on a schedule: owner, quality, cost, incidents, and whether it’s still needed. Overdue reviews show up for executives.' },
+  { k: 'The agent standard', v: 'Nine checks: an owner, a purpose, a data review, quality tests that gate changes, logs, a spending cap, human review, a way to roll back, and a review date.' },
+  { k: 'Maintenance', v: 'Model and prompt changes have to pass the quality tests. Cost spikes and slowdowns alert the owner, and scheduled re-tests catch drift.' },
+  { k: 'Helping other builders', v: 'Templates for Claude and Gumloop builds, the standard as a checklist, weekly office hours and a shared test kit.' },
+];
 
 function Timeline() {
   const calm = useCalm();
   return (
     <div className="sc-ro__timeline">
-      <svg className="sc-ro__rail" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
-        <line x1="0" x2="1000" y1="12" y2="12" stroke="rgb(242 245 228 / 0.14)" strokeWidth="2" />
-        <motion.line x1="0" x2="1000" y1="12" y2="12" stroke="#8EE58E" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={calm ? { duration: 0 } : { duration: 1.6, ease: EASE, delay: 0.3 }} />
-      </svg>
+      <div className="sc-ro__rail" aria-hidden="true">
+        <motion.span className="sc-ro__railfill" initial={calm ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: calm ? 0 : DUR.data, ease: EASE, delay: calm ? 0 : 0.1 }} />
+      </div>
       <ol className="sc-ro__phases">
         {PHASES.map((p, i) => (
-          <motion.li key={p.name} initial={calm ? false : { opacity: 0, y: 12, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={calm ? { duration: 0 } : { duration: 0.6, ease: EASE, delay: 0.35 + i * 0.32 }}>
-            <span className="sc-ro__node" aria-hidden="true" />
-            <span className="n-label" style={{ color: 'var(--n-accent)' }}>{p.wk}</span>
+          <motion.li key={p.name} initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.1 + i * 0.12 }}>
+            <span className="sc-ro__node" aria-hidden="true">{i + 1}</span>
+            <span className="sc-ro__wk">{p.wk}</span>
             <h3 className="sc-ro__name">{p.name}</h3>
             <ul>
               {p.items.map((it) => (
@@ -71,95 +51,99 @@ function Timeline() {
   );
 }
 
+function OperatingLoop() {
+  const calm = useCalm();
+  return (
+    <div className="sc-ro__cycle" role="img" aria-label="The operating loop: build, launch, measure, review, improve, then back to build. Every agent, on a calendar, with an owner.">
+      <ol>
+        {CYCLE.map((c, i) => (
+          <motion.li key={c} initial={calm ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: calm ? 0 : DUR.ui, ease: EASE, delay: calm ? 0 : 0.05 + i * 0.1 }}>
+            <span className="sc-ro__cyc">{c}</span>
+            {i < CYCLE.length - 1 && (
+              <span className="sc-ro__cycarrow" aria-hidden="true">
+                <Arrow />
+              </span>
+            )}
+          </motion.li>
+        ))}
+      </ol>
+      <span className="sc-ro__cycback">Then back to build. Every agent, on a calendar, with an owner.</span>
+    </div>
+  );
+}
+
+const HEAD = [
+  { h: 'Earn trust in public, one phase at a time.', l: 'It adds to the CSM’s work instead of replacing it. It takes the data entry, not the judgement. CSMs keep the relationship and the final call.' },
+  { h: 'Measure adoption. Report hours, not hype.', l: 'Agent Ops shows who uses it, how often, and what it gives back. The number for executives is hours returned, after review time.' },
+  { h: 'Build it, then operate it.', l: 'Launch is the start. Every agent gets an owner, a review schedule and the same standard, mine included. Then I make it easy for others to build to it.' },
+];
+
 export function Rollout({ beat }: { beat: number }) {
   const b = Math.min(beat, 2);
+  const calm = useCalm();
+  const item = (i: number) => ({ initial: calm ? false : { opacity: 0, y: 6 }, animate: { opacity: 1, y: 0 }, transition: { duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.08 + i * 0.08 } }) as const;
   return (
-    <div className="n-grid sc-ro">
-      <div className="n-col-12">
-        <AnimatePresence mode="wait">
-          <Reveal key={b} className="n-stack">
-            <Reveal.Item>
-              <Display size="md" as="h2">
-                {b === 0 && <>Earn trust in <em>public,</em> one phase at a time.</>}
-                {b === 1 && <>Measure adoption. Report <em>hours,</em> not hype.</>}
-                {b === 2 && <>Build it, then <em>operate</em> it.</>}
-              </Display>
-            </Reveal.Item>
-            <Reveal.Item>
-              <Lede>
-                {b === 0 && 'Additive, not replacement. It takes the data entry, not the judgement. CSMs keep the relationship and the final call.'}
-                {b === 1 && 'Agent Ops shows who uses it, when and how often, and what it returns. The exec number is hours given back, net of review time.'}
-                {b === 2 && 'Launch is the start. Every agent gets an owner, a review cadence and the same standard, mine included. Then I make it easy for others to build to it.'}
-              </Lede>
-            </Reveal.Item>
-          </Reveal>
-        </AnimatePresence>
-      </div>
+    <div className="sc-ro">
+      <SceneHead k={b} title={HEAD[b]!.h} line={HEAD[b]!.l} />
 
       {b === 0 && (
-        <div className="n-col-12">
+        <div className="sc-ro__body" key="b0">
           <Timeline />
-          <Reveal className="n-row sc-ro__trust" delay={1.6}>
-            {TRUST.map((t) => (
-              <Reveal.Item key={t}>
-                <Chip tone="accent" dot>{t}</Chip>
-              </Reveal.Item>
+          <ul className="sc-ro__trust">
+            {TRUST.map((t, i) => (
+              <motion.li key={t} {...item(i + 4)}>
+                <span className="sc-ro__check"><Check /></span>
+                {t}
+              </motion.li>
             ))}
-          </Reveal>
+          </ul>
         </div>
       )}
 
       {b === 1 && (
-        <Reveal className="n-col-12 sc-ro__measure" delay={0.25} each={0.1}>
-          <Reveal.Item className="n-card n-card--accent sc-ro__hours">
-            <Stat value={1.75} decimals={2} suffix=" hrs" label="given back per CSM, per week" tone="accent" />
+        <div className="sc-ro__measure" key="b1">
+          <motion.div className="n-card sc-ro__hours" {...item(0)}>
+            <Stat value={1.75} decimals={2} suffix=" hours" label="given back to each CSM, every week" tone="accent" />
             <Stat value={2730} label="hours a year across 30 CSMs" size="sm" />
             <Callout tone="assumption">
-              <span className="n-label" style={{ color: 'var(--n-amber)' }}>Assumption</span> 10 min of admin per call × 15 calls a week, 70% removed. The time study replaces this.
+              <b>Assumption.</b> 10 minutes of admin per call, 15 calls a week, 70% of it removed. The time study replaces this.
             </Callout>
-          </Reveal.Item>
-          <Reveal.Item className="n-card sc-ro__list">
-            <span className="n-label">What I measure, weekly</span>
-            <ul>
-              <li><b>Capture rate</b> share of calls that produce reviewed insight</li>
-              <li><b>Time to owner</b> from call end to the right inbox</li>
-              <li><b>Precision</b> of routed items, from one-click “wrong” flags</li>
-              <li><b>Evidence rate</b> PM decisions that cite a quote</li>
-              <li><b>Weekly active reviewers</b> and retention by cohort</li>
-            </ul>
-          </Reveal.Item>
-          <Reveal.Item className="n-card sc-ro__list">
-            <span className="n-label">What the exec report says</span>
-            <ul>
-              <li><b>Hours returned</b> Σ(baseline − measured review minutes)</li>
-              <li><b>Value vs AI cost</b> at a stated loaded hourly rate</li>
-              <li><b>Adoption</b> active users, by team, trend</li>
-              <li><b>Quality</b> precision, grounding rate, incidents</li>
-              <li><b>Next</b> what we change, and why</li>
-            </ul>
-          </Reveal.Item>
-        </Reveal>
+          </motion.div>
+          <motion.div className="n-card sc-ro__list" {...item(1)}>
+            <span className="n-label">What I measure every week</span>
+            <dl>
+              <div><dt>Capture rate</dt><dd>Share of calls that produce a reviewed insight</dd></div>
+              <div><dt>Time to owner</dt><dd>From the end of the call to the right inbox</dd></div>
+              <div><dt>Accuracy</dt><dd>Of what was sent, from one-click “wrong” flags</dd></div>
+              <div><dt>Evidence rate</dt><dd>Product decisions that cite a customer quote</dd></div>
+              <div><dt>Active reviewers</dt><dd>Weekly, and who keeps coming back</dd></div>
+            </dl>
+          </motion.div>
+          <motion.div className="n-card sc-ro__list" {...item(2)}>
+            <span className="n-label">What the executive report says</span>
+            <dl>
+              <div><dt>Hours returned</dt><dd>Time saved, minus time spent reviewing</dd></div>
+              <div><dt>Value against AI cost</dt><dd>At a stated hourly rate</dd></div>
+              <div><dt>Adoption</dt><dd>Active users by team, and the trend</dd></div>
+              <div><dt>Quality</dt><dd>Accuracy, quotes checked, incidents</dd></div>
+              <div><dt>Next</dt><dd>What we change, and why</dd></div>
+            </dl>
+          </motion.div>
+        </div>
       )}
 
       {b === 2 && (
-        <div className="n-col-12">
+        <div className="sc-ro__body" key="b2">
           <OperatingLoop />
+          <div className="sc-ro__operate">
+            {OPERATE.map((x, i) => (
+              <motion.div key={x.k} className="n-card sc-ro__op" {...item(i + 2)}>
+                <h3>{x.k}</h3>
+                <p className="n-body">{x.v}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      )}
-      {b === 2 && (
-        <Reveal className="n-col-12 sc-ro__operate" delay={0.25} each={0.1}>
-          {[
-            { k: 'Review cadence', v: 'Every agent reviewed on a calendar: owner, evals, cost, incidents, still needed? Overdue shows up on the exec view.' },
-            { k: 'The agent standard', v: 'Nine checks: owner, purpose, data review, evals with a gate, logs and traces, spend cap, human review, rollback, cadence.' },
-            { k: 'Maintenance', v: 'Model and prompt changes go through the eval gate. Cost spikes and SLO breaches alert the owner; drift is caught by scheduled eval re-runs and the reviewer-edit rate.' },
-            { k: 'Builder enablement', v: 'Templates for Claude and Gumloop builds, the standard as a checklist, weekly office hours, a shared eval harness.' },
-          ].map((x) => (
-            <Reveal.Item key={x.k} className="n-card sc-ro__op">
-              <span className="n-label" style={{ color: 'var(--n-accent)' }}>{x.k}</span>
-              <p className="n-body">{x.v}</p>
-            </Reveal.Item>
-          ))}
-        </Reveal>
       )}
     </div>
   );

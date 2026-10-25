@@ -47,7 +47,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'states', chapter: 'states', kind: 'scene', scene: 'states', beats: 4, route: R.scene('states'),
-    title: 'Current → future state', body: 'Leaks at every handoff, then sealed.', next: 'ch1.intro',
+    title: 'Today and tomorrow', body: 'Leaks at every handoff, then sealed.', next: 'ch1.intro',
   },
 
   // ============================================================ ch1 · a call comes in
@@ -137,7 +137,7 @@ export const STEPS: Step[] = [
       if (!ctx.run || dropped > 0 || !ctx.peek || !stepDone(ctx.run, 'ground')) return undefined;
       return [
         { label: 'See a rejected quote', to: 'ch2.rejected', variant: 'ghost' },
-        { label: 'Continue', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' },
+        { label: 'Next', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' },
       ];
     },
     notes: 'Data-driven: say the grounded count out loud. On the promoted prompt every eval quote grounded (275 of 275), so grounding is the seatbelt. “See a rejected quote” only appears when a real run with a dropped quote exists.',
@@ -176,7 +176,7 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: 'ch3.intro',
     actions: [
       { label: 'Try a messy one', to: 'ch1.intro', variant: 'ghost' },
-      { label: 'Continue', to: 'ch3.intro', variant: 'primary' },
+      { label: 'Next', to: 'ch3.intro', variant: 'primary' },
     ],
   },
 
@@ -219,7 +219,7 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: 'ch4.intro',
     actions: [
       { label: 'Try another file', to: 'ch1.intro', variant: 'ghost' },
-      { label: 'Continue', to: 'ch4.intro', variant: 'primary' },
+      { label: 'Next', to: 'ch4.intro', variant: 'primary' },
     ],
     checkpoint: (ctx) => ({ value: ctx.counters.approvals + ctx.counters.edits + ctx.counters.rejects, label: 'decisions made by a person', sub: 'saved as labelled data' }),
   },
@@ -234,7 +234,7 @@ export const STEPS: Step[] = [
   {
     id: 'ch4.rule', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.rule.pricing', placement: 'bottom', interact: 'all',
     title: 'Your call: who hears about pricing?',
-    body: (ctx) => (pricingRuleOverridden(ctx) ? 'You already changed this rule in your workspace. Change it again, or Continue to see where the flows go.' : 'Send pricing objections on accounts over $250k ARR to the VP of Product.'),
+    body: (ctx) => (pricingRuleOverridden(ctx) ? 'You already changed this rule in your workspace. Change it again, or press Next to see where the flows go.' : 'Send pricing objections on accounts over $250k ARR to the VP of Product.'),
     waitFor: { event: 'rule.changed', hint: 'Edit the pricing rule', satisfied: pricingRuleOverridden },
     next: 'ch4.sankey',
   },
@@ -405,7 +405,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'production', chapter: 'production', kind: 'scene', scene: 'production', beats: 2, route: R.scene('production'),
-    title: 'POC → production', body: 'Same design, production stack.', next: 'scorecard',
+    title: 'From proof of concept to production', body: 'Same design, production stack.', next: 'scorecard',
   },
   {
     id: 'scorecard', chapter: 'scorecard', kind: 'scene', scene: 'scorecard', beats: 1, route: R.scene('scorecard'),

@@ -3,10 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { MotionConfig } from 'motion/react';
 
-// Self-hosted fonts (no third-party font requests from the narrative layer).
-import '@fontsource/instrument-serif/400.css';
-import '@fontsource/instrument-serif/400-italic.css';
-import '@fontsource-variable/inter-tight/wght.css';
+// Self-hosted fonts (no third-party font requests): Inter for everything, JetBrains Mono for IDs and code.
 import '@fontsource-variable/jetbrains-mono/wght.css';
 import '@fontsource-variable/inter/wght.css';
 

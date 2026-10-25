@@ -1,12 +1,13 @@
 /**
- * 16 · Scorecard. What you did and what the system did, with real numbers from the
+ * Part 16 · Scorecard. What you did and what the system did, with real numbers from the
  * viewer's own workspace and from Agent Ops. Then "Explore freely" unlocks everything.
  */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Button, Display, Lede, Reveal, Stat, Chip } from '../components';
+import { Button, SceneHead, Stat, Chip } from '../components';
 import { useCalm } from '../hooks';
+import { DUR, EASE } from '../motion';
 import { loadScoreboard, tourApi, type Scoreboard } from '../../tour/api';
 import type { RunDetail } from '../../shared/contracts';
 import { useTour } from '../../tour/engine/TourProvider';
@@ -165,72 +166,55 @@ export function ScorecardScene() {
       : 'Live figures were unavailable, so these counts come from this session only.';
 
   return (
-    <div className="n-grid sc-score" data-testid="scorecard">
-      <div className="n-col-12">
-        <Reveal className="n-stack">
-          <Reveal.Item>
-            <Display size="lg" as="h2">
-              Here’s what <em>you</em> just did.
-            </Display>
-          </Reveal.Item>
-          <Reveal.Item>
-            <Lede>{lede}</Lede>
-          </Reveal.Item>
-        </Reveal>
+    <div className="sc-score" data-testid="scorecard">
+      <SceneHead size="lg" title="Here’s what you just did." line={lede} />
+      <div className="sc-score__panels">
+        <motion.section className="n-card sc-score__panel" aria-label="You" initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.05 }}>
+          <h3 className="sc-score__h">You</h3>
+          <div className="sc-score__stats">
+            {you.map((x) => (
+              <TileView key={x.l} t={x} />
+            ))}
+          </div>
+        </motion.section>
+        <motion.section className="n-card sc-score__panel" aria-label="The system" initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.15 }}>
+          <h3 className="sc-score__h">The system</h3>
+          <div className="sc-score__stats">
+            {sys.map((x) => (
+              <TileView key={x.l} t={x} />
+            ))}
+            <Stat value={sb?.costUsd ?? 0} prefix="$" decimals={sb && sb.costUsd < 0.1 ? 4 : 2} label={sb && sb.liveRuns === 0 && sb.runs > 0 ? 'AI spend (replays are free)' : 'AI spend on your runs'} size="sm" />
+          </div>
+        </motion.section>
       </div>
-      <Reveal className="n-col-6 n-card sc-score__panel" delay={0.2}>
-        <Reveal.Item>
-          <span className="n-label">You</span>
-        </Reveal.Item>
-        <div className="sc-score__stats">
-          {you.map((x) => (
-            <Reveal.Item key={x.l}>
-              <TileView t={x} />
-            </Reveal.Item>
-          ))}
-        </div>
-      </Reveal>
-      <Reveal className="n-col-6 n-card n-card--accent sc-score__panel" delay={0.35}>
-        <Reveal.Item>
-          <span className="n-label" style={{ color: 'var(--n-accent)' }}>The system</span>
-        </Reveal.Item>
-        <div className="sc-score__stats">
-          {sys.map((x) => (
-            <Reveal.Item key={x.l}>
-              <TileView t={x} />
-            </Reveal.Item>
-          ))}
-          <Reveal.Item>
-            <Stat value={sb?.costUsd ?? 0} prefix="$" decimals={sb && sb.costUsd < 0.1 ? 4 : 2} label={sb && sb.liveRuns === 0 && sb.runs > 0 ? 'AI spend (replays are free)' : 'AI spend on your runs'} size="sm" tone="accent" />
-          </Reveal.Item>
-        </div>
-      </Reveal>
-      <motion.div className="n-col-12 sc-score__ops" initial={calm ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : 0.6, delay: calm ? 0 : 0.6 }}>
+      <motion.div className="sc-score__ops" initial={calm ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.3 }}>
         <span className="n-label">In Agent Ops</span>
         <p className="n-body">
           {ops && ops.ok ? (
             <>
-              {ops.traces > 1 ? <>Your {ops.traces} runs produced </> : <>Your run produced </>}
-              <b>{ops.logLines.toLocaleString()}</b> correlated log lines and <b>{ops.spans.toLocaleString()}</b> spans
+              {ops.traces > 1 ? <>Your {ops.traces} runs left </> : <>Your run left </>}
+              <b>{ops.logLines.toLocaleString()}</b> log lines and <b>{ops.spans.toLocaleString()}</b> timed steps
               {ops.traces > 1 ? ' across their traces' : ' in its trace'}
               {ops.hours != null ? (
                 <>
-                  . Signal Loop has returned about <b>{Math.round(ops.hours).toLocaleString()} hours</b> this period (baselines are labelled assumptions).
+                  . Signal Loop has given back about <b>{Math.round(ops.hours).toLocaleString()} hours</b> this period (the baselines are labelled assumptions).
                 </>
               ) : (
                 '.'
               )}
             </>
           ) : (
-            'Every run you did is in the platform as structured logs, spans, usage events and a work unit.'
+            'Every run you did is in the platform as logs, timed steps, usage and a unit of work.'
           )}
         </p>
-        <div className="n-row">
-          {sb && sb.replayRuns > 0 && <Chip tone="indigo">{sb.replayRuns} replayed from a recorded live run</Chip>}
-          {sb && sb.liveRuns > 0 && <Chip tone="accent">{sb.liveRuns} live</Chip>}
-        </div>
+        {sb && (sb.replayRuns > 0 || sb.liveRuns > 0) && (
+          <div className="n-row" style={{ gap: 8 }}>
+            {sb.replayRuns > 0 && <Chip tone="indigo">{sb.replayRuns} replayed from a recorded live run</Chip>}
+            {sb.liveRuns > 0 && <Chip tone="accent">{sb.liveRuns} live</Chip>}
+          </div>
+        )}
       </motion.div>
-      <div className="n-col-12 sc-score__actions">
+      <div className="sc-score__actions">
         <Button size="lg" arrow onClick={explore} data-testid="explore-freely" autoFocus>
           Explore freely
         </Button>

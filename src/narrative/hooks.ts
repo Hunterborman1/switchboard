@@ -10,7 +10,7 @@ export function useCalm(): boolean {
 
 /** Count a number up from `from` to `to`. Reduced motion → jumps straight to the value. */
 export function useCountUp(to: number, opts: { duration?: number; from?: number; start?: boolean; decimals?: number } = {}): number {
-  const { duration = 1100, from = 0, start = true, decimals = 0 } = opts;
+  const { duration = 600, from = 0, start = true, decimals = 0 } = opts;
   const calm = useCalm();
   const [value, setValue] = useState(calm || !start ? (start ? to : from) : from);
   const raf = useRef(0);

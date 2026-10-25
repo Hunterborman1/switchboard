@@ -1,52 +1,66 @@
 /* =========================================================================
    Signal Loop Narrative · tokens
-   Editorial dark. Every custom property is prefixed --n-* and declared on
-   .sl-n (the narrative root) so it can never collide with the product's --cn-*.
+   One light, flat theme (docs/DESIGN.md). Every custom property is prefixed
+   --n-* and declared on .sl-n (pages) and .sl-n-portal (walkthrough UI over
+   the product), so it can never collide with the product's own tokens.
    ========================================================================= */
 
 .sl-n,
 .sl-n-portal {
-  /* colour */
-  --n-bg: #0a231e;
-  --n-bg-2: #0e2c26;
-  --n-raised: #12352e;
-  --n-raised-2: #174037;
-  --n-ink: #f2f5e4;
-  --n-ink-2: rgb(242 245 228 / 0.68);
-  --n-ink-3: rgb(242 245 228 / 0.48);
-  --n-ink-4: rgb(242 245 228 / 0.28);
-  --n-line: rgb(242 245 228 / 0.12);
-  --n-line-2: rgb(242 245 228 / 0.2);
-  --n-accent: #8ee58e;
-  --n-accent-ink: #062018;
-  --n-accent-glow: rgb(142 229 142 / 0.35);
-  --n-accent-wash: rgb(142 229 142 / 0.1);
-  --n-mint: #d1ffd1;
-  --n-indigo: #5e74e3;
-  --n-indigo-wash: rgb(94 116 227 / 0.16);
-  --n-danger: #ff9c8c;
-  --n-danger-wash: rgb(255 156 140 / 0.12);
-  --n-amber: #f2c46d;
-  --n-glass: rgb(10 35 30 / 0.86);
-  --n-scrim: rgb(3 14 11 / 0.62);
+  /* colour: DESIGN.md light tokens */
+  --n-bg: #ffffff;
+  --n-bg-subtle: #f7f8f7;
+  --n-bg-muted: #eff1ef;
+  --n-border: #e3e6e3;
+  --n-border-strong: #cdd2cd;
+  --n-text: #111614;
+  --n-text-2: #525c57;
+  --n-text-3: #6b756f;
+  --n-accent: #008463;
+  --n-accent-hover: #00785a;
+  --n-accent-text: #006b51;
+  --n-accent-subtle: #e8f4ef;
+  --n-success: #0f7b48;
+  --n-success-subtle: #e7f4ec;
+  --n-warning: #9a5b00;
+  --n-warning-subtle: #fbf1de;
+  --n-danger: #b42318;
+  --n-danger-subtle: #fdecea;
+  --n-info: #2f5db8;
+  --n-info-subtle: #eaf0fb;
+  --n-scrim: rgb(17 22 20 / 0.45);
 
-  /* type */
-  --n-font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
-  --n-font-body: 'Inter Tight Variable', 'Inter Tight', 'Inter Variable', system-ui, sans-serif;
-  --n-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  /* legacy aliases (older class names still read these) */
+  --n-bg-2: var(--n-bg-subtle);
+  --n-raised: var(--n-bg);
+  --n-ink: var(--n-text);
+  --n-ink-2: var(--n-text-2);
+  --n-ink-3: var(--n-text-3);
+  --n-ink-4: #9aa39e;
+  --n-line: var(--n-border);
+  --n-line-2: var(--n-border-strong);
+  --n-mint: var(--n-accent-text);
+  --n-amber: var(--n-warning);
+  --n-indigo: var(--n-info);
+  --n-accent-wash: var(--n-accent-subtle);
 
-  --n-text-xs: 0.6875rem; /* 11 */
+  /* type: Inter only; mono is for things a person would copy */
+  --n-font-body: 'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --n-font-display: var(--n-font-body);
+  --n-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --n-text-xs: 0.75rem; /* 12 */
   --n-text-sm: 0.8125rem; /* 13 */
-  --n-text-md: 0.9375rem; /* 15 */
-  --n-text-lg: 1.125rem; /* 18 */
-  --n-text-xl: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem);
-  --n-display-sm: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
-  --n-display-md: clamp(2.25rem, 1.5rem + 2.8vw, 3.75rem);
-  --n-display-lg: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
-  --n-display-xl: clamp(3.25rem, 1.5rem + 6.6vw, 7.5rem);
-  --n-tracking-mono: 0.14em;
+  --n-text-md: 0.875rem; /* 14 body */
+  --n-text-lg: 1rem; /* 16 */
+  --n-text-xl: 1.25rem; /* 20 */
+  --n-text-2xl: 1.5rem; /* 24 */
+  --n-text-3xl: 2rem; /* 32 */
+  --n-display-sm: clamp(1.5rem, 1.2rem + 1vw, 2rem); /* 24 → 32 */
+  --n-display-md: clamp(2rem, 1.4rem + 2vw, 2.75rem); /* 32 → 44 */
+  --n-display-lg: clamp(2.25rem, 1.4rem + 2.8vw, 3.5rem); /* 36 → 56 */
 
-  /* spacing (4px base) */
+  /* spacing (4px grid) */
   --n-s-1: 4px;
   --n-s-2: 8px;
   --n-s-3: 12px;
@@ -56,31 +70,26 @@
   --n-s-7: 48px;
   --n-s-8: 64px;
   --n-s-9: 96px;
-  --n-gutter: clamp(16px, 4vw, 64px);
-  --n-safe-top: clamp(64px, 9vh, 104px);
-  --n-safe-bottom: clamp(72px, 10vh, 112px);
+  --n-gutter: clamp(16px, 4vw, 40px);
+  --n-column: 1120px;
 
   /* radius */
+  --n-r-xs: 4px;
   --n-r-sm: 6px;
-  --n-r-md: 10px;
-  --n-r-lg: 16px;
-  --n-r-xl: 24px;
-  --n-r-pill: 999px;
+  --n-r-md: 8px;
+  --n-r-lg: 8px;
 
-  /* elevation */
-  --n-e-1: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 1px 2px rgb(0 0 0 / 0.3);
-  --n-e-2: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 12px 32px -12px rgb(0 0 0 / 0.55);
-  --n-e-3: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 28px 64px -20px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(242 245 228 / 0.08);
-  --n-glow: 0 0 24px var(--n-accent-glow);
+  /* elevation: the only shadows allowed */
+  --n-shadow-1: 0 1px 2px rgb(16 24 20 / 0.06);
+  --n-shadow-2: 0 4px 12px rgb(16 24 20 / 0.08), 0 1px 3px rgb(16 24 20 / 0.06);
 
   /* motion */
-  --n-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --n-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
-  --n-d-fast: 160ms;
-  --n-d-ui: 280ms;
-  --n-d-product: 400ms;
-  --n-d-slow: 600ms;
-  --n-d-slower: 700ms;
+  --n-ease: cubic-bezier(0.2, 0, 0, 1);
+  --n-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --n-d-press: 120ms;
+  --n-d-ui: 180ms;
+  --n-d-layout: 240ms;
+  --n-d-data: 600ms;
 
   /* layers */
   --n-z-overlay: 9000;
@@ -92,10 +101,9 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-n,
   .sl-n-portal {
-    --n-d-fast: 0ms;
+    --n-d-press: 0ms;
     --n-d-ui: 0ms;
-    --n-d-product: 0ms;
-    --n-d-slow: 0ms;
-    --n-d-slower: 0ms;
+    --n-d-layout: 0ms;
+    --n-d-data: 0ms;
   }
 }

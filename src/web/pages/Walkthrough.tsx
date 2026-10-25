@@ -3,36 +3,28 @@
  * renders the scene for it, and on a direct visit (deep link without ?tour) starts the
  * tour at that part.
  *
- * The scene chrome (top bar, footer) stays put between scenes; only the stage cross-fades,
- * with a short exit so the presenter never waits on a blank screen.
+ * The scene chrome (top bar, bottom bar) stays put between scenes; only the stage
+ * cross-fades: the outgoing and incoming stage share one grid cell for 180 ms, so there is never a blank frame.
  */
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { Scene } from '../../narrative/Scene';
+import { Scene, SceneTopBar } from '../../narrative/Scene';
 import { SCENES } from '../../narrative/scenes';
 import { useCalm } from '../../narrative/hooks';
-import { Backdrop, LoopGlyph, Mark } from '../../narrative/components';
-import { chapterById, CHAPTERS } from '../../tour/script/chapters';
+import { chapterById, CHAPTERS, GROUPS } from '../../tour/script/chapters';
 import { firstStepOf, FIRST_STEP } from '../../tour/script/steps';
 import { useTour } from '../../tour/engine/TourProvider';
 import type { ChapterId } from '../../tour/engine/types';
 
-/** Shown while the engine aligns with a deep link: the scene chrome and a breathing glyph, never a blank screen. */
+/** Shown while the engine aligns with a deep link: the scene chrome and a quiet line, never a blank screen. */
 function SceneSkeleton() {
-  const calm = useCalm();
   return (
     <main className="sl-n n-page">
       <section className="n-scene" aria-busy="true" aria-label="Loading the walkthrough" data-testid="scene-skeleton">
-        <Backdrop />
-        <header className="n-scene__top">
-          <Mark href={`${import.meta.env.BASE_URL}`} />
-        </header>
+        <SceneTopBar />
         <div className="n-scene__body">
-          <div className="n-scene__skeleton">
-            <LoopGlyph size={44} live={!calm} />
-            <span className="n-label">Loading</span>
-          </div>
+          <div className="n-scene__skeleton">Loading the walkthrough…</div>
         </div>
       </section>
     </main>
@@ -73,24 +65,27 @@ export function Walkthrough() {
   return (
     <main className="sl-n n-page" data-scene={step.scene}>
       <Scene
-        num={String(ch.part).padStart(2, '0')}
         label={ch.title}
+        group={GROUPS.find((g) => g.ids.includes(ch.id))?.label}
+        index={CHAPTERS.findIndex((c) => c.id === ch.id) + 1}
+        total={CHAPTERS.length}
+        progress={tour.progress}
         beat={tour.beat}
         beats={beats}
         onNext={def.bare ? undefined : () => tour.next()}
         onBack={tour.canGoBack ? tour.back : undefined}
-        nextLabel={last ? def.exitLabel ?? 'Continue' : 'Next'}
+        nextLabel={last ? def.exitLabel ?? 'Next' : 'Next'}
         bare={def.bare}
         testId={`scene-${step.scene}`}
       >
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence initial={false}>
           <motion.div
             key={step.id}
             className="n-scene__stage"
-            initial={calm ? false : { opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, transition: { duration: calm ? 0 : 0.18, ease: [0.4, 0, 1, 1] } }}
-            transition={{ duration: calm ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, pointerEvents: 'none', transition: { duration: calm ? 0 : 0.18, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
           >
             <C beat={tour.beat} beats={beats} />
           </motion.div>

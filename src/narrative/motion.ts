@@ -1,32 +1,32 @@
 /**
- * Narrative motion tokens. Story layer is slow and deliberate (500–700 ms); anything that
- * sits on the product layer stays ≤ 400 ms. Every consumer checks `useReducedMotion()`.
+ * Narrative motion tokens (docs/DESIGN.md). Animation only shows a change of state or a
+ * progression: 120 ms press, 180 ms enter/exit, 240 ms layout, data reveals up to 600 ms.
+ * Opacity and short translate only; no blur, bounce or loops. Every consumer checks useCalm().
  */
 import type { Transition, Variants } from 'motion/react';
 
-export const EASE = [0.22, 1, 0.36, 1] as const;
-export const EASE_INOUT = [0.65, 0, 0.35, 1] as const;
+export const EASE = [0.2, 0, 0, 1] as const;
+export const EASE_EXIT = [0.4, 0, 1, 1] as const;
 
 export const DUR = {
-  fast: 0.16,
-  ui: 0.28,
-  product: 0.4,
-  slow: 0.6,
-  slower: 0.7,
+  press: 0.12,
+  ui: 0.18,
+  layout: 0.24,
+  data: 0.6,
 } as const;
 
-export const STAGGER = 0.09; // ≤ 120 ms
+/** Sequential reveals: one item every 120 ms at most. */
+export const STAGGER = 0.06;
 
-export const slow: Transition = { duration: DUR.slow, ease: EASE };
-export const slower: Transition = { duration: DUR.slower, ease: EASE };
-export const product: Transition = { duration: DUR.product, ease: EASE };
-export const spring: Transition = { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 };
+export const enter: Transition = { duration: DUR.ui, ease: EASE };
+export const layout: Transition = { duration: DUR.layout, ease: EASE };
+export const data: Transition = { duration: DUR.data, ease: EASE };
 
-/** Blur-reveal: the signature narrative entrance. */
+/** Enter: fade up 6px. */
 export const reveal: Variants = {
-  hidden: { opacity: 0, y: 14, filter: 'blur(10px)' },
-  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: slow },
-  exit: { opacity: 0, y: -8, filter: 'blur(6px)', transition: { duration: DUR.ui, ease: EASE } },
+  hidden: { opacity: 0, y: 6 },
+  show: { opacity: 1, y: 0, transition: { duration: DUR.layout, ease: EASE } },
+  exit: { opacity: 0, transition: { duration: DUR.ui, ease: EASE_EXIT } },
 };
 
 export const revealReduced: Variants = {
@@ -38,5 +38,8 @@ export const revealReduced: Variants = {
 export const stagger = (delay = 0, each = STAGGER): Variants => ({
   hidden: {},
   show: { transition: { staggerChildren: each, delayChildren: delay } },
-  exit: { transition: { staggerChildren: 0.03, staggerDirection: -1 } },
+  exit: { transition: { staggerChildren: 0 } },
 });
+
+/** Helper: a timed transition that collapses to an instant one under reduced motion. */
+export const tr = (calm: boolean, duration: number = DUR.layout, delay = 0): Transition => (calm ? { duration: 0 } : { duration, ease: EASE, delay });

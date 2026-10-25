@@ -41,10 +41,11 @@ function Timer() {
 }
 
 /**
- * Objective HUD. On scenes: a slim card top-right (scenes carry their own eyebrow, so it
- * starts collapsed). On product steps the callout already says what to do, so the HUD is a
- * 40 px pill in one fixed corner (bottom-right) that expands on click; it fades out of the
- * way (never jumps) when the spotlight sits underneath it.
+ * Walkthrough controls. On scenes the top bar already names the chapter and the progress, so
+ * the HUD is only a compact control in the top bar's right edge (timer when presenting, the
+ * chapter list). On product steps the callout says what to do, so the HUD is a 40 px control
+ * in one fixed corner (bottom-right) that expands on click; it fades out of the way (never
+ * jumps) when the spotlight sits underneath it.
  */
 export function Hud() {
   const tour = useTour();
@@ -56,12 +57,22 @@ export function Hud() {
   // Phones: the pill sits over a space reserved in the sticky top bar's slot, never over the lockup.
   const slot = usePillSlot();
   const [dock, setDock] = useState<{ top: number; right: number } | null>(null);
-  const [collapsedPref, setCollapsed] = useState<boolean | null>(null);
   const [productOpen, setProductOpen] = useState(false);
   const ch = chapterById(step.chapter);
   const product = step.kind === 'product';
-  // Scenes carry their own eyebrow: keep the HUD to one line there unless the viewer opens it.
-  const collapsed = collapsedPref ?? step.kind === 'scene';
+  const scene = step.kind === 'scene';
+  const active = tour.status === 'active';
+  const presenting = tour.presenting;
+
+  // Scenes: tell the top bar how much room to leave on its right for this control.
+  useEffect(() => {
+    if (!active || !scene) return;
+    const root = document.documentElement;
+    root.dataset.slHud = presenting ? 'scene-timer' : 'scene';
+    return () => {
+      delete root.dataset.slHud;
+    };
+  }, [active, scene, presenting]);
 
   // Each new product step starts with the pill, so the HUD never covers the page while a callout is open.
   useEffect(() => setProductOpen(false), [step.id]);
@@ -132,12 +143,12 @@ export function Hud() {
 
   if (tour.status !== 'active') return null;
   const objective = step.objective ? resolveCopy(step.objective, ctx) : ch.objective;
-  const label = ch.productIndex ? `Chapter ${ch.productIndex} / ${PRODUCT_CHAPTERS}` : ch.layer === 'narrative' ? `Part ${String(ch.part).padStart(2, '0')}` : 'Finale';
-  const short = ch.productIndex ? `Ch ${ch.productIndex} / ${PRODUCT_CHAPTERS}` : label;
-  const scenarios = `Scenarios explored ${ctx.explored.length}/6`;
+  const label = ch.productIndex ? `Chapter ${ch.productIndex} of ${PRODUCT_CHAPTERS}` : ch.layer === 'narrative' ? `Part ${CHAPTERS.findIndex((c) => c.id === ch.id) + 1} of ${CHAPTERS.length}` : 'Last part';
+  const short = label;
+  const scenarios = `${ctx.explored.length} of 6 scenarios explored`;
 
   const chaptersBtn = (
-    <button className="t-icon-btn" onClick={() => tour.setRailOpen(true)} aria-label="Chapters" title="Chapters">
+    <button className="t-icon-btn" onClick={() => tour.setRailOpen(true)} aria-label="Chapters" title="All chapters">
       <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
@@ -155,14 +166,23 @@ export function Hud() {
         role="region"
         aria-label="Walkthrough progress"
       >
-        <button className="t-hud__pillbtn" onClick={() => setProductOpen(true)} aria-expanded={false} title={`${ch.title} · ${objective}`}>
-          <span className="t-pill__dot" aria-hidden="true" />
+        <button className="t-hud__pillbtn" onClick={() => setProductOpen(true)} aria-expanded={false} title={`${ch.title}: ${objective}`}>
           <span className="t-hud__chapter">{short}</span>
           <span className="n-sr">
-            {ch.title}. Objective: {objective}. {scenarios}. Show details.
+            {ch.title}. Goal: {objective}. {scenarios}. Show details.
           </span>
         </button>
-        {tour.presenting && <Timer />}
+        {presenting && <Timer />}
+        {chaptersBtn}
+      </div>,
+      document.body,
+    );
+  }
+
+  if (scene) {
+    return createPortal(
+      <div ref={ref} className="t-hud t-hud--scene sl-n-portal" data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough controls">
+        {presenting && <Timer />}
         {chaptersBtn}
       </div>,
       document.body,
@@ -170,47 +190,33 @@ export function Hud() {
   }
 
   return createPortal(
-    <div ref={ref} className={`t-hud sl-n-portal ${product ? 't-hud--product' : ''} ${collapsed && !product ? 't-hud--collapsed' : ''} ${step.kind === 'scene' ? 't-hud--scene' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
+    <div ref={ref} className={`t-hud sl-n-portal ${product ? 't-hud--product' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
       <div className="t-hud__row">
         <span className="t-hud__chapter">{label}</span>
-        {/* On product steps the objective is the useful line; the chapter title is in the callout. */}
-        {!product && <span className="t-hud__title" title={ch.title}>{ch.title}</span>}
         <span className="t-hud__spacer" />
-        {tour.presenting && <Timer />}
+        {presenting && <Timer />}
         {chaptersBtn}
-        {product ? (
-          <button className="t-icon-btn" onClick={() => setProductOpen(false)} aria-label="Collapse" title="Collapse" aria-expanded>
-            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-            </svg>
-          </button>
-        ) : (
-          <button className="t-icon-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Expand' : 'Collapse'} title={collapsed ? 'Expand' : 'Collapse'} aria-expanded={!collapsed}>
-            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" style={{ transform: collapsed ? 'rotate(180deg)' : 'none' }}>
-              <path d="M4 10l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-            </svg>
-          </button>
-        )}
+        <button className="t-icon-btn" onClick={() => setProductOpen(false)} aria-label="Collapse" title="Collapse" aria-expanded>
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+          </svg>
+        </button>
       </div>
-      {(product || !collapsed) && (
-        <>
-          <p className="t-hud__objective">
-            <span className="t-hud__k">Objective</span> {objective}
-          </p>
-          <Progress value={tour.progress} label="Walkthrough progress" />
-          {(ch.layer === 'product' || ctx.explored.length > 0) && (
-            <div className="t-hud__meta">
-              <span>
-                Scenarios explored <b>{ctx.explored.length}</b>/6
-              </span>
-              <span className="t-hud__dots" aria-hidden="true">
-                {['main', 'clean', 'messy', 'security', 'negative', 'privacy'].map((p) => (
-                  <i key={p} data-on={ctx.explored.includes(p as never)} title={p} />
-                ))}
-              </span>
-            </div>
-          )}
-        </>
+      <p className="t-hud__objective">
+        <span className="t-hud__k">Goal</span> {objective}
+      </p>
+      <Progress value={tour.progress} label="Walkthrough progress" />
+      {(ch.layer === 'product' || ctx.explored.length > 0) && (
+        <div className="t-hud__meta">
+          <span>
+            <b>{ctx.explored.length}</b> of 6 scenarios explored
+          </span>
+          <span className="t-hud__dots" aria-hidden="true">
+            {['main', 'clean', 'messy', 'security', 'negative', 'privacy'].map((p) => (
+              <i key={p} data-on={ctx.explored.includes(p as never)} title={p} />
+            ))}
+          </span>
+        </div>
       )}
     </div>,
     document.body,
@@ -243,21 +249,23 @@ export function ChapterRail() {
   return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div className="t-rail-scrim sl-n-portal" data-tour-ui initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: calm ? 0 : 0.2 }} onClick={() => tour.setRailOpen(false)}>
+        <motion.div className="t-rail-scrim sl-n-portal" data-tour-ui initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: calm ? 0 : 0.18 }} onClick={() => tour.setRailOpen(false)}>
           <motion.nav
             className="t-rail n-glass"
             aria-label="Chapters"
-            initial={calm ? false : { x: -24, opacity: 0 }}
+            initial={calm ? { opacity: 0 } : { x: -8, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -24, opacity: 0 }}
-            transition={{ duration: calm ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ x: calm ? 0 : -8, opacity: 0, transition: { duration: calm ? 0 : 0.12, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
             onClick={(e) => e.stopPropagation()}
             data-testid="chapter-rail"
           >
             <div className="t-rail__head">
-              <span className="n-label">Chapters</span>
+              <span className="t-rail__h">Chapters</span>
               <button className="t-icon-btn" onClick={() => tour.setRailOpen(false)} aria-label="Close chapters" autoFocus>
-                ✕
+                <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
               </button>
             </div>
             <div className="t-rail__scroll">
@@ -272,9 +280,9 @@ export function ChapterRail() {
                       return (
                         <li key={id}>
                           <button className="t-rail__item" data-state={state} onClick={() => jump(id)} aria-current={state === 'current' ? 'step' : undefined}>
-                            <span className="t-rail__num">{c.productIndex ? `Ch ${c.productIndex}` : String(c.part).padStart(2, '0')}</span>
+                            <span className="t-rail__num">{i + 1}</span>
                             <span className="t-rail__title">{c.title}</span>
-                            <span className="t-rail__time">{Math.round(c.targetSec / 6) / 10}m</span>
+                            <span className="t-rail__time">{Math.round(c.targetSec / 6) / 10} min</span>
                           </button>
                         </li>
                       );
@@ -283,7 +291,7 @@ export function ChapterRail() {
                 </div>
               ))}
               <div className="t-rail__group">
-                <span className="t-rail__glabel">Q&amp;A backup</span>
+                <span className="t-rail__glabel">Questions</span>
                 <ol>
                   {BACKUPS.map((b) => (
                     <li key={b.topic}>
@@ -295,7 +303,7 @@ export function ChapterRail() {
                           navigate(`/backup/${b.topic}`);
                         }}
                       >
-                        <span className="t-rail__num">Q&amp;A</span>
+                        <span className="t-rail__num">?</span>
                         <span className="t-rail__title">{b.title}</span>
                       </button>
                     </li>
@@ -316,7 +324,7 @@ export function ChapterRail() {
                   navigate('/');
                 }}
               >
-                Hub
+                Back to the start
               </Button>
             </div>
           </motion.nav>
@@ -380,26 +388,24 @@ export function PauseMenu() {
   return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div className="t-menu-scrim sl-n-portal" data-tour-ui initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: calm ? 0 : 0.2 }} onClick={() => tour.setMenuOpen(false)}>
+        <motion.div className="t-menu-scrim sl-n-portal" data-tour-ui initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: calm ? 0 : 0.18 }} onClick={() => tour.setMenuOpen(false)}>
           <motion.div
             ref={dialogRef}
             className="t-menu n-glass"
             role="dialog"
             aria-modal="true"
             aria-label="Walkthrough paused"
-            initial={calm ? false : { y: 10, opacity: 0, filter: 'blur(6px)' }}
-            animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-            exit={{ y: 6, opacity: 0 }}
-            transition={{ duration: calm ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={calm ? { opacity: 0 } : { y: 4, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, transition: { duration: calm ? 0 : 0.12, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
             onClick={(e) => e.stopPropagation()}
             data-testid="pause-menu"
           >
-            <span className="n-label">Paused</span>
-            <h2 className="n-display n-display--sm" style={{ margin: '6px 0 18px' }}>
-              {chapterById(tour.step.chapter).title}
-            </h2>
+            <span className="n-label">Walkthrough paused</span>
+            <h2 className="t-menu__title">{chapterById(tour.step.chapter).title}</h2>
             <div className="t-menu__list">
-              <Button ref={first} onClick={() => tour.setMenuOpen(false)} arrow>
+              <Button ref={first} onClick={() => tour.setMenuOpen(false)}>
                 Resume
               </Button>
               <Button variant="ghost" onClick={() => { tour.setMenuOpen(false); tour.setRailOpen(true); }}>
@@ -412,11 +418,11 @@ export function PauseMenu() {
                 Exit to free explore
               </Button>
               <Button variant="quiet" onClick={() => { tour.exit(); navigate('/'); }}>
-                Back to the hub
+                Back to the start
               </Button>
             </div>
             <p className="n-note" style={{ marginTop: 16 }}>
-              Esc to close · ← → to move · progress is saved
+              Esc closes this menu. ← and → move between steps. Your progress is saved.
             </p>
           </motion.div>
         </motion.div>
@@ -452,14 +458,14 @@ export function Checkpoint() {
           data-tour-ui
           data-testid="checkpoint"
           onClick={tour.dismissCheckpoint}
-          initial={calm ? { opacity: 1 } : { opacity: 0, y: 12, scale: 0.98, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-          exit={calm ? { opacity: 0 } : { opacity: 0, y: -8, filter: 'blur(6px)' }}
-          transition={{ duration: calm ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+          initial={calm ? { opacity: 1 } : { opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={calm ? { opacity: 0 } : { opacity: 0, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
+          transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
           aria-live="polite"
         >
-          <span className="t-checkpoint__tag">Checkpoint</span>
-          <Stat value={cp.data.value} prefix={cp.data.prefix} suffix={cp.data.suffix} decimals={cp.data.decimals} label={cp.data.label} tone="accent" size="sm" />
+          <span className="t-checkpoint__tag">Chapter complete</span>
+          <Stat value={cp.data.value} prefix={cp.data.prefix} suffix={cp.data.suffix} decimals={cp.data.decimals} label={cp.data.label} size="sm" />
           {cp.data.sub && <span className="n-note">{cp.data.sub}</span>}
         </motion.button>
       )}
@@ -497,7 +503,9 @@ export function ResumePill() {
         } else tour.resume();
       }}
     >
-      <span className="t-pill__dot" aria-hidden="true" />
+      <svg className="t-pill__icon" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M5 3.5v9l7-4.5z" fill="currentColor" />
+      </svg>
       {slot.compact ? null : <span className="t-pill__label" aria-hidden="true">{placement === 'bar' ? shortLabel : label}</span>}
     </button>,
     slot.el,

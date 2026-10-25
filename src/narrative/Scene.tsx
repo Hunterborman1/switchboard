@@ -1,28 +1,48 @@
 /**
- * Scene: the full-bleed narrative stage. Safe area top/bottom, 12-col grid in the body,
- * hairline footer with key hints, beat dots and the advance control.
+ * Scene: a presentation page in the product's own language. A still top bar (mark, chapter,
+ * "4 of 17"), the 1120 px content column, and a still bottom bar (progress line, key hints,
+ * Back / Next). Only the content between the bars changes from scene to scene.
  * Clicking empty stage advances (anything interactive opts out via data-no-advance).
  */
 import type { MouseEvent, ReactNode } from 'react';
-import { Arrow, Backdrop, Beats, Button, Eyebrow, KeyHint, Mark } from './components';
+import { Arrow, Beats, Button, Mark } from './components';
 
 export type SceneProps = {
-  num: string;
+  /** Chapter title, e.g. "The insight black hole". */
   label: string;
+  /** Which part of the talk this belongs to, e.g. "The problem". */
+  group?: string;
+  /** 1-based position of this chapter and the chapter count. */
+  index: number;
+  total: number;
   beat: number;
   beats: number;
+  /** Overall walkthrough progress, 0..1. */
+  progress?: number;
   onNext?: () => void;
   onBack?: () => void;
   nextLabel?: string;
   children: ReactNode;
-  /** Hide the footer (e.g. the scorecard owns its own actions). */
+  /** Hide the bottom bar (e.g. the scorecard owns its own actions). */
   bare?: boolean;
-  footerNote?: ReactNode;
   className?: string;
   testId?: string;
 };
 
-export function Scene({ num, label, beat, beats, onNext, onBack, nextLabel = 'Next', children, bare, footerNote, className, testId }: SceneProps) {
+export function SceneTopBar({ label, group, index, total }: { label?: string; group?: string; index?: number; total?: number }) {
+  return (
+    <header className="n-topbar">
+      <Mark href={`${import.meta.env.BASE_URL}`} />
+      <span className="n-topbar__chapter">
+        {group && <span className="n-topbar__group">{group} /</span>}
+        {label && <span>{label}</span>}
+      </span>
+      <span className="n-topbar__right">{index != null && total != null && <span className="n-topbar__count">{index} of {total}</span>}</span>
+    </header>
+  );
+}
+
+export function Scene({ label, group, index, total, beat, beats, progress = 0, onNext, onBack, nextLabel = 'Next', children, bare, className, testId }: SceneProps) {
   const onStageClick = (e: MouseEvent<HTMLElement>) => {
     if (!onNext) return;
     const t = e.target as HTMLElement;
@@ -32,39 +52,31 @@ export function Scene({ num, label, beat, beats, onNext, onBack, nextLabel = 'Ne
   };
   return (
     <section className={`n-scene ${className ?? ''}`} aria-roledescription="scene" aria-label={label} data-testid={testId ?? 'scene'} data-beat={beat}>
-      <Backdrop />
-      <header className="n-scene__top">
-        <Mark href={`${import.meta.env.BASE_URL}`} />
-        <Eyebrow num={num}>{label}</Eyebrow>
-      </header>
+      <SceneTopBar label={label} group={group} index={index} total={total} />
       <div className="n-scene__body" onClick={onStageClick}>
         {children}
       </div>
       {!bare && (
-        <footer className="n-scene__bottom">
-          <span className="n-row" style={{ gap: 18 }}>
-            <KeyHint keys={['→']} label="next" />
-            <span className="n-scene__hint-hide">
-              <KeyHint keys={['←']} label="back" />
-            </span>
-            <span className="n-scene__hint-hide">
-              <KeyHint keys={['Esc']} label="menu" />
-            </span>
-            {footerNote && <span className="n-note n-scene__hint-hide">{footerNote}</span>}
+        <footer className="n-bottombar">
+          <span className="n-bottombar__progress" aria-hidden="true">
+            <i style={{ width: `${Math.round(Math.max(0, Math.min(1, progress)) * 1000) / 10}%` }} />
           </span>
-          <Beats count={beats} current={beat} />
-          <span className="n-row" style={{ gap: 6 }}>
-            {onBack && (
-              <Button variant="quiet" size="sm" onClick={onBack} aria-label="Back">
-                <Arrow dir="left" />
-              </Button>
-            )}
-            {onNext && (
-              <Button size="sm" onClick={onNext} data-testid="scene-next">
-                {nextLabel} <Arrow />
-              </Button>
-            )}
-          </span>
+          <div className="n-bottombar__inner">
+            <span className="n-bottombar__hints">→ or Space for next · ← for back · Esc for the menu</span>
+            <span className="n-bottombar__actions">
+              <Beats count={beats} current={beat} />
+              {onBack && (
+                <Button variant="ghost" size="sm" onClick={onBack} aria-label="Back">
+                  <Arrow dir="left" /> Back
+                </Button>
+              )}
+              {onNext && (
+                <Button size="sm" onClick={onNext} data-testid="scene-next">
+                  {nextLabel} <Arrow />
+                </Button>
+              )}
+            </span>
+          </div>
         </footer>
       )}
     </section>

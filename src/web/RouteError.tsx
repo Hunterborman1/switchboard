@@ -6,7 +6,8 @@
  */
 import { useEffect } from 'react';
 import { Link, isRouteErrorResponse, useRouteError } from 'react-router-dom';
-import { Backdrop, Display, Lede } from '../narrative/components';
+import { Display, Lede } from '../narrative/components';
+import { SceneTopBar } from '../narrative/Scene';
 
 const RELOAD_KEY = 'sl-chunk-reload';
 
@@ -36,7 +37,7 @@ export function RouteError({ variant = 'narrative' }: { variant?: 'narrative' | 
   }, [chunk, err]);
 
   const status = isRouteErrorResponse(err) ? err.status : null;
-  const title = chunk ? 'A newer version is ready.' : status === 404 ? 'No signal here.' : 'Something went wrong.';
+  const title = chunk ? 'A newer version is ready.' : status === 404 ? 'There’s nothing here.' : 'Something went wrong.';
   const body = chunk
     ? 'This page was built before the latest update. Reload to pick it up; nothing you did is lost.'
     : 'This view hit an error. Reloading usually clears it; your walkthrough progress is saved.';
@@ -51,7 +52,7 @@ export function RouteError({ variant = 'narrative' }: { variant?: 'narrative' | 
             <button type="button" className="sl-route-error__btn" onClick={() => window.location.reload()}>
               Reload
             </button>
-            <Link to="/">Back to the hub</Link>
+            <Link to="/">Back to the start</Link>
           </div>
         </div>
       </div>
@@ -60,18 +61,20 @@ export function RouteError({ variant = 'narrative' }: { variant?: 'narrative' | 
 
   return (
     <main className="sl-n n-page nf" role="alert" data-testid="route-error">
-      <Backdrop />
-      <div className="n-stack" style={{ justifyItems: 'center', maxWidth: 560 }}>
-        <span className="n-label">{chunk ? 'Update' : 'Error'}</span>
-        <Display size="md">{title}</Display>
-        <Lede>{body}</Lede>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button type="button" className="n-btn n-btn--primary" onClick={() => window.location.reload()}>
-            Reload
-          </button>
-          <Link className="n-btn" to="/">
-            Back to the hub
-          </Link>
+      <SceneTopBar />
+      <div className="nf__body">
+        <div className="nf__card">
+          <span className="n-label">{chunk ? 'Update available' : 'Error'}</span>
+          <Display size="md">{title}</Display>
+          <Lede>{body}</Lede>
+          <div className="nf__actions">
+            <button type="button" className="n-btn n-btn--primary" onClick={() => window.location.reload()}>
+              Reload
+            </button>
+            <Link className="n-btn" to="/">
+              Back to the start
+            </Link>
+          </div>
         </div>
       </div>
     </main>

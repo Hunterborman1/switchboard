@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Arrow, Backdrop, Button, Chip, KeyHint, Mark } from '../../narrative/components';
+import { Arrow, Button, Chip, KeyHint, Mark } from '../../narrative/components';
 import { BACKUPS, CHAPTERS, GROUPS, TOTAL_TARGET_SEC, chapterById, targetOffsetSec } from '../../tour/script/chapters';
 import { STEP_BY_ID, firstStepOf } from '../../tour/script/steps';
 import { NOTES, STEP_NOTES } from '../../tour/script/notes';
@@ -90,16 +90,18 @@ export function Presenter() {
   const driftTone = drift > 90_000 ? 'red' : drift > 30_000 ? 'amber' : 'green';
   const totalTone = elapsed > TOTAL_TARGET_SEC * 1000 ? 'red' : elapsed > TOTAL_TARGET_SEC * 900 ? 'amber' : 'green';
 
+  const where = ch.productIndex ? `Chapter ${ch.productIndex} of 8` : `Part ${CHAPTERS.findIndex((c) => c.id === ch.id) + 1} of ${CHAPTERS.length}`;
+  const beatNote = step?.kind === 'scene' && step.beats && step.beats > 1 ? ` · step ${(state?.beat ?? 0) + 1} of ${step.beats}` : '';
+
   return (
     <main className="sl-n n-page pv" data-testid="presenter">
-      <Backdrop grain={false} />
       <header className="pv__top">
-        <Mark sub="presenter view" />
+        <Mark sub="Presenter view" />
         <span className="pv__status" data-on={connected} data-testid="presenter-status">
           <i /> {connected ? 'Connected to the main window' : 'Waiting for the main window…'}
         </span>
-        <span className="n-row">
-          {state && <Chip tone="accent">{PATH_LABELS[state.path]} · explored {state.explored.length}/6</Chip>}
+        <span className="n-row" style={{ gap: 8 }}>
+          {state && <Chip>{PATH_LABELS[state.path]} · {state.explored.length} of 6 scenarios explored</Chip>}
           {!connected && (
             <Link className="n-btn n-btn--ghost n-btn--sm" to="/walkthrough/cold-open" target="_blank" rel="noopener">
               Open the main window <Arrow />
@@ -108,110 +110,112 @@ export function Presenter() {
         </span>
       </header>
 
-      <section className="pv__main">
-        <div className="pv__clocks">
-          <div className="n-card pv__clock" data-tone={totalTone}>
-            <span className="n-label">Total · target {fmtClock(TOTAL_TARGET_SEC * 1000)}</span>
-            <b data-testid="pv-total">{fmtClock(elapsed)}</b>
-          </div>
-          <div className="n-card pv__clock" data-tone={partTone}>
-            <span className="n-label">This part · target {fmtClock(targetMs)}</span>
-            <b>{fmtClock(inPart)}</b>
-          </div>
-          <div className="n-card pv__clock" data-tone={driftTone}>
-            <span className="n-label">Against schedule</span>
-            <b>{state?.startedAt ? sign(drift) : '—'}</b>
-          </div>
-        </div>
-        <div className="pv__now">
-          <div className="n-card n-card--accent pv__card">
-            <span className="n-label" style={{ color: 'var(--n-accent)' }}>
-              Now · {ch.productIndex ? `Chapter ${ch.productIndex}` : `Part ${String(ch.part).padStart(2, '0')}`} · {ch.title}
-              {step?.kind === 'scene' && step.beats && step.beats > 1 ? ` · beat ${(state?.beat ?? 0) + 1}/${step.beats}` : ''}
-            </span>
-            <h2 data-testid="pv-current">{step ? resolveCopy(step.title, ctx) : 'Not started'}</h2>
-            {step && <p className="n-body">{resolveCopy(step.body, ctx)}</p>}
-            <div className="pv__controls">
-              <Button variant="ghost" onClick={back} aria-label="Back">
-                <Arrow dir="left" /> Back
-              </Button>
-              <Button onClick={next} data-testid="pv-next">
-                Next <Arrow />
-              </Button>
-              <KeyHint keys={['←', '→']} label="also work here" />
+      <div className="pv__grid">
+        <section className="pv__main">
+          <div className="pv__clocks">
+            <div className="n-card pv__clock" data-tone={totalTone}>
+              <span className="n-label">Total, target {fmtClock(TOTAL_TARGET_SEC * 1000)}</span>
+              <b data-testid="pv-total">{fmtClock(elapsed)}</b>
+            </div>
+            <div className="n-card pv__clock" data-tone={partTone}>
+              <span className="n-label">This part, target {fmtClock(targetMs)}</span>
+              <b>{fmtClock(inPart)}</b>
+            </div>
+            <div className="n-card pv__clock" data-tone={driftTone}>
+              <span className="n-label">Against the plan</span>
+              <b>{state?.startedAt ? sign(drift) : '—'}</b>
             </div>
           </div>
-          <div className="n-card pv__card">
-            <span className="n-label">Up next</span>
-            <h3 data-testid="pv-next-title">{nextStep ? resolveCopy(nextStep.title, ctx) : step?.kind === 'scene' && (state?.beat ?? 0) < (step.beats ?? 1) - 1 ? 'Next beat of this scene' : '—'}</h3>
-            {nextStep && <span className="pv__mono">{chapterById(nextStep.chapter).title}</span>}
-            {step?.waitFor && step.waitFor !== 'next' && <Chip tone="amber">Waits for the viewer: {typeof step.waitFor === 'object' ? step.waitFor.hint ?? 'action' : ''}</Chip>}
+          <div className="pv__now">
+            <div className="n-card pv__card pv__card--now">
+              <span className="n-label">
+                Now · {where} · {ch.title}
+                {beatNote}
+              </span>
+              <h2 data-testid="pv-current">{step ? resolveCopy(step.title, ctx) : 'Not started'}</h2>
+              {step && <p className="n-body">{resolveCopy(step.body, ctx)}</p>}
+              <div className="pv__controls">
+                <Button variant="ghost" onClick={back} aria-label="Back">
+                  <Arrow dir="left" /> Back
+                </Button>
+                <Button onClick={next} data-testid="pv-next">
+                  Next <Arrow />
+                </Button>
+                <KeyHint keys={['←', '→']} label="also work here" />
+              </div>
+            </div>
+            <div className="n-card pv__card">
+              <span className="n-label">Up next</span>
+              <h3 data-testid="pv-next-title">{nextStep ? resolveCopy(nextStep.title, ctx) : step?.kind === 'scene' && (state?.beat ?? 0) < (step.beats ?? 1) - 1 ? 'The next step of this scene' : '—'}</h3>
+              {nextStep && <span className="pv__meta">{chapterById(nextStep.chapter).title}</span>}
+              {step?.waitFor && step.waitFor !== 'next' && <Chip tone="amber">Waits for the viewer: {typeof step.waitFor === 'object' ? step.waitFor.hint ?? 'an action' : ''}</Chip>}
+            </div>
           </div>
-        </div>
-        <div className="n-card pv__notes" data-testid="pv-notes">
-          <span className="n-label">Speaker notes · {notes?.time ?? fmtClock(targetMs)}</span>
-          {notes && (
-            <ul>
-              {notes.say.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-          )}
-          {notes?.click && notes.click.length > 0 && (
-            <>
-              <span className="n-label" style={{ display: 'block', marginTop: 16 }}>Click</span>
-              <ul className="pv__click">
-                {notes.click.map((s) => (
+          <div className="n-card pv__notes" data-testid="pv-notes">
+            <span className="n-label">Speaker notes · {notes?.time ?? fmtClock(targetMs)}</span>
+            {notes && (
+              <ul>
+                {notes.say.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
               </ul>
-            </>
-          )}
-          {stepNote && (
-            <>
-              <span className="n-label" style={{ display: 'block', marginTop: 16 }}>This step</span>
-              <p className="n-body" style={{ marginTop: 6, color: 'var(--n-mint)' }}>{stepNote}</p>
-            </>
-          )}
-        </div>
-      </section>
+            )}
+            {notes?.click && notes.click.length > 0 && (
+              <>
+                <span className="n-label" style={{ display: 'block', marginTop: 16 }}>What to click</span>
+                <ul className="pv__click">
+                  {notes.click.map((s) => (
+                    <li key={s}>{s}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {stepNote && (
+              <>
+                <span className="n-label" style={{ display: 'block', marginTop: 16 }}>This step</span>
+                <p className="n-body" style={{ marginTop: 6, color: 'var(--n-text)' }}>{stepNote}</p>
+              </>
+            )}
+          </div>
+        </section>
 
-      <aside className="pv__side">
-        <span className="n-label">Jump to</span>
-        <nav className="n-card pv__jump" aria-label="Jump list">
-          {GROUPS.map((g) => (
-            <div key={g.label}>
-              <span className="n-label">{g.label}</span>
-              <ol>
-                {g.ids.map((id) => {
-                  const c = chapterById(id);
-                  return (
-                    <li key={id}>
-                      <button data-current={c.id === ch.id} onClick={() => send({ type: 'goto', stepId: firstStepOf(id) })}>
-                        <span className="pv__mono">{c.productIndex ? `Ch ${c.productIndex}` : String(c.part).padStart(2, '0')}</span>
-                        <span>{c.title}</span>
-                        <span className="pv__mono">{fmtClock(c.targetSec * 1000)}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          ))}
-          <span className="n-label">Q&amp;A backups</span>
-          <ol>
-            {BACKUPS.map((b) => (
-              <li key={b.topic}>
-                <button onClick={() => send({ type: 'backup', topic: b.topic })}>
-                  <span className="pv__mono">Q&amp;A</span>
-                  <span>{b.title}</span>
-                  <span />
-                </button>
-              </li>
+        <aside className="pv__side">
+          <span className="n-label">Jump to</span>
+          <nav className="n-card pv__jump" aria-label="Jump list">
+            {GROUPS.map((g) => (
+              <div key={g.label}>
+                <span className="n-label">{g.label}</span>
+                <ol>
+                  {g.ids.map((id) => {
+                    const c = chapterById(id);
+                    return (
+                      <li key={id}>
+                        <button data-current={c.id === ch.id} onClick={() => send({ type: 'goto', stepId: firstStepOf(id) })}>
+                          <span className="pv__meta">{c.productIndex ? `Ch ${c.productIndex}` : CHAPTERS.findIndex((x) => x.id === id) + 1}</span>
+                          <span>{c.title}</span>
+                          <span className="pv__meta">{fmtClock(c.targetSec * 1000)}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
             ))}
-          </ol>
-        </nav>
-      </aside>
+            <span className="n-label">Questions</span>
+            <ol>
+              {BACKUPS.map((b) => (
+                <li key={b.topic}>
+                  <button onClick={() => send({ type: 'backup', topic: b.topic })}>
+                    <span className="pv__meta">Q&amp;A</span>
+                    <span>{b.title}</span>
+                    <span />
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+      </div>
     </main>
   );
 }

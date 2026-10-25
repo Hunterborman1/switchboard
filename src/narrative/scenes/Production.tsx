@@ -1,76 +1,71 @@
 /**
- * 15 · POC → production. The deployed Cloudflare pieces slide into their production slots.
+ * Part 15 · POC → production. A plain table: what each job runs on today, then (beat 1)
+ * what it runs on in production, filled in one row after another.
  */
 import { motion } from 'motion/react';
-import { Chip, Display, Lede, Reveal } from '../components';
+import { Check, SceneHead } from '../components';
 import { useCalm } from '../hooks';
-import { EASE } from '../motion';
+import { DUR, EASE } from '../motion';
 
 const ROWS = [
-  { concern: 'Web + API', poc: 'Worker (Hono) + Vite SPA', prod: 'Vercel · Next.js' },
-  { concern: 'LLM calls', poc: 'AI SDK via a router key', prod: 'Vercel AI SDK · direct BYOK' },
-  { concern: 'Orchestration', poc: 'Cloudflare Workflows', prod: 'Trigger.dev' },
-  { concern: 'State', poc: 'D1', prod: 'Neon Postgres' },
-  { concern: 'Similarity', poc: 'Workers AI embeddings + Vectorize', prod: 'pgvector on Neon' },
-  { concern: 'Analytics at volume', poc: 'D1 rollups', prod: 'ClickHouse + dbt marts' },
-  { concern: 'Ingestion', poc: 'Upload + file library', prod: 'dlt from the team’s recorder and CRM (e.g. Gong, Zoom, Salesforce, Zendesk)' },
-  { concern: 'Stateful workers', poc: '—', prod: 'Render · streaming speech-to-text' },
+  { concern: 'Website and API', poc: 'Cloudflare Worker and a React app', prod: 'Vercel with Next.js' },
+  { concern: 'AI model calls', poc: 'Vercel AI SDK through a shared router', prod: 'Vercel AI SDK with our own provider keys' },
+  { concern: 'Long-running jobs', poc: 'Cloudflare Workflows', prod: 'Trigger.dev' },
+  { concern: 'Database', poc: 'Cloudflare D1', prod: 'Neon Postgres' },
+  { concern: 'Finding similar feedback', poc: 'Cloudflare Vectorize', prod: 'pgvector on Neon' },
+  { concern: 'Reporting at scale', poc: 'Daily summaries in D1', prod: 'ClickHouse with dbt models' },
+  { concern: 'Bringing in calls', poc: 'Upload, or pick from a library', prod: 'Pulled from the recorder and CRM (for example Gong, Zoom, Salesforce, Zendesk)' },
+  { concern: 'Live transcription', poc: 'Not needed yet', prod: 'Render, streaming speech to text' },
 ];
+
+const CONSTANTS = ['Strict TypeScript everywhere', 'One set of data contracts for the API, the pipeline and the screens', 'Each AI provider bills directly; keys stay on the server'];
 
 export function Production({ beat }: { beat: number }) {
   const calm = useCalm();
   const moved = beat >= 1;
   return (
-    <div className="n-grid sc-prod">
-      <div className="n-col-12">
-        <Reveal className="n-stack">
-          <Reveal.Item>
-            <Display size="md" as="h2">
-              {moved ? <>Same design, <em>production</em> stack.</> : <>What you just used is <em>deployed.</em></>}
-            </Display>
-          </Reveal.Item>
-          <Reveal.Item>
-            <Lede>{moved ? 'Each piece maps one-to-one. The contracts, prompts, grounding and evals move unchanged; only the hosting changes.' : 'The POC runs entirely on Cloudflare: one Worker, a fast path per call with a durable Workflow fallback, D1, Vectorize and Workers AI embeddings.'}</Lede>
-          </Reveal.Item>
-        </Reveal>
-      </div>
-      <div className="n-col-12 sc-prod__table" role="table" aria-label="POC to production mapping">
+    <div className="sc-prod">
+      <SceneHead
+        k={moved ? 'b1' : 'b0'}
+        title={moved ? 'Same design, production stack.' : 'What you just used is deployed.'}
+        line={
+          moved
+            ? 'Each piece maps one to one. The prompts, the quote checks and the tests move unchanged; only the hosting changes.'
+            : 'The proof of concept runs entirely on Cloudflare: one Worker, a fast path for each call with a durable fallback, a database and a similarity index.'
+        }
+      />
+      <div className="sc-prod__table" role="table" aria-label="Proof of concept to production mapping">
         <div className="sc-prod__row sc-prod__row--head" role="row">
-          <span role="columnheader" className="n-label">Concern</span>
-          <span role="columnheader" className="n-label">POC · deployed</span>
-          <span role="columnheader" className="n-label" style={{ color: moved ? 'var(--n-accent)' : undefined }}>Production</span>
+          <span role="columnheader">Job</span>
+          <span role="columnheader">Today (deployed)</span>
+          <span role="columnheader">In production</span>
         </div>
         {ROWS.map((r, i) => (
           <div key={r.concern} className="sc-prod__row" role="row">
             <span role="cell" className="sc-prod__concern">{r.concern}</span>
+            <span role="cell" className="sc-prod__poc">{r.poc}</span>
             <span role="cell" className="sc-prod__cell">
               <motion.span
-                className="sc-prod__chip sc-prod__chip--poc"
+                className="sc-prod__prod"
                 initial={false}
-                animate={moved ? { x: calm ? 0 : 40, opacity: 0.32, filter: 'blur(0.5px)' } : { x: 0, opacity: 1, filter: 'blur(0px)' }}
-                transition={calm ? { duration: 0 } : { duration: 0.6, ease: EASE, delay: i * 0.07 }}
-              >
-                {r.poc}
-              </motion.span>
-            </span>
-            <span role="cell" className="sc-prod__cell">
-              <motion.span
-                className="sc-prod__chip sc-prod__chip--prod"
-                initial={false}
-                animate={moved ? { x: 0, opacity: 1, filter: 'blur(0px)' } : { x: calm ? 0 : -40, opacity: 0, filter: 'blur(6px)' }}
-                transition={calm ? { duration: 0 } : { duration: 0.6, ease: EASE, delay: 0.15 + i * 0.07 }}
+                animate={{ opacity: moved ? 1 : 0, x: moved || calm ? 0 : -4 }}
+                transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: moved && !calm ? i * 0.06 : 0 }}
               >
                 {r.prod}
               </motion.span>
+              {!moved && <span className="sc-prod__empty" aria-hidden="true" />}
             </span>
           </div>
         ))}
       </div>
-      <Reveal className="n-col-12 n-row" delay={0.2}>
-        <Reveal.Item><Chip tone="accent" dot>Strict TypeScript everywhere</Chip></Reveal.Item>
-        <Reveal.Item><Chip dot>Zod contracts shared by API, pipeline and UI</Chip></Reveal.Item>
-        <Reveal.Item><Chip dot>Provider-owned billing, keys server-only</Chip></Reveal.Item>
-      </Reveal>
+      <ul className="sc-prod__constants">
+        {CONSTANTS.map((c) => (
+          <li key={c}>
+            <span className="sc-prod__check"><Check /></span>
+            {c}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
