@@ -9,7 +9,7 @@ export type SignalEvent =
   | { name: 'picker.opened' }
   | { name: 'picker.closed' }
   | { name: 'file.selected'; fileId: string; tourPath: string | null; format?: string }
-  | { name: 'run.started'; runId: string; fileId: string | null; mode: 'live' | 'replay' }
+  | { name: 'run.started'; runId: string; fileId: string | null; mode: 'live' | 'replay'; /** An earlier run of the same file was opened instead of starting a new one. */ reused?: boolean }
   | { name: 'run.step'; runId: string; step: StepKey; status: string }
   | { name: 'run.finished'; runId: string; status: string }
   | { name: 'evidence.focused'; insightId: string; method: string }

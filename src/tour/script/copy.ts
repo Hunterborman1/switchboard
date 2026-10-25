@@ -3,7 +3,7 @@
  * data and degrades to honest generic copy when the data isn't there yet.
  */
 import type { RunDetail, StepKey, Evidence, Theme } from '../../shared/contracts';
-import { durationText, metricPct, pctText, rateOf, usdPrecise } from '../../shared/format';
+import { durationText, metricPct, pctText, rateOf, stepsCostUsd, usdPrecise } from '../../shared/format';
 import type { TourCtx, TourPath } from '../engine/types';
 
 export const plural =(n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -48,6 +48,9 @@ function allEvidence(run: RunDetail): Evidence[] {
 
 /** ch2.intro: "real execution" is only true live; a replay says what it is. */
 export function introCopy(ctx: TourCtx): string {
+  if (ctx.runReused) {
+    return 'This file was already run, so this is that earlier run, revealed again from its saved steps. Nothing new is executing; New call → Run again live starts a fresh one.';
+  }
   if (ctx.run?.run.mode === 'replay') {
     return 'This is a recorded real execution, replayed at real speed and labelled as a replay. Each step writes a row as it runs.';
   }
@@ -158,7 +161,7 @@ export function traceCopy(ctx: TourCtx): string {
   const mode = run.run.mode === 'replay' ? ' (replay of a recorded live run)' : '';
   // Same numbers as the Trace panel: wall time from run.durationMs, cost summed over the steps.
   const secs = run.run.durationMs ? durationText(run.run.durationMs) : 'a few seconds';
-  const cost = run.steps.reduce((a, s) => a + (s.costUsd ?? 0), 0);
+  const cost = stepsCostUsd(run.steps);
   return `This call: ${secs}, ${usdPrecise(cost)} of AI${mode}. Every step logs model, tokens, cost and time.`;
 }
 
@@ -312,4 +315,12 @@ export function opsTraceCopy(ctx: TourCtx): string {
   const base = 'Every span of your run: the steps, each model call, retries and deliveries.';
   const e = ctx.ops?.traceErrors;
   return e ? `${base} The red ones: ${e.charAt(0).toLowerCase()}${e.slice(1)}` : base;
+}
+
+/**
+ * ch4.rule revisit: the pricing rule already carries this workspace's override, so choosing the
+ * same owner again shows no Save. Read from the routing table the step spotlights.
+ */
+export function pricingRuleOverridden(_ctx?: TourCtx): boolean {
+  return typeof document !== 'undefined' && !!document.querySelector('[data-tour="routing.rule.pricing"][data-override="true"]');
 }

@@ -142,14 +142,14 @@ api.post('/runs', async (c) => {
   const t = c.get('trace');
   const r = await createRun(c.env, ws, b.data, t.rep, t.traceId, (p) => c.executionCtx.waitUntil(p));
   if (!r.ok) return fail(c, r.status, r.code, r.message);
-  t.rep.track({ sessionId: ws, actorId: actorOf(c), actorRole: c.env.ACCESS.via === 'owner' ? 'owner' : 'viewer', kind: 'run_created', path: null, props: { runId: r.runId, mode: r.mode, duplicate: r.duplicate, fileId: 'fileId' in b.data ? b.data.fileId : null }, durationMs: null });
+  t.rep.track({ sessionId: ws, actorId: actorOf(c), actorRole: c.env.ACCESS.via === 'owner' ? 'owner' : 'viewer', kind: 'run_created', path: null, props: { runId: r.runId, mode: r.mode, duplicate: r.duplicate, rerun: !!b.data.rerun, fileId: 'fileId' in b.data ? b.data.fileId : null }, durationMs: null });
   // (duplicates are logged as run.duplicate inside createRun)
   if (!r.duplicate) t.rep.log({
     level: r.mode === 'replay' && r.modeReason !== 'requested' ? 'warn' : 'info', component: 'api', event: r.mode === 'replay' ? 'run.replay' : 'run.started',
     message: r.mode === 'replay' ? `replaying the recorded run (${r.modeReason})` : 'live run started', traceId: t.traceId, spanId: null, runId: r.runId, workspaceId: ws, durationMs: null,
     fields: { mode: r.mode, modeReason: r.modeReason, duplicate: r.duplicate, fileId: 'fileId' in b.data ? b.data.fileId : null },
   });
-  const out: CreateRunResult = { runId: r.runId, mode: r.mode, modeReason: r.modeReason, duplicate: r.duplicate };
+  const out: CreateRunResult = { runId: r.runId, mode: r.mode, modeReason: r.modeReason, duplicate: r.duplicate, duplicateScope: r.duplicateScope ?? null, duplicateCreatedAt: r.duplicateCreatedAt ?? null };
   return ok(c, out, r.duplicate ? 200 : 201);
 });
 

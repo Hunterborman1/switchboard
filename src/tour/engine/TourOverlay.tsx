@@ -18,6 +18,7 @@ import { Spotlight } from './Spotlight';
 import { resolveTarget, useTour } from './TourProvider';
 import { findAnchor, useAnchor, useRect, type Box } from './useAnchor';
 import { floatPosition, GAP, HEADER, MARGIN, MAX_W, MIN_W, PILL_CLEAR, planPlacement, SIDE_MIN_W, sideOf } from './placement';
+import { awaitingUser } from './types';
 
 function useHighlights(ids: AnchorId[] | undefined): Box[] {
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -96,7 +97,11 @@ function OverlayInner() {
   const anchor = useAnchor(targets, step.anchorTimeoutMs ?? 6000, step.id);
   const liveBox = useRect(anchor.el, 8);
   const lastBox = useRef<Box | null>(null);
-  if (liveBox) lastBox.current = liveBox;
+  const lastBoxPath = useRef<string | null>(null);
+  if (liveBox) {
+    lastBox.current = liveBox;
+    lastBoxPath.current = ctx.pathname;
+  }
   // keep the hole where it was while the next anchor mounts, so it springs instead of blinking
   const [holdLast, setHoldLast] = useState(true);
   useEffect(() => {
@@ -104,7 +109,9 @@ function OverlayInner() {
     const t = window.setTimeout(() => setHoldLast(false), 650);
     return () => window.clearTimeout(t);
   }, [step.id]);
-  const box = liveBox ?? (anchor.status === 'waiting' && holdLast ? lastBox.current : null);
+  // Only on the same page: after a route change the old hole would frame a loading skeleton,
+  // so the spotlight waits (fully dimmed) for the new page's anchor, which mounts with its data.
+  const box = liveBox ?? (anchor.status === 'waiting' && holdLast && lastBoxPath.current === ctx.pathname ? lastBox.current : null);
   const highlights = useHighlights(step.highlight);
   const idle = useIdle(6000, step.id);
   const [shakeKey, setShakeKey] = useState(0);
@@ -128,7 +135,7 @@ function OverlayInner() {
   }, []);
   useEffect(() => () => roRef.current?.disconnect(), []);
 
-  const waitingOnUser = !!step.waitFor && step.waitFor !== 'next';
+  const waitingOnUser = awaitingUser(step, ctx);
   const interact = step.interact ?? (waitingOnUser ? 'target' : 'none');
   const missing = targets.length > 0 && anchor.status === 'missing';
 

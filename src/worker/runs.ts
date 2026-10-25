@@ -60,13 +60,23 @@ export function detectAccount(text: string, accounts: Account[]): Account | null
 }
 
 export type CreateResult =
-  | { ok: true; runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean }
+  | { ok: true; runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean; duplicateScope?: 'workspace' | 'seed'; duplicateCreatedAt?: string }
   | { ok: false; status: 400 | 404 | 409 | 429 | 503; code: string; message: string };
 
-type CreateInput = { fileId: string; mode: 'auto' | 'replay' } | { text: string; filename: string; mode: 'auto' };
+type CreateInput = ({ fileId: string; mode: 'auto' | 'replay' } | { text: string; filename: string; mode: 'auto' }) & { rerun?: boolean };
 
-async function existingRunBySha(env: Env, ws: string, sha: string): Promise<RunRow | null> {
-  const r = await env.DB.prepare("SELECT * FROM runs WHERE workspace_id IN (?, ?) AND sha256 = ? AND status != 'failed' ORDER BY CASE WHEN workspace_id = ? THEN 0 ELSE 1 END, created_at DESC LIMIT 1").bind(SEED, ws, sha, ws).first<Record<string, unknown>>();
+/**
+ * The newest earlier run of the same bytes, in this workspace first, then seeded history.
+ * With `rerun`, this workspace's own earlier runs of the same file (same library file id, or
+ * pasted text) are skipped, so the viewer gets a genuinely new run. Seeded history, and a
+ * different file with the same bytes (the duplicate re-upload test), still dedupe.
+ */
+async function existingRunBySha(env: Env, ws: string, sha: string, rerun: { fileId: string | null } | null): Promise<RunRow | null> {
+  const r = await env.DB.prepare(
+    "SELECT * FROM runs WHERE workspace_id IN (?1, ?2) AND sha256 = ?3 AND status != 'failed' AND NOT (?4 = 1 AND workspace_id = ?2 AND COALESCE(file_id, '') = ?5) ORDER BY CASE WHEN workspace_id = ?2 THEN 0 ELSE 1 END, created_at DESC LIMIT 1",
+  )
+    .bind(SEED, ws, sha, rerun ? 1 : 0, rerun?.fileId ?? '')
+    .first<Record<string, unknown>>();
   return r ? rowToRun(r) : null;
 }
 
@@ -115,13 +125,15 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
   // Idempotency: the same bytes were already processed (by this viewer, or in seeded history).
   // The duplicate check, prompt version and raw bytes are independent reads: one round trip.
   const [existing, promptVersion, libraryContent] = await Promise.all([
-    existingRunBySha(env, ws, sha),
+    existingRunBySha(env, ws, sha, input.rerun ? { fileId: file?.id ?? null } : null),
     getSetting<string>(env.DB, 'prompt_version', PROMPT_VERSION),
     file ? getRawContent(env.DB, sha) : Promise.resolve(null),
   ]);
   if (existing) {
-    rep.log({ level: 'info', component: 'api', event: 'run.duplicate', message: `duplicate upload of ${filename}; returning ${existing.id}`, traceId, spanId: null, runId: existing.id, workspaceId: ws, durationMs: null, fields: { sha256: sha } });
-    return { ok: true, runId: existing.id, mode: existing.mode, modeReason: existing.modeReason, duplicate: true };
+    // 'workspace' only when it's this viewer's own run of the same file: that's what a rerun bypasses.
+    const scope = existing.workspaceId === ws && (existing.fileId ?? null) === (file?.id ?? null) ? 'workspace' : 'seed';
+    rep.log({ level: 'info', component: 'api', event: 'run.duplicate', message: `duplicate upload of ${filename}; returning ${existing.id}`, traceId, spanId: null, runId: existing.id, workspaceId: ws, durationMs: null, fields: { sha256: sha, scope, rerun: !!input.rerun } });
+    return { ok: true, runId: existing.id, mode: existing.mode, modeReason: existing.modeReason, duplicate: true, duplicateScope: scope, duplicateCreatedAt: existing.createdAt };
   }
 
   const createdAt = new Date(now).toISOString();

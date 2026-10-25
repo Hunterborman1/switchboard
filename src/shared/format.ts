@@ -81,3 +81,34 @@ export function explainSpanErrors(spans: SpanLike[]): string | null {
   if (other) parts.push(`${other} other span${other === 1 ? '' : 's'} ended in an error`);
   return `${parts.join('; ')}.`;
 }
+
+// ------------------------------------------------------------------ run cost (one source)
+
+type CostStep = { key?: string; costUsd?: number | null; detail?: Record<string, unknown> | null };
+
+/**
+ * A run's AI cost, as shown on the Run view ("AI cost so far", the Trace total) and in the
+ * walkthrough's trace callout: the sum of the step rows. Deferred theme naming adds its cost to
+ * the theme step after the run is final, so callers keep polling while `themeNamingPending`.
+ */
+export function stepsCostUsd(steps: ReadonlyArray<CostStep>): number {
+  return steps.reduce((a, s) => a + (s.costUsd ?? 0), 0);
+}
+
+/** How long after a run finishes to keep polling for deferred theme naming before giving up. */
+export const THEME_NAMING_WAIT_MS = 20_000;
+
+/**
+ * True while the run is final but its deferred theme naming (a cost that lands on the theme step
+ * after the fact) has not been written yet, within THEME_NAMING_WAIT_MS of the run finishing.
+ */
+export function themeNamingPending(
+  d: { run: { status: string; finishedAt: string | null }; steps: ReadonlyArray<CostStep> } | null | undefined,
+  now: number = Date.now(),
+): boolean {
+  if (!d || !['completed', 'awaiting_review', 'failed'].includes(d.run.status)) return false;
+  const theme = d.steps.find((s) => s.key === 'theme');
+  if (!theme?.detail?.namingDeferred || theme.detail.namingMs != null) return false;
+  const finished = d.run.finishedAt ? Date.parse(d.run.finishedAt) : NaN;
+  return Number.isFinite(finished) && now - finished < THEME_NAMING_WAIT_MS;
+}

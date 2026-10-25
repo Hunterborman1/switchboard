@@ -904,6 +904,11 @@ export async function fixtureRequest<T>(method: string, fullPath: string, body: 
     const b = body as CreateRun;
     const file = 'fileId' in b ? fixtureFiles.find((f) => f.id === b.fileId) ?? null : null;
     if ('fileId' in b && !file) notFound();
+    // Same dedupe as the Worker: this workspace already ran the file → return that run unless `rerun`.
+    if (file && !b.rerun && b.mode !== 'replay') {
+      const prior = readRemembered().filter((x) => x.fileId === file.id).pop();
+      if (prior) return r({ runId: prior.id, mode: prior.mode, modeReason: null, duplicate: true, duplicateScope: 'workspace', duplicateCreatedAt: new Date(prior.t0).toISOString() });
+    }
     const mode: Run['mode'] = 'mode' in b && b.mode === 'replay' ? 'replay' : budget().liveEnabled ? 'live' : 'replay';
     const sim = planRun({ file, text: 'text' in b ? b.text : undefined, filename: 'filename' in b ? b.filename ?? 'pasted-notes.txt' : file?.filename ?? 'pasted-notes.txt', mode, t0: now, workspaceId: 'ws_dev_fixtures' });
     runs.set(sim.run.id, sim);

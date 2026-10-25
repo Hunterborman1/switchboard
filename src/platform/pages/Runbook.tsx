@@ -1,11 +1,13 @@
 /**
  * /ops/runbook: Signal Loop's runbook (docs/RUNBOOK.md), rendered in Agent Ops so the
- * agent page and every alert link to something real. A deliberately small Markdown subset:
+ * agent page and every alert link to something real. /ops/runbook/rfp-responder renders the
+ * simulated RFP agent's runbook (docs/runbooks/rfp-responder.md) the same way. A deliberately small Markdown subset:
  * headings, paragraphs, bullet and numbered lists, tables, **bold**, `code` and links.
  */
 import { useEffect, type ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import runbook from '../../../docs/RUNBOOK.md?raw';
+import rfpRunbook from '../../../docs/runbooks/rfp-responder.md?raw';
 import { PageHead, Panel } from '../ui/kit';
 
 /** "Model fallback" → "model-fallback" (the anchors alerts link to). */
@@ -15,10 +17,24 @@ export const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-/** Runbook links in the registry are repo paths; inside the app they open this page. */
+type RunbookDoc = { md: string; path: string; agentId: string; agentName: string };
+/** Every runbook the app can render, by slug. No runbook link leaves the app. */
+export const RUNBOOKS: Record<string, RunbookDoc> = {
+  'signal-loop': { md: runbook, path: 'docs/RUNBOOK.md', agentId: 'agt_signal_loop', agentName: 'Signal Loop' },
+  'rfp-responder': { md: rfpRunbook, path: 'docs/runbooks/rfp-responder.md · simulated', agentId: 'agt_rfp_responder', agentName: 'RFP & Security Questionnaire Responder' },
+};
+
+/**
+ * Runbook links in the registry are repo paths; inside the app they open this page.
+ * `docs/RUNBOOK.md#x` → /ops/runbook#x; `docs/runbooks/<slug>.md#x` (or an older seeded
+ * `…/runbooks/<slug>#x` wiki URL) → /ops/runbook/<slug>#x when that runbook exists.
+ */
 export function runbookTarget(url: string): { internal: true; to: string } | { internal: false; href: string } {
   const m = /^(?:\.?\/)?docs\/RUNBOOK\.md(#.*)?$/.exec(url) ?? /\/docs\/RUNBOOK\.md(#.*)?$/.exec(url);
-  return m ? { internal: true, to: `/ops/runbook${m[1] ?? ''}` } : { internal: false, href: url };
+  if (m) return { internal: true, to: `/ops/runbook${m[1] ?? ''}` };
+  const r = /(?:^|\/)runbooks\/([a-z0-9-]+)(?:\.md)?\/?(#.*)?$/.exec(url);
+  if (r && RUNBOOKS[r[1]!]) return { internal: true, to: `/ops/runbook/${r[1]}${r[2] ?? ''}` };
+  return { internal: false, href: url };
 }
 
 function inline(text: string): ReactNode[] {
@@ -132,7 +148,9 @@ function BlockView({ b }: { b: Block }) {
 }
 
 export function Runbook() {
-  const doc = blocks(runbook);
+  const { doc: slugParam } = useParams();
+  const source = RUNBOOKS[slugParam ?? 'signal-loop'] ?? RUNBOOKS['signal-loop']!;
+  const doc = blocks(source.md);
   const { hash } = useLocation();
   useEffect(() => {
     if (!hash) return;
@@ -143,10 +161,10 @@ export function Runbook() {
   return (
     <div className="ao-page" data-testid="runbook">
       <PageHead
-        eyebrow={<Link to="/ops/agents/agt_signal_loop">Signal Loop</Link>}
+        eyebrow={<Link to={`/ops/agents/${source.agentId}`}>{source.agentName}</Link>}
         title={doc.title}
         sub={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined}
-        meta={<span className="ao-mono">docs/RUNBOOK.md</span>}
+        meta={<span className="ao-mono">{source.path}</span>}
       />
       <div style={{ display: 'grid', gap: 16 }}>
         {doc.sections.map((s) => (

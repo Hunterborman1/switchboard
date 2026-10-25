@@ -90,6 +90,8 @@ export type TourCtx = {
   /** Format of the picked file (vtt, txt, md, eml, chat): the intro copy depends on it, not just the path. */
   fileFormat?: string | null;
   runId: string | null;
+  /** The run on screen is an earlier run of the same file that was reopened, not a new execution. */
+  runReused?: boolean;
   themeId: string | null;
   explored: TourPath[];
   counters: Counters;
@@ -111,8 +113,22 @@ export type Copy = string | ((ctx: TourCtx) => string);
 
 export type WaitFor =
   | 'next'
-  | { event: SignalEvent['name']; where?: (e: SignalEvent, ctx: TourCtx) => boolean; hint?: string }
+  | {
+      event: SignalEvent['name'];
+      where?: (e: SignalEvent, ctx: TourCtx) => boolean;
+      hint?: string;
+      /** Already done (e.g. on a revisit): show Continue instead of waiting for the event. */
+      satisfied?: (ctx: TourCtx) => boolean;
+    }
   | { predicate: (ctx: TourCtx) => boolean; hint?: string };
+
+/** The step is still waiting on the viewer (an event or predicate not yet met). */
+export function awaitingUser(step: { waitFor?: WaitFor }, ctx: TourCtx): boolean {
+  const w = step.waitFor;
+  if (!w || w === 'next') return false;
+  if ('event' in w && w.satisfied?.(ctx)) return false;
+  return true;
+}
 
 export type StepAction = {
   label: string;

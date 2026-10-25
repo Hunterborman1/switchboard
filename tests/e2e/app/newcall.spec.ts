@@ -51,4 +51,32 @@ test.describe('New call + file picker', () => {
     await expect(page.locator('[data-tour="new.run"]')).toBeDisabled();
     await expect(page.getByText(/at least 40 characters/)).toBeVisible();
   });
+
+  test('pressing Run on a file already run offers the earlier run or a fresh live run', async ({ page }) => {
+    await gotoApp(page, '/app/new');
+    const pick = async () => {
+      await page.click('[data-tour="new.upload"]');
+      await page.click('[data-tour="picker.recommended"]');
+      await page.click('[data-tour="picker.open"]');
+    };
+    await pick();
+    await page.click('[data-tour="new.run"]');
+    await expect(page).toHaveURL(/\/app\/runs\/run_/);
+    const first = page.url().match(/runs\/(run_[^?#/]+)/)![1]!;
+
+    await gotoApp(page, '/app/new');
+    await pick();
+    await page.click('[data-tour="new.run"]');
+    const choice = page.getByTestId('earlier-run-choice');
+    await expect(choice).toContainText('You already ran this file');
+    await choice.getByRole('button', { name: 'Open your earlier run' }).click();
+    await expect(page).toHaveURL(new RegExp(`runs/${first}[?]earlier=1`));
+    await expect(page.getByText('Your earlier run, replayed from its saved steps')).toBeVisible();
+    await expect(page.getByText(/Earlier (live )?run/).first()).toBeVisible();
+
+    await page.getByRole('button', { name: 'Run again live' }).click();
+    await expect(page).not.toHaveURL(new RegExp(first));
+    await expect(page).toHaveURL(/\/app\/runs\/run_/);
+    await expect(page.getByText('Your earlier run, replayed from its saved steps')).toHaveCount(0);
+  });
 });

@@ -24,7 +24,8 @@ import { FileGlyph, IconDrop, IconLibrary, IconPaste, IconShield, IconUpload } f
 import { bytes, dateTime, STEP_HELP } from '../lib/labels';
 import { MODEL_ROLE_SHORT } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
-import { usePrefersReducedMotion } from '../state';
+import { usePrefersReducedMotion, useTourState } from '../state';
+import { RelativeTime } from '../../uis/RelativeTime';
 import { track } from '../telemetry';
 import styles from './NewCall.module.css';
 
@@ -66,23 +67,52 @@ export default function NewCallPage() {
   const [dragOver, setDragOver] = useState(false);
   const [running, setRunning] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
+  /** This workspace already ran the chosen file: offer the earlier run or a fresh live run. */
+  const [earlier, setEarlier] = useState<{ runId: string; createdAt: string | null; mode: 'live' | 'replay' } | null>(null);
+  const { tourActive } = useTourState();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const textLen = text.trim().length;
   const textOk = textLen >= 40 && textLen <= 60_000;
 
-  const startRun = useCallback(async () => {
+  const openEarlier = useCallback(
+    (runId: string, mode: 'live' | 'replay') => {
+      emit({ name: 'run.started', runId, fileId: source === 'library' ? file?.id ?? null : null, mode, reused: true });
+      navigate(`/app/runs/${runId}?earlier=1`);
+    },
+    [source, file, navigate],
+  );
+
+  /**
+   * `rerun` asks for a genuinely new run even though this workspace already ran the same file
+   * (still budget- and rate-limited). The walkthrough always reruns, so a restarted tour runs live
+   * again instead of silently reopening the rehearsal.
+   */
+  const startRun = useCallback(async (rerun = false) => {
     setRunError(null);
+    setEarlier(null);
     setRunning(true);
     try {
+      const forced = rerun || tourActive;
       const body =
         source === 'library' && file
-          ? { fileId: file.id, mode: 'auto' as const }
-          : { text: text.trim(), filename: (filename || 'pasted-notes.txt').slice(0, 120), mode: 'auto' as const };
+          ? { fileId: file.id, mode: 'auto' as const, ...(forced ? { rerun: true } : {}) }
+          : { text: text.trim(), filename: (filename || 'pasted-notes.txt').slice(0, 120), mode: 'auto' as const, ...(forced ? { rerun: true } : {}) };
       const res = await api.createRun(body);
-      emit({ name: 'run.started', runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, mode: res.data.mode });
-      track('run_created', { runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, source, mode: res.data.mode, tourPath: file?.tourPath ?? null });
+      if (res.data.duplicate && res.data.duplicateScope === 'workspace' && !forced) {
+        setEarlier({ runId: res.data.runId, createdAt: res.data.duplicateCreatedAt ?? null, mode: res.data.mode });
+        setRunning(false);
+        return;
+      }
+      track('run_created', { runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, source, mode: res.data.mode, tourPath: file?.tourPath ?? null, rerun: forced, duplicate: !!res.data.duplicate });
       invalidate(keys.runs, keys.session);
+      // The page can stay mounted (cached route) and be shown again: never leave it busy.
+      setRunning(false);
+      if (res.data.duplicate) {
+        openEarlier(res.data.runId, res.data.mode);
+        return;
+      }
+      emit({ name: 'run.started', runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, mode: res.data.mode });
       navigate(`/app/runs/${res.data.runId}`);
     } catch (err) {
       const msg = err instanceof ApiError ? err.message : 'The run could not be started.';
@@ -90,7 +120,7 @@ export default function NewCallPage() {
       toast({ tone: 'danger', title: 'Run not started', body: msg });
       setRunning(false);
     }
-  }, [source, file, text, filename, navigate, toast]);
+  }, [source, file, text, filename, navigate, toast, tourActive, openEarlier]);
 
   const readFile = useCallback(
     (f: File) => {
@@ -165,7 +195,7 @@ export default function NewCallPage() {
                   aria-selected={source === o.key}
                   aria-controls={`panel-${o.key}`}
                   className={`${styles.source} ${source === o.key ? styles.sourceActive : ''}`}
-                  onClick={() => setSource(o.key)}
+                  onClick={() => { setSource(o.key); setEarlier(null); }}
                 >
                   <span className={styles.sourceIcon}>{o.icon}</span>
                   <span className={styles.sourceText}>
@@ -301,7 +331,7 @@ export default function NewCallPage() {
                   iconLeft="play"
                   loading={running}
                   disabled={!!runDisabledReason || running}
-                  onClick={() => void startRun()}
+                  onClick={() => void startRun(false)}
                   title={runDisabledReason ?? 'Start the 10-step pipeline'}
                   {...tourAnchor('new.run')}
                 >
@@ -309,6 +339,32 @@ export default function NewCallPage() {
                 </Button>
               </div>
             </div>
+            {earlier ? (
+              <div style={{ marginTop: 'var(--sp-3)' }} data-testid="earlier-run-choice">
+                <Banner
+                  tone="info"
+                  title="You already ran this file"
+                  action={
+                    <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+                      <Button variant="secondary" size="sm" onClick={() => openEarlier(earlier.runId, earlier.mode)}>
+                        Open your earlier run
+                      </Button>
+                      <Button variant="primary" size="sm" iconLeft="play" onClick={() => void startRun(true)}>
+                        Run again live
+                      </Button>
+                    </div>
+                  }
+                >
+                  Same bytes as your run <MonoId value={earlier.runId} keep={6} />
+                  {earlier.createdAt ? (
+                    <>
+                      {' '}from <RelativeTime value={earlier.createdAt} />
+                    </>
+                  ) : null}
+                  . Open it to see the recorded result, or run it again for a fresh live execution (counts against the shared budget).
+                </Banner>
+              </div>
+            ) : null}
             {runError ? (
               <div style={{ marginTop: 'var(--sp-3)' }}>
                 <Banner tone="danger" title="The run did not start">
@@ -348,6 +404,7 @@ export default function NewCallPage() {
         returnFocus={() => document.querySelector<HTMLElement>('[data-tour="new.upload"]')?.focus()}
         onOpenFile={(f) => {
           setFile(f);
+          setEarlier(null);
           setSource('library');
           setCached(keys.libraryFile(f.id), (prev) => prev);
           window.setTimeout(() => document.querySelector<HTMLElement>('[data-tour="new.run"]')?.focus(), 60);

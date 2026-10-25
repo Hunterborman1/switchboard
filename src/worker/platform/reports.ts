@@ -585,7 +585,12 @@ export async function logs(ctx: Ctx, f: LogFilter): Promise<LogsPage> {
   }
   if (f.component) add('component = ?', f.component);
   if (f.traceId) add('trace_id = ?', f.traceId);
-  if (f.runId) add('run_id = ?', f.runId);
+  // A run's lines: its own, plus the request-level lines on any trace it touched. The same set
+  // the trace view shows for that run, so a run's log count is one number everywhere.
+  if (f.runId) {
+    where.push('(run_id = ? OR trace_id IN (SELECT DISTINCT trace_id FROM logs WHERE run_id = ?))');
+    binds.push(f.runId, f.runId);
+  }
   if (f.source === 'live' || f.source === 'simulated') add('source = ?', f.source);
   if (f.q) {
     const like = `%${f.q.replace(/[%_]/g, '').slice(0, 80)}%`;
@@ -636,9 +641,13 @@ export async function trace(ctx: Ctx, traceId: string): Promise<TraceView> {
   let traceIds = [traceId];
   if (runIds.length) {
     const byRun = await all<LogRow>(db, `SELECT * FROM logs WHERE run_id IN (${runIds.map(() => '?').join(',')}) ORDER BY at, id LIMIT 800`, ...runIds);
-    const seen = new Set(direct.map((l) => l.id));
-    logsRows = [...direct, ...byRun.filter((l) => !seen.has(l.id))].sort((a, b) => a.at.localeCompare(b.at));
     traceIds = [...new Set([traceId, ...byRun.map((l) => l.trace_id)])].slice(0, 12);
+    // Request-level lines (no run id) on the run's other traces too: the same set as /logs?runId.
+    const others = traceIds.filter((t) => t !== traceId);
+    const otherTraces = others.length ? await all<LogRow>(db, `SELECT * FROM logs WHERE trace_id IN (${others.map(() => '?').join(',')}) AND run_id IS NULL ORDER BY at, id LIMIT 500`, ...others) : [];
+    const seen = new Set(direct.map((l) => l.id));
+    const extra = [...byRun, ...otherTraces].filter((l) => !seen.has(l.id) && (seen.add(l.id), true));
+    logsRows = [...direct, ...extra].sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id));
   }
   const spans = await all<SpanRow>(db, `SELECT * FROM spans WHERE trace_id IN (${traceIds.map(() => '?').join(',')}) ORDER BY start, span_id LIMIT 500`, ...traceIds);
   const outSpans: Span[] = spans.map((s) => ({ traceId: s.trace_id, spanId: s.span_id, parentId: s.parent_id, agentId: s.agent_id, name: s.name, start: s.start, durationMs: s.duration_ms, status: s.status, attrs: parseJson(s.attrs, {}) }));
