@@ -28,6 +28,10 @@ export interface Env {
   VECTOR_MODE?: string;
   /** Live runs slower than this fall back to replay (ms, default 25000). */
   LIVE_FALLBACK_MS?: string;
+  /** Fast-path budget before the durable Workflow takes over (ms, default 18000). */
+  FAST_PATH_BUDGET_MS?: string;
+  /** A pasted-text run with no progress for this long restarts on the Workflow (ms, default 40000). */
+  STALLED_AFTER_MS?: string;
 }
 
 /** Env as seen by API handlers: the gate's decision is attached. */

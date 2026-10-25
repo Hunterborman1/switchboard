@@ -141,7 +141,24 @@ export interface PipelineDeps {
   runStep?<T>(key: StepKey, fn: () => Promise<T>): Promise<T>;
   ids?(prefix: string): string;
   telemetry?: PipelineTelemetry;
+  /**
+   * Fast path only: start the extract call alongside the screen call (same redacted input).
+   * Extraction waits on screen's verdict before anything is used; a non-actionable verdict
+   * discards it (its cost is still attributed to the run).
+   */
+  speculativeExtract?: boolean;
+  /**
+   * Fast path only: name new candidate themes after the run instead of inside the theme step.
+   * Membership is unchanged; themes start with the deterministic fallback name and the sink
+   * renames them with one batched LLM call once the run has finished.
+   */
+  deferThemeNaming?(job: ThemeNamingJob): void;
 }
+
+export type ThemeNamingJob = {
+  runId: string;
+  clusters: { key: string; themeId: string; type: string; productArea: string; summaries: string[]; vector: number[]; workspaceId: string }[];
+};
 
 export type Taxonomy = {
   types: { key: string; label: string; definition: string; counterExamples: string[] }[];

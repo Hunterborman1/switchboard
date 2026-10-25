@@ -22,6 +22,7 @@ import { FilePicker } from '../components/FilePicker';
 import { AppPageHeader, Panel, WhyDisabled, useToast } from '../components/ui';
 import { FileGlyph, IconDrop, IconLibrary, IconPaste, IconShield, IconUpload } from '../components/icons';
 import { bytes, dateTime, STEP_HELP } from '../lib/labels';
+import { MODEL_ROLE_SHORT } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { usePrefersReducedMotion } from '../state';
 import { track } from '../telemetry';
@@ -283,7 +284,7 @@ export default function NewCallPage() {
                   {live ? (
                     <>
                       Runs <strong>live</strong> on the real models
-                      {session.data ? <span className="sl-subtle"> · {session.data.models.primary}</span> : null}
+                      {session.data ? <span className="sl-subtle"> · {MODEL_ROLE_SHORT.primary}, {MODEL_ROLE_SHORT.secondary}</span> : null}
                     </>
                   ) : (
                     <>

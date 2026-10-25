@@ -93,10 +93,13 @@ export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: str
     const choice = c.getByRole('button', { name: /^Continue/ });
     const skip = c.getByRole('button', { name: /^Skip/ });
     // dispatch directly: the callout may still be gliding after its target while the run view animates
-    if (await choice.isVisible().catch(() => false)) await choice.dispatchEvent('click');
-    else if (await skip.isVisible().catch(() => false)) await skip.dispatchEvent('click');
+    // Bounded: a button re-rendered between the check and the click must not hang the test until
+    // its timeout; the loop re-reads the step and tries again.
+    const click = (b: typeof choice) => b.dispatchEvent('click', undefined, { timeout: 4_000 }).then(() => true, () => false);
+    if (await choice.isVisible().catch(() => false)) await click(choice);
+    else if (await skip.isVisible().catch(() => false)) await click(skip);
     else await page.keyboard.press('ArrowRight');
-    await expect.poll(() => currentStep(page), { timeout: 15_000 }).not.toBe(step);
+    await expect.poll(() => currentStep(page), { timeout: 15_000 }).not.toBe(step).catch(() => {});
   }
   throw new Error(`never reached ${until} (seen: ${seen.join(' → ')})`);
 }

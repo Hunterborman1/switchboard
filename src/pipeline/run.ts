@@ -17,7 +17,7 @@ import { redactDocument, redactionSummary } from './redact.ts';
 import { routeInsight, type RouteDecision } from './route.ts';
 import { scoreInsight } from './score.ts';
 import { assignThemes, themeText } from './theme.ts';
-import { LlmFailure, type LlmMeta, type NewTheme, type PipelineDeps, type PipelineInput, type PipelineResult, type ThemeCandidate } from './types.ts';
+import { LlmFailure, type LlmMeta, type LlmRequest, type NewTheme, type PipelineDeps, type PipelineInput, type PipelineResult, type ThemeCandidate } from './types.ts';
 import { byteLength, randomId, round, sha256Hex } from './util.ts';
 
 type StepOutcome<T> = {
@@ -145,11 +145,20 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
 
     const transcript = renderTranscript(red.turns);
     const userBlock = conversationBlock({ filename: input.filename, format: parsed.format, account: input.account, now: t0, transcript });
+    const extractRequest = (): LlmRequest<ExtractionOutput> => ({
+      purpose: 'extract', system: extractSystemPrompt(input.promptVersion, input.taxonomy), prompt: userBlock, schema: ExtractionSchema, jsonSchema: EXTRACT_JSON_SCHEMA as unknown as Record<string, unknown>,
+      schemaName: 'insights', maxTokens: 2500, runId: input.runId, repair: repairExtraction,
+    });
+    type Settled = { ok: true; data: ExtractionOutput; meta: LlmMeta } | { ok: false; err: unknown };
+    const settleCall = (p: Promise<{ data: ExtractionOutput; meta: LlmMeta }>): Promise<Settled> => p.then((r) => ({ ok: true as const, ...r }), (err: unknown) => ({ ok: false as const, err }));
+    let speculative: Promise<Settled> | null = null;
 
     // 4 ---- screen
     const screen = await exec('screen', async () => {
       const heuristic = heuristicInjection(red.text);
       modelInputs.push(userBlock);
+      // Fast path: extraction starts now, in parallel; it is only used once screen has passed.
+      if (deps.speculativeExtract && !speculative) speculative = settleCall(deps.llm.structured(extractRequest()));
       let out: ScreenOutput;
       let meta: LlmMeta | null = null;
       let fallback = false;
@@ -190,26 +199,32 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
     // 5 ---- extract
     const skipExtract = !screen.actionable && (input.skipExtractWhenNotActionable ?? true);
     const extracted = await exec('extract', async () => {
-      if (skipExtract) return { out: { insights: [], model: null } as ExtractionOutput & { model: string | null }, status: 'skipped' as StepStatus, summary: 'Skipped: nothing actionable in this conversation', detail: { count: 0, skipped: true } };
-      const system = extractSystemPrompt(input.promptVersion, input.taxonomy);
-      modelInputs.push(userBlock);
-      try {
-        const r = await deps.llm.structured({
-          purpose: 'extract', system, prompt: userBlock, schema: ExtractionSchema, jsonSchema: EXTRACT_JSON_SCHEMA as unknown as Record<string, unknown>,
-          schemaName: 'insights', maxTokens: 2500, runId: input.runId, repair: repairExtraction,
-        });
-        const n = r.data.insights.length;
-        return {
-          out: { ...r.data, model: r.meta.model },
-          llm: r.meta,
-          status: r.meta.fellBack || r.meta.schemaRetried ? 'warned' : 'passed',
-          summary: n ? `${n} candidate insight${n === 1 ? '' : 's'} (${Object.entries(countBy(r.data.insights.map((i) => i.type))).map(([k, v]) => `${v} ${k.replace(/_/g, ' ')}`).join(', ')})` : 'No insights: the model found nothing actionable',
-          detail: { count: n, byType: countBy(r.data.insights.map((i) => i.type)), promptVersion: input.promptVersion, fellBack: r.meta.fellBack, schemaRetried: r.meta.schemaRetried, attempts: r.meta.attempts, errors: r.meta.errors },
-        };
-      } catch (err) {
-        if (err instanceof LlmFailure) await deps.store.recordDlq({ runId: input.runId, step: 'extract', error: err.message, payload: { errors: err.meta.errors, attempts: err.meta.attempts } });
-        throw err;
+      const spec = speculative;
+      speculative = null;
+      if (skipExtract) {
+        // A speculative call already ran: discard its output but keep its cost on the run.
+        const s = spec ? await spec : null;
+        const meta = s ? (s.ok ? s.meta : s.err instanceof LlmFailure ? s.err.meta : null) : null;
+        return { out: { insights: [], model: null } as ExtractionOutput & { model: string | null }, llm: meta, status: 'skipped' as StepStatus, summary: 'Skipped: nothing actionable in this conversation', detail: { count: 0, skipped: true, ...(spec ? { speculativeDiscarded: true } : {}) } };
       }
+      modelInputs.push(userBlock);
+      const s = spec ? await spec : await settleCall(deps.llm.structured(extractRequest()));
+      if (!s.ok) {
+        if (s.err instanceof LlmFailure) await deps.store.recordDlq({ runId: input.runId, step: 'extract', error: s.err.message, payload: { errors: s.err.meta.errors, attempts: s.err.meta.attempts } });
+        throw s.err;
+      }
+      const r = s;
+      const n = r.data.insights.length;
+      return {
+        out: { ...r.data, model: r.meta.model },
+        llm: r.meta,
+        status: r.meta.fellBack || r.meta.schemaRetried ? 'warned' : 'passed',
+        summary: n ? `${n} candidate insight${n === 1 ? '' : 's'} (${Object.entries(countBy(r.data.insights.map((i) => i.type))).map(([k, v]) => `${v} ${k.replace(/_/g, ' ')}`).join(', ')})` : 'No insights: the model found nothing actionable',
+        detail: {
+          count: n, byType: countBy(r.data.insights.map((i) => i.type)), promptVersion: input.promptVersion, fellBack: r.meta.fellBack, schemaRetried: r.meta.schemaRetried, attempts: r.meta.attempts, errors: r.meta.errors,
+          ...(spec ? { startedWithScreen: true, callMs: r.meta.ms } : {}),
+        },
+      };
     }) as ExtractionOutput & { model?: string | null };
     const extractModel = extracted.model ?? '';
 
@@ -271,18 +286,20 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
       } catch (err) {
         return { out: { insights: scored, newThemes: [] as NewTheme[] }, status: 'warned' as StepStatus, summary: `Embedding unavailable; themes not assigned (${errorMessage(err).slice(0, 80)})`, detail: { error: errorMessage(err) } };
       }
-      const cands = new Map<string, ThemeCandidate[]>();
-      for (let i = 0; i < live.length; i++) cands.set(live[i]!.id, await deps.vectorQuery(vectors[i]!, { topK: 5, workspaceId: input.workspaceId }));
+      // Nearest-neighbour lookups run in parallel (one per insight).
+      const found = await Promise.all(live.map((_, i) => deps.vectorQuery(vectors[i]!, { topK: 5, workspaceId: input.workspaceId })));
+      const cands = new Map<string, ThemeCandidate[]>(live.map((ins, i) => [ins.id, found[i]!]));
       const assignments = assignThemes(live.map((ins, i) => ({ key: ins.id, type: ins.type, productArea: ins.productArea, vector: vectors[i]!, summary: ins.summary })), cands);
-      // Name new candidate themes (one LLM call for all of them).
+      // Name new candidate themes (one LLM call for all of them), or hand that to the sink.
       const founders = assignments.filter((a) => a.newThemeKey === a.key);
       const names = new Map<string, { name: string; summary: string }>();
       let nameMeta: LlmMeta | null = null;
-      if (founders.length) {
-        const clusters = founders.map((f) => {
-          const members = assignments.filter((a) => a.newThemeKey === f.key).map((a) => live.find((x) => x.id === a.key)!);
-          return { key: f.key, type: members[0]!.type, productArea: members[0]!.productArea, summaries: members.map((m) => m.summary) };
-        });
+      const clusters = founders.map((f) => {
+        const members = assignments.filter((a) => a.newThemeKey === f.key).map((a) => live.find((x) => x.id === a.key)!);
+        return { key: f.key, type: members[0]!.type, productArea: members[0]!.productArea, summaries: members.map((m) => m.summary) };
+      });
+      const deferNaming = !!deps.deferThemeNaming && founders.length > 0;
+      if (founders.length && !deferNaming) {
         try {
           const r = await deps.llm.structured({
             purpose: 'theme_name', system: THEME_NAME_SYSTEM, prompt: themeNamePrompt(clusters), schema: ThemeNameOutput, jsonSchema: THEME_NAME_JSON_SCHEMA as unknown as Record<string, unknown>,
@@ -310,6 +327,7 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
       });
       if (newThemes.length) await deps.store.createThemes(newThemes);
       await deps.store.saveInsights(updated.filter((i) => i.themeId));
+      if (deferNaming) deps.deferThemeNaming!({ runId: input.runId, clusters: clusters.map((c, i) => ({ ...c, themeId: newThemes[i]!.id, vector: newThemes[i]!.vector, workspaceId: input.workspaceId })) });
       const joined = assignments.filter((a) => a.themeId).length;
       return {
         out: { insights: updated, newThemes },
@@ -317,6 +335,7 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
         summary: `${joined ? `Joined ${new Set(assignments.filter((a) => a.themeId).map((a) => a.themeId)).size} existing theme${joined === 1 ? '' : 's'}` : 'No existing theme matched'}${newThemes.length ? ` · started ${newThemes.length} candidate theme${newThemes.length === 1 ? '' : 's'}` : ''}`,
         detail: {
           embedModel,
+          ...(deferNaming ? { namingDeferred: true } : {}),
           assignments: assignments.map((a) => ({ insightId: a.key, themeId: themeIdFor(a), name: a.matchedName ?? newThemes.find((t) => t.id === themeIdFor(a))?.name ?? null, score: round(a.score, 3), created: a.newThemeKey === a.key })),
         },
       };

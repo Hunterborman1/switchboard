@@ -11,6 +11,7 @@ import { api } from '../api/client';
 import { invalidate, useSession } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel, useToast } from '../components/ui';
 import { money } from '../lib/labels';
+import { MODEL_ROLE_LABEL } from '../lib/models';
 import styles from './settings/Settings.module.css';
 
 function ThresholdBar() {
@@ -89,11 +90,11 @@ export default function SettingsPage() {
       </Callout>
 
       <div className="sl-grid-2">
-        <Panel title="Models" sub="Two models at most, picked for speed in the build's speed test." flush>
-          <SettingsRow label="Primary · fast tier" description="Screen, extract and theme naming." controlWidth="auto">
+        <Panel title="Model configuration" sub="The exact model ids this deployment calls. Two models at most, picked for speed in the build's speed test. Elsewhere in the app they appear by role." flush>
+          <SettingsRow label={MODEL_ROLE_LABEL.primary} description="Screen, extract and theme naming." controlWidth="auto">
             <MonoId value={s.models.primary} keep={40} />
           </SettingsRow>
-          <SettingsRow label="Secondary · independent judge" description="Fallback when the primary fails or is slow; a different model family judges evals." controlWidth="auto">
+          <SettingsRow label={MODEL_ROLE_LABEL.secondary} description="Fallback when the primary fails or is slow; a different model family judges evals." controlWidth="auto">
             <MonoId value={s.models.secondary} keep={40} />
           </SettingsRow>
           <SettingsRow label="Extraction prompt" description="Stored on every insight; evals run per version." controlWidth="auto" last>

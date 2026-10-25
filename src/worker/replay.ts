@@ -5,13 +5,15 @@
  * hidden from list endpoints until their moment arrives.
  */
 import type { Delivery, Insight, Notification, Run, RunDetail, RunStep } from '../shared/contracts.ts';
-import { revealSteps, replayTotalMs, stepDone, type ReplayRecording, type StoredStep } from '../pipeline/replay.ts';
+import { fastPathTiming, revealSteps, replayTotalMs, stepDone, type ReplayRecording, type StoredStep } from '../pipeline/replay.ts';
 import { randomId } from '../pipeline/util.ts';
 import { batch, deliveryStatement, getSteps, getTranscript, insightStatement, j, notificationStatement, publicRun, queryDeliveries, queryInsights, SEED, stepStatement, type RunRow } from './db.ts';
 
 export async function getRecording(db: D1Database, fileId: string): Promise<ReplayRecording | null> {
   const { results } = await db.prepare('SELECT data FROM replays WHERE file_id = ? ORDER BY part').bind(fileId).all<{ data: string }>();
-  return results.length ? j<ReplayRecording | null>(results.map((r) => r.data).join(''), null) : null;
+  const rec = results.length ? j<ReplayRecording | null>(results.map((r) => r.data).join(''), null) : null;
+  // Replays reveal at the live fast path's pace (screen ∥ extract, theme names after the run).
+  return rec ? fastPathTiming(rec) : null;
 }
 
 export async function hasRecording(db: D1Database, fileId: string): Promise<boolean> {

@@ -28,7 +28,7 @@ test('agent page: ownership + review, standard with evidence, SLOs, changelog', 
   const std = anchor(page, 'ops.agent.standard');
   await expect(std.locator('[data-check]')).toHaveCount(9);
   await expect(std.locator('[data-check="evals"]')).toContainText('promotion gate');
-  await expect(page.locator('[data-slo="run_success"]').first()).toHaveAttribute('data-status', 'at_risk');
+  await expect(page.locator('[data-slo="run_success"]').first()).toHaveAttribute('data-status', 'ok');
   await expect(page.getByText('Primary model 503s; automatic fallback')).toBeVisible();
   await expect(page.getByRole('link', { name: /Open Signal Loop/ }).first()).toBeVisible();
 });

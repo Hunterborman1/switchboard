@@ -26,6 +26,9 @@ export async function spentUsd(db: D1Database): Promise<number> {
 export async function liveFlag(env: Env): Promise<{ enabled: boolean; reason: string | null }> {
   try {
     const kv = await env.KV.get(KV_LIVE_FLAG);
+    // KV mirrors the D1 switch on every change; 'true' skips a D1 read on the run-creation path.
+    // (The reservation INSERT stays the atomic budget guard either way.)
+    if (kv === 'true') return { enabled: true, reason: null };
     if (kv === 'false') {
       const reason = await getSetting<string | null>(env.DB, 'live_disabled_reason', 'budget_reached');
       return { enabled: false, reason };

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { MetricStrip } from '../ui/Kpis';
 import { tourAnchor } from '../../tour/anchors';
+import { rewriteModelIds } from '../../shared/modelLabels';
 import type { AssumptionsView, OverviewX } from '../../worker/platform/types';
 import { putAssumptions, useApi } from '../lib/api';
 import * as f from '../lib/format';
@@ -182,8 +183,8 @@ export function Overview() {
                       {a.icon}
                     </span>
                     <span>
-                      <b>{a.title}</b>
-                      <small>{a.detail}</small>
+                      <b>{rewriteModelIds(a.title)}</b>
+                      <small>{rewriteModelIds(a.detail)}</small>
                     </span>
                     <span className="go">
                       Evidence <IconArrowRight size={12} />

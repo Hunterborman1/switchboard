@@ -57,7 +57,9 @@ test.describe('tour state, exits and access', () => {
     await page.keyboard.press('ArrowRight'); // last beat → ch1
     await expectStep(page, 'ch1.intro');
     // the event step focuses the real control; Enter activates it
-    await expect(page.locator('[data-tour="new.upload"]:focus, [data-tour="new.upload"] :focus')).toHaveCount(1, { timeout: 10_000 });
+    // (activeElement, not :focus: under parallel load the page may not hold OS-level focus, and
+    // keyboard input still goes to the active element)
+    await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest('[data-tour="new.upload"]')), { timeout: 10_000 }).toBe(true);
     await page.keyboard.press('Enter');
     await expectStep(page, 'ch1.pick');
     await page.keyboard.press('Escape'); // closes the product picker, not the tour

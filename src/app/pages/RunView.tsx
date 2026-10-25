@@ -24,6 +24,7 @@ import { AppPageHeader, ErrorState } from '../components/ui';
 import { Hint } from '../components/Hint';
 import { FileGlyph, IconReplay } from '../components/icons';
 import { money, ms, STEP_HELP } from '../lib/labels';
+import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { usePrefersReducedMotion, useTourState } from '../state';
 import { track } from '../telemetry';
@@ -54,6 +55,7 @@ export default function RunViewPage() {
   const world = useWorldIndex();
   const themes = useThemes();
   const reveal = useReveal(data, pace, reduced);
+  const { label: modelLabel, rewrite: rewriteModels } = useModelLabels();
 
   const [selected, setSelected] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ insightId: string; n: number } | null>(null);
@@ -164,7 +166,7 @@ export default function RunViewPage() {
 
   const terminal: StepperTerminal | null = reveal.finished
     ? run.status === 'failed'
-      ? { label: 'Failed', severity: 'red', at: run.finishedAt, message: failedStep?.summary ?? null }
+      ? { label: 'Failed', severity: 'red', at: run.finishedAt, message: failedStep?.summary ? rewriteModels(failedStep.summary) : null }
       : run.actionable === false
         ? { label: 'Nothing actionable', severity: 'neutral', at: run.finishedAt }
         : run.status === 'awaiting_review'
@@ -233,12 +235,12 @@ export default function RunViewPage() {
           <span className={styles.stepStripNum}>{STEP_KEYS.indexOf(detailKey) + 1}/10</span>
           <span className={styles.stepStripName}>{STEP_LABELS[detailKey]}</span>
           <span className={styles.stepStripText}>
-            {detailStep.display === 'pending' ? STEP_HELP[detailKey] : detailStep.display === 'running' ? `${STEP_HELP[detailKey]}` : detailStep.summary ?? STEP_HELP[detailKey]}
+            {detailStep.display === 'pending' ? STEP_HELP[detailKey] : detailStep.display === 'running' ? `${STEP_HELP[detailKey]}` : (detailStep.summary ? rewriteModels(detailStep.summary) : STEP_HELP[detailKey])}
           </span>
           <span className={styles.stepStripFacts}>
             {detailStep.display !== 'pending' && detailStep.display !== 'running' ? (
               <>
-                {detailStep.model ? <span className="sl-mono">{detailStep.model}</span> : <span className="sl-subtle">code, no model</span>}
+                {detailStep.model ? <span>{modelLabel(detailStep.model)}</span> : <span className="sl-subtle">code, no model</span>}
                 {detailStep.tokensIn != null ? <span className="sl-mono">{(detailStep.tokensIn + (detailStep.tokensOut ?? 0)).toLocaleString()} tok</span> : null}
                 {detailStep.costUsd != null ? <span className="sl-mono">{money(detailStep.costUsd, { precise: true })}</span> : null}
                 <span className="sl-mono">{ms(detailStep.durationMs)}</span>
@@ -269,7 +271,7 @@ export default function RunViewPage() {
 
       {failedStep && reveal.finished ? (
         <Banner tone="danger" title={`Run failed at ${STEP_LABELS[failedStep.key]}`} action={<Link to="/app/health">Dead-letter queue</Link>}>
-          {failedStep.summary ?? 'A step failed after its retries. A partial failure reads as a failure: nothing from this run was routed.'}
+          {(failedStep.summary ? rewriteModels(failedStep.summary) : null) ?? 'A step failed after its retries. A partial failure reads as a failure: nothing from this run was routed.'}
         </Banner>
       ) : null}
       {duplicateOf ? (
@@ -295,7 +297,7 @@ export default function RunViewPage() {
         </div>
 
         <div className={styles.right}>
-          <ScreenCard screen={screenDone ? data.screen : null} pending={!screenDone} model={screenStep?.model ?? null} ms={screenStep?.durationMs ?? null} />
+          <ScreenCard screen={screenDone ? data.screen : null} pending={!screenDone} model={modelLabel(screenStep?.model)} ms={screenStep?.durationMs ?? null} />
 
           <section className={styles.insights} aria-label="Insights" {...tourAnchor('run.insights')}>
             <header className={styles.insightsHead}>

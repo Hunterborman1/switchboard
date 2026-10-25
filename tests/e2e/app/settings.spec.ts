@@ -5,7 +5,13 @@ test.describe('Settings', () => {
   test('shows models, thresholds and the workspace note', async ({ page }) => {
     await gotoApp(page, '/app/settings');
     await expect(page.getByText('Viewer changes stay in your workspace')).toBeVisible();
-    await expect(page.getByText('Primary · fast tier')).toBeVisible();
+    // Settings is the one place the exact model ids are shown.
+    const models = page.locator('section.sl-panel', { has: page.getByRole('heading', { name: 'Model configuration' }) });
+    await expect(models).toBeVisible();
+    await expect(models.getByText('Primary · fast tier')).toBeVisible();
+    await expect(models.getByText('Secondary · fallback & judge')).toBeVisible();
+    await expect(models).toContainText('deepseek/deepseek-v4.1-flash');
+    await expect(models).toContainText('anthropic/claude-haiku-5.5');
     await expect(page.getByText('≥ 0.80').first()).toBeVisible();
     await expect(page.getByText('≥ 0.90').first()).toBeVisible();
   });

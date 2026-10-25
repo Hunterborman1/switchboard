@@ -8,6 +8,7 @@ import { chapterById, CHAPTERS, GROUPS, PRODUCT_CHAPTERS, BACKUPS } from '../scr
 import { firstStepOf } from '../script/steps';
 import { resolveCopy, useTour } from '../engine/TourProvider';
 import type { ChapterId } from '../engine/types';
+import { usePillSlot } from './pillSlot';
 
 export const fmtClock = (ms: number) => {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -329,17 +330,26 @@ export function Checkpoint() {
   );
 }
 
-/** Corner pill in free explore. */
+/**
+ * Start/resume pill in free explore. Docked into the product shell's chrome (sidebar
+ * footer on desktop, mobile launch bar on phones) so it never floats over page content.
+ */
 export function ResumePill() {
   const tour = useTour();
   const navigate = useNavigate();
-  if (tour.status === 'active') return null;
+  const slot = usePillSlot();
+  if (tour.status === 'active' || !slot) return null;
   const label = tour.status === 'idle' ? 'Start the walkthrough' : tour.finished ? 'Replay the walkthrough' : 'Resume walkthrough';
+  const placement = slot.el.dataset.tourPillSlot === 'bar' ? 'bar' : 'rail';
+  const shortLabel = tour.status === 'idle' ? 'Walkthrough' : tour.finished ? 'Replay tour' : 'Resume tour';
   return createPortal(
     <button
-      className="t-pill sl-n-portal"
+      type="button"
+      className={`t-pill t-pill--docked t-pill--${placement}${slot.compact ? ' is-compact' : ''} sl-n-portal`}
       data-tour-ui
       data-testid="resume-pill"
+      aria-label={label}
+      title={slot.compact ? label : undefined}
       onClick={() => {
         if (tour.status === 'idle') {
           tour.start();
@@ -350,8 +360,8 @@ export function ResumePill() {
       }}
     >
       <span className="t-pill__dot" aria-hidden="true" />
-      {label}
+      {slot.compact ? null : <span className="t-pill__label" aria-hidden="true">{placement === 'bar' ? shortLabel : label}</span>}
     </button>,
-    document.body,
+    slot.el,
   );
 }

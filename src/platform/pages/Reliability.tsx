@@ -8,7 +8,7 @@ import { acknowledgeAlert, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { Bars, Legend, Lines } from '../ui/charts';
 import { IconBook, IconTrace } from '../ui/icons';
-import { AlertPill, BudgetBar, Callout, Empty, ErrorState, PageHead, PageSkeleton, Panel, Seg, SloPill, SourceChip, Table } from '../ui/kit';
+import { AlertPill, BudgetBar, Callout, Empty, ErrorState, ModelName, PageHead, PageSkeleton, Panel, Seg, SloPill, SourceChip, Table } from '../ui/kit';
 
 function sloValue(s: Slo): string {
   if (s.actual == null) return '—';
@@ -267,7 +267,7 @@ export function Reliability() {
               rowKey={(r) => r.model}
               defaultSort={{ key: 'calls', dir: 'desc' }}
               cols={[
-                { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <span className="ao-mono">{r.model}</span> },
+                { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <ModelName id={r.model} names={agentId ? undefined : names} /> },
                 { key: 'calls', header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
                 { key: 'share', mobileHide: true, header: 'Share', num: true, sort: (r) => r.share, render: (r) => f.pct(r.share) },
                 { key: 'fail', mobileHide: true, header: 'Failures', num: true, sort: (r) => r.failures, render: (r) => <span style={{ color: r.failures ? 'var(--cn-danger-txt)' : undefined }}>{f.int(r.failures)}</span> },

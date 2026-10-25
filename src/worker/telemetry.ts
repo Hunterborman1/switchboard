@@ -84,6 +84,18 @@ export function pipelineTelemetry(t: TraceCtx): PipelineTelemetry & { stepSpan(k
         level: row.status === 'failed' ? 'error' : row.status === 'warned' ? 'warn' : 'info', component: 'workflow', event: 'step.finished', message: `step ${row.key} ${row.status}: ${row.summary ?? ''}`,
         traceId: t.traceId, spanId, runId: t.runId, workspaceId: t.workspaceId, durationMs: row.durationMs, fields: { step: row.key, status: row.status, model: row.model, costUsd: row.costUsd },
       });
+      // Feeds Agent Ops' grounding SLO: quotes checked against the transcript, per run.
+      if (row.key === 'ground' && row.status !== 'failed') {
+        const d = (row.detail ?? {}) as { quotes?: number; grounded?: number; droppedInsights?: number };
+        const total = Number(d.quotes ?? 0);
+        const passed = Number(d.grounded ?? 0);
+        const dropped = Number(d.droppedInsights ?? 0);
+        t.rep.log({
+          level: total > passed ? 'warn' : 'info', component: 'workflow', event: 'grounding.checked',
+          message: `${passed} of ${total} quotes grounded${dropped ? `; ${dropped} insight${dropped === 1 ? '' : 's'} dropped` : ''}`,
+          traceId: t.traceId, spanId, runId: t.runId, workspaceId: t.workspaceId, durationMs: row.durationMs, fields: { passed, total, dropped },
+        });
+      }
     },
     delivery(d) {
       deliveryTelemetry(t, d);

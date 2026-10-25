@@ -6,7 +6,7 @@ import type { CostReport, RegistryRow } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { Legend, Lines } from '../ui/charts';
-import { AgentDot, Callout, ErrorState, PageHead, PageSkeleton, Panel, SourceChip, Table } from '../ui/kit';
+import { AgentDot, Callout, ErrorState, ModelName, PageHead, PageSkeleton, Panel, SourceChip, Table } from '../ui/kit';
 
 function Meter({ value, max, warnAt = 0.8, label }: { value: number; max: number; warnAt?: number; label: string }) {
   const r = max > 0 ? value / max : 0;
@@ -30,6 +30,7 @@ export function Cost() {
   if (c.error && !c.data) return <div className="ao-page"><ErrorState message={c.error.message} onRetry={c.reload} /></div>;
   if (!c.data) return <PageSkeleton />;
   const d = c.data;
+  const agentNames = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.name]));
   const colors = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.profile.color]));
   const lb = d.liveBudget;
   const lr = lb.limitUsd > 0 ? lb.spentUsd / lb.limitUsd : 0;
@@ -163,7 +164,7 @@ export function Cost() {
         />
       </Panel>
 
-      <Panel title="Spend by model" source="mixed" sub="Model ids as reported on each AI call." flush>
+      <Panel title="Spend by model" source="mixed" sub="By model role, as reported on each AI call. Exact ids are in Signal Loop settings." flush>
         <Table
           caption="Spend by model"
           compact
@@ -171,7 +172,7 @@ export function Cost() {
           rowKey={(r) => r.model}
           defaultSort={{ key: 'cost', dir: 'desc' }}
           cols={[
-            { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <span className="ao-mono">{r.model}</span> },
+            { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <ModelName id={r.model} names={agentNames} /> },
             { key: 'calls', mobileHide: true, header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
             { key: 'cost', header: 'Cost', num: true, sort: (r) => r.costUsd, render: (r) => f.money(r.costUsd, { precise: r.costUsd < 1 }) },
             { key: 'per', header: 'Per call', num: true, sort: (r) => (r.calls ? r.costUsd / r.calls : 0), render: (r) => f.money(r.calls ? r.costUsd / r.calls : null, { precise: true }) },

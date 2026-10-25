@@ -160,3 +160,30 @@ function cosineSim(a: number[], b: number[]): number {
   for (let i = 0; i < a.length; i++) d += a[i]! * b[i]!;
   return d;
 }
+
+describe('fast-path options', () => {
+  it('speculative extract gives the same insights as the sequential core, and deferred naming hands over every new theme', async () => {
+    const seq = await runPipeline(input(), deps().d);
+    const jobs: { clusters: { themeId: string }[] }[] = [];
+    const { d } = deps({ speculativeExtract: true, deferThemeNaming: (j) => void jobs.push(j) });
+    const fast = await runPipeline(input(), d);
+    expect(fast.error).toBeNull();
+    expect(fast.insights.map((i) => [i.type, i.summary, i.gate])).toEqual(seq.insights.map((i) => [i.type, i.summary, i.gate]));
+    expect(fast.steps.find((s) => s.key === 'extract')!.detail).toMatchObject({ startedWithScreen: true });
+    const theme = fast.steps.find((s) => s.key === 'theme')!;
+    expect(theme.detail).toMatchObject({ namingDeferred: true });
+    expect(theme.model).toBeNull();
+    expect(jobs).toHaveLength(1);
+    expect(jobs[0]!.clusters.map((c) => c.themeId).sort()).toEqual(fast.newThemes.map((t) => t.id).sort());
+  });
+
+  it('a non-actionable verdict discards the speculative extraction but keeps its cost on the run', async () => {
+    const { d } = deps({ speculativeExtract: true });
+    const r = await runPipeline(input({ fileId: null, filename: 'friendly.md', content: fixtureFile('friendly.md'), account: account('acct_sunpeak') }), d);
+    const ex = r.steps.find((s) => s.key === 'extract')!;
+    expect(ex.status).toBe('skipped');
+    expect(ex.detail).toMatchObject({ speculativeDiscarded: true });
+    expect(r.insights).toHaveLength(0);
+    expect(ex.costUsd ?? 0).toBeGreaterThan(0);
+  });
+});

@@ -1,5 +1,5 @@
 /**
- * Build, check, migrate, sync secrets, deploy.
+ * Build, check, migrate both D1 databases (Signal Loop + Agent Ops), sync secrets, deploy.
  *   node scripts/deploy.ts            full deploy
  *   node scripts/deploy.ts --no-secrets
  */
@@ -20,6 +20,8 @@ function run(cmd: string, args: string[], input?: string): void {
 run('npm', ['run', 'build']);
 run('npm', ['run', 'typecheck']);
 run('npx', ['wrangler', 'd1', 'migrations', 'apply', 'invoca-signal-loop', '--remote']);
+// Agent Ops has its own database (PLATFORM_DB, migrations-platform/).
+run('npx', ['wrangler', 'd1', 'migrations', 'apply', 'invoca-agent-ops', '--remote']);
 
 if (!process.argv.includes('--no-secrets')) {
   const secrets: Record<string, string | undefined> = {

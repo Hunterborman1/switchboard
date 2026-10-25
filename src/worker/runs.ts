@@ -10,7 +10,8 @@ import { effectiveRules } from '../pipeline/route.ts';
 import type { Taxonomy } from '../pipeline/types.ts';
 import { byteLength, randomId, sha256Hex } from '../pipeline/util.ts';
 import { reserve, settle } from './budget.ts';
-import { getAccounts, getLibraryFile, getPeople, getRawContent, getRules, getRunRow, getSetting, insertRun, nowIso, SEED, updateRunRow, type RunRow } from './db.ts';
+import { getAccounts, getLibraryFile, getPeople, getRawContent, getRules, getRunRow, getSetting, insertRun, insertRunStatement, nowIso, rowToRun, SEED, updateRunRow, type RunRow } from './db.ts';
+import { fastPath, type PipelineParams } from './execute.ts';
 import type { Env } from './env.ts';
 import { getRecording, materializeReplay, replayRunFields } from './replay.ts';
 import type { Reporter } from './platform/sdk.ts';
@@ -65,8 +66,8 @@ export type CreateResult =
 type CreateInput = { fileId: string; mode: 'auto' | 'replay' } | { text: string; filename: string; mode: 'auto' };
 
 async function existingRunBySha(env: Env, ws: string, sha: string): Promise<RunRow | null> {
-  const r = await env.DB.prepare("SELECT id FROM runs WHERE workspace_id IN (?, ?) AND sha256 = ? AND status != 'failed' ORDER BY CASE WHEN workspace_id = ? THEN 0 ELSE 1 END, created_at DESC LIMIT 1").bind(SEED, ws, sha, ws).first<{ id: string }>();
-  return r ? getRunRow(env.DB, r.id) : null;
+  const r = await env.DB.prepare("SELECT * FROM runs WHERE workspace_id IN (?, ?) AND sha256 = ? AND status != 'failed' ORDER BY CASE WHEN workspace_id = ? THEN 0 ELSE 1 END, created_at DESC LIMIT 1").bind(SEED, ws, sha, ws).first<Record<string, unknown>>();
+  return r ? rowToRun(r) : null;
 }
 
 function baseRun(o: { id: string; ws: string; file: LibraryFile | null; filename: string; accountId: string | null; sha: string; promptVersion: string; mode: 'live' | 'replay'; modeReason: string | null; createdAt: string }): RunRow {
@@ -87,7 +88,11 @@ export async function startReplay(env: Env, run: RunRow, fileId: string, reason:
   return true;
 }
 
-export async function createRun(env: Env, ws: string, input: CreateInput, rep: Reporter, traceId: string): Promise<CreateResult> {
+/**
+ * Create a run. Live runs start executing immediately on the fast path inside `waitUntil`
+ * (see execute.ts); the durable Workflow is only created if the fast path hands off.
+ */
+export async function createRun(env: Env, ws: string, input: CreateInput, rep: Reporter, traceId: string, waitUntil: (p: Promise<unknown>) => void = () => {}): Promise<CreateResult> {
   const runId = randomId('run');
   const now = Date.now();
   let file: (LibraryFile & { sha256: string }) | null = null;
@@ -108,13 +113,17 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
   }
 
   // Idempotency: the same bytes were already processed (by this viewer, or in seeded history).
-  const existing = await existingRunBySha(env, ws, sha);
+  // The duplicate check, prompt version and raw bytes are independent reads: one round trip.
+  const [existing, promptVersion, libraryContent] = await Promise.all([
+    existingRunBySha(env, ws, sha),
+    getSetting<string>(env.DB, 'prompt_version', PROMPT_VERSION),
+    file ? getRawContent(env.DB, sha) : Promise.resolve(null),
+  ]);
   if (existing) {
     rep.log({ level: 'info', component: 'api', event: 'run.duplicate', message: `duplicate upload of ${filename}; returning ${existing.id}`, traceId, spanId: null, runId: existing.id, workspaceId: ws, durationMs: null, fields: { sha256: sha } });
     return { ok: true, runId: existing.id, mode: existing.mode, modeReason: existing.modeReason, duplicate: true };
   }
 
-  const promptVersion = await getSetting<string>(env.DB, 'prompt_version', PROMPT_VERSION);
   const createdAt = new Date(now).toISOString();
   const base = baseRun({ id: runId, ws, file, filename, accountId, sha, promptVersion, mode: 'live', modeReason: null, createdAt });
 
@@ -139,24 +148,13 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
     return { ok: false, status: 503, code: 'live_unavailable', message: 'Live AI is not configured on this deployment' };
   }
 
-  // Live: store the raw bytes, insert the run, start the Workflow.
-  const content = file ? (await getRawContent(env.DB, sha)) ?? '' : (input as { text: string }).text;
-  if (!file) await env.DB.prepare('INSERT OR IGNORE INTO raw_files (sha256, filename, size_bytes, content, created_at) VALUES (?,?,?,?,?)').bind(sha, filename, byteLength(content), content, nowIso()).run();
-  await insertRun(env.DB, base);
-  try {
-    const instance = await env.PIPELINE.create({ id: runId, params: { runId, workspaceId: ws } });
-    await updateRunRow(env.DB, runId, { workflowId: instance.id });
-    return { ok: true, runId, mode: 'live', modeReason: null, duplicate: false };
-  } catch (err) {
-    rep.log({ level: 'error', component: 'workflow', event: 'workflow.create_failed', message: String(err).slice(0, 200), traceId, spanId: null, runId, workspaceId: ws, durationMs: null, fields: {} });
-    await settle(env, runId);
-    if (file) {
-      await env.DB.prepare('DELETE FROM runs WHERE id = ?').bind(runId).run();
-      if (await startReplay(env, base, file.id, 'live_failed', now)) return { ok: true, runId, mode: 'replay', modeReason: 'live_failed', duplicate: false };
-    }
-    await updateRunRow(env.DB, runId, { status: 'failed', error: 'could not start the pipeline' });
-    return { ok: false, status: 503, code: 'live_unavailable', message: 'The pipeline could not start. Try again shortly.' };
-  }
+  // Live: store the raw bytes (pasted text), insert the run, start the fast path.
+  const content = file ? libraryContent ?? '' : (input as { text: string }).text;
+  const writes = [insertRunStatement(env.DB, base)];
+  if (!file) writes.unshift(env.DB.prepare('INSERT OR IGNORE INTO raw_files (sha256, filename, size_bytes, content, created_at) VALUES (?,?,?,?,?)').bind(sha, filename, byteLength(content), content, nowIso()));
+  await env.DB.batch(writes);
+  waitUntil(fastPath(env, runId, ws, { run: base, content }));
+  return { ok: true, runId, mode: 'live', modeReason: null, duplicate: false };
 }
 
 /** Remove everything a (failed or slow) live run wrote, keeping the run row and its ledger. */
@@ -183,7 +181,8 @@ async function clearRunOutputs(db: D1Database, runId: string): Promise<void> {
  * or has not finished within ~25s is converted in place into a replay of its recording.
  */
 export async function maybeFallback(env: Env, run: RunRow, rep: Reporter, traceId: string, now = Date.now()): Promise<RunRow> {
-  if (run.mode !== 'live' || !run.fileId) return run;
+  if (run.mode !== 'live') return run;
+  if (!run.fileId) return recoverStalled(env, run, rep, traceId, now);
   const limit = Number(env.LIVE_FALLBACK_MS ?? '') || LIVE_FALLBACK_AFTER_MS;
   const slow = (run.status === 'queued' || run.status === 'running') && now - Date.parse(run.createdAt) > limit;
   if (!slow && run.status !== 'failed') return run;
@@ -207,4 +206,34 @@ export async function maybeFallback(env: Env, run: RunRow, rep: Reporter, traceI
   await updateRunRow(env.DB, run.id, { ...f, createdAt: updated.createdAt, screen: rec.screen, replayOf: run.fileId, error: null });
   await materializeReplay(env.DB, updated, rec, now);
   return updated;
+}
+
+/** A fast path that has made no progress for this long is presumed dead (waitUntil ends at 30s). */
+export const STALLED_AFTER_MS = 40_000;
+
+/**
+ * Pasted-text runs have no recording to fall back to. If the fast path died without finishing
+ * or handing off (no workflowId), hand the run to the durable Workflow from the first step.
+ */
+export async function recoverStalled(env: Env, run: RunRow, rep: Reporter, traceId: string, now = Date.now()): Promise<RunRow> {
+  if (run.workflowId || (run.status !== 'queued' && run.status !== 'running')) return run;
+  const stalledAfter = Number(env.STALLED_AFTER_MS ?? '') || STALLED_AFTER_MS;
+  if (now - Date.parse(run.createdAt) < stalledAfter) return run;
+  const last = await env.DB.prepare('SELECT MAX(COALESCE(finished_at, started_at)) AS at FROM run_steps WHERE run_id = ?').bind(run.id).first<{ at: string | null }>();
+  if (last?.at && now - Date.parse(last.at) < stalledAfter) return run;
+  const claimed = await env.DB.prepare("UPDATE runs SET workflow_id = 'pending' WHERE id = ? AND mode = 'live' AND workflow_id IS NULL").bind(run.id).run();
+  if ((claimed.meta.changes ?? 0) !== 1) return (await getRunRow(env.DB, run.id)) ?? run;
+  rep.log({ level: 'warn', component: 'workflow', event: 'run.handoff', message: 'fast path stalled; restarting the run on the durable workflow', traceId, spanId: null, runId: run.id, workspaceId: run.workspaceId, durationMs: now - Date.parse(run.createdAt), fields: { at: 'ingest', reason: 'stalled', completedSteps: 0, resumed: false } });
+  await clearRunOutputs(env.DB, run.id);
+  try {
+    const params: PipelineParams = { runId: run.id, workspaceId: run.workspaceId, handoff: { at: 'ingest', reason: 'stalled', error: null } };
+    const instance = await env.PIPELINE.create({ id: run.id + "-r", params });
+    await updateRunRow(env.DB, run.id, { workflowId: instance.id, status: 'queued' });
+    return { ...run, workflowId: instance.id, status: 'queued' };
+  } catch (err) {
+    await updateRunRow(env.DB, run.id, { status: 'failed', error: 'the pipeline stalled and could not be restarted' });
+    await settle(env, run.id);
+    rep.log({ level: 'error', component: 'workflow', event: 'workflow.create_failed', message: String(err).slice(0, 200), traceId, spanId: null, runId: run.id, workspaceId: run.workspaceId, durationMs: null, fields: {} });
+    return (await getRunRow(env.DB, run.id)) ?? run;
+  }
 }
