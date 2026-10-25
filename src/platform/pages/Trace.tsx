@@ -228,8 +228,8 @@ export function Trace() {
               <tr>
                 <th scope="col">+ms</th>
                 <th scope="col">Level</th>
-                <th scope="col">Component</th>
-                <th scope="col">Event</th>
+                <th scope="col" className="ao-hide-sm">Component</th>
+                <th scope="col" className="ao-hide-sm">Event</th>
                 <th scope="col">Message</th>
                 <th scope="col" className="num">
                   Duration
@@ -239,12 +239,12 @@ export function Trace() {
             <tbody>
               {d.logs.map((l) => (
                 <tr key={l.id} className={`lvl-${l.level}${sel && l.spanId === sel ? ' is-selected' : ''}`}>
-                  <td className="ao-mono">{built.rows.length ? f.ms(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
+                  <td className="ao-mono" style={{ whiteSpace: 'nowrap' }}>{built.rows.length ? f.ms(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
                   <td>
                     <span className={`ao-lv ${l.level}`}>{l.level}</span>
                   </td>
-                  <td>{l.component}</td>
-                  <td className="ao-mono">{l.event}</td>
+                  <td className="ao-hide-sm">{l.component}</td>
+                  <td className="ao-mono ao-hide-sm">{l.event}</td>
                   <td className="msg">
                     <span title={l.message}>{l.message}</span>
                   </td>

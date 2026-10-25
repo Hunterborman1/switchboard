@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import type { Alert, Slo } from '../../shared/platform-contracts';
+import { SIGNAL_LOOP_AGENT_ID, type Alert, type Slo } from '../../shared/platform-contracts';
 import { tourAnchor } from '../../tour/anchors';
 import { useTimezone } from '../../uis/TimezoneContext';
 import type { ObservabilityX, RegistryRow } from '../../worker/platform/types';
@@ -136,8 +136,10 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
 
 export function Reliability() {
   const [params, setParams] = useSearchParams();
-  const agentId = params.get('agentId') ?? '';
-  const range = params.get('range') === '6w' ? '6w' : '7d';
+  // Signal Loop (the real agent) is the default lens; "all" compares every agent.
+  const agentParam = params.get('agentId') ?? SIGNAL_LOOP_AGENT_ID;
+  const agentId = agentParam === 'all' ? '' : agentParam;
+  const range = params.get('range') === '7d' ? '7d' : '6w';
   const obs = useApi<ObservabilityX>(`/observability?range=${range}${agentId ? `&agentId=${encodeURIComponent(agentId)}` : ''}`, { pollMs: 30_000 });
   const reg = useApi<RegistryRow[]>('/agents');
   const { timezone } = useTimezone();
@@ -179,15 +181,15 @@ export function Reliability() {
         meta={<span>Data as of {f.ago(obs.dataAsOf)} · SLO window 28 days</span>}
         actions={
           <>
-            <select className="ao-select" aria-label="Agent" value={agentId} onChange={(e) => set('agentId', e.target.value)}>
-              <option value="">All agents</option>
+            <select className="ao-select" aria-label="Agent" value={agentId || 'all'} onChange={(e) => set('agentId', e.target.value === SIGNAL_LOOP_AGENT_ID ? '' : e.target.value)}>
+              <option value="all">All agents</option>
               {(reg.data ?? []).map((r) => (
                 <option key={r.id} value={r.id}>
                   {r.name}
                 </option>
               ))}
             </select>
-            <Seg label="Chart window" value={range} onChange={(v) => set('range', v === '7d' ? '' : v)} options={[{ value: '7d', label: '7 days · hourly' }, { value: '6w', label: '6 weeks · daily' }]} />
+            <Seg label="Chart window" value={range} onChange={(v) => set('range', v === '6w' ? '' : v)} options={[{ value: '6w', label: '6 weeks · daily' }, { value: '7d', label: '7 days · hourly' }]} />
           </>
         }
       />
@@ -255,7 +257,7 @@ export function Reliability() {
         <AlertList alerts={d.alerts} names={agentId ? undefined : names} />
       </Panel>
 
-      <div className="ao-grid g-2">
+      <div className="ao-grid g-2w">
         <Panel title="Models" source={src} sub={`AI calls in the ${range === '6w' ? '6-week' : '7-day'} window.`} flush>
           {d.models.length ? (
             <Table
@@ -267,9 +269,9 @@ export function Reliability() {
               cols={[
                 { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <span className="ao-mono">{r.model}</span> },
                 { key: 'calls', header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
-                { key: 'share', header: 'Share', num: true, sort: (r) => r.share, render: (r) => f.pct(r.share) },
-                { key: 'fail', header: 'Failures', num: true, sort: (r) => r.failures, render: (r) => <span style={{ color: r.failures ? 'var(--cn-danger-txt)' : undefined }}>{f.int(r.failures)}</span> },
-                { key: 'p50', header: 'p50', num: true, sort: (r) => r.p50Ms, render: (r) => f.ms(r.p50Ms) },
+                { key: 'share', mobileHide: true, header: 'Share', num: true, sort: (r) => r.share, render: (r) => f.pct(r.share) },
+                { key: 'fail', mobileHide: true, header: 'Failures', num: true, sort: (r) => r.failures, render: (r) => <span style={{ color: r.failures ? 'var(--cn-danger-txt)' : undefined }}>{f.int(r.failures)}</span> },
+                { key: 'p50', mobileHide: true, header: 'p50', num: true, sort: (r) => r.p50Ms, render: (r) => f.ms(r.p50Ms) },
                 { key: 'cost', header: 'Cost', num: true, sort: (r) => r.costUsd, render: (r) => f.money(r.costUsd) },
               ]}
             />

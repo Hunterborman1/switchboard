@@ -198,7 +198,7 @@ export function Usage() {
       <LivePanel data={d} />
 
       <MetricStrip
-        minItemWidth={170}
+        minItemWidth={150}
         label="Usage totals"
         items={[
           { label: 'People', value: f.int(d.totals.users), sub: 'distinct users in the period' },

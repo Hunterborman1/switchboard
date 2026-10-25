@@ -1,0 +1,2486 @@
+[
+ {
+  "fileId": "file_prairielink_qbr",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3362,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "During the outage the voice agent passed calls to care with no notes.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Number swap stopped working on order pages after the move to the React app.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants the weekly source report delivered into Google Sheets automatically.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_082f6ebda1234783",
+    "type": "bug",
+    "summary": "AI voice agent transfers to live reps arrive with no caller context or notes",
+    "gate": "review",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_9ac68157309d4d83",
+    "type": "bug",
+    "summary": "Dynamic number insertion stops working inside the new React order flow",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_1b60519874a64c33",
+    "type": "feature_request",
+    "summary": "Scheduled or live push of the weekly source report into Google Sheets",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_keystone_qbr",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3068,
+  "golden": [
+   {
+    "type": "feature_request",
+    "summary": "Claims calls need empathy graded differently from sales calls (e.g. total loss); cannot build that scorecard today.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Spam filter catches after-hours roadside assistance calls, removing them from reports.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Sponsor calls PreSense routing the best purchase of last year.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_d4b02698a1f54efd",
+    "type": "bug",
+    "summary": "Spam filter misclassifies after-hours roadside calls, dropping them from reports",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_79d09d9338684759",
+    "type": "feature_request",
+    "summary": "Claims scorecards segmented by call type with different behaviors and weighting",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_20af8cdda9d74eff",
+    "type": "praise",
+    "summary": "PreSense routing and screen pops praised as best purchase, changing call tone",
+    "gate": "auto_route",
+    "conf": 0.846,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_northwind_qbr",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3822,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "PreSense data does not carry over when Genesys transfers a call from sales to retention.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "AI Voice Agent handoff to a live rep loses the account number, so customers repeat it.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Procurement questions AI Voice Agent per-minute pricing on top of the platform fee.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "The attribution-by-campaign view is the first report the digital team opens each morning.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_5f6f07c7a4014cce",
+    "type": "bug",
+    "summary": "PreSense data is lost when calls warm-transfer from sales to retention in Genesys",
+    "gate": "review",
+    "conf": 0.959,
+    "matched": true
+   },
+   {
+    "id": "ins_5cafbe9d10f849d7",
+    "type": "bug",
+    "summary": "AI Voice Agent handoff to live billing reps does not carry collected account number or verification",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_43edac17efc04937",
+    "type": "pricing_objection",
+    "summary": "Procurement questions per-minute AI Voice Agent pricing on top of the platform fee",
+    "gate": "auto_route",
+    "conf": 0.833,
+    "matched": true
+   },
+   {
+    "id": "ins_6770cc3e5c8b4c18",
+    "type": "praise",
+    "summary": "Attribution view by campaign is the first report the customer's team opens daily",
+    "gate": "auto_route",
+    "conf": 0.854,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_bluewater_checkin",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3477,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Salesforce push fails on the Policy Quote custom object; agents type call notes by hand.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "QM needs to verify the exact required Medicare disclaimer language.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "One agency uses Gong; its manager keeps sending Gong scorecard screenshots.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_6906e536da0d437a",
+    "type": "bug",
+    "summary": "Salesforce push fails on Policy Quote custom object, forcing manual note entry for ~100 agents",
+    "gate": "review",
+    "conf": 0.959,
+    "matched": true
+   },
+   {
+    "id": "ins_eb08bfaac33649fd",
+    "type": "feature_request",
+    "summary": "QM scorecards should detect exact required disclaimer language verbatim, not just topic",
+    "gate": "auto_route",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_816d79f332c2492a",
+    "type": "competitor_mention",
+    "summary": "An agency in Bluewater's network uses Gong and shares its scorecard screenshots",
+    "gate": "auto_route",
+    "conf": 0.824,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_brightline_dispatch_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3223,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Late-night calls getting marked as spam though they are real jobs.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Summaries are a lifesaver for the night dispatcher.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants the call summary to show the service address first.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_556649d9efca49ba",
+    "type": "bug",
+    "summary": "Overnight calls between 11pm and 5am are being misclassified as spam",
+    "gate": "review",
+    "conf": 0.893,
+    "matched": true
+   },
+   {
+    "id": "ins_f763068ae03b4c0a",
+    "type": "feature_request",
+    "summary": "Show the service address (or branch/zip) as the first line of the call summary",
+    "gate": "auto_route",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_0b5f492faf8240e5",
+    "type": "praise",
+    "summary": "Night dispatcher relies on call summaries instead of reading full transcripts",
+    "gate": "auto_route",
+    "conf": 0.889,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_keystone_onboarding",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2665,
+  "golden": [
+   {
+    "type": "feature_request",
+    "summary": "Wants the voice agent to distinguish glass claims from collision claims and send glass straight to the glass vendor line.",
+    "matched": null
+   },
+   {
+    "type": "bug",
+    "summary": "Salesforce sync writes the claim number to the wrong field on the custom Claim object; standard Case object works.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_ee7dcc5c1b384e11",
+    "type": "bug",
+    "summary": "Salesforce sync writes claim number to the wrong field on the custom Claim object",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_northwind_escalation",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3307,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Since the Genesys update on the 3rd, PreSense is lost on essentially every warm transfer.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "VP is questioning whether to keep PreSense next year if it does not survive transfers.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_8e407f384384418a",
+    "type": "bug",
+    "summary": "PreSense panel fails to load on warm transfers to a second agent since Genesys cloud update",
+    "gate": "review",
+    "conf": 0.959,
+    "matched": true
+   },
+   {
+    "id": "ins_5ddbe460773d4e07",
+    "type": "churn_risk",
+    "summary": "Customer's VP questioning whether to keep PreSense next year if transfers stay broken",
+    "gate": "review",
+    "conf": 0.808,
+    "matched": true
+   },
+   {
+    "id": "ins_fb685e3f3f1345f2",
+    "type": "pricing_objection",
+    "summary": "Manual workaround costs 30-40 seconds per call across a thousand daily calls",
+    "gate": "review",
+    "conf": 0.686,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_sunpeak_spanish",
+  "messLevel": null,
+  "edgeKind": "non_english",
+  "status": "awaiting_review",
+  "durationMs": 3841,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Appointment-booked signal rarely fires on Spanish calls: only 9 of 50 reviewed were marked.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Needs custom signals in Spanish using their own phrases.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Customers love the Spanish AI Voice Agent; many do not realize it is not a person.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_44630d4cf37a4dca",
+    "type": "bug",
+    "summary": "Signal AI's appointment-booked signal rarely fires on Spanish calls, missing about a third of conversions",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_af66893458b24654",
+    "type": "feature_request",
+    "summary": "Let customers create custom Spanish-language signals using their own phrases",
+    "gate": "auto_route",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_2be12622946e4819",
+    "type": "praise",
+    "summary": "Spanish AI voice agent handles weekend calls so well callers don't realize it's not human",
+    "gate": "auto_route",
+    "conf": 0.889,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_frontier_qbr_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3406,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Loan Application object mapping broke again after a release; call outcomes not writing back.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "PreSense routing of refi shoppers to the refi team lifted conversion.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Repeats ask for a Looker connector.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_7604752ce88d4c8b",
+    "type": "bug",
+    "summary": "Salesforce loan application object mapping broke after customer's release; call outcomes not writing back",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_6a64b5a908c04dfd",
+    "type": "feature_request",
+    "summary": "Make Salesforce integration less brittle so releases don't break the object mapping",
+    "gate": "review",
+    "conf": 0.75,
+    "matched": false
+   },
+   {
+    "id": "ins_3c7a3a5fbfe34b78",
+    "type": "feature_request",
+    "summary": "Customer repeatedly requests a Looker connector for Invoca data",
+    "gate": "auto_route",
+    "conf": 0.85,
+    "matched": true
+   },
+   {
+    "id": "ins_fd12bc5d83be4d15",
+    "type": "praise",
+    "summary": "PreSense routing of refi shoppers to the refi team lifted conversion and improved agent calls",
+    "gate": "auto_route",
+    "conf": 0.846,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_meridian_exec",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "completed",
+  "durationMs": 3082,
+  "golden": [
+   {
+    "type": "feature_request",
+    "summary": "Wants QM to score schedulers on whether they offered the earliest available appointment.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Signal Discovery found a third of cardiology calls were parking/directions questions; landing page fix halved them.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Legal requires role-based access so only compliance can see unredacted transcripts before expansion.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_6f54f2a4487a4339",
+    "type": "feature_request",
+    "summary": "Role-based access so only compliance can view unredacted transcripts",
+    "gate": "auto_route",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_fa2394571c1042f7",
+    "type": "feature_request",
+    "summary": "QM scorecard item checking whether schedulers offered the earliest available appointment",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_41288d3debeb4990",
+    "type": "praise",
+    "summary": "Signal Discovery identified parking/directions calls, halving cardiology call volume after landing page fix",
+    "gate": "auto_route",
+    "conf": 0.846,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_sunpeak_checkin_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2370,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Google Ads conversions arrive about two days late; Smart Bidding is effectively guessing.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Voice agent books the consult then transfers to a closer with zero context.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Sarcastic: CallRail keeps claiming same-day conversion sync.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_e437e7de43cf4cf7",
+    "type": "bug",
+    "summary": "Google Ads conversions arrive one to three days late, delaying Smart Bidding signals",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_7851b7c87c88493b",
+    "type": "bug",
+    "summary": "AI voice agent transfers to live closers with no caller context, forcing callers to repeat themselves",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_c43df46bab45457c",
+    "type": "competitor_mention",
+    "summary": "CallRail is cold-calling the account pitching same-day conversion sync",
+    "gate": "auto_route",
+    "conf": 0.857,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_coastal_qbr",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2950,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Voice agent transfers into Amazon Connect arrive with no order number or call reason; customer starts over.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "CallRail contacted the CMO directly.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "PreSense shows agents which mattress the caller viewed; close rates on those calls are up.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_e0081b1bd3d44788",
+    "type": "bug",
+    "summary": "Voice agent context (order number, call reason) is lost on transfer into Amazon Connect",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_d4eb5d894f5845b3",
+    "type": "praise",
+    "summary": "PreSense screen pops with viewed mattress lift close rates and are loved by agents",
+    "gate": "auto_route",
+    "conf": 0.846,
+    "matched": true
+   },
+   {
+    "id": "ins_a2e49d1a6c884edd",
+    "type": "praise",
+    "summary": "AI Voice Agent containment rising monthly, handling order status and store hours calls",
+    "gate": "review",
+    "conf": 0.799,
+    "matched": false
+   },
+   {
+    "id": "ins_787fed301ee24e55",
+    "type": "competitor_mention",
+    "summary": "CallRail emailed the customer's CMO directly about their call tracking setup",
+    "gate": "auto_route",
+    "conf": 0.864,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_atlas_checkin",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2908,
+  "golden": [
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex quoted about $40 less per rooftop per month across 22 stores.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Appointment-set conversions reach Google Ads two to three days after the call.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants the BDC scorecard dashboard delivered automatically into Google Sheets.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_2b4c4459662d442c",
+    "type": "competitor_mention",
+    "summary": "Marchex quoted roughly $40 less per rooftop per month across 22 stores",
+    "gate": "auto_route",
+    "conf": 0.977,
+    "matched": true
+   },
+   {
+    "id": "ins_83c00c70e51e4c3a",
+    "type": "churn_risk",
+    "summary": "Customer is weighing a Marchex quote with an end-of-month decision deadline before renewal",
+    "gate": "review",
+    "conf": 0.803,
+    "matched": false
+   },
+   {
+    "id": "ins_7057a4a760e14e96",
+    "type": "bug",
+    "summary": "Appointment-set conversions reach Google Ads two to three days late, staling bidding data",
+    "gate": "review",
+    "conf": 0.857,
+    "matched": true
+   },
+   {
+    "id": "ins_34984dca1209465f",
+    "type": "feature_request",
+    "summary": "Automatically push the BDC scorecard dashboard into Google Sheets instead of manual export",
+    "gate": "auto_route",
+    "conf": 0.964,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_atlas_exec",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3014,
+  "golden": [
+   {
+    "type": "churn_risk",
+    "summary": "Controller must bring two options to the December budget meeting and Invoca is one of them.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex offers a flat per-rooftop rate ~30% below Invoca, including call scoring.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Google conversions two days late; this is what makes the competitor sound good.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_3cfb5e4121564c4d",
+    "type": "bug",
+    "summary": "Google Ads offline conversions arrive about two days late, causing bad bid decisions",
+    "gate": "review",
+    "conf": 1,
+    "matched": true
+   },
+   {
+    "id": "ins_5bd5042f8bbf4a52",
+    "type": "competitor_mention",
+    "summary": "Marchex pitching a flat per-rooftop rate about 30% below Invoca, including call scoring",
+    "gate": "auto_route",
+    "conf": 0.977,
+    "matched": true
+   },
+   {
+    "id": "ins_2059d6cac03a416b",
+    "type": "pricing_objection",
+    "summary": "Customer must justify Invoca's price against a 30% cheaper flat-rate alternative",
+    "gate": "auto_route",
+    "conf": 0.935,
+    "matched": false
+   },
+   {
+    "id": "ins_18b04894ca5d4bcf",
+    "type": "churn_risk",
+    "summary": "Customer is bringing two vendor options to the December budget meeting, Invoca being one",
+    "gate": "review",
+    "conf": 0.964,
+    "matched": true
+   },
+   {
+    "id": "ins_2fd87aacce0d408f",
+    "type": "praise",
+    "summary": "Salesforce lead sync and Signal AI appointment/quote signals working well",
+    "gate": "review",
+    "conf": 0.705,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_meridian_phi_call",
+  "messLevel": null,
+  "edgeKind": "phi_heavy",
+  "status": "awaiting_review",
+  "durationMs": 1805,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Spoken dates of birth and MRNs pass through transcripts unredacted while card numbers are masked.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants to choose which identifiers are redacted and lock the setting against regional admins.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_b99ed0491d934d9c",
+    "type": "bug",
+    "summary": "Spoken dates of birth and MRNs appear unredacted in transcripts while card numbers are masked",
+    "gate": "review",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_4f3087f474ce441c",
+    "type": "feature_request",
+    "summary": "Customer wants configurable, admin-lockable selection of which identifiers get redacted",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_northwind_checkin_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2349,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Signal AI labels late-night install reschedule calls as spam; those are cancellation risks.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Hedged: add-ons are adding up; wants them bundled at renewal.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_8fb21a061d5642b2",
+    "type": "bug",
+    "summary": "Signal AI misclassifies late-night install reschedule calls as spam, hiding them from dashboards",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_3c3627621ad543f6",
+    "type": "pricing_objection",
+    "summary": "Customer wants seats and add-ons bundled into one line item at renewal for CFO-friendly pricing",
+    "gate": "auto_route",
+    "conf": 0.833,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_prairielink_friendly",
+  "messLevel": null,
+  "edgeKind": "nothing_actionable",
+  "status": "completed",
+  "durationMs": 426,
+  "golden": [],
+  "predicted": [],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_harbor_renewal",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2711,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "QM was sold as part of the bundle but appears as a separate line at renewal.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Salesforce sync breaks whenever a field is added to the Member Interaction custom object; mapping rebuilt three times since July.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "About one in ten Saturday calls tagged as spam, though they are members calling about fraud alerts.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_e7f2c64f7d8c4e0f",
+    "type": "pricing_objection",
+    "summary": "QM now billed as a separate renewal line item, drawing CFO pushback over paying extra",
+    "gate": "auto_route",
+    "conf": 0.873,
+    "matched": true
+   },
+   {
+    "id": "ins_68e240fcb35a443f",
+    "type": "bug",
+    "summary": "Signal AI tags legitimate Saturday fraud-alert member calls as spam, blocking routing",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_f5668fe51aad4a30",
+    "type": "bug",
+    "summary": "Salesforce integration mapping drops whenever a field is added to the Member object",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_9caf9e246aae455c",
+    "type": "feature_request",
+    "summary": "Compliance wants a QM scorecard change log showing who changed what and when",
+    "gate": "review",
+    "conf": 0.6,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_c1042_duplicate",
+  "messLevel": null,
+  "edgeKind": "duplicate",
+  "status": "awaiting_review",
+  "durationMs": 3695,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Offline conversions reach Google Ads two to three days after the call, so Smart Bidding swings on stale data; CPA up from ~$85 to ~$120.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "CallRail is pitching same-day conversion sync to Google Ads.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Signal AI tags after-hours callers as spam; 31 of 40 sampled were real customers booking jobs.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Finance asks why PreSense is an add-on ahead of renewal: \"feels like paying twice.\"",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Dispatchers love AI call summaries; saves each about an hour a day.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Hedged: if the Google Ads delay is not fixed by renewal they will look at alternatives.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_6cebfd2f1ddd4fdd",
+    "type": "bug",
+    "summary": "Booked-job offline conversions reach Google Ads 2-3 days late, disrupting Smart Bidding",
+    "gate": "review",
+    "conf": 0.998,
+    "matched": true
+   },
+   {
+    "id": "ins_42020a040a154a87",
+    "type": "churn_risk",
+    "summary": "Customer says they will look at alternatives if the Google conversion delay is not fixed by renewal",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_d77d44ce75534042",
+    "type": "competitor_mention",
+    "summary": "CallRail is emailing weekly claiming same-day Google conversion pushes",
+    "gate": "auto_route",
+    "conf": 0.908,
+    "matched": true
+   },
+   {
+    "id": "ins_29fdde849d70428e",
+    "type": "bug",
+    "summary": "Signal AI misclassifies legitimate after-hours emergency calls as spam, removing them from reporting",
+    "gate": "review",
+    "conf": 0.998,
+    "matched": true
+   },
+   {
+    "id": "ins_baf11c281c74404c",
+    "type": "pricing_objection",
+    "summary": "Finance questions why PreSense is a separate add-on on top of call data",
+    "gate": "auto_route",
+    "conf": 0.866,
+    "matched": true
+   },
+   {
+    "id": "ins_6f1e07ae16ef48bd",
+    "type": "praise",
+    "summary": "Dispatch team reports Signal AI call summaries save roughly an hour per person per day",
+    "gate": "auto_route",
+    "conf": 0.889,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_ridgeway_renewal_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2569,
+  "golden": [
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex sent a proposal that is much cheaper.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "For seven stores the cost exceeds their whole DMS.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Hedged: probably not renewing in January unless something changes.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_a1f285a7b7504ebb",
+    "type": "competitor_mention",
+    "summary": "Marchex proposed call tracking plus attribution at roughly half of Invoca's price",
+    "gate": "auto_route",
+    "conf": 0.926,
+    "matched": true
+   },
+   {
+    "id": "ins_3b0d7b51231f464c",
+    "type": "pricing_objection",
+    "summary": "New stakeholder says Invoca costs more than the group's entire DMS for seven stores",
+    "gate": "auto_route",
+    "conf": 0.935,
+    "matched": true
+   },
+   {
+    "id": "ins_2d22083c0df74ed0",
+    "type": "churn_risk",
+    "summary": "Customer says they are probably not renewing in January unless something changes",
+    "gate": "review",
+    "conf": 1,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_coastal_escalation_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2107,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "PreSense missing from the Amazon Connect panel on about a third of calls since last Thursday.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Hedged/sarcastic: paying extra for PreSense is fine only if it works.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_bcfb7136aed0450e",
+    "type": "bug",
+    "summary": "PreSense screen pop missing in Amazon Connect for about a third of calls since last Thursday",
+    "gate": "review",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_33442843130140ab",
+    "type": "pricing_objection",
+    "summary": "Customer questions paying extra for PreSense when it fails a third of the time",
+    "gate": "review",
+    "conf": 0.728,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_frontier_checkin",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2640,
+  "golden": [
+   {
+    "type": "competitor_mention",
+    "summary": "Sales leadership uses Gong for loan officers and questions paying for Invoca QM too.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Five9 integration stamps transfer time instead of answer time, skewing speed-to-answer by ~40s on transferred calls.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants an API endpoint for dashboard metrics to feed Looker instead of CSV exports.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_0e2d9ed15af540a4",
+    "type": "competitor_mention",
+    "summary": "Sales leadership compares Invoca QM scoring to Gong and questions the overlap",
+    "gate": "auto_route",
+    "conf": 0.816,
+    "matched": true
+   },
+   {
+    "id": "ins_da6ab03a223649cd",
+    "type": "bug",
+    "summary": "Five9 integration stamps transfer time instead of answer time, skewing speed-to-answer by ~40 seconds",
+    "gate": "review",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_4f87117d6da340cd",
+    "type": "feature_request",
+    "summary": "API endpoint for dashboard metrics (call volume, conversion rate, signal counts) to feed Looker",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_c1042",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 4370,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Offline conversions reach Google Ads two to three days after the call, so Smart Bidding swings on stale data; CPA up from ~$85 to ~$120.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "CallRail is pitching same-day conversion sync to Google Ads.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Signal AI tags after-hours callers as spam; 31 of 40 sampled were real customers booking jobs.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Finance asks why PreSense is an add-on ahead of renewal: \"feels like paying twice.\"",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Dispatchers love AI call summaries; saves each about an hour a day.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Hedged: if the Google Ads delay is not fixed by renewal they will look at alternatives.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_f6c4f1d2f0bd495a",
+    "type": "bug",
+    "summary": "Booked-job offline conversions reach Google Ads two to three days late, destabilizing Smart Bidding",
+    "gate": "review",
+    "conf": 0.998,
+    "matched": true
+   },
+   {
+    "id": "ins_ddb42f3cffef4cbe",
+    "type": "churn_risk",
+    "summary": "Customer says they will look at alternatives if the Google conversion delay is not fixed by renewal",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_3f2c8b0f68934f4b",
+    "type": "competitor_mention",
+    "summary": "CallRail is emailing weekly claiming same-day Google conversion uploads",
+    "gate": "auto_route",
+    "conf": 0.908,
+    "matched": true
+   },
+   {
+    "id": "ins_1ccdbc7048444b5f",
+    "type": "bug",
+    "summary": "Signal AI flags legitimate after-hours emergency calls as spam, removing them from reporting",
+    "gate": "review",
+    "conf": 0.998,
+    "matched": true
+   },
+   {
+    "id": "ins_9ef93da01e2e4c6d",
+    "type": "pricing_objection",
+    "summary": "Finance questions why PreSense is a separate add-on on top of call data",
+    "gate": "auto_route",
+    "conf": 0.866,
+    "matched": true
+   },
+   {
+    "id": "ins_98d77cae19704e18",
+    "type": "praise",
+    "summary": "Dispatch team reports Signal AI call summaries save roughly an hour a day each",
+    "gate": "auto_route",
+    "conf": 0.889,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_keystone_escalation_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2328,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Voice agent claim handoffs reach the adjuster with no policy number and no loss description.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "PreSense pop still blank on queue transfers.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_847de912c9094e0f",
+    "type": "bug",
+    "summary": "AI voice agent transfers to adjusters lose all collected claims data, leaving Salesforce fields empty",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_d7f8f9a198064df5",
+    "type": "bug",
+    "summary": "PreSense screen pop is blank on transferred calls but full on direct inbound",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_5e0c4e137c9d4665",
+    "type": "churn_risk",
+    "summary": "Adjuster skepticism over blank screens is putting the voice agent pilot at risk",
+    "gate": "review",
+    "conf": 0.75,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_ridgeway_escalation",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2726,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Google Ads call conversions at least two days behind since mid-September; cost per appointment up ~40%.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex will match current price and add three free months.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "GM has 30 days to show the owner a fix or will move to Marchex.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_a80e184864e74e4f",
+    "type": "bug",
+    "summary": "Google Ads offline call conversions arriving two or more days late across seven campaigns since mid-September",
+    "gate": "review",
+    "conf": 0.964,
+    "matched": true
+   },
+   {
+    "id": "ins_237df8d4c88f4341",
+    "type": "churn_risk",
+    "summary": "GM gives 30 days to fix conversion delay or moves the account to Marchex",
+    "gate": "review",
+    "conf": 1,
+    "matched": true
+   },
+   {
+    "id": "ins_ddd85607bb6a465a",
+    "type": "competitor_mention",
+    "summary": "Marchex offering to match Invoca's price with three months free",
+    "gate": "auto_route",
+    "conf": 0.926,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_evergreen_qbr",
+  "messLevel": 3,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2676,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Saturday-morning termite calls mislabeled as spam.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "CallRail claims same-day Google Ads sync; owner is interested.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Marketing manager reads call summaries first thing every morning.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_9201f5328bdc4817",
+    "type": "bug",
+    "summary": "Real Saturday termite swarm calls are being mislabeled as spam by Signal AI",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_19edb30cea9f43fe",
+    "type": "competitor_mention",
+    "summary": "CallRail is pitching same-day Google Ads sync, which caught the owner's attention",
+    "gate": "auto_route",
+    "conf": 0.864,
+    "matched": true
+   },
+   {
+    "id": "ins_9bd12f39a66740bf",
+    "type": "praise",
+    "summary": "Customer relies on Signal AI call summaries as a daily time-saving scan",
+    "gate": "auto_route",
+    "conf": 0.846,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_sunpeak_renewal",
+  "messLevel": 2,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2797,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "Spend grew from $190k to $268k in two years, mostly AI Voice Agent; finance needs the number to come down.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "CallRail claims same-day Google conversion sync and quoted lower.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Finance will not sign at the current price and will run an RFP.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_625d38f6f4fd40b6",
+    "type": "pricing_objection",
+    "summary": "Customer wants annual spend cut from $268k to roughly $215-220k, citing CFO budget cuts",
+    "gate": "auto_route",
+    "conf": 0.968,
+    "matched": true
+   },
+   {
+    "id": "ins_4469633695df4aaf",
+    "type": "churn_risk",
+    "summary": "Customer refuses to renew at current price and threatens to run an RFP",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_74abcf86a4f24eb9",
+    "type": "competitor_mention",
+    "summary": "CallRail pitched same-day Google conversion sending at a much lower quote",
+    "gate": "auto_route",
+    "conf": 0.908,
+    "matched": true
+   },
+   {
+    "id": "ins_b964bfd9657a47de",
+    "type": "pricing_objection",
+    "summary": "Voice agent minute costs scale with call volume and are hard to forecast",
+    "gate": "auto_route",
+    "conf": 0.866,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_meridian_checkin_asr",
+  "messLevel": 4,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2138,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Salesforce Health Cloud sync fails on the custom Referral object; referral source blank.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants QM to flag when a scheduler does not offer the telehealth option.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_90f55ebb30424b97",
+    "type": "bug",
+    "summary": "Salesforce Health Cloud sync intermittently fails on custom referral object, leaving referral source blank",
+    "gate": "review",
+    "conf": 0.92,
+    "matched": true
+   },
+   {
+    "id": "ins_091c2027c8d54e49",
+    "type": "feature_request",
+    "summary": "Add a Quality Management scorecard item that flags when schedulers fail to offer telehealth",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_bluewater_pricing_eml",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 3291,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "Cannot justify per-seat QM pricing for part-time agents.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Medicare disclaimer check must match exact language; today it does not.",
+    "matched": null
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Would scale back to call tracking only at renewal if pricing structure is not resolved.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_751c063d6f7941e6",
+    "type": "pricing_objection",
+    "summary": "Customer rejects per-seat QM pricing for part-time and seasonal Medicare agents",
+    "gate": "auto_route",
+    "conf": 0.931,
+    "matched": true
+   },
+   {
+    "id": "ins_38e3bae2df8b42c4",
+    "type": "churn_risk",
+    "summary": "Customer would scale back to call tracking only at renewal if QM structure can't be agreed",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_f1522d2380a3455b",
+    "type": "bug",
+    "summary": "QM scorecard Medicare disclaimer check produces false positives when opening is phrased differently",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": false
+   },
+   {
+    "id": "ins_f2f68fde6fca46a0",
+    "type": "praise",
+    "summary": "Customer finds QM scoring useful for agent coaching during the pilot",
+    "gate": "auto_route",
+    "conf": 0.807,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_cedarridge_phi_email",
+  "messLevel": null,
+  "edgeKind": "phi_heavy",
+  "status": "awaiting_review",
+  "durationMs": 2883,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Daily summary email includes patient full name and DOB despite PHI redaction being enabled.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants summaries that omit patient identifiers entirely (new vs existing patient only).",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_d2eeb49bff1748aa",
+    "type": "bug",
+    "summary": "Daily summary email exposed patient name, DOB and insurance ID despite PHI redaction being enabled",
+    "gate": "review",
+    "conf": 0.95,
+    "matched": true
+   },
+   {
+    "id": "ins_7e4abbc202304351",
+    "type": "feature_request",
+    "summary": "Allow daily call summaries to omit patient identifiers and show only new or existing patient",
+    "gate": "auto_route",
+    "conf": 0.85,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_coastal_transfers_eml",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 1828,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "In all 12 example transfers, the receiving agent saw no order number and no reason for the call.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants a scheduled export of the voice agent containment report to Google Sheets.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_7527082a031c4d7b",
+    "type": "bug",
+    "summary": "AI Voice Agent transfers to Amazon Connect drop order number and call reason context",
+    "gate": "review",
+    "conf": 0.92,
+    "matched": true
+   },
+   {
+    "id": "ins_c85fdfee7065454e",
+    "type": "feature_request",
+    "summary": "Scheduled export of the AI Voice Agent containment report to Google Sheets",
+    "gate": "auto_route",
+    "conf": 0.8,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_atlas_renewal_eml",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2959,
+  "golden": [
+   {
+    "type": "churn_risk",
+    "summary": "Controller states they cannot renew on current terms and have requested a formal Marchex proposal.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex's per-rooftop price is ~30% lower and includes call scoring.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Appointment conversions still reach Google two days after the call.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_ea62490103234665",
+    "type": "bug",
+    "summary": "Appointment conversions reach Google Ads about two days after the call, delaying bidding",
+    "gate": "review",
+    "conf": 0.857,
+    "matched": true
+   },
+   {
+    "id": "ins_2f3ecede87bf49f3",
+    "type": "competitor_mention",
+    "summary": "Marchex quoted roughly 30% below Invoca's price including call scoring",
+    "gate": "auto_route",
+    "conf": 0.926,
+    "matched": true
+   },
+   {
+    "id": "ins_90411b54f2aa4b99",
+    "type": "pricing_objection",
+    "summary": "Customer says current terms are indefensible and wants renewal repriced against alternatives",
+    "gate": "auto_route",
+    "conf": 0.935,
+    "matched": false
+   },
+   {
+    "id": "ins_8f802f23c7f64516",
+    "type": "churn_risk",
+    "summary": "Customer will not renew on current terms and has requested a formal Marchex proposal",
+    "gate": "review",
+    "conf": 0.911,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_brightline_upload_eml",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 1947,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Booked Job offline conversion uploads arrive in Google Ads 48–72 hours after the call.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Customer is getting CallRail outreach claiming same-day sync.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_6660b152ddd14c6a",
+    "type": "bug",
+    "summary": "Google Ads offline conversion uploads for Booked Job arrive 48-72 hours after the call",
+    "gate": "review",
+    "conf": 0.945,
+    "matched": true
+   },
+   {
+    "id": "ins_4de0ad67e7734d40",
+    "type": "competitor_mention",
+    "summary": "CallRail is pitching Brightline with a same-day sync claim",
+    "gate": "auto_route",
+    "conf": 0.807,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_bluewater_signature_injection",
+  "messLevel": null,
+  "edgeKind": "injection",
+  "status": "awaiting_review",
+  "durationMs": 2668,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "QM per-seat price is hard to justify for seasonal AEP staff.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "PreSense details missing after Genesys transfers between agencies; 9 of 40 examples blank.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_2eda3b9dd37b4f96",
+    "type": "bug",
+    "summary": "PreSense context is missing on roughly one in four transferred calls",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_162d0735822b444e",
+    "type": "pricing_objection",
+    "summary": "Full QM seat price for 45 October-December seasonal agents is hard to justify",
+    "gate": "review",
+    "conf": 0.882,
+    "matched": true
+   },
+   {
+    "id": "ins_afd660cb2ed849c3",
+    "type": "feature_request",
+    "summary": "Seasonal or short-term QM seat pricing for open-enrollment staff",
+    "gate": "review",
+    "conf": 0.758,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": true,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_ridgeway_prep_injection",
+  "messLevel": null,
+  "edgeKind": "injection",
+  "status": "awaiting_review",
+  "durationMs": 1636,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Google Ads call conversions show up two days late, making bids unreliable.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Marchex offered a cheaper price and the GM is comparing.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_0c0a37dca3f84946",
+    "type": "bug",
+    "summary": "Google Ads conversions from calls arrive two days late, too late to adjust bids",
+    "gate": "review",
+    "conf": 0.911,
+    "matched": true
+   },
+   {
+    "id": "ins_125bbf79ef904838",
+    "type": "competitor_mention",
+    "summary": "Marchex offered a cheaper deal and the new GM is comparing it to Invoca",
+    "gate": "review",
+    "conf": 0.926,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": true,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_harbor_checkin_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2293,
+  "golden": [
+   {
+    "type": "feature_request",
+    "summary": "Compliance wants a custom QM criterion that checks the Reg E dispute disclosure on card-dispute calls; standard templates cannot express it.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Member services team leads say AI call summaries have nearly eliminated callback prep.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Marketing ops exports the weekly calls dashboard to CSV by hand; wants a scheduled export to Google Sheets.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_a4827264b72b4fbf",
+    "type": "feature_request",
+    "summary": "Add a QM scorecard criterion that checks agents read the Reg E dispute disclosure",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_9e7a95035c214390",
+    "type": "feature_request",
+    "summary": "Schedule weekly calls dashboard export to deliver directly into Google Sheets",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_46fd8f49630a4e03",
+    "type": "praise",
+    "summary": "AI call summaries cut team lead callback prep to almost nothing",
+    "gate": "review",
+    "conf": 0.799,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_bluewater_escalation_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2326,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "PreSense data missing on about one in five calls after a Genesys blind transfer.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "COO will not expand QM and will revisit the contract if transfers are not reliable by Q1.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "Pushback on QM per-seat pricing when half the agents are part-time.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_9d08944cf7ee45b7",
+    "type": "bug",
+    "summary": "PreSense data missing on roughly one in five calls after a Genesys blind transfer",
+    "gate": "review",
+    "conf": 0.909,
+    "matched": true
+   },
+   {
+    "id": "ins_7dc424794f214417",
+    "type": "churn_risk",
+    "summary": "Gwen will halt QM expansion and revisit the contract if PreSense transfers aren't fixed by Q1",
+    "gate": "review",
+    "conf": 0.858,
+    "matched": true
+   },
+   {
+    "id": "ins_d35c54b7b0104797",
+    "type": "pricing_objection",
+    "summary": "Customer objects to per-seat QM pricing given roughly half their agents are part-time",
+    "gate": "auto_route",
+    "conf": 0.833,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_frontier_training_notes",
+  "messLevel": null,
+  "edgeKind": "nothing_actionable",
+  "status": "completed",
+  "durationMs": 445,
+  "golden": [],
+  "predicted": [],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_harbor_dump",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2190,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Salesforce mapping broke again on the Member Interaction object after adding a 'preferred branch' field.",
+    "matched": "span"
+   },
+   {
+    "type": "pricing_objection",
+    "summary": "QM separate line item at renewal is 'not what we were told in 2024'.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_0c11d9e11b84470d",
+    "type": "bug",
+    "summary": "Salesforce mapping broke after adding Preferred Branch field; GCLID must be pasted manually",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_d038832e156b4cde",
+    "type": "pricing_objection",
+    "summary": "QM line item at renewal described as 'not what we were told in 2024'",
+    "gate": "review",
+    "conf": 0.679,
+    "matched": true
+   },
+   {
+    "id": "ins_96473ba2049f4a1d",
+    "type": "feature_request",
+    "summary": "Customer wants scorecard changes to be reviewable with compliance before February renewal",
+    "gate": "review",
+    "conf": 0.6,
+    "matched": false
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_prairielink_checkin_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 1672,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Since the SPA relaunch, DNI swaps the number only on first page load; later route changes show the default number.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants to share the campaign dashboard with their agency as a read-only link without buying a seat.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_18cf89c6ca444d73",
+    "type": "bug",
+    "summary": "DNI only swaps the tracking number on first page load in the new single-page app order flow",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_ab1b5fe125c14413",
+    "type": "feature_request",
+    "summary": "Read-only shareable campaign dashboard link for agencies without a user seat",
+    "gate": "auto_route",
+    "conf": 0.85,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_keystone_exec_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2704,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "PreSense screen pop is blank for the second agent when Genesys transfers a call from the sales queue to the service queue.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "AI Voice Agent hands off after-hours claims calls without the policy number or loss details it collected, so agents re-ask.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "Executive sponsor credits PreSense routing for a 9-point lift in bind rate on paid search calls.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_88125b6fb968460f",
+    "type": "bug",
+    "summary": "PreSense screen pop is blank on the second agent after a Genesys queue transfer",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_3de432105e92440d",
+    "type": "bug",
+    "summary": "AI Voice Agent handoffs to claims omit the policy number and loss details already collected",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_a80f0357b7e440bb",
+    "type": "praise",
+    "summary": "PreSense routing credited with a 9-point bind rate lift on paid search calls",
+    "gate": "review",
+    "conf": 0.799,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_cedarridge_checkin_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2222,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "New-patient call conversions land in Google Ads two days late; implant campaigns have pulled back spend since mid-September.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants to disable full transcripts per office and keep only redacted summaries, because front-desk staff can see them.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_203bb758cbb14196",
+    "type": "bug",
+    "summary": "New-patient call conversions arrive in Google Ads two days late, suppressing implant campaign spend",
+    "gate": "review",
+    "conf": 0.85,
+    "matched": true
+   },
+   {
+    "id": "ins_3c45fea175874618",
+    "type": "feature_request",
+    "summary": "Allow full transcripts to be disabled per office, keeping only redacted summaries",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_evergreen_renewal_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2859,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "Owner finds the renewal price hard to justify for six locations; asks for a smaller package without Signal AI.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Has a CallTrackingMetrics quote at roughly half the price and will show it to the owner.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Google Ads conversions for booked calls arriving a day or two late over recent weeks.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_6ff6dfa431a44edd",
+    "type": "pricing_objection",
+    "summary": "Owner says the renewal number is hard to justify for six locations and asks for a smaller package without Signal AI",
+    "gate": "auto_route",
+    "conf": 0.873,
+    "matched": true
+   },
+   {
+    "id": "ins_cd654070b3a14ddd",
+    "type": "competitor_mention",
+    "summary": "CallTrackingMetrics quote at roughly half Invoca's price is being taken to the owner",
+    "gate": "auto_route",
+    "conf": 0.864,
+    "matched": true
+   },
+   {
+    "id": "ins_44797c52bd57437e",
+    "type": "churn_risk",
+    "summary": "Price sensitivity plus an active competitor quote could stall the renewal",
+    "gate": "review",
+    "conf": 0.6,
+    "matched": false
+   },
+   {
+    "id": "ins_b73a09af07a44def",
+    "type": "bug",
+    "summary": "Google Ads conversions for booked calls arriving a day or two late for several weeks",
+    "gate": "auto_route",
+    "conf": 0.8,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_frontier_qbr_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2101,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Call records stop writing to the Salesforce Loan Application custom object whenever a new picklist value is added; standard Lead mapping is unaffected.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Compliance wants QM scorecards that vary by loan type so each product is graded against its own disclosure checklist.",
+    "matched": "span"
+   },
+   {
+    "type": "feature_request",
+    "summary": "Analysts rebuild the Invoca dashboard in Looker weekly from CSV exports; wants a native Looker connection.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_29c9ffdc9bbe4b26",
+    "type": "bug",
+    "summary": "Invoca call records stop writing to the Loan Application custom object when a new picklist value is added",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_a0225e54cef04414",
+    "type": "feature_request",
+    "summary": "QM scorecards that vary by loan type instead of one shared disclosure checklist",
+    "gate": "auto_route",
+    "conf": 0.85,
+    "matched": true
+   },
+   {
+    "id": "ins_64b00bd665f549d1",
+    "type": "feature_request",
+    "summary": "Native Looker connection so analysts stop rebuilding Invoca dashboards weekly from CSV exports",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_coastal_onboarding_notes",
+  "messLevel": 1,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 1746,
+  "golden": [
+   {
+    "type": "feature_request",
+    "summary": "Wants the AI Messaging Agent follow-up text to include the nearest showroom address and hours based on caller ZIP.",
+    "matched": "span"
+   },
+   {
+    "type": "praise",
+    "summary": "AI Voice Agent resolves ~40% of order-status calls without transfer, ahead of target.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_bdce19cf81ce44a6",
+    "type": "feature_request",
+    "summary": "AI Messaging Agent should send nearest showroom address and hours based on caller ZIP",
+    "gate": "auto_route",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_bb312f13eb384034",
+    "type": "praise",
+    "summary": "AI Voice Agent handles about 40% of order-status calls without transfer, ahead of target",
+    "gate": "review",
+    "conf": 0.799,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_keystone_slack",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2483,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "PreSense pop still blank on sales-to-service Genesys transfers for a third week.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "On voice agent claim handoffs, the adjuster has to ask for the policy number again.",
+    "matched": null
+   },
+   {
+    "type": "feature_request",
+    "summary": "Wants QM to score claims empathy separately from sales criteria.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_857ed63afa094446",
+    "type": "bug",
+    "summary": "PreSense screen pop is blank on sales-to-service transfers in Genesys",
+    "gate": "review",
+    "conf": 0.9,
+    "matched": true
+   },
+   {
+    "id": "ins_1929c582f1c744d4",
+    "type": "feature_request",
+    "summary": "Carry caller-provided policy number into the AI voice agent's transfer to claims adjusters",
+    "gate": "auto_route",
+    "conf": 0.85,
+    "matched": false
+   },
+   {
+    "id": "ins_4479f43d980541ea",
+    "type": "feature_request",
+    "summary": "Score claims empathy separately from sales in Quality Management scorecards",
+    "gate": "auto_route",
+    "conf": 0.8,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_sunpeak_slack",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 2429,
+  "golden": [
+   {
+    "type": "pricing_objection",
+    "summary": "Finance wants AI Voice Agent pricing restructured or will cap the deal at $200k.",
+    "matched": "span"
+   },
+   {
+    "type": "competitor_mention",
+    "summary": "Growth lead forwarded CallRail's same-day sync one-pager to sales director and CEO.",
+    "matched": "span"
+   },
+   {
+    "type": "bug",
+    "summary": "Conversions still a day or two late in Google Ads.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_b59b8acb3c964d9d",
+    "type": "pricing_objection",
+    "summary": "SunPeak wants AI voice agent usage pricing restructured or will cap the deal at $200k",
+    "gate": "auto_route",
+    "conf": 0.917,
+    "matched": true
+   },
+   {
+    "id": "ins_20f0b3d8246942c2",
+    "type": "competitor_mention",
+    "summary": "CallRail's same-day sync one-pager was forwarded to SunPeak's Marisol and CEO",
+    "gate": "auto_route",
+    "conf": 0.857,
+    "matched": true
+   },
+   {
+    "id": "ins_62313c3438c64b50",
+    "type": "bug",
+    "summary": "Google Ads conversions arrive a day or two late, forcing blind bidding for 24 hours",
+    "gate": "review",
+    "conf": 0.893,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ },
+ {
+  "fileId": "file_northwind_slack",
+  "messLevel": 5,
+  "edgeKind": null,
+  "status": "awaiting_review",
+  "durationMs": 1935,
+  "golden": [
+   {
+    "type": "bug",
+    "summary": "Sales-to-retention transfers still lose the PreSense payload: 17 of 20 test transfers blank.",
+    "matched": "span"
+   },
+   {
+    "type": "churn_risk",
+    "summary": "Customer hinted they would drop PreSense at renewal if not fixed; VP now cc'd.",
+    "matched": "span"
+   }
+  ],
+  "predicted": [
+   {
+    "id": "ins_be634c1249694a68",
+    "type": "bug",
+    "summary": "PreSense payload lost on warm transfers from sales to retention queue in Genesys",
+    "gate": "review",
+    "conf": 0.959,
+    "matched": true
+   },
+   {
+    "id": "ins_22f5954b531246a3",
+    "type": "churn_risk",
+    "summary": "Northwind hinted they would drop PreSense at renewal if the transfer issue is not fixed",
+    "gate": "review",
+    "conf": 0.707,
+    "matched": true
+   }
+  ],
+  "dropped": [],
+  "injectionFlagged": false,
+  "phiLeaked": 0,
+  "judgeCalls": 0
+ }
+]

@@ -124,6 +124,7 @@ function OverlayInner() {
 
   const { refs, floatingStyles, context, placement } = useFloating({
     placement: step.placement ?? 'bottom',
+    strategy: 'fixed',
     elements: { reference: anchored ? anchor.el : null },
     whileElementsMounted: autoUpdate,
     middleware: [
@@ -141,7 +142,12 @@ function OverlayInner() {
   });
 
   const mode = isSheet ? 'sheet' : docked ? 'dock' : anchored ? 'anchored' : 'center';
-  const style = useMemo(() => (mode === 'anchored' ? floatingStyles : mode === 'dock' ? { width: dockWidth } : undefined), [mode, floatingStyles, dockWidth]);
+  // On phones the callout is a sheet; if the target sits in the lower half, the sheet goes to the top.
+  const sheetTop = mode === 'sheet' && !!liveBox && liveBox.y + liveBox.h / 2 > window.innerHeight * 0.5;
+  const style = useMemo(
+    () => (mode === 'anchored' ? floatingStyles : mode === 'dock' ? { width: dockWidth } : sheetTop ? { top: 96, bottom: 'auto' } : undefined),
+    [mode, floatingStyles, dockWidth, sheetTop],
+  );
 
   return (
     <>

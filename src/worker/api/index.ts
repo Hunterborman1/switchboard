@@ -140,6 +140,12 @@ api.post('/runs', async (c) => {
   const r = await createRun(c.env, ws, b.data, t.rep, t.traceId);
   if (!r.ok) return fail(c, r.status, r.code, r.message);
   t.rep.track({ sessionId: ws, actorId: actorOf(c), actorRole: c.env.ACCESS.via === 'owner' ? 'owner' : 'viewer', kind: 'run_created', path: null, props: { runId: r.runId, mode: r.mode, duplicate: r.duplicate, fileId: 'fileId' in b.data ? b.data.fileId : null }, durationMs: null });
+  // (duplicates are logged as run.duplicate inside createRun)
+  if (!r.duplicate) t.rep.log({
+    level: r.mode === 'replay' && r.modeReason !== 'requested' ? 'warn' : 'info', component: 'api', event: r.mode === 'replay' ? 'run.replay' : 'run.started',
+    message: r.mode === 'replay' ? `replaying the recorded run (${r.modeReason})` : 'live run started', traceId: t.traceId, spanId: null, runId: r.runId, workspaceId: ws, durationMs: null,
+    fields: { mode: r.mode, modeReason: r.modeReason, duplicate: r.duplicate, fileId: 'fileId' in b.data ? b.data.fileId : null },
+  });
   const out: CreateRunResult = { runId: r.runId, mode: r.mode, modeReason: r.modeReason, duplicate: r.duplicate };
   return ok(c, out, r.duplicate ? 200 : 201);
 });
@@ -158,7 +164,13 @@ api.get('/runs', async (c) => {
     }
   }
   const { results } = await c.env.DB.prepare(`SELECT * FROM runs WHERE ${where} ORDER BY created_at DESC, id DESC LIMIT ?`).bind(...binds, limit + 1).all<Record<string, unknown>>();
-  const rows = results.slice(0, limit).map((r) => publicRun(rowToRun(r)));
+  const nowMs = Date.now();
+  const rows = results.slice(0, limit).map((r) => {
+    const run = publicRun(rowToRun(r));
+    // A replay still revealing its timeline lists as running, exactly like a live run would.
+    if (run.mode === 'replay' && run.finishedAt && Date.parse(run.finishedAt) > nowMs) return { ...run, status: 'running' as const, finishedAt: null, durationMs: null };
+    return run;
+  });
   const last = rows[rows.length - 1];
   if (results.length > limit && last) c.header('x-next-cursor', btoa(`${last.createdAt}|${last.id}`).replace(/\+/g, '-').replace(/\//g, '_'));
   return ok(c, rows);

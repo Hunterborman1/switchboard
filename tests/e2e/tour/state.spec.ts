@@ -38,11 +38,14 @@ test.describe('tour state, exits and access', () => {
 
   test('chapter rail jumps anywhere', async ({ page }) => {
     await go(page, '/walkthrough/why');
-    await page.getByTestId('tour-hud').getByRole('button', { name: 'Chapters' }).click({ trial: false }).catch(async () => {
-      // mobile hides the HUD on scenes; use the pause menu instead
+    await expect(page.getByTestId('scene-why')).toBeVisible();
+    const hudBtn = page.getByTestId('tour-hud').getByRole('button', { name: 'Chapters' });
+    if (await hudBtn.isVisible().catch(() => false)) await hudBtn.click();
+    else {
+      // mobile hides the HUD on scenes; the pause menu has Chapters too
       await page.keyboard.press('Escape');
       await page.getByTestId('pause-menu').getByRole('button', { name: 'Chapters' }).click();
-    });
+    }
     const rail = page.getByTestId('chapter-rail');
     await expect(rail).toBeVisible();
     await rail.getByRole('button', { name: /Earning trust/ }).click();

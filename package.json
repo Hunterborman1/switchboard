@@ -14,7 +14,17 @@
     "test:e2e": "playwright test",
     "db:migrate:local": "wrangler d1 migrations apply invoca-signal-loop --local",
     "deploy": "node scripts/deploy.ts",
-    "sign-link": "node scripts/sign-link.ts"
+    "sign-link": "node scripts/sign-link.ts",
+    "test:unit": "vitest run --project unit",
+    "test:worker": "vitest run --project worker",
+    "dev:vars": "node scripts/lib/dev-vars.ts",
+    "db:seed:local": "node scripts/seed.ts --local",
+    "db:seed:remote": "node scripts/seed.ts --remote",
+    "backfill": "node --env-file=.env scripts/backfill.ts",
+    "replays:record": "node --env-file=.env scripts/record-replays.ts",
+    "eval": "node --env-file=.env scripts/eval.ts",
+    "verify:data": "node --env-file=.env scripts/verify-data.ts",
+    "e2e:local": "node scripts/lib/e2e-local.ts"
   },
   "type": "module",
   "dependencies": {

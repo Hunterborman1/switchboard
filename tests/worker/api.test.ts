@@ -280,6 +280,8 @@ describe('budget', () => {
       const early = (await h.call(`/runs/${r.json.data.runId}`, { ws })).json.data;
       expect(early.run.mode).toBe('replay');
       expect(early.steps.some((s: any) => s.status === 'pending' || s.status === 'running')).toBe(true);
+      expect(early.run.status).toBe('running');
+      expect((await h.call('/runs', { ws })).json.data.find((x: any) => x.id === r.json.data.runId).status).toBe('running');
       const done = await waitForRun(h, r.json.data.runId, ws, (x) => x.run.status !== 'running');
       expect(done.steps.every((s: any) => s.finishedAt)).toBe(true);
       expect(done.steps.map((s: any) => s.key)).toHaveLength(10);

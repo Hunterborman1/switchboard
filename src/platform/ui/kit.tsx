@@ -218,7 +218,8 @@ export type Col<T> = {
   sort?: (r: T) => number | string | null;
   render: (r: T) => ReactNode;
   width?: string;
-  hideBelow?: number;
+  /** Hide on phones (< 760px): the slimmed-down mobile view keeps only the essentials. */
+  mobileHide?: boolean;
 };
 
 export function Table<T>({
@@ -271,7 +272,7 @@ export function Table<T>({
             {cols.map((c) => {
               const active = sort?.key === c.key;
               return (
-                <th key={c.key} className={c.num ? 'num' : undefined} style={c.width ? { width: c.width } : undefined} aria-sort={active ? (sort!.dir === 'asc' ? 'ascending' : 'descending') : undefined} scope="col">
+                <th key={c.key} className={[c.num ? 'num' : '', c.mobileHide ? 'ao-hide-sm' : ''].join(' ').trim() || undefined} style={c.width ? { width: c.width } : undefined} aria-sort={active ? (sort!.dir === 'asc' ? 'ascending' : 'descending') : undefined} scope="col">
                   {c.sort ? (
                     <button type="button" onClick={() => setSort(active ? { key: c.key, dir: sort!.dir === 'asc' ? 'desc' : 'asc' } : { key: c.key, dir: c.num ? 'desc' : 'asc' })}>
                       {c.header}
@@ -303,7 +304,7 @@ export function Table<T>({
               {...rowAttrs?.(r)}
             >
               {cols.map((c) => (
-                <td key={c.key} className={c.num ? 'num' : undefined}>
+                <td key={c.key} className={[c.num ? 'num' : '', c.mobileHide ? 'ao-hide-sm' : ''].join(' ').trim() || undefined}>
                   {c.render(r)}
                 </td>
               ))}

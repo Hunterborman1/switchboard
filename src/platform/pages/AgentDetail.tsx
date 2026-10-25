@@ -87,7 +87,7 @@ export function AgentDetail() {
       />
 
       <MetricStrip
-        minItemWidth={160}
+        minItemWidth={150}
         label={`${a.name} impact`}
         items={[
           { label: 'Work units', value: f.int(im.workUnits), sub: `${a.unitLabel}s, all time in period` },

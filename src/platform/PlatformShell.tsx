@@ -132,6 +132,14 @@ function ShellInner({ children }: { children?: ReactNode }) {
     window.scrollTo({ top: 0 });
   }, [pathname]);
   useEffect(() => {
+    // The host page's body carries the narrative's dark background; the platform owns its own.
+    const prevBg = document.body.style.background;
+    document.body.style.background = '#F9F9F6';
+    return () => {
+      document.body.style.background = prevBg;
+    };
+  }, []);
+  useEffect(() => {
     const prev = document.title;
     const seg = pathname.replace(/^.*\/ops\/?/, '').split('/')[0] ?? '';
     document.title = `${CRUMB[seg] ?? 'Agent Ops'} · Agent Ops`;

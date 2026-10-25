@@ -213,10 +213,10 @@ function Reviews() {
           defaultSort={{ key: 'next', dir: 'asc' }}
           cols={[
             { key: 'name', header: 'Agent', sort: (x) => x.name, render: (x) => <Link className="row-link" to={`/ops/agents/${x.agentId}`}>{x.name}</Link> },
-            { key: 'owner', header: 'Owner', sort: (x) => x.owner, render: (x) => x.owner },
-            { key: 'status', header: 'Agent status', render: (x) => <AgentStatus value={x.status} /> },
-            { key: 'last', header: 'Last review', sort: (x) => x.lastReview, render: (x) => f.dayYear(x.lastReview) },
-            { key: 'cad', header: 'Cadence', num: true, sort: (x) => x.cadenceDays, render: (x) => `${x.cadenceDays} days` },
+            { key: 'owner', mobileHide: true, header: 'Owner', sort: (x) => x.owner, render: (x) => x.owner },
+            { key: 'status', mobileHide: true, header: 'Agent status', render: (x) => <AgentStatus value={x.status} /> },
+            { key: 'last', mobileHide: true, header: 'Last review', sort: (x) => x.lastReview, render: (x) => f.dayYear(x.lastReview) },
+            { key: 'cad', mobileHide: true, header: 'Cadence', num: true, sort: (x) => x.cadenceDays, render: (x) => `${x.cadenceDays} days` },
             { key: 'next', header: 'Next review', sort: (x) => x.nextReview, render: (x) => <span>{f.dayYear(x.nextReview)} <span className="ao-muted">({x.daysUntil >= 0 ? `in ${x.daysUntil}d` : `${-x.daysUntil}d ago`})</span></span> },
             { key: 'rs', header: 'Review', sort: (x) => x.daysUntil, render: (x) => <ReviewPill value={x.reviewStatus} /> },
           ]}
