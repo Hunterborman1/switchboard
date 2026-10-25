@@ -1,5 +1,5 @@
 import type { Placement } from '@floating-ui/react';
-import type { RunDetail, EvalRun, Budget } from '../../shared/contracts';
+import type { RunDetail, EvalRun, Budget, Theme } from '../../shared/contracts';
 import type { OverviewReport, AgentRecord, AgentImpact, UsageReport } from '../../shared/platform-contracts';
 import type { SignalEvent } from '../../shared/events';
 import type { AnchorId } from '../anchors';
@@ -93,6 +93,10 @@ export type TourCtx = {
   evals: EvalsData | null;
   budget: Budget | null;
   ops: OpsData | null;
+  /** A run that has a rejected (ungrounded) quote, for the optional "see a rejected quote" beat. */
+  peek: RunDetail | null;
+  /** The theme the viewer's insight joined (or the top theme). */
+  theme: Theme | null;
   /** Current router pathname (relative to the basename). */
   pathname: string;
   lastEvent: SignalEvent | null;
@@ -146,7 +150,7 @@ export type Step = {
   ready?: (ctx: TourCtx) => boolean;
   readyLabel?: Copy;
   next: string | ((ctx: TourCtx) => string);
-  actions?: StepAction[];
+  actions?: StepAction[] | ((ctx: TourCtx) => StepAction[] | undefined);
   onEnter?: (ctx: TourCtx, api: TourApi) => void;
   /** Ask the product to slow its animations while this step is on. */
   pace?: 'slow' | 'normal';
@@ -167,7 +171,7 @@ export type Persisted = {
   stepId: string;
   beat: number;
   history: string[];
-  ctx: Omit<TourCtx, 'run' | 'evals' | 'budget' | 'ops' | 'pathname' | 'lastEvent'>;
+  ctx: Omit<TourCtx, 'run' | 'evals' | 'budget' | 'ops' | 'peek' | 'theme' | 'pathname' | 'lastEvent'>;
   startedAt: number | null;
   chapterEnteredAt: number | null;
   finished: boolean;

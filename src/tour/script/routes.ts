@@ -18,7 +18,7 @@ export const R = {
   health: '/app/health',
   // Agent Ops (the platform)
   ops: '/ops',
-  opsRegistry: '/ops/registry',
+  opsRegistry: '/ops/agents',
   opsAgent: (id: string) => `/ops/agents/${encodeURIComponent(id)}`,
   opsUsage: '/ops/usage',
   opsLogs: (runId?: string | null) => (runId ? `/ops/logs?runId=${encodeURIComponent(runId)}` : '/ops/logs'),

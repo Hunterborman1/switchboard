@@ -34,6 +34,18 @@ export function Standard() {
   );
 }
 
+const SHORT: Record<string, string> = {
+  owner: 'Owners',
+  purpose: 'Purpose & metric',
+  data_review: 'Security review',
+  evals: 'Evals & gate',
+  logging: 'Logs & traces',
+  cost_cap: 'Spend cap',
+  human_review: 'Human review',
+  rollback: 'Rollback & runbook',
+  review_cadence: 'Review cadence',
+};
+
 function Matrix() {
   const s = useApi<StandardReport>('/standard');
   const [sel, setSel] = useState<{ agentId: string; key: string } | null>(null);
@@ -54,7 +66,8 @@ function Matrix() {
                 <th scope="col">Agent</th>
                 {checks.map((c) => (
                   <th key={c.key} scope="col" className="chk" title={c.label}>
-                    {c.label}
+                    <span aria-hidden="true">{SHORT[c.key] ?? c.label}</span>
+                    <span className="ao-sr">{c.label}</span>
                   </th>
                 ))}
                 <th scope="col" className="num">
@@ -68,7 +81,7 @@ function Matrix() {
                 return (
                   <tr key={m.agentId} data-agent={m.agentId}>
                     <th scope="row" style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 'var(--fs-body)', color: 'var(--cn-off-black)', background: 'transparent', position: 'static', borderBottom: '1px solid var(--cn-border-row)' }}>
-                      <div className="cell-title">
+                      <div className="cell-title" style={{ minWidth: 180, maxWidth: 240, whiteSpace: 'normal' }}>
                         <Link className="row-link" to={`/ops/agents/${m.agentId}#standard`}>
                           {m.name}
                         </Link>

@@ -365,7 +365,7 @@ export function Drawer({ open, onClose, title, sub, children, foot, labelledBy }
             <h2 id={hid}>{title}</h2>
             {sub ? <p>{sub}</p> : null}
           </div>
-          <button type="button" className="ao-x" onClick={onClose} aria-label="Close">
+          <button type="button" className="ao-x" onClick={onClose} aria-label="Close panel">
             <IconX />
           </button>
         </div>

@@ -17,6 +17,34 @@ const PHASES = [
 
 const TRUST = ['A quote on every insight', 'One-click “this is wrong”', 'Precision published weekly', 'CSMs credited when it ships'];
 
+const CYCLE = ['Build', 'Launch', 'Measure', 'Review', 'Improve'];
+const TRACK = 'M 90 20 H 1110 A 40 40 0 0 1 1110 100 H 90 A 40 40 0 0 1 90 20 Z';
+
+/** The operating loop: build → launch → measure → review → improve → build. */
+function OperatingLoop() {
+  const calm = useCalm();
+  return (
+    <svg className="sc-ro__loop" viewBox="0 0 1200 120" role="img" aria-label="The operating loop: build, launch, measure, review, improve, and back to build.">
+      <motion.path d={TRACK} fill="none" stroke="rgb(142 229 142 / 0.35)" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={calm ? { duration: 0 } : { duration: 1.4, ease: EASE }} />
+      {!calm && (
+        <circle r="5" fill="#8EE58E" style={{ filter: 'drop-shadow(0 0 6px #8EE58E)' }}>
+          <animateMotion dur="7s" repeatCount="indefinite" path={TRACK} />
+        </circle>
+      )}
+      {CYCLE.map((c, i) => {
+        const x = 150 + i * 225;
+        return (
+          <motion.g key={c} initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={calm ? { duration: 0 } : { duration: 0.5, delay: 0.3 + i * 0.12, ease: EASE }}>
+            <rect x={x - 70} y={4} width={140} height={32} rx={16} fill="#0E2C26" stroke="rgb(142 229 142 / 0.5)" />
+            <text x={x} y={25} textAnchor="middle" className="sc-ro__cyc">{c.toUpperCase()}</text>
+          </motion.g>
+        );
+      })}
+      <text x={600} y={78} textAnchor="middle" className="sc-ro__cycsub">every agent, on a calendar, with an owner</text>
+    </svg>
+  );
+}
+
 function Timeline() {
   const calm = useCalm();
   return (
@@ -113,6 +141,11 @@ export function Rollout({ beat }: { beat: number }) {
         </Reveal>
       )}
 
+      {b === 2 && (
+        <div className="n-col-12">
+          <OperatingLoop />
+        </div>
+      )}
       {b === 2 && (
         <Reveal className="n-col-12 sc-ro__operate" delay={0.25} each={0.1}>
           {[

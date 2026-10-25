@@ -34,7 +34,7 @@ export function Horizon({ beat }: { beat: number }) {
       <div className="n-col-12 sc-hz__stage">
         <svg className="sc-hz__sky" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
           <defs>
-            <linearGradient id="hz-line" x1="0" x2="1">
+            <linearGradient id="hz-line" x1="0" x2="1200" y1="0" y2="0" gradientUnits="userSpaceOnUse">
               <stop offset="0" stopColor="#8EE58E" stopOpacity="1" />
               <stop offset="1" stopColor="#8EE58E" stopOpacity="0.1" />
             </linearGradient>
@@ -43,7 +43,6 @@ export function Horizon({ beat }: { beat: number }) {
               <stop offset="1" stopColor="#8EE58E" stopOpacity="0" />
             </radialGradient>
           </defs>
-          <ellipse cx="180" cy="128" rx="520" ry="70" fill="url(#hz-glow)" />
           <motion.line x1="0" x2="1200" y1="120" y2="120" stroke="url(#hz-line)" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={calm ? { duration: 0 } : { duration: 1.4, ease: EASE }} />
           {MILES.map((_, i) => {
             const x = 6 + i * 203;

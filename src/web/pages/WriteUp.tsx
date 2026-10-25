@@ -143,7 +143,7 @@ export function WriteUp() {
               <li><b>Deliver</b> to Slack, Jira, Linear and a weekly digest, with receipts and retries. When a ticket ships, the CSM is told, with a drafted customer note.</li>
             </ol>
             <p>
-              <b>Proving it.</b> Evals score precision and recall per insight type and per mess level against 48 hand-labelled golden files, from clean notes to raw speech-to-text and forwarded email threads, plus edge cases (injection, PHI-heavy, nothing actionable). A new prompt is promoted only if every slice holds; a better average with a worse level-5 score is blocked.
+              <b>Proving it.</b> Evals score precision and recall per insight type and per mess level against 48 hand-labelled golden files, from clean notes to raw speech-to-text and forwarded email threads, plus edge cases (injection, PHI-heavy, nothing actionable). A new prompt is promoted only if every slice holds: the cheaper v5 candidate was blocked because precision fell 29 points (88.6% to 59.7%).
             </p>
             <p>
               <b>Cost and failure.</b> Viewers share a hard $15 live-AI cap enforced by the provider and by an in-app ledger. At the cap, or if a live call fails, runs replay a recorded real execution, labelled on screen, so it never becomes an outage. Schema failures retry once with errors, then fall back to a second model, then land in a dead-letter queue on the Health page.
