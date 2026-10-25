@@ -15,7 +15,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { emit } from '../shared/events';
 import { SIGNAL_LOOP_AGENT_ID } from '../shared/platform-contracts';
 import { tourAnchor } from '../tour/anchors';
-import { BrandLockup, Brandmark } from '../system/components/primitives/Brandmark.jsx';
+import { ProductMark, ProductSwitcher } from '../uis/ProductSwitcher';
 import { ConsoleShell, type ConsoleNavGroup } from '../uis/ConsoleShell';
 import { TimezoneProvider } from '../uis/TimezoneContext';
 import { PageHeaderSkeleton, SkeletonSurface, TableSkeleton } from '../uis/Skeleton';
@@ -23,7 +23,6 @@ import { useReviewQueue, useSession } from './api/hooks';
 import { ToastProvider } from './components/ui';
 import { Hint } from './components/Hint';
 import {
-  IconArrowUpRight,
   IconBeaker,
   IconChannels,
   IconGauge,
@@ -66,7 +65,7 @@ function useNavGroups(): ConsoleNavGroup[] {
       ],
     },
     {
-      label: 'Route & close the loop',
+      label: 'Route and follow up',
       items: [
         { to: '/app/routing', label: 'Routing', icon: <IconRoute />, attrs: tourAnchor('nav.routing') },
         { to: '/app/destinations', label: 'Destinations', icon: <IconChannels /> },
@@ -88,33 +87,26 @@ function useNavGroups(): ConsoleNavGroup[] {
 function Footer({ collapsed }: { collapsed: boolean }) {
   const { data } = useSession();
   const ws = data?.workspaceId;
-  const link = (
-    <Link to={AGENT_OPS_HREF} className={`sl-agentops-link${collapsed ? ' is-collapsed' : ''}`} {...tourAnchor('nav.agentops')} aria-label={collapsed ? 'Open Agent Ops' : undefined}>
-      <IconOps size={16} />
-      {collapsed ? null : (
-        <>
-          <span className="sl-agentops-text">
-            <span>Agent Ops</span>
-            <small>Logs, traces, usage, cost</small>
-          </span>
-          <IconArrowUpRight size={14} />
-        </>
-      )}
-    </Link>
-  );
   return (
-    <div className="sl-footer">
+    <div className={`sl-footer${collapsed ? ' is-collapsed' : ''}`}>
       <TourPillSlot placement="rail" compact={collapsed} />
-      {collapsed ? <Hint label="Agent Ops: logs, traces, usage and cost for every agent" placement="right">{link}</Hint> : link}
-      {!collapsed ? (
-        <div className="sl-footer-ws">
-          <span className="sl-footer-dot" aria-hidden="true" />
-          <span>
-            Your workspace{ws ? <span className="sl-mono"> · {ws.slice(0, 10)}</span> : null}
-            <small>Changes stay in your workspace</small>
-          </span>
-        </div>
-      ) : null}
+      {collapsed ? (
+        <Hint label="Agent Ops: logs, traces, usage and cost for every agent" placement="right">
+          <Link to={AGENT_OPS_HREF} className="sl-footer-item is-icon" {...tourAnchor('nav.agentops')} aria-label="Open Agent Ops">
+            <IconOps size={16} />
+          </Link>
+        </Hint>
+      ) : (
+        <Hint label={ws ? `Workspace ${ws}. Your edits stay in this workspace and never change anyone else's view.` : 'Your edits stay in your own workspace.'} placement="right">
+          <div className="sl-footer-ws" tabIndex={0}>
+            <span className="sl-footer-dot" aria-hidden="true" />
+            <span className="sl-footer-ws-text">
+              Your workspace
+              <small>Changes stay private to you</small>
+            </span>
+          </div>
+        </Hint>
+      )}
     </div>
   );
 }
@@ -151,11 +143,22 @@ function ShellInner() {
         <ToastProvider>
           <ConsoleShell
             storageKey="sl-rail-collapsed"
-            brand={<BrandLockup eyebrow="Prepared for Invoca" name="Signal Loop" href={undefined} />}
-            brandCollapsed={<Brandmark tone="dark" size={26} title="Signal Loop" />}
+            brand={
+              <ProductSwitcher
+                current="signal-loop"
+                caption="Prepared for Invoca"
+                hrefs={{ 'signal-loop': '/app/new', 'agent-ops': AGENT_OPS_HREF }}
+                otherAttrs={tourAnchor('nav.agentops')}
+              />
+            }
+            brandCollapsed={
+              <span className="sl-mobile-brand" title="Signal Loop">
+                <ProductMark product="signal-loop" size={24} />
+              </span>
+            }
             mobileBrand={
               <span className="sl-mobile-brand">
-                <Brandmark tone="dark" size={22} title="" />
+                <ProductMark product="signal-loop" size={20} />
                 Signal Loop
               </span>
             }

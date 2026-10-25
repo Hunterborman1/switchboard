@@ -51,8 +51,8 @@ export default function RunsPage() {
       sortable: true,
       sortValue: (r) => r.filename.toLowerCase(),
       render: (r) => (
-        <div style={{ minWidth: 180, maxWidth: 280 }}>
-          <Link to={`/app/runs/${r.id}`} className="sl-quietlink sl-cell-title sl-ellipsis" style={{ display: 'block' }} title={r.filename}>
+        <div style={{ minWidth: 160, maxWidth: 230 }}>
+          <Link to={`/app/runs/${r.id}`} className="sl-quietlink sl-cell-title sl-ellipsis sl-mono" style={{ display: 'block', fontSize: 13 }} title={r.filename}>
             {r.filename}
           </Link>
           <div className="sl-cell-sub sl-xl-only">
@@ -69,7 +69,7 @@ export default function RunsPage() {
       render: (r) => (
         <div style={{ whiteSpace: 'nowrap' }}>
           <div className="sl-cell-title">{r.accountId ? world.accountName(r.accountId) : 'Pasted text'}</div>
-          {r.callId ? <div className="sl-cell-sub sl-mono sl-xl-only">{r.callId}</div> : null}
+          {r.callId ? <div className="sl-cell-sub sl-xl-only">{r.callId}</div> : null}
         </div>
       ),
     },
@@ -79,7 +79,7 @@ export default function RunsPage() {
       sortable: true,
       sortValue: (r) => r.status,
       render: (r) => (
-        <StatusChip tone={RUN_STATUS_TONE[r.status]} size="sm" pulse={r.status === 'running' || r.status === 'queued'}>
+        <StatusChip tone={RUN_STATUS_TONE[r.status]} size="sm">
           {RUN_STATUS_LABEL[r.status]}
         </StatusChip>
       ),
@@ -96,10 +96,10 @@ export default function RunsPage() {
         ) : r.actionable === false ? (
           <span className="sl-meta" style={{ whiteSpace: 'nowrap' }}>Nothing actionable</span>
         ) : (
-          <div style={{ whiteSpace: 'nowrap' }} title={`${r.insightCount} kept · ${r.droppedCount} dropped (ungrounded) · ${r.reviewCount} sent to review`}>
+          <div style={{ whiteSpace: 'nowrap' }} title={`${r.insightCount} kept · ${r.droppedCount} dropped (quote not found) · ${r.reviewCount} sent to review`}>
             <div className="sl-num">{r.insightCount} kept</div>
             <div className="sl-cell-sub">
-              {r.droppedCount} dropped · {r.reviewCount} review
+              {r.droppedCount} dropped · {r.reviewCount} to review
             </div>
           </div>
         ),
@@ -109,14 +109,14 @@ export default function RunsPage() {
       header: 'Cost',
       sortable: true,
       sortValue: (r) => r.costUsd,
-      render: (r) => <span className="sl-mono">{money(r.costUsd, { precise: true })}</span>,
+      render: (r) => <span className="sl-num">{money(r.costUsd, { precise: true })}</span>,
     },
     {
       key: 'duration',
       header: 'Duration',
       sortable: true,
       sortValue: (r) => r.durationMs ?? 0,
-      render: (r) => <span className="sl-mono">{ms(r.durationMs)}</span>,
+      render: (r) => <span className="sl-num">{ms(r.durationMs)}</span>,
     },
     {
       key: 'created',
@@ -131,6 +131,7 @@ export default function RunsPage() {
     <div className="sl-page">
       <AppPageHeader
         title="Runs"
+        subtitle="Every conversation processed in this workspace"
         dataAsOf={runs.dataAsOf}
         actions={
           <Button size="sm" iconLeft="plus" onClick={() => navigate('/app/new')}>
@@ -142,8 +143,8 @@ export default function RunsPage() {
         <ErrorState error={runs.error} onRetry={() => void runs.refresh()} what="runs" />
       ) : (
         <Panel
-          title="Pipeline runs"
-          sub="Every file that went through the 10-step pipeline in this workspace, plus seeded history. Open one for its steps, evidence and trace."
+          title="All runs"
+          sub="Your runs plus sample history. Open one to see its steps, quotes and cost."
           actions={
             <SegmentedControl<Filter>
               ariaLabel="Filter runs by status"
@@ -167,13 +168,12 @@ export default function RunsPage() {
             pagination="when-needed"
             initialSort={{ key: 'created', direction: 'desc' }}
             rowTone={(r) => (r.status === 'failed' ? 'red' : null)}
-            caption="Pipeline runs"
             empty={
               all.length === 0 ? (
                 <EmptyState
                   variant="no-data"
                   title="No runs yet"
-                  description="Bring in a call from the library, paste notes or drop a file to run the pipeline."
+                  description="Bring in a call from the library, paste notes or upload a file to get started."
                   action={
                     <Button size="sm" onClick={() => navigate('/app/new')}>
                       New call

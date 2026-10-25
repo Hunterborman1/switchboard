@@ -21,8 +21,7 @@ import { invalidate, keys, setCached, useLibrary, useSession } from '../api/hook
 import { FilePicker } from '../components/FilePicker';
 import { AppPageHeader, Panel, WhyDisabled, useToast } from '../components/ui';
 import { FileGlyph, IconDrop, IconLibrary, IconPaste, IconShield, IconUpload } from '../components/icons';
-import { bytes, dateTime, STEP_HELP } from '../lib/labels';
-import { MODEL_ROLE_SHORT } from '../lib/models';
+import { bytes, dateTime, STEP_DETAIL, STEP_HELP } from '../lib/labels';
 import { useWorldIndex } from '../lib/world';
 import { usePrefersReducedMotion, useTourState } from '../state';
 import { RelativeTime } from '../../uis/RelativeTime';
@@ -35,16 +34,16 @@ const LEVEL: Record<MessLevel, { name: string; line: string }> = {
   1: { name: 'Clean notes', line: 'Structured CSM notes. The baseline: nothing to untangle.' },
   2: { name: 'Tidy transcript', line: 'Speaker-labelled with timestamps; several insights in one call.' },
   3: { name: 'Real conversation', line: 'Filler, tangents and small talk; insights span several turns.' },
-  4: { name: 'Messy speech-to-text', line: 'Raw ASR: homophones (“in vocal”), speaker swaps, [crosstalk], hedged complaints.' },
+  4: { name: 'Messy speech-to-text', line: 'Raw machine transcription: misheard words (“in vocal”), swapped speakers, crosstalk, hedged complaints.' },
   5: { name: 'Chaos', line: 'Slack shorthand, forwarded threads, partial transcripts; context has to be inferred.' },
 };
 
 const EDGE: Record<EdgeKind, { name: string; line: string }> = {
   nothing_actionable: { name: 'Nothing actionable', line: 'A friendly check-in. The right answer is zero insights, and the system should say so.' },
-  injection: { name: 'Prompt injection attempt', line: 'Contains instructions aimed at an AI. Watch the screen step treat them as inert data.' },
-  phi_heavy: { name: 'PHI-heavy healthcare call', line: 'Patient details everywhere. Redaction swaps them for tokens before any model sees the text.' },
-  non_english: { name: 'Non-English', line: 'Not in English. Screening detects the language; extraction still grounds every quote.' },
-  duplicate: { name: 'Duplicate re-upload', line: 'An exact copy of an earlier file. Ingest recognises the SHA-256 and skips it.' },
+  injection: { name: 'Attempt to manipulate the AI', line: 'Contains instructions aimed at an AI. Watch the screening step treat them as plain text, not commands.' },
+  phi_heavy: { name: 'Healthcare call full of patient details', line: 'Redaction replaces patient details with placeholders before any AI sees the text.' },
+  non_english: { name: 'Not in English', line: 'Screening detects the language; every quote is still checked against the conversation.' },
+  duplicate: { name: 'Duplicate upload', line: 'An exact copy of an earlier file. Signal Loop recognises it and does not process it twice.' },
 };
 
 const ACCEPT = '.vtt,.txt,.md,.eml,.chat,text/plain,text/markdown,text/vtt,message/rfc822';
@@ -169,21 +168,21 @@ export default function NewCallPage() {
   const options: { key: Source; title: string; sub: string; icon: ReactNode }[] = useMemo(
     () => [
       { key: 'library', title: 'From the library', sub: libCount != null ? `${libCount} recorded calls, notes and emails` : 'Recorded calls, notes and emails', icon: <IconLibrary size={20} /> },
-      { key: 'paste', title: 'Paste text', sub: 'Notes or a transcript, 40 – 60,000 characters', icon: <IconPaste size={20} /> },
-      { key: 'drop', title: 'Drop a file', sub: '.vtt  .txt  .md  .eml  .chat', icon: <IconDrop size={20} /> },
+      { key: 'paste', title: 'Paste text', sub: 'Meeting notes or a transcript', icon: <IconPaste size={20} /> },
+      { key: 'drop', title: 'Upload a file', sub: 'Transcript, notes, email or chat export', icon: <IconDrop size={20} /> },
     ],
     [libCount],
   );
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="New call" dataAsOf={library.dataAsOf ?? session.dataAsOf} />
+      <AppPageHeader title="New call" subtitle="Turn one customer conversation into routed, evidence-backed insight" dataAsOf={library.dataAsOf ?? session.dataAsOf} />
 
       <div className={styles.layout}>
         <div className={styles.main}>
           <Panel
             title="Bring in a conversation"
-            sub="Signal Loop turns one customer conversation into routed, evidence-backed product insight."
+            sub="Choose a recorded call, paste notes, or upload a file."
           >
             <div className={styles.sources} role="tablist" aria-label="Source">
               {options.map((o) => (
@@ -213,21 +212,19 @@ export default function NewCallPage() {
                     <motion.div
                       key="empty"
                       className={styles.pickZone}
-                      initial={reduced ? false : { opacity: 0, y: 6 }}
+                      initial={reduced ? false : { opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={reduced ? undefined : { opacity: 0, y: -6 }}
-                      transition={{ duration: 0.2 }}
+                      exit={reduced ? undefined : { opacity: 0 }}
+                      transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
                     >
                       <div className={styles.pickArt} aria-hidden="true">
-                        <FileGlyph format="vtt" size={40} />
-                        <FileGlyph format="md" size={40} />
-                        <FileGlyph format="eml" size={40} />
+                        <IconLibrary size={20} />
                       </div>
                       <p className={styles.pickTitle}>Choose a call from the library</p>
-                      <p className={styles.pickSub}>A synthetic, Invoca-shaped export: QBRs, renewals, escalations, CSM notes and forwarded emails, from clean to chaotic.</p>
+                      <p className={styles.pickSub}>Sample QBRs, renewals, escalations, CSM notes and forwarded emails, from tidy to very messy.</p>
                       <Button
                         variant="primary"
-                        size="lg"
+                        size="md"
                         iconLeft="plus"
                         onClick={() => setPickerOpen(true)}
                         {...tourAnchor('new.upload')}
@@ -238,10 +235,10 @@ export default function NewCallPage() {
                   ) : (
                     <motion.div
                       key={file.id}
-                      initial={reduced ? false : { opacity: 0, y: 8, scale: 0.99 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      initial={reduced ? false : { opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
                       exit={reduced ? undefined : { opacity: 0 }}
-                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
                     >
                       <FileCard file={file} accountName={account?.name ?? (file.accountId ? file.accountId : 'Not linked to an account')} accountMeta={account ? `${account.tier} · ${account.vertical.replace('_', ' ')}` : null} reduced={reduced} onChange={() => setPickerOpen(true)} />
                     </motion.div>
@@ -271,7 +268,7 @@ export default function NewCallPage() {
                     disabled={!canRunCustom}
                   />
                   <div className={styles.counter}>
-                    <span className={textOk ? undefined : styles.counterBad}>{textLen.toLocaleString()}</span> / 60,000 characters · minimum 40 · names, phones, emails and PHI are redacted before any model sees the text
+                    <span className={textOk ? undefined : styles.counterBad}>{textLen.toLocaleString()}</span> of 60,000 characters (at least 40). Names, phone numbers, emails and patient details are removed before any AI sees the text.
                   </div>
                 </div>
               ) : (
@@ -284,7 +281,7 @@ export default function NewCallPage() {
                   onDragLeave={() => setDragOver(false)}
                   onDrop={(e) => (canRunCustom ? onDrop(e) : e.preventDefault())}
                 >
-                  <IconUpload size={28} />
+                  <span className={styles.dropIcon}><IconUpload size={20} /></span>
                   {dropped ? (
                     <>
                       <p className={styles.pickTitle}>{dropped.name}</p>
@@ -294,8 +291,8 @@ export default function NewCallPage() {
                     </>
                   ) : (
                     <>
-                      <p className={styles.pickTitle}>Drop a transcript or notes file here</p>
-                      <p className={styles.pickSub}>WebVTT, plain text, Markdown, email (.eml) or a chat export. Read locally; only redacted text reaches a model.</p>
+                      <p className={styles.pickTitle}>Drag a file here</p>
+                      <p className={styles.pickSub}>A transcript, text or Markdown notes, an email or a chat export. Only redacted text is sent to AI.</p>
                     </>
                   )}
                   <input ref={fileInputRef} type="file" accept={ACCEPT} hidden onChange={(e) => e.target.files?.[0] && readFile(e.target.files[0])} />
@@ -313,12 +310,11 @@ export default function NewCallPage() {
                 <span>
                   {live ? (
                     <>
-                      Runs <strong>live</strong> on the real models
-                      {session.data ? <span className="sl-subtle"> · {MODEL_ROLE_SHORT.primary}, {MODEL_ROLE_SHORT.secondary}</span> : null}
+                      Runs <strong>live</strong> on the main model, with a backup model as a second opinion
                     </>
                   ) : (
                     <>
-                      <strong>Replay mode</strong>: the run replays a recorded live run at real speed
+                      <strong>Replay mode</strong>: plays back a recorded live run at real speed
                     </>
                   )}
                 </span>
@@ -327,12 +323,12 @@ export default function NewCallPage() {
                 {runDisabledReason ? <WhyDisabled reason={runDisabledReason} /> : null}
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   iconLeft="play"
                   loading={running}
                   disabled={!!runDisabledReason || running}
                   onClick={() => void startRun(false)}
-                  title={runDisabledReason ?? 'Start the 10-step pipeline'}
+                  title={runDisabledReason ?? 'Process this conversation in ten steps'}
                   {...tourAnchor('new.run')}
                 >
                   Run pipeline
@@ -355,13 +351,13 @@ export default function NewCallPage() {
                     </div>
                   }
                 >
-                  Same bytes as your run <MonoId value={earlier.runId} keep={6} />
+                  It is identical to your run <MonoId value={earlier.runId} keep={6} />
                   {earlier.createdAt ? (
                     <>
                       {' '}from <RelativeTime value={earlier.createdAt} />
                     </>
                   ) : null}
-                  . Open it to see the recorded result, or run it again for a fresh live execution (counts against the shared budget).
+                  . Open it to see the result, or run it again live (this uses some of the shared AI budget).
                 </Banner>
               </div>
             ) : null}
@@ -376,10 +372,10 @@ export default function NewCallPage() {
         </div>
 
         <aside className={styles.side}>
-          <Panel title="What happens next" sub="Ten steps on a fast path, with a durable Workflow to resume from the last completed step if one fails. Every step writes a record the Run view animates from.">
+          <Panel title="What happens next" sub="Ten steps, each saved as it finishes. If one fails, the run picks up where it left off.">
             <ol className={styles.steps}>
               {STEP_KEYS.map((k, i) => (
-                <li key={k} className={styles.step}>
+                <li key={k} className={styles.step} title={STEP_DETAIL[k]}>
                   <span className={styles.stepNum}>{i + 1}</span>
                   <span>
                     <span className={styles.stepName}>{STEP_LABELS[k]}</span>
@@ -392,7 +388,7 @@ export default function NewCallPage() {
           <div className={styles.trust}>
             <IconShield size={18} />
             <span>
-              <strong>No quote, no insight.</strong> Every insight carries a verbatim quote that code (not a model) finds in the transcript. Unfound quotes are dropped and counted.
+              <strong>No quote, no insight.</strong> Every insight carries the customer’s exact words, and Signal Loop checks they really appear in the conversation. Anything it cannot find is dropped and counted.
             </span>
           </div>
         </aside>
@@ -460,7 +456,7 @@ function FileCard({
         </div>
         <div>
           <dt>Size</dt>
-          <dd className="sl-mono">{bytes(file.sizeBytes)}</dd>
+          <dd className="sl-num">{bytes(file.sizeBytes)}</dd>
         </div>
         <div>
           <dt>Modified</dt>
@@ -470,9 +466,9 @@ function FileCard({
       {reveal ? (
         <motion.div
           className={`${styles.reveal} ${edge ? styles.revealEdge : ''}`}
-          initial={reduced ? false : { opacity: 0, y: 6 }}
+          initial={reduced ? false : { opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: reduced ? 0 : 0.25, duration: 0.3 }}
+          transition={{ delay: reduced ? 0 : 0.15, duration: 0.24, ease: [0.2, 0, 0, 1] }}
         >
           <div className={styles.revealHead}>
             <span className={styles.revealEyebrow}>{edge ? 'Edge case revealed' : 'Complexity revealed'}</span>
@@ -482,12 +478,12 @@ function FileCard({
                   <motion.i
                     key={n}
                     className={n <= level ? styles.meterOn : undefined}
-                    initial={reduced ? false : { scaleY: 0.3, opacity: 0.3 }}
-                    animate={{ scaleY: 1, opacity: 1 }}
-                    transition={{ delay: reduced ? 0 : 0.35 + n * 0.07, duration: 0.2 }}
+                    initial={reduced ? false : { opacity: 0.3 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: reduced ? 0 : 0.2 + n * 0.05, duration: 0.18 }}
                   />
                 ))}
-                <span className={styles.meterLabel}>{level} / 5</span>
+                <span className={styles.meterLabel}>{level} of 5</span>
               </span>
             ) : null}
           </div>

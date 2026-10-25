@@ -11,23 +11,22 @@ import { api } from '../api/client';
 import { invalidate, useSession } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel, useToast } from '../components/ui';
 import { money } from '../lib/labels';
-import { MODEL_ROLE_LABEL } from '../lib/models';
 import styles from './settings/Settings.module.css';
 
 function ThresholdBar() {
   const review = THRESHOLDS.review * 100;
   const auto = THRESHOLDS.autoRoute * 100;
   return (
-    <div className={styles.scale} role="img" aria-label={`Gate scale: below ${THRESHOLDS.review} held, ${THRESHOLDS.review} to ${THRESHOLDS.autoRoute} review, ${THRESHOLDS.autoRoute} and above auto-route`}>
+    <div className={styles.scale} role="img" aria-label={`Confidence score: below ${THRESHOLDS.review} held, ${THRESHOLDS.review} to ${THRESHOLDS.autoRoute} reviewed by a person, ${THRESHOLDS.autoRoute} and above sent automatically`}>
       <div className={styles.track}>
         <span className={styles.zoneHeld} style={{ width: `${review}%` }}>
           Held
         </span>
         <span className={styles.zoneReview} style={{ width: `${auto - review}%` }}>
-          Review
+          Person reviews
         </span>
         <span className={styles.zoneAuto} style={{ width: `${100 - auto}%` }}>
-          Auto-route
+          Sent automatically
         </span>
       </div>
       <div className={styles.ticks} aria-hidden="true">
@@ -60,7 +59,7 @@ export default function SettingsPage() {
   if (session.error && !session.data) {
     return (
       <div className="sl-page">
-        <AppPageHeader title="Settings" dataAsOf={null} />
+        <AppPageHeader title="Settings" subtitle="Models, budget and the rules that decide what gets sent" dataAsOf={null} />
         <ErrorState error={session.error} onRetry={() => void session.refresh()} what="settings" />
       </div>
     );
@@ -83,35 +82,35 @@ export default function SettingsPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Settings" dataAsOf={session.dataAsOf} />
-      <Callout tone="brand" title="Viewer changes stay in your workspace">
+      <AppPageHeader title="Settings" subtitle="Models, budget and the rules that decide what gets sent" dataAsOf={session.dataAsOf} />
+      <Callout tone="neutral" title="Viewer changes stay in your workspace">
         Everything you change in this demo (routing rules, review decisions, ticket states) is written to your own workspace
         <span className="sl-mono"> ({s.workspaceId})</span>. Other viewers see the seeded baseline plus their own changes, never yours.
       </Callout>
 
       <div className="sl-grid-2">
-        <Panel title="Model configuration" sub="The exact model ids this deployment calls. Two models at most, picked for speed in the build's speed test. Elsewhere in the app they appear by role." flush>
-          <SettingsRow label={MODEL_ROLE_LABEL.primary} description="Screen, extract and theme naming." controlWidth="auto">
+        <Panel title="Model configuration" sub="The exact AI models this deployment calls. Two at most, chosen for speed in testing. Everywhere else in the app they appear as Main model and Backup model." flush>
+          <SettingsRow label="Main model" description="The fast model: screening, extraction and naming themes." controlWidth="auto">
             <MonoId value={s.models.primary} keep={40} />
           </SettingsRow>
-          <SettingsRow label={MODEL_ROLE_LABEL.secondary} description="Fallback when the primary fails or is slow; a different model family judges evals." controlWidth="auto">
+          <SettingsRow label="Backup model" description="Takes over when the main model fails or is slow. From a different AI family, it also grades the evals." controlWidth="auto">
             <MonoId value={s.models.secondary} keep={40} />
           </SettingsRow>
-          <SettingsRow label="Extraction prompt" description="Stored on every insight; evals run per version." controlWidth="auto" last>
+          <SettingsRow label="Extraction prompt" description="Recorded on every insight; each version is tested before it goes live." controlWidth="auto" last>
             <Badge tone="brand" uppercase={false}>
               {s.promptVersion}
             </Badge>
           </SettingsRow>
         </Panel>
 
-        <Panel title="Budget" sub="Live AI spend for every viewer of this demo." flush>
-          <SettingsRow label="Viewer spend cap" description="Hard limit at the provider plus an in-app ledger checked before each run." controlWidth="auto">
-            <span className="sl-mono sl-strong">{money(s.budget.limitUsd ?? BUDGET_LIMIT_USD, { precise: true })}</span>
+        <Panel title="Budget" sub="Live AI spend, shared by everyone viewing this demo." flush>
+          <SettingsRow label="Spending limit" description="A hard limit at the AI provider, plus an in-app check before every run." controlWidth="auto">
+            <span className="sl-num sl-strong">{money(s.budget.limitUsd ?? BUDGET_LIMIT_USD, { precise: true })}</span>
           </SettingsRow>
-          <SettingsRow label="Spent so far" description={`${s.budget.liveRuns.toLocaleString()} live runs · ${s.budget.replayRuns.toLocaleString()} replays`} controlWidth="auto">
-            <span className="sl-mono">{money(s.budget.spentUsd, { precise: true })}</span>
+          <SettingsRow label="Spent so far" description={`${s.budget.liveRuns.toLocaleString()} live runs and ${s.budget.replayRuns.toLocaleString()} replays`} controlWidth="auto">
+            <span className="sl-num">{money(s.budget.spentUsd, { precise: true })}</span>
           </SettingsRow>
-          <SettingsRow label="At the cap" description="Runs switch to replaying recorded live runs at real speed, labelled as replays. Custom uploads pause and say why." controlWidth="auto" last>
+          <SettingsRow label="When the limit is reached" description="Runs replay recorded live runs at real speed, clearly labelled. Custom uploads pause and say why." controlWidth="auto" last>
             <Badge tone={s.budget.liveEnabled ? 'success' : 'warning'} uppercase={false}>
               {s.budget.liveEnabled ? 'Live AI on' : 'Replay mode'}
             </Badge>
@@ -119,26 +118,26 @@ export default function SettingsPage() {
         </Panel>
       </div>
 
-      <Panel title="Gate thresholds" sub="Read-only in the demo. Changing them is a prompt-version decision that has to pass the eval gate first.">
+      <Panel title="Confidence thresholds" sub="Every insight gets a confidence score from 0 to 1 that decides where it goes. Read-only here: changing them has to pass the evals first.">
         <div className="sl-stack-lg">
           <ThresholdBar />
           <div className="sl-grid-3">
             <div className={styles.rule}>
-              <span className="sl-eyebrow">Auto-route</span>
+              <span className={styles.ruleLabel}>Sent automatically</span>
               <span className={styles.ruleValue}>≥ {THRESHOLDS.autoRoute.toFixed(2)}</span>
-              <p className="sl-p">Final confidence (model × grounding × type prior) at or above this routes without a human.</p>
+              <p className="sl-p">At or above this score the insight goes straight to its owner. The score combines the AI’s confidence, how well the quote matched and how reliable that insight type usually is.</p>
             </div>
             <div className={styles.rule}>
-              <span className="sl-eyebrow">Review</span>
+              <span className={styles.ruleLabel}>Person reviews</span>
               <span className={styles.ruleValue}>
                 {THRESHOLDS.review.toFixed(2)} – {THRESHOLDS.autoRoute.toFixed(2)}
               </span>
-              <p className="sl-p">Goes to the review queue. Churn risk and sev-1 bugs always land here, whatever their score.</p>
+              <p className="sl-p">Goes to the review queue. Churn risk and critical bugs always land here, whatever their score.</p>
             </div>
             <div className={styles.rule}>
-              <span className="sl-eyebrow">Grounding</span>
+              <span className={styles.ruleLabel}>Quote match</span>
               <span className={styles.ruleValue}>≥ {THRESHOLDS.grounding.toFixed(2)}</span>
-              <p className="sl-p">Every quote must be found in the transcript (exact, then fuzzy). Below this the insight is dropped as a hallucination.</p>
+              <p className="sl-p">Every quote must be found in the conversation, word for word or a close match at this similarity. Below it the insight is dropped as made up.</p>
             </div>
           </div>
         </div>

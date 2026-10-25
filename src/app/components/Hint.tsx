@@ -54,7 +54,7 @@ export function Hint({
             ...floatingStyles,
             zIndex: 95,
             maxWidth,
-            padding: '7px 10px',
+            padding: '6px 10px',
             borderRadius: 'var(--radius-sm)',
             background: 'var(--cn-green-mid)',
             color: 'var(--text-on-dark)',

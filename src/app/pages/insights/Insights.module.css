@@ -7,51 +7,62 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 2px;
   padding: var(--sp-3) var(--sp-4) !important;
   background: var(--cn-white) !important;
-  border: 1px solid var(--cn-border) !important;
-  border-left: 3px solid var(--cn-border-strong) !important;
+  border: 1px solid var(--border) !important;
   border-radius: var(--radius-lg) !important;
   text-align: left;
   min-width: 0;
-  transition: box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 .tile:hover {
-  box-shadow: var(--shadow-sm);
+  background: var(--bg-subtle) !important;
 }
-.tile[data-tone='warning'] { border-left-color: var(--cn-warning) !important; }
-.tile[data-tone='success'] { border-left-color: var(--cn-success) !important; }
-.tile[data-tone='danger'] { border-left-color: var(--cn-danger) !important; }
-.tileOn {
-  background: var(--uis-row-selected) !important;
-  border-color: color-mix(in srgb, var(--cn-green) 45%, transparent) !important;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cn-green) 45%, transparent);
+.tileOn,
+.tileOn:hover {
+  background: var(--accent-subtle) !important;
+  border-color: var(--accent) !important;
 }
 .tileLabel {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-medium);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-label);
-  color: var(--text-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
+.tileLabel::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--text-tertiary);
+}
+.tile[data-tone='warning'] .tileLabel::before { background: var(--cn-warning); }
+.tile[data-tone='success'] .tileLabel::before { background: var(--success); }
+.tile[data-tone='danger'] .tileLabel::before { background: var(--danger); }
 .tileValue {
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  font-size: var(--fs-metric);
-  font-weight: var(--fw-light);
-  color: var(--cn-off-black);
-  line-height: 1.1;
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 32px;
+  font-variant-numeric: tabular-nums;
 }
 .tileDen {
-  font-size: var(--fs-meta);
-  color: var(--text-subtle);
-  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
 }
 .tileHelp {
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 12px;
+  color: var(--text-tertiary);
 }
 .toolbar {
   display: flex;
@@ -59,7 +70,7 @@
   justify-content: space-between;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-4);
-  border-bottom: 1px solid var(--cn-border);
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
 /* the DataTable draws its own card frame; inside our panel drop it */
@@ -79,11 +90,11 @@
   border-radius: var(--radius-sm);
   white-space: normal;
 }
-.rowBtn:hover .sl-cell-title,
+.rowBtn > span:first-child {
+  font-weight: 500;
+}
 .rowBtn:hover > span:first-child {
-  color: var(--text-link);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: var(--accent-text);
 }
 .conf {
   display: inline-flex;
@@ -95,8 +106,8 @@
   position: relative;
   width: 48px;
   height: 4px;
-  border-radius: 999px;
-  background: var(--cn-chart-track);
+  border-radius: 2px;
+  background: var(--bg-muted);
   overflow: hidden;
 }
 .confTrack i {

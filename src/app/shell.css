@@ -1,114 +1,89 @@
-/* Shell chrome specific to Signal Loop: budget pill, sidebar footer, mobile brand. */
+/* Shell chrome specific to Signal Loop: the budget readout, the sidebar footer, the mobile
+   brand. Flat and quiet, per docs/DESIGN.md "Shells". */
 
+/* "Live AI · $0.07 of $15 used" over a thin flat meter. Plain text, not a pill. */
 .sl-app .sl-budget-pill {
   display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-height: var(--control-sm);
-  padding: 0 var(--sp-25) 0 var(--sp-2);
-  border: 1px solid var(--cn-border);
-  border-radius: var(--radius-pill);
-  background: var(--cn-white);
-  font-size: var(--fs-caption);
-  color: var(--cn-off-black);
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 0;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-secondary);
   white-space: nowrap;
   cursor: default;
 }
-.sl-app .sl-budget-pill.is-compact {
-  background: rgba(242, 245, 228, 0.08);
-  border-color: var(--cn-border-on-dark);
-  color: var(--text-on-dark);
-}
-.sl-app .sl-budget-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-pill);
-  background: var(--cn-success);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cn-success) 20%, transparent);
-  animation: cn-pulse var(--dur-pulse) ease-in-out infinite;
-}
-.sl-app .sl-budget-pill.is-replay .sl-budget-dot {
-  background: var(--cn-warning);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cn-warning) 25%, transparent);
-  animation: none;
-}
-.sl-app .sl-budget-label { font-weight: var(--fw-medium); }
+.sl-app .sl-budget-text { display: inline-flex; align-items: baseline; }
+.sl-app .sl-budget-label { font-weight: 500; color: var(--text); }
+.sl-app .sl-budget-pill.is-replay .sl-budget-label { color: var(--warning); }
+.sl-app .sl-budget-amt { color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: pre; }
 .sl-app .sl-budget-track {
   position: relative;
-  width: 44px;
-  height: 4px;
-  border-radius: var(--radius-pill);
-  background: var(--cn-chart-track);
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--bg-muted);
   overflow: hidden;
 }
 .sl-app .sl-budget-track > span {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--cn-green);
+  background: var(--accent);
   border-radius: inherit;
+  transition: width var(--dur-slow) var(--ease-out);
 }
-.sl-app .sl-budget-amt { color: var(--text-muted); font-size: var(--fs-caption); }
+.sl-app .sl-budget-pill.is-replay .sl-budget-track > span { background: var(--cn-warning); }
 
 @media (max-width: 1100px) {
-  .sl-app .sl-budget-track, .sl-app .sl-budget-amt { display: none; }
+  .sl-app .sl-budget-track { display: none; }
 }
 
-/* Sidebar footer */
+/* Sidebar footer: quiet secondary rows. */
 .sl-app .sl-footer {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: 2px;
   width: 100%;
 }
-.sl-app .sl-agentops-link {
+.sl-app .sl-footer.is-collapsed { align-items: center; }
+.sl-app .sl-footer-item {
   display: flex;
   align-items: center;
-  gap: var(--sp-25);
-  min-height: 40px;
-  padding: var(--sp-15) var(--sp-25);
-  border: 1px solid var(--cn-border-on-dark);
-  border-radius: var(--radius-md);
-  background: rgba(209, 255, 209, 0.06);
-  color: var(--text-on-dark);
+  gap: 10px;
+  min-height: 32px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
   text-decoration: none;
-  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
-.sl-app .sl-agentops-link:hover {
-  opacity: 1;
-  background: rgba(209, 255, 209, 0.12);
-  border-color: rgba(209, 255, 209, 0.3);
-}
-.sl-app .sl-agentops-link.is-collapsed { justify-content: center; padding: 0; width: 40px; margin-inline: auto; }
-.sl-app .sl-agentops-text {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.25;
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-}
-.sl-app .sl-agentops-text small {
-  font-size: var(--fs-micro);
-  font-weight: var(--fw-regular);
-  color: var(--side-fg-muted);
-}
+.sl-app .sl-footer-item:hover { background: var(--bg-muted); color: var(--text); }
+.sl-app .sl-footer-item.is-icon { justify-content: center; width: 36px; padding: 0; }
 .sl-app .sl-footer-ws {
   display: flex;
   align-items: flex-start;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-25);
-  font-size: var(--fs-caption);
-  color: var(--side-fg);
-  line-height: 1.35;
+  gap: 10px;
+  padding: 6px var(--sp-2);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 18px;
 }
-.sl-app .sl-footer-ws small { display: block; color: var(--side-fg-muted); font-size: var(--fs-micro); }
+.sl-app .sl-footer-ws-text { display: flex; flex-direction: column; min-width: 0; }
+.sl-app .sl-footer-ws small { display: block; color: var(--text-tertiary); font-size: 12px; font-weight: 400; }
 .sl-app .sl-footer-dot {
-  margin-top: 5px;
+  margin: 6px 5px 0 5px;
   width: 6px;
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--cn-sage);
+  background: var(--success);
   flex: none;
 }
 .sl-app .sl-mobile-brand {

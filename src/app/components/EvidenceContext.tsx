@@ -58,8 +58,8 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
         <blockquote className="sl-quote">{span ?? 'No quote recorded.'}</blockquote>
         <p className={styles.note}>
           {run.error
-            ? 'The source transcript for this insight is not retained in this workspace, so only the grounded quote is shown.'
-            : 'The quote could not be placed in a specific turn; showing it on its own.'}
+            ? 'The full conversation is not stored for this older insight, so only the verified quote is shown.'
+            : 'The quote could not be matched to a single line of the conversation, so it is shown on its own.'}
         </p>
       </div>
     );
@@ -68,8 +68,8 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
   const from = Math.max(0, idx - radius);
   const to = Math.min(turns.length, idx + radius + 1);
   return (
-    <ol className={styles.wrap} aria-label="Surrounding turns">
-      {from > 0 ? <li className={styles.more}>… {from} earlier turn{from === 1 ? '' : 's'}</li> : null}
+    <ol className={styles.wrap} aria-label="Surrounding conversation">
+      {from > 0 ? <li className={styles.more}>… {from} earlier line{from === 1 ? '' : 's'}</li> : null}
       {turns.slice(from, to).map((t, i) => {
         const hit = from + i === idx;
         return (
@@ -77,13 +77,13 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
             <div className={styles.who}>
               <span className={styles.speaker}>{t.speaker}</span>
               {t.ts ? <span className={styles.ts}>{t.ts}</span> : null}
-              <span className={styles.tid}>{t.id}</span>
+              <span className={styles.tid} title="Line reference">{t.id}</span>
             </div>
             <p className={styles.text}>{hit ? <Highlighted text={t.text} span={span} /> : t.text}</p>
           </li>
         );
       })}
-      {to < turns.length ? <li className={styles.more}>… {turns.length - to} later turn{turns.length - to === 1 ? '' : 's'}</li> : null}
+      {to < turns.length ? <li className={styles.more}>… {turns.length - to} later line{turns.length - to === 1 ? '' : 's'}</li> : null}
     </ol>
   );
 }

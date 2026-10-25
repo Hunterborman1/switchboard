@@ -20,15 +20,15 @@ export const RUN_STATUS_LABEL: Record<Run['status'], string> = {
 
 export const MODE_REASON: Record<string, string> = {
   budget_reached: 'The $15 live AI budget is used up, so this run replayed a recorded live run at real speed.',
-  live_failed: 'The live model call failed or ran slow, so the recorded live run was replayed.',
+  live_failed: 'The live AI call failed or was too slow, so the recorded live run was played back.',
   live_disabled: 'Live AI was turned off for this run; it replayed a recorded live run.',
-  seed: 'Seeded history: a recorded live run from the build, present in every workspace.',
+  seed: 'Sample history: a recorded live run, present in every workspace.',
 };
 
 export function ModeChip({ run }: { run: Pick<Run, 'mode' | 'modeReason'> }) {
   if (run.mode === 'live') {
     return (
-      <Hint label="Live: this run called the real models.">
+      <Hint label="Live: this run called the real AI models.">
         <span tabIndex={0} style={{ display: 'inline-flex' }}>
           <StatusChip tone="success" size="sm">
             Live

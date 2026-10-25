@@ -17,7 +17,7 @@ test.describe('Review queue', () => {
   test('approve with A routes the item, shows a receipt and emits review.action', async ({ page }) => {
     const events = await captureEvents(page);
     await gotoApp(page, '/app/review');
-    const options = page.getByRole('option');
+    const options = page.getByRole('listbox', { name: 'Review queue' }).getByRole('option');
     await expect(options.first()).toBeVisible();
     const before = await options.count();
     const firstSummary = await page.locator('#review-detail-title').innerText();
@@ -31,7 +31,7 @@ test.describe('Review queue', () => {
 
   test('J/K navigate; E opens the edit form; typing does not trigger shortcuts', async ({ page }) => {
     await gotoApp(page, '/app/review');
-    await expect(page.getByRole('option').first()).toBeVisible();
+    await expect(page.getByRole('listbox', { name: 'Review queue' }).getByRole('option').first()).toBeVisible();
     const first = await page.locator('#review-detail-title').innerText();
     await page.keyboard.press('j');
     await expect(page.locator('#review-detail-title')).not.toHaveText(first);
@@ -49,7 +49,7 @@ test.describe('Review queue', () => {
 
   test('reject requires a reason', async ({ page }) => {
     await gotoApp(page, '/app/review');
-    await expect(page.getByRole('option').first()).toBeVisible();
+    await expect(page.getByRole('listbox', { name: 'Review queue' }).getByRole('option').first()).toBeVisible();
     await page.keyboard.press('r');
     const form = page.getByRole('form', { name: 'Reject insight' });
     const submit = form.getByRole('button', { name: 'Reject', exact: true });
@@ -62,7 +62,7 @@ test.describe('Review queue', () => {
   test('clearing the queue shows the calm empty state and emits review.empty', async ({ page }) => {
     const events = await captureEvents(page);
     await gotoApp(page, '/app/review');
-    await expect(page.getByRole('option').first()).toBeVisible();
+    await expect(page.getByRole('listbox', { name: 'Review queue' }).getByRole('option').first()).toBeVisible();
     for (let i = 0; i < 40; i++) {
       if (await page.getByText('Queue clear').isVisible()) break;
       const btn = page.locator('[data-tour="review.approve"]');

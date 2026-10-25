@@ -131,6 +131,7 @@ export default function ThemeDetailPage() {
     <div className="sl-page">
       <AppPageHeader
         title={theme.name}
+        subtitle={`${AREA_LABEL[theme.productArea]} theme`}
         dataAsOf={dataAsOf}
         breadcrumbs={[{ label: 'Themes', href: '/app/themes' }, { label: theme.name }]}
       />
@@ -139,9 +140,8 @@ export default function ThemeDetailPage() {
         <div style={{ minWidth: 0, flex: 1 }}>
           <div className="sl-row" style={{ marginBottom: 8 }}>
             <TypeTag type={theme.type} />
-            <span className="sl-caption">· {AREA_LABEL[theme.productArea]}</span>
             <StatusChip tone={THEME_STATUS_TONE[theme.status]}>{THEME_STATUS_LABEL[theme.status]}</StatusChip>
-            <MonoId value={theme.id} />
+            <span className="sl-caption" title="Theme ID"><MonoId value={theme.id} /></span>
           </div>
           <p className={styles.lede}>{theme.summary}</p>
           <p className="sl-meta" style={{ margin: '8px 0 0' }}>
@@ -172,7 +172,7 @@ export default function ThemeDetailPage() {
           {
             label: 'ARR at stake',
             value: <span {...tourAnchor('theme.arr')}>{money(theme.arrUsd, { compact: true })}</span>,
-            sub: 'Sum of distinct accounts’ ARR',
+            sub: 'Combined ARR of the accounts affected',
           },
           { label: 'First seen', value: <span style={{ fontSize: 'var(--fs-title-lg)' }}>{dateShort(theme.firstSeen)}</span>, sub: `Last seen ${dateShort(theme.lastSeen)}` },
         ]}
@@ -181,7 +181,7 @@ export default function ThemeDetailPage() {
       <div className={styles.detailGrid}>
         <Panel
           title="Trend"
-          sub="Insights joining this theme per ISO week · click a bar for the records"
+          sub="New insights in this theme each week. Click a bar to see them."
           anchor={tourAnchor('theme.trend')}
         >
           {theme.weekly.length === 0 ? (
@@ -191,11 +191,11 @@ export default function ThemeDetailPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={theme.weekly.map((w) => ({ ...w, label: weekLabel(w.week) }))} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
                   <CartesianGrid vertical={false} stroke="var(--cn-grid)" />
-                  <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: 'var(--cn-border)' }} tick={{ fontSize: 11, fill: 'var(--cn-ink-3-txt)', fontFamily: 'var(--font-mono)' }} />
-                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--cn-ink-3-txt)' }} width={44} />
+                  <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: 'var(--cn-border)' }} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} />
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} width={44} />
                   <Tooltip
-                    cursor={{ fill: 'var(--cn-mist)' }}
-                    contentStyle={{ borderRadius: 6, border: '1px solid var(--cn-border)', boxShadow: 'var(--shadow-md)', fontSize: 12 }}
+                    cursor={{ fill: 'var(--bg-subtle)' }}
+                    contentStyle={{ borderRadius: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-2)', fontSize: 12 }}
                     formatter={(v) => [`${String(v)} insights`, 'Joined']}
                     labelFormatter={(l) => `Week ${String(l)}`}
                   />
@@ -208,7 +208,7 @@ export default function ThemeDetailPage() {
                     onClick={() => navigate(`/app/insights?q=${encodeURIComponent(theme.name.split(' ').slice(0, 2).join(' '))}`)}
                   >
                     {theme.weekly.map((w, i) => (
-                      <Cell key={w.week} fill={i === theme.weekly.length - 1 ? 'var(--cn-green)' : 'var(--cn-chart-1)'} fillOpacity={i === theme.weekly.length - 1 ? 1 : 0.55} />
+                      <Cell key={w.week} fill={i === theme.weekly.length - 1 ? 'var(--chart-1)' : 'var(--accent-subtle)'} stroke={i === theme.weekly.length - 1 ? 'none' : 'var(--chart-1)'} strokeOpacity={0.35} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -216,13 +216,13 @@ export default function ThemeDetailPage() {
             </div>
           )}
           <p className="sl-caption" style={{ margin: '10px 0 0' }}>
-            Darker bar = current week. <Link to={`/app/insights?q=${encodeURIComponent(theme.name.split(' ').slice(0, 2).join(' '))}`}>Open the insights behind this chart →</Link>
+            The solid bar is the current week. <Link className="sl-linkbtn" to={`/app/insights?q=${encodeURIComponent(theme.name.split(' ').slice(0, 2).join(' '))}`}>Open these insights</Link>
           </p>
         </Panel>
 
-        <Panel title="Representative quotes" sub="Highest-confidence grounded evidence" anchor={tourAnchor('theme.quotes')}>
+        <Panel title="What customers said" sub="The clearest verified quotes in this theme" anchor={tourAnchor('theme.quotes')}>
           {theme.topQuotes.length === 0 ? (
-            <EmptyState variant="no-data" title="No quotes yet" description="Quotes appear once an insight in this theme is grounded." />
+            <EmptyState variant="no-data" title="No quotes yet" description="Quotes appear once an insight in this theme has a verified quote." />
           ) : (
             <ul className={styles.quotes}>
               {theme.topQuotes.map((q) => (
@@ -230,7 +230,7 @@ export default function ThemeDetailPage() {
                   <blockquote className="sl-quote">{q.quote}</blockquote>
                   <div className={styles.quoteMeta}>
                     <span>{world.accountName(q.accountId)}</span>
-                    <Link to={`/app/insights/${q.insightId}`}>Open insight →</Link>
+                    <Link className="sl-linkbtn" to={`/app/insights/${q.insightId}`}>Open insight</Link>
                   </div>
                 </li>
               ))}
@@ -255,7 +255,7 @@ export default function ThemeDetailPage() {
         />
       </Panel>
 
-      <Panel title="Lineage" sub="Accounts → insights → theme. Click a node’s Open link to jump to its record." flush>
+      <Panel title="How it connects" sub="Which accounts raised which insights in this theme. Use a node’s Open link to see the record." flush>
         {lineage.length === 0 ? (
           <div className="sl-panel-body">
             <EmptyState variant="not-yet-collected" title="No linked insights yet" />

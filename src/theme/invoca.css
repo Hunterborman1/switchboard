@@ -12,9 +12,10 @@
       tokens and its own type).
 
    Below, only VALUES change. Every --cn-* name is HB's own, so every HB and UIS
-   component picks up the theme with no component edits. Values come from
-   invoca.com's live CSS (docs/PLAN.md §2); contrast is measured against the
-   surface each token actually sits on (notes inline).
+   component picks up the theme with no component edits. Values are the
+   docs/DESIGN.md v2 tokens (light, flat, one accent); the DESIGN.md names
+   (--bg-subtle, --accent, --text-secondary, ...) are declared at the end so
+   new code can use the spec's vocabulary directly.
    ========================================================================= */
 
 @import '@fontsource-variable/inter/wght.css';
@@ -27,100 +28,181 @@
 @import './base-scoped.css';
 
 :root {
-  /* ---------- BRAND (Invoca green) ----------
-     #008463 is Invoca's button green darkened until white text passes:
-     white on it 4.69:1 (AA). Text-on-light that is brand coloured uses the
-     deeper #006B51 (6.5:1 on white, 6.2:1 on the sand background), because
-     #008463 on an off-white page is only 4.48:1. */
+  /* ---------- DESIGN.md tokens (the source of truth) ---------- */
+  --bg-subtle:       #F7F8F7;
+  --bg-muted:        #EFF1EF;
+  --border-strong:   #CDD2CD;
+  --text-secondary:  #525C57;   /* 7.1:1 on white */
+  --text-tertiary:   #6B756F;   /* 4.8:1 on white */
+  --accent:          #008463;   /* white on it 4.69:1 */
+  --accent-text:     #006B51;
+  --accent-subtle:   #E8F4EF;
+  --success:         #0F7B48;  --success-subtle: #E7F4EC;
+  --warning:         #9A5B00;  --warning-subtle: #FBF1DE;
+  --danger:          #B42318;  --danger-subtle:  #FDECEA;
+  --info:            #2F5DB8;  --info-subtle:    #EAF0FB;
+  --shadow-1: 0 1px 2px rgba(16,24,20,.06);
+  --shadow-2: 0 4px 12px rgba(16,24,20,.08), 0 1px 3px rgba(16,24,20,.06);
+  --chart-1: #008463; --chart-2: #2F5DB8; --chart-3: #C2780C;
+  --chart-4: #7A4FB5; --chart-5: #3E8E9E; --chart-6: #B5475A;
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit:  cubic-bezier(0.4, 0, 1, 1);
+
+  /* ---------- BRAND (one accent) ---------- */
   --cn-green:          #008463;
   --cn-green-deep:     #006B51;
-  --cn-green-mid:      #0A231E;   /* sidebar + inverse surface: Invoca's black-green (16.5:1 with white) */
-  --cn-green-soft:     #00A87F;   /* decorative fills only, never behind white text */
-  --cn-sage:           #D1FFD1;   /* accent on dark chrome: 15.4:1 on #0A231E */
-  --cn-mist:           #F2F5E4;   /* Invoca sand tint: soft panels, hover fills */
-  --cn-wash:           #F9F9F6;   /* Invoca sand wash: app background, quiet strips */
-  --cn-wash-line:      #E3E4E1;
+  --cn-green-mid:      #1C2420;   /* the one dark surface left: tooltips. Neutral, not green. */
+  --cn-green-soft:     #008463;   /* flat: decorative fills use the accent itself */
+  --cn-sage:           #E8F4EF;   /* accent-subtle */
+  --cn-mist:           #EFF1EF;
+  --cn-wash:           #F7F8F7;
+  --cn-wash-line:      #E3E6E3;
 
-  /* ---------- NEUTRALS ----------
-     --cn-off-white is HB's "text on brand / on dark" colour as well as the
-     field fill. It goes to pure white so white-on-green keeps its 4.69:1; the
-     page background moves to Invoca's sand wash through the --bg alias below,
-     so the app still never sits on pure white. */
+  /* ---------- NEUTRALS ---------- */
   --cn-off-white:      #FFFFFF;
   --cn-white:          #FFFFFF;
-  --cn-paper:          #FBFBF8;   /* table headers, raised strips (warm) */
-  --cn-row-hover:      #F7F8F2;   /* row hover: a hair of the sand tint */
-  --cn-fill:           #F1F2EC;   /* neutral chip / hover fill (warm) */
-  --cn-off-black:      #1B1F1E;   /* primary text: 16.2:1 on the sand bg */
-  --cn-ink-2:          #4E5653;   /* secondary text: 7.2:1 on bg */
-  --cn-ink-3-txt:      #646B68;   /* tertiary readable text: 5.3:1 on bg, 5.5:1 on white */
-  --cn-ink-3:          #8E9491;   /* placeholders / disabled / quiet glyphs only (not AA text) */
-  --cn-line-ghost:     #C3C7C1;
+  --cn-paper:          #F7F8F7;
+  --cn-row-hover:      #F7F8F7;
+  --cn-fill:           #EFF1EF;
+  --cn-off-black:      #111614;
+  --cn-ink-2:          #525C57;
+  --cn-ink-3-txt:      #6B756F;
+  --cn-ink-3:          #8A938E;   /* placeholders / disabled glyphs only */
+  --cn-line-ghost:     #CDD2CD;
 
-  --cn-border:         rgba(27,31,30,0.12);
-  --cn-border-mid:     rgba(27,31,30,0.14);
-  --cn-border-strong:  rgba(27,31,30,0.18);
-  --cn-border-row:     rgba(27,31,30,0.07);
-  --cn-border-on-dark: rgba(242,245,228,0.14);
-  --cn-border-disabled:#D8DAD5;
+  --cn-border:         #E3E6E3;
+  --cn-border-mid:     #E3E6E3;
+  --cn-border-strong:  #CDD2CD;
+  --cn-border-row:     #ECEEEC;
+  --cn-border-on-dark: rgba(255,255,255,0.14);
+  --cn-border-disabled:#E3E6E3;
 
-  /* ---------- STATUS (kept apart from brand, so status never reads as branding) ----------
-     solid = dot / bar / rule · txt = label on soft · soft = chip fill.
-     Every txt value is ≥ 4.5:1 on its own soft fill AND on white. */
-  --cn-neutral:        #59605D;  --cn-neutral-soft:  #EEF0EA;
-  --cn-brand-txt:      #006B51;  --cn-brand-soft:    #E0F3EA;   /* 5.7:1 */
-  --cn-success:        #2E7D32;  --cn-success-txt:   #23642A;  --cn-success-soft:  #E4F1E4;   /* 5.9:1 */
-  --cn-warning:        #FFA25B;  --cn-warning-txt:   #9A4508;  --cn-warning-soft:  #FFF1E4;   /* 5.9:1 — #B45309 solid is used for warning bars needing 3:1 */
-  --cn-danger:         #CF2519;  --cn-danger-txt:    #A81E14;  --cn-danger-soft:   #FCEAE8;   /* 6.0:1; white on solid 5.3:1 */
-  --cn-info:           #016FA8;  --cn-info-txt:      #015A88;  --cn-info-soft:     #E5F1F8;   /* 6.6:1 */
+  /* ---------- STATUS: solid / txt / soft ---------- */
+  --cn-neutral:        #525C57;  --cn-neutral-soft:  #EFF1EF;
+  --cn-brand-txt:      #006B51;  --cn-brand-soft:    #E8F4EF;
+  --cn-success:        #0F7B48;  --cn-success-txt:   #0F7B48;  --cn-success-soft:  #E7F4EC;
+  --cn-warning:        #C2780C;  --cn-warning-txt:   #9A5B00;  --cn-warning-soft:  #FBF1DE;
+  --cn-danger:         #B42318;  --cn-danger-txt:    #B42318;  --cn-danger-soft:   #FDECEA;
+  --cn-info:           #2F5DB8;  --cn-info-txt:      #2F5DB8;  --cn-info-soft:     #EAF0FB;
 
-  /* ---------- CHARTS (Invoca's ramp) ---------- */
-  --cn-chart-1: #00A87F;
-  --cn-chart-2: #004030;
-  --cn-chart-3: #5E74E3;
-  --cn-chart-4: #016FA8;
-  --cn-chart-5: #858538;
-  --cn-chart-6: #7C4DCC;
-  --cn-chart-track: #ECEEE7;
-  --cn-grid:        rgba(27,31,30,0.08);
+  /* ---------- CHARTS (DESIGN.md flat series, colour-blind-safe order) ---------- */
+  --cn-chart-1: #008463;
+  --cn-chart-2: #2F5DB8;
+  --cn-chart-3: #C2780C;
+  --cn-chart-4: #7A4FB5;
+  --cn-chart-5: #3E8E9E;
+  --cn-chart-6: #B5475A;
+  --cn-chart-track: #EFF1EF;
+  --cn-grid:        rgba(17,22,20,0.07);
 
-  /* ---------- SEMANTIC ALIASES that HB derives from the values above ----------
-     Re-pointed (not renamed) where the derived value would miss AA or read
-     wrong on the sand palette. */
-  --bg:             var(--cn-wash);
-  --surface-sunken: var(--cn-wash);
-  --surface-wash:   var(--cn-mist);
-  --text-brand:     var(--cn-green-deep);
-  --text-link:      var(--cn-green-deep);
-  --text-on-dark:   #F2F5E4;           /* Invoca mist on black-green: 15.6:1 */
+  /* ---------- SEMANTIC ALIASES ---------- */
+  --bg:             #FFFFFF;
+  --surface:        #FFFFFF;
+  --surface-raised: #F7F8F7;
+  --surface-sunken: #F7F8F7;
+  --surface-wash:   #F7F8F7;
+  --surface-inverse:#1C2420;
+  --text:           #111614;
+  --text-muted:     #525C57;
+  --text-subtle:    #6B756F;
+  --text-placeholder: #8A938E;
+  --text-brand:     #006B51;
+  --text-link:      #006B51;
+  --text-on-dark:   #FFFFFF;
+  --border:         #E3E6E3;
 
-  /* Sidebar on #0A231E: 86% mist ≈ 12.4:1, 55% ≈ 6.0:1, 42% label ≈ 4.0:1 (11px uppercase eyebrow, decorative grouping) */
-  --side-bg:        var(--cn-green-mid);
-  --side-fg:        rgba(242,245,228,0.86);
-  --side-fg-muted:  rgba(242,245,228,0.58);
-  --side-label:     rgba(242,245,228,0.50);
-  --side-hover:     rgba(242,245,228,0.07);
-  --side-active-bar:var(--cn-sage);
+  /* Sidebar: the shared light shell (DESIGN.md "Shells") */
+  --side-bg:        #F7F8F7;
+  --side-fg:        #525C57;
+  --side-fg-muted:  #6B756F;
+  --side-label:     #6B756F;
+  --side-hover:     #EFF1EF;
+  --side-active-bar:transparent;
 
-  /* ---------- ELEVATION: HB's overlay shadows were tinted with the old forest
-     green (23,63,53). Corrected to the same ink as the card shadows. ---------- */
-  --shadow-xs: 0 1px 2px rgba(17,22,20,0.05);
-  --shadow-sm: 0 2px 8px rgba(17,22,20,0.06);
-  --shadow-md: 0 8px 24px rgba(17,22,20,0.08);
-  --shadow-lg:      0 24px 60px rgba(17,22,20,0.16);
-  --shadow-modal:   0 30px 80px rgba(17,22,20,0.22);
-  --shadow-pane:    0 1px 2px rgba(17,22,20,0.05), 0 8px 24px rgba(17,22,20,0.07);
-  --shadow-toolbar: 0 -8px 24px rgba(17,22,20,0.06);
-  --shadow-drawer:  -24px 0 60px rgba(17,22,20,0.14);
+  /* ---------- ELEVATION: two rungs only ---------- */
+  --shadow-xs:      var(--shadow-1);
+  --shadow-sm:      var(--shadow-1);
+  --shadow-md:      var(--shadow-2);
+  --shadow-lg:      var(--shadow-2);
+  --shadow-modal:   var(--shadow-2);
+  --shadow-pane:    var(--shadow-1);
+  --shadow-toolbar: none;
+  --shadow-drawer:  var(--shadow-2);
 
-  /* ---------- FOCUS ----------
-     2px #008463 ring: 4.5:1 against the sand bg, 4.7:1 on white (≥ 3:1 needed).
-     On dark chrome the ring is sage (15:1 on #0A231E). */
+  /* ---------- FOCUS: a crisp ring, no halo glow ---------- */
   --focus-ring:         2px solid var(--cn-green);
-  --focus-ring-on-dark: 2px solid var(--cn-sage);
-  --focus-halo:         0 0 0 3px rgba(0,132,99,0.16);
+  --focus-ring-on-dark: 2px solid #FFFFFF;
+  --focus-halo:         0 0 0 1px var(--cn-green);
 
-  /* ---------- TYPE: self-hosted Inter first; JetBrains Mono for ids/figures ---------- */
+  /* ---------- MOTION (DESIGN.md rule 6) ---------- */
+  --ease-out:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast:    120ms;
+  --dur-base:    180ms;
+  --dur-slow:    240ms;
+  --dur-overlay: 240ms;
+
+  /* ---------- TYPE: Inter only; mono for IDs, file names, code ---------- */
   --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: var(--font-sans);
   --font-mono: 'JetBrains Mono Variable', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  --fw-light:   400;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-bold:    600;
+  --fw-semibold: 600;
+  --tracking-tight:   -0.01em;
+  --tracking-normal:  0;
+  --tracking-label:   0;
+  --tracking-eyebrow: 0;
+  --tracking-eyebrow-lg: 0;
+
+  /* 12 / 13 / 14 (body) / 16 / 20 / 24 / 32 / 44 */
+  --type-scale: 1;
+  --fs-h1: 24px;  --fs-h2: 20px;  --fs-h3: 16px;  --fs-h4: 14px;
+  --fs-hero:      44px;
+  --fs-metric-xl: 32px;
+  --fs-metric:    24px;
+  --fs-heading:   20px;
+  --fs-title-lg:  16px;
+  --fs-title:     14px;
+  --fs-16:        16px;
+  --fs-body-lg:   14px;
+  --fs-body:      14px;
+  --fs-body-sm:   13px;
+  --fs-meta:      13px;
+  --fs-caption:   12px;
+  --fs-micro:     12px;
+  --lh-normal:    1.5;
+
+  /* ---------- GEOMETRY: 4px grid, 6px controls, 8px cards ---------- */
+  --sp-5: 20px;
+  --radius-xs:  4px;
+  --radius-sm:  6px;
+  --radius-md:  6px;
+  --radius-lg:  8px;
+  --radius-badge: 4px;
+  --control-xs: 24px;
+  --control-sm: 28px;
+  --control-md: 32px;
+  --control-lg: 32px;
+  --control-xl: 36px;
+  --field-h:    32px;
+  --nav-item-h: 32px;
+  --row-h:      40px;
+  --touch-min:  44px;
+  --pill-h-sm:  20px;
+  --pill-h:     22px;
+  --pill-h-lg:  24px;
+  --badge-h-sm: 20px;
+  --sidebar-w:  240px;
+  --sidebar-w-collapsed: 60px;
+  --topbar-h:   56px;
+  --content-max: 1280px;
+  --gutter:     32px;
+  --gutter-lg:  32px;
 }
+
+/* Calm, short entrance for page content (DESIGN.md: opacity + 4px, 180ms). Overrides the
+   HB keyframe of the same name so every existing call site gets the calmer version. */
+@keyframes cn-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

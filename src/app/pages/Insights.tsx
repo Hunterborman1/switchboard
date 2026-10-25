@@ -24,11 +24,11 @@ import { track } from '../telemetry';
 import styles from './insights/Insights.module.css';
 
 const TILES: { status: InsightStatus; label: string; help: string }[] = [
-  { status: 'pending_review', label: 'Pending review', help: 'Waiting for a human' },
+  { status: 'pending_review', label: 'Pending review', help: 'Waiting for a person to check' },
   { status: 'routed', label: 'Routed', help: 'Delivered to an owner' },
-  { status: 'held', label: 'Held', help: 'Below 0.55, not routed' },
-  { status: 'rejected', label: 'Rejected', help: 'Rejected in review' },
-  { status: 'dropped_ungrounded', label: 'Dropped', help: 'Quote not in transcript' },
+  { status: 'held', label: 'Held', help: 'Low score, not sent' },
+  { status: 'rejected', label: 'Rejected', help: 'Turned down in review' },
+  { status: 'dropped_ungrounded', label: 'Dropped', help: 'Quote not found in the call' },
 ];
 
 const SEV_RANK = { low: 0, medium: 1, high: 2, critical: 3 } as const;
@@ -112,15 +112,15 @@ export default function InsightsPage() {
     { key: 'severity', header: 'Severity', sortable: true, sortValue: (r) => SEV_RANK[r.severity], render: (r) => <SeverityTag severity={r.severity} /> },
     {
       key: 'conf',
-      header: 'Confidence',
+      header: 'Score',
       sortable: true,
       sortValue: (r) => r.confidenceFinal,
       render: (r) => (
-        <span className={styles.conf} title={`model ${r.confidenceModel.toFixed(2)} × grounding ${r.groundingScore.toFixed(2)} → ${r.confidenceFinal.toFixed(2)}`}>
+        <span className={styles.conf} title={`Overall score ${r.confidenceFinal.toFixed(2)} (AI confidence ${r.confidenceModel.toFixed(2)}, quote check ${r.groundingScore.toFixed(2)})`}>
           <span className={styles.confTrack} aria-hidden="true">
-            <i style={{ width: `${Math.round(r.confidenceFinal * 100)}%`, background: r.confidenceFinal >= 0.8 ? 'var(--cn-success)' : r.confidenceFinal >= 0.55 ? 'var(--cn-warning)' : 'var(--cn-neutral)' }} />
+            <i style={{ width: `${Math.round(r.confidenceFinal * 100)}%`, background: r.confidenceFinal >= 0.8 ? 'var(--success)' : r.confidenceFinal >= 0.55 ? 'var(--cn-warning)' : 'var(--text-tertiary)' }} />
           </span>
-          <span className="sl-mono">{r.confidenceFinal.toFixed(2)}</span>
+          <span className="sl-num">{r.confidenceFinal.toFixed(2)}</span>
         </span>
       ),
     },
@@ -159,7 +159,7 @@ export default function InsightsPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Insights" dataAsOf={filtered.dataAsOf ?? all.dataAsOf} />
+      <AppPageHeader title="Insights" subtitle="Every insight pulled from customer conversations, and where it went." dataAsOf={filtered.dataAsOf ?? all.dataAsOf} />
 
       <div className={styles.tiles} role="group" aria-label="Filter by status">
         {TILES.map((t) => {
@@ -176,7 +176,7 @@ export default function InsightsPage() {
             >
               <span className={styles.tileLabel}>{t.label}</span>
               <span className={styles.tileValue}>
-                <span className="sl-mono">{n}</span>
+                <span className="sl-num">{n}</span>
                 <span className={styles.tileDen}>/ {base.length}</span>
               </span>
               <span className={styles.tileHelp}>{t.help}</span>
@@ -222,9 +222,9 @@ export default function InsightsPage() {
             rowTone={(r) => (r.status === 'rejected' || r.status === 'held' ? 'muted' : r.status === 'dropped_ungrounded' ? 'red' : null)}
             empty={
               total === 0 ? (
-                <EmptyState variant="not-yet-collected" title="No insights yet" description="Run a call from New call; extracted insights land here as soon as they ground." />
+                <EmptyState variant="not-yet-collected" title="No insights yet" description="Run a call from New call. Insights appear here as soon as their quotes are verified." />
               ) : (
-                <EmptyState variant="no-data" title="No insights match these filters" description="Nothing is wrong: try a broader filter or clear them." />
+                <EmptyState variant="no-data" title="No insights match these filters" description="Try a broader filter, or clear the filters." />
               )
             }
           />

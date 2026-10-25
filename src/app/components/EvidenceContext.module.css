@@ -4,62 +4,75 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: 2px;
   min-width: 0;
 }
 .turn {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: 2px;
   padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--radius-md);
-  border-left: 3px solid transparent;
-  opacity: 0.72;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  color: var(--text-secondary);
 }
 .hit {
-  opacity: 1;
-  background: var(--cn-wash);
-  border-left-color: var(--cn-green-soft);
+  background: var(--bg-subtle);
+  border-left-color: var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text);
 }
 .who {
   display: flex;
   align-items: baseline;
   gap: var(--sp-2);
   flex-wrap: wrap;
-  font-size: var(--fs-caption);
+  font-size: 12px;
 }
 .speaker {
-  font-weight: var(--fw-medium);
-  color: var(--cn-off-black);
+  font-weight: 500;
+  color: var(--text);
 }
-.turn[data-role='invoca'] .speaker { color: var(--cn-green-deep); }
-.ts, .tid {
+.turn[data-role='invoca'] .speaker { color: var(--accent-text); }
+.ts {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+/* Line references are for engineers: present, but only on hover. */
+.tid {
+  margin-left: auto;
   font-family: var(--font-mono);
-  color: var(--text-subtle);
-  font-size: var(--fs-micro);
+  color: var(--text-tertiary);
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
 }
-.tid { margin-left: auto; }
+.turn:hover .tid { opacity: 1; }
 .text {
   margin: 0;
-  font-size: var(--fs-body);
-  line-height: var(--lh-copy);
-  color: var(--cn-off-black);
+  font-size: 14px;
+  line-height: 1.55;
+  color: inherit;
   overflow-wrap: anywhere;
 }
 .mark {
-  background: color-mix(in srgb, var(--cn-green-soft) 28%, transparent);
-  color: inherit;
-  border-radius: 3px;
+  background: var(--accent-subtle);
+  color: var(--text);
+  border-radius: 2px;
   padding: 1px 2px;
-  box-shadow: inset 0 -2px 0 var(--cn-green);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 .more {
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
-  padding-left: var(--sp-3);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 2px var(--sp-3);
 }
 .note {
   margin: var(--sp-2) 0 0;
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 13px;
+  color: var(--text-tertiary);
 }

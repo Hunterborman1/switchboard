@@ -6,11 +6,20 @@
   flex-wrap: wrap;
 }
 
+.runEyebrow,
+.compareLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
 .runTitle {
-  margin: 4px 0 2px;
-  font-size: var(--fs-heading);
-  font-weight: var(--fw-light);
-  color: var(--cn-off-black);
+  margin: 2px 0 4px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
 }
 
 .trend {
@@ -44,8 +53,8 @@
   display: flex;
   gap: var(--sp-4);
   flex-wrap: wrap;
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .legend span {
@@ -69,12 +78,6 @@
   background: var(--cn-chart-1);
 }
 
-.legendT {
-  width: 2px !important;
-  height: 12px !important;
-  background: var(--cn-off-black);
-}
-
 .typeBlock {
   display: flex;
   flex-direction: column;
@@ -89,15 +92,15 @@
 }
 
 .barLabel {
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .barTrack {
   position: relative;
-  height: 10px;
-  border-radius: var(--radius-pill);
-  background: var(--cn-chart-track);
+  height: 8px;
+  border-radius: 2px;
+  background: var(--bg-muted);
 }
 
 .barFill {
@@ -106,7 +109,7 @@
   border-radius: inherit;
   background: var(--cn-chart-2);
   transform-origin: left;
-  animation: barGrow var(--dur-overlay) var(--ease-out) both;
+  animation: barGrow 480ms var(--ease-out) both;
 }
 
 .barRecall {
@@ -127,58 +130,64 @@
 }
 
 .barUnder {
-  background: var(--cn-warning, #d99a1e);
+  background: var(--chart-3);
 }
 
-/* Reference target (the pooled gate level): dashed and muted, so it never reads as a per-type gate. */
+@media (prefers-reduced-motion: reduce) {
+  .barFill {
+    animation: none;
+  }
+}
+
+/* Reference target (the overall target): a thin muted tick, so it never reads as a per-type gate. */
 .barTarget {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
+  top: -3px;
+  bottom: -3px;
   width: 0;
   margin-left: -1px;
-  border-left: 2px dashed var(--text-subtle);
-  opacity: 0.8;
+  border-left: 2px solid var(--text-tertiary);
 }
 
 .legendU {
-  background: var(--cn-warning, #d99a1e);
+  background: var(--chart-3);
 }
 
 .legendTarget {
   width: 0 !important;
   height: 12px !important;
-  border-left: 2px dashed var(--text-subtle);
+  border-left: 2px solid var(--text-tertiary);
   border-radius: 0 !important;
 }
 
 .textUnder,
 .textUnder * {
-  color: var(--cn-warning-txt, #8a5a00) !important;
+  color: var(--warning) !important;
 }
 
 .barThreshold {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
+  top: -3px;
+  bottom: -3px;
   width: 2px;
   margin-left: -1px;
   border-radius: 1px;
-  background: var(--cn-off-black);
+  background: var(--text);
 }
 
 .barValue {
-  font-size: var(--fs-caption);
+  font-size: 13px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .textFail,
 .textFail * {
-  color: var(--cn-danger-txt) !important;
+  color: var(--danger) !important;
 }
 
 .textGood {
-  color: var(--cn-success-txt);
+  color: var(--success);
 }
 
 @media (max-width: 520px) {
@@ -201,9 +210,9 @@
 }
 
 .heat th {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-regular);
-  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
   text-align: left;
   padding: 0 4px;
 }
@@ -214,7 +223,8 @@
 
 .heat tbody th {
   width: 84px;
-  color: var(--cn-off-black);
+  font-size: 13px;
+  color: var(--text);
 }
 
 .heatHead {
@@ -226,47 +236,53 @@
 }
 
 .heatHead span:last-child {
-  font-size: var(--fs-micro);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.heatHead span:first-child {
+  white-space: nowrap;
+}
+
 .heat td {
   padding: 10px 10px 8px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--cn-border-row);
-  background: var(--cn-paper);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--cn-white);
   vertical-align: top;
 }
 
 .cellPass {
-  background: var(--cn-success-soft) !important;
-  border-color: color-mix(in srgb, var(--cn-success) 25%, transparent) !important;
+  background: var(--success-subtle) !important;
+  border-color: transparent !important;
 }
 
 .cellFail {
-  background: var(--cn-danger-soft) !important;
-  border-color: color-mix(in srgb, var(--cn-danger) 35%, transparent) !important;
+  background: var(--danger-subtle) !important;
+  border-color: transparent !important;
 }
 
 .cellPct {
   display: block;
-  font-size: var(--fs-title);
-  font-weight: var(--fw-medium);
+  font-size: 15px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--cn-off-black);
+  color: var(--text);
 }
 
 .cellFail .cellPct {
-  color: var(--cn-danger-txt);
+  color: var(--danger);
 }
 
 .cellDen {
   display: block;
-  font-family: var(--font-mono);
-  font-size: var(--fs-micro);
-  color: var(--text-subtle);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
 }
 
 .cellBar {
@@ -274,14 +290,14 @@
   margin-top: 6px;
   height: 3px;
   border-radius: 2px;
-  background: rgba(27, 31, 30, 0.08);
+  background: var(--bg-muted);
   overflow: hidden;
 }
 
 .cellBar span {
   display: block;
   height: 100%;
-  background: rgba(27, 31, 30, 0.45);
+  background: var(--text-tertiary);
 }
 
 /* ---- metric cards ---- */
@@ -314,23 +330,29 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--cn-border);
-  border-left: 3px solid var(--cn-success);
-  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   background: var(--cn-white);
 }
 
+.metricTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
 .metricFail {
-  border-left-color: var(--cn-danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
 }
 
 .metricBig {
-  font-size: var(--fs-metric);
-  font-weight: var(--fw-light);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
-  color: var(--cn-off-black);
-  line-height: 1.1;
+  color: var(--text);
+  line-height: 30px;
 }
 
 /* ---- candidate ---- */
@@ -357,10 +379,10 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: var(--sp-25) var(--sp-3);
-  border-radius: var(--radius-md);
-  background: var(--cn-paper);
-  border: 1px solid var(--cn-border-row);
+  padding: var(--sp-3);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   min-width: 0;
 }
 
@@ -371,9 +393,10 @@
 }
 
 .compareBig {
-  font-family: var(--font-mono);
-  font-size: var(--fs-body);
-  color: var(--cn-off-black);
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -383,7 +406,8 @@
   width: 100%;
   min-width: 0;
   border-collapse: collapse;
-  font-size: var(--fs-meta);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 .compare th,
@@ -395,12 +419,10 @@
 }
 
 .compare thead th {
-  font-size: var(--fs-micro);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-label);
-  color: var(--text-subtle);
-  font-weight: var(--fw-medium);
-  background: var(--cn-paper);
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  background: var(--bg-subtle);
 }
 
 .compare tbody th {
@@ -410,7 +432,7 @@
 }
 
 .rowRegress {
-  background: color-mix(in srgb, var(--cn-danger-soft) 60%, transparent);
+  background: var(--danger-subtle);
 }
 
 /* ---- gate ---- */
@@ -419,9 +441,9 @@
   flex-direction: column;
   gap: var(--sp-4);
   padding: var(--sp-4);
-  border: 1px solid var(--cn-border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--cn-paper);
+  background: var(--bg-subtle);
 }
 
 .gate :global(.sl-p) {
@@ -445,7 +467,7 @@
 }
 
 .check_pending {
-  opacity: 0.45;
+  opacity: 0.5;
 }
 
 .checkIcon {
@@ -474,8 +496,8 @@
 }
 
 .check_fail .checkIcon {
-  border-color: var(--cn-danger);
-  background: var(--cn-danger);
+  border-color: var(--danger);
+  background: var(--danger);
   color: #fff;
   animation: pop var(--dur-base) var(--ease-out);
 }
@@ -491,10 +513,12 @@
 
 @keyframes pop {
   from {
-    transform: scale(0.6);
+    opacity: 0;
+    transform: scale(0.98);
   }
   to {
-    transform: scale(1);
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -506,54 +530,51 @@
 }
 
 .checkLabel {
-  font-size: var(--fs-body);
-  color: var(--cn-off-black);
+  font-size: 14px;
+  color: var(--text);
 }
 
 .check_fail .checkLabel {
-  color: var(--cn-danger-txt);
-  font-weight: var(--fw-medium);
+  color: var(--danger);
+  font-weight: 500;
 }
 
 .result {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  padding: var(--sp-4) var(--sp-5);
+  padding: var(--sp-4);
   border-radius: var(--radius-lg);
-  border-left: 4px solid;
-  animation: cn-rise var(--dur-slow) var(--ease-out) both;
+  border: 1px solid transparent;
+  animation: cn-rise var(--dur-base) var(--ease-out) both;
   outline-offset: 3px;
 }
 
 .resultOk {
-  background: var(--cn-success-soft);
-  border-left-color: var(--cn-success);
+  background: var(--success-subtle);
 }
 
 .resultBlocked {
-  background: var(--cn-danger-soft);
-  border-left-color: var(--cn-danger);
+  background: var(--danger-subtle);
 }
 
 .resultWord {
-  font-size: var(--fs-heading);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.06em;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .resultOk .resultWord {
-  color: var(--cn-success-txt);
+  color: var(--success);
 }
 
 .resultBlocked .resultWord {
-  color: var(--cn-danger-txt);
+  color: var(--danger);
 }
 
 .resultSub {
-  font-size: var(--fs-body);
-  color: var(--cn-ink-2);
-  line-height: var(--lh-copy);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 20px;
 }
 
 .reasons {
@@ -562,20 +583,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: var(--fs-body);
-  color: var(--cn-off-black);
-  line-height: var(--lh-copy);
-}
-
-/* A wrapped KPI row never ends in an empty cell: the strip flows as wrapping flex
-   tiles (the 1px gap over the border colour still draws the hairlines). */
-.kpis > div {
-  display: flex !important;
-  flex-wrap: wrap;
-}
-
-.kpis > div > div {
-  flex: 1 1 170px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 20px;
 }
 
 /* Metric names wrap; the numbers and the change chip never clip. */

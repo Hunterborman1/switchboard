@@ -127,13 +127,13 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
 
   const nodes: ProvenanceNode[] = ins
     ? [
-        { id: 'transcript', kind: 'Transcript', label: d?.run?.callId ?? d?.run?.filename ?? 'Source call', meta: d?.run ? undefined : 'not retained', href: d?.run ? `/app/runs/${d.run.id}` : undefined },
-        { id: 'quote', kind: 'Quote span', label: ev?.turnId ? `${ev.turnId} · ${ev.method}` : ev?.method ?? 'quote', meta: ev ? `score ${ev.score.toFixed(2)}` : undefined },
+        { id: 'transcript', kind: 'Conversation', label: d?.run?.callId ?? d?.run?.filename ?? 'Source call', meta: d?.run ? undefined : 'not stored', href: d?.run ? `/app/runs/${d.run.id}` : undefined },
+        { id: 'quote', kind: 'Quote', label: ev ? (ev.method === 'exact' ? 'Found word for word' : ev.method === 'failed' ? 'Not found' : `Close match (${Math.round(ev.score * 100)}%)`) : 'quote', meta: ev?.turnId ? `line ${ev.turnId}` : undefined },
         { id: 'insight', kind: 'Insight', label: ins.id },
-        ...(d?.theme ? [{ id: 'theme', kind: 'Theme', label: d.theme.name.length > 28 ? `${d.theme.name.slice(0, 27)}…` : d.theme.name, href: `/app/themes/${d.theme.id}` }] : [{ id: 'theme', kind: 'Theme', label: 'No theme yet', meta: 'candidate' }]),
+        ...(d?.theme ? [{ id: 'theme', kind: 'Theme', label: d.theme.name.length > 28 ? `${d.theme.name.slice(0, 27)}…` : d.theme.name, href: `/app/themes/${d.theme.id}` }] : [{ id: 'theme', kind: 'Theme', label: 'No theme yet', meta: 'new' }]),
         ...(delivery
           ? [{ id: 'delivery', kind: CHANNEL_LABEL[delivery.channel], label: delivery.receipt ?? delivery.destination, href: '/app/destinations' }]
-          : [{ id: 'delivery', kind: 'Delivery', label: ins.status === 'pending_review' ? 'awaiting review' : ins.status === 'rejected' ? 'not routed' : 'none', href: ins.status === 'pending_review' ? `/app/review/${ins.id}` : undefined }]),
+          : [{ id: 'delivery', kind: 'Delivery', label: ins.status === 'pending_review' ? 'Waiting for review' : ins.status === 'rejected' ? 'Not sent' : 'None', href: ins.status === 'pending_review' ? `/app/review/${ins.id}` : undefined }]),
       ]
     : [];
 
@@ -183,7 +183,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
               </p>
 
               <section className={styles.section}>
-                <h3 className={styles.h3}>Provenance</h3>
+                <h3 className={styles.h3}>Where it came from and where it went</h3>
                 <ProvenanceFlow nodes={nodes} layout="vertical" />
               </section>
 
@@ -191,36 +191,36 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                 <div className="sl-spread">
                   <h3 className={styles.h3}>Evidence</h3>
                   {ev ? (
-                    <span className="sl-caption sl-num">
-                      {ev.method} match · grounding {ev.score.toFixed(2)} {ev.score >= 0.9 ? '≥' : '<'} 0.90
+                    <span className="sl-caption sl-num" title={`Quote check: ${ev.method} match, similarity ${ev.score.toFixed(2)} (0.90 needed)`}>
+                      {ev.method === 'exact' ? 'Quote found word for word' : ev.method === 'failed' ? 'Quote not found in the call' : `Quote found (${Math.round(ev.score * 100)}% match)`}
                     </span>
                   ) : null}
                 </div>
                 {ev && ev.method === 'fuzzy' && ev.quote !== ev.matchedText ? (
                   <p className="sl-caption">
-                    Model quoted “{ev.quote}”; matched to the transcript span below.
+                    The AI quoted “{ev.quote}”; it matches the highlighted line below.
                   </p>
                 ) : null}
                 <EvidenceContext insight={ins} radius={1} />
               </section>
 
               <section className={styles.section}>
-                <h3 className={styles.h3}>Confidence</h3>
+                <h3 className={styles.h3}>Confidence score</h3>
                 <dl className={styles.kv}>
-                  <div>
-                    <dt>Model</dt>
-                    <dd className="sl-mono">{ins.confidenceModel.toFixed(2)}</dd>
+                  <div title="How sure the model said it was.">
+                    <dt>AI confidence</dt>
+                    <dd className="sl-num">{ins.confidenceModel.toFixed(2)}</dd>
+                  </div>
+                  <div title="How closely the quote matches the conversation.">
+                    <dt>Quote check</dt>
+                    <dd className="sl-num">{ins.groundingScore.toFixed(2)}</dd>
+                  </div>
+                  <div title="The combined score that decides where the insight goes.">
+                    <dt>Overall</dt>
+                    <dd className="sl-num sl-strong">{ins.confidenceFinal.toFixed(2)}</dd>
                   </div>
                   <div>
-                    <dt>Grounding</dt>
-                    <dd className="sl-mono">{ins.groundingScore.toFixed(2)}</dd>
-                  </div>
-                  <div>
-                    <dt>Final</dt>
-                    <dd className="sl-mono sl-strong">{ins.confidenceFinal.toFixed(2)}</dd>
-                  </div>
-                  <div>
-                    <dt>Prompt · model</dt>
+                    <dt>Prompt version</dt>
                     <dd className="sl-mono sl-ellipsis" title={`${ins.promptVersion} · ${modelLabel(ins.model) ?? 'no model'}`}>
                       {ins.promptVersion}
                     </dd>
@@ -236,7 +236,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                     <div className="sl-spread">
                       <span className="sl-row">
                         <StatusChip tone={delivery.status === 'delivered' ? 'success' : delivery.status === 'failed' ? 'danger' : 'warning'} size="sm">
-                          {delivery.status}
+                          {delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1)}
                         </StatusChip>
                         <span className="sl-meta">
                           {CHANNEL_LABEL[delivery.channel]} · <span className="sl-mono">{delivery.destination}</span> → {world.personName(delivery.ownerId)}
@@ -250,7 +250,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                         <li key={i}>
                           <span className={a.ok ? styles.ok : styles.fail} aria-hidden="true" />
                           <span className="sl-meta">
-                            Attempt {i + 1}: {a.note} · <span className="sl-mono">{a.ms} ms</span>
+                            Attempt {i + 1}: {a.note} · <span className="sl-num">{a.ms} ms</span>
                           </span>
                         </li>
                       ))}
@@ -258,8 +258,8 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                     {delivery.ticketState ? (
                       <p className="sl-caption">
                         Ticket state: <span className="sl-strong">{delivery.ticketState.replace('_', ' ')}</span> ·{' '}
-                        <Link to="/app/destinations" className="sl-quietlink">
-                          open in Destinations
+                        <Link to="/app/destinations" className="sl-linkbtn">
+                          Open in Destinations
                         </Link>
                       </p>
                     ) : null}
@@ -273,7 +273,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                     ) : ins.status === 'rejected' ? (
                       'Rejected in review; nothing was routed.'
                     ) : ins.status === 'held' ? (
-                      'Held below the review floor; visible here, not routed.'
+                      'Held because the score was too low to send; it stays visible here.'
                     ) : (
                       'No delivery recorded.'
                     )}
@@ -290,7 +290,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                     ))}
                   </ul>
                 ) : (
-                  <p className="sl-p">{ins.gate === 'auto_route' ? 'Auto-routed above 0.80: no human review was needed.' : 'No review actions yet.'}</p>
+                  <p className="sl-p">{ins.gate === 'auto_route' ? 'Sent automatically: the score was high enough that no review was needed.' : 'No review actions yet.'}</p>
                 )}
               </section>
             </>

@@ -7,11 +7,11 @@ export type Metric = EvalRun['metrics'][number];
 export const LOWER_IS_BETTER = new Set(['negative_fp_rate', 'phi_leakage']);
 
 export const LEVELS: { n: 1 | 2 | 3 | 4 | 5; label: string; hint: string }[] = [
-  { n: 1, label: 'Clean', hint: 'Structured CSM notes' },
-  { n: 2, label: 'Tidy', hint: 'Speaker-labelled transcript' },
-  { n: 3, label: 'Real', hint: 'Filler, tangents, multi-turn insights' },
-  { n: 4, label: 'Messy ASR', hint: 'Homophones, speaker swaps, crosstalk' },
-  { n: 5, label: 'Chaos', hint: 'Slack shorthand, forwarded email, partial transcript' },
+  { n: 1, label: 'Clean notes', hint: 'Level 1: structured CSM notes' },
+  { n: 2, label: 'Tidy', hint: 'Level 2: speaker-labelled transcript' },
+  { n: 3, label: 'Everyday', hint: 'Level 3: filler, tangents, insights spread over several turns' },
+  { n: 4, label: 'Noisy', hint: 'Level 4: speech-to-text errors, speaker swaps, crosstalk' },
+  { n: 5, label: 'Chaotic', hint: 'Level 5: Slack shorthand, forwarded email, partial transcript' },
 ];
 
 export function metric(run: EvalRun | null | undefined, key: string): Metric | null {
@@ -33,7 +33,7 @@ export function metricLabel(m: Metric): string {
   if ((kind === 'precision' || kind === 'recall') && sub) {
     const K = kind === 'precision' ? 'Precision' : 'Recall';
     const lvl = /^level(\d)$/.exec(sub);
-    if (lvl) return `${K} · mess level ${lvl[1]}`;
+    if (lvl) return `${K} · ${LEVELS.find((l) => String(l.n) === lvl[1])?.label.toLowerCase() ?? `level ${lvl[1]}`} files`;
     if (TYPE_WORDS[sub]) return `${K} · ${TYPE_WORDS[sub]}`;
   }
   if (m.key === 'precision') return 'Precision (all types)';
@@ -54,7 +54,7 @@ export function unitFor(key: string): string {
 }
 
 export function thresholdLabel(m: Metric): string {
-  if (m.threshold == null) return 'no threshold';
+  if (m.threshold == null) return 'none';
   const pct = `${(m.threshold * 100).toFixed(0)}%`;
   return LOWER_IS_BETTER.has(m.key) ? `≤ ${pct}` : `≥ ${pct}`;
 }
@@ -112,31 +112,31 @@ export function gateChecks(candidate: EvalRun, current: EvalRun): GateCheck[] {
   const phi = m('phi_leakage');
   const regs = candidate.metrics.filter((x) => x.key.startsWith('regression.'));
   const regFails = regs.filter((x) => x.passed === false);
-  const regKey = (k: string) => k.replace('regression.', '').replace('recall.level5', 'level-5 recall');
+  const regKey = (k: string) => k.replace('regression.', '').replace('recall.level5', 'recall on the messiest files');
   const costDelta = current.costUsd ? (candidate.costUsd - current.costUsd) / current.costUsd : 0;
   const p95Delta = current.p95Ms ? (candidate.p95Ms - current.p95Ms) / current.p95Ms : 0;
   const signed = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v * 100).toFixed(0)}%`;
   const checks: GateCheck[] = [
-    { id: 'schema', label: 'Every golden file runs to completion', detail: `${failures?.numerator ?? 0} of ${candidate.files} runs failed`, ok: ok(failures) },
-    { id: 'precision', label: `Precision ≥ ${P?.threshold != null ? (P.threshold * 100).toFixed(0) : 85}% (all types)`, detail: `${pctOf(rate(P))}${frac(P)}`, ok: ok(P) },
-    { id: 'recall', label: `Recall ≥ ${R?.threshold != null ? (R.threshold * 100).toFixed(0) : 80}% (all types)`, detail: `${pctOf(rate(R))}${frac(R)}`, ok: ok(R) },
-    { id: 'l5', label: `Recall on level-5 chaos files ≥ ${L5?.threshold != null ? (L5.threshold * 100).toFixed(0) : 70}%`, detail: `${pctOf(rate(L5))}${frac(L5)}`, ok: ok(L5) },
-    { id: 'grounding', label: 'Grounding rate holds', detail: `${pctOf(rate(g))}${frac(g)} · threshold ${g ? thresholdLabel(g) : '—'}`, ok: ok(g) },
-    { id: 'negative', label: 'No invented work on nothing-actionable files', detail: `false-positive rate ${pctOf(rate(fp))}${frac(fp)}`, ok: ok(fp) },
-    { id: 'safety', label: 'Injection flagged · zero PHI reached the model', detail: `injection ${pctOf(rate(inj))} · PHI leakage ${pctOf(rate(phi))}`, ok: ok(inj) && ok(phi) },
+    { id: 'schema', label: 'Every test file runs to completion', detail: `${failures?.numerator ?? 0} of ${candidate.files} runs failed`, ok: ok(failures) },
+    { id: 'precision', label: `Precision at least ${P?.threshold != null ? (P.threshold * 100).toFixed(0) : 85}% (all types)`, detail: `${pctOf(rate(P))}${frac(P)}`, ok: ok(P) },
+    { id: 'recall', label: `Recall at least ${R?.threshold != null ? (R.threshold * 100).toFixed(0) : 80}% (all types)`, detail: `${pctOf(rate(R))}${frac(R)}`, ok: ok(R) },
+    { id: 'l5', label: `Recall on the messiest files at least ${L5?.threshold != null ? (L5.threshold * 100).toFixed(0) : 70}%`, detail: `${pctOf(rate(L5))}${frac(L5)}`, ok: ok(L5) },
+    { id: 'grounding', label: 'Quotes still found in the conversation', detail: `${pctOf(rate(g))}${frac(g)}, target ${g ? thresholdLabel(g) : '—'}`, ok: ok(g) },
+    { id: 'negative', label: 'No invented work on files with nothing actionable', detail: `invented on ${pctOf(rate(fp))}${frac(fp)} of them`, ok: ok(fp) },
+    { id: 'safety', label: 'Manipulation attempts caught, no health information reaches the AI', detail: `caught ${pctOf(rate(inj))}, leaked ${pctOf(rate(phi))}`, ok: ok(inj) && ok(phi) },
   ];
   if (regs.length) {
     checks.push({
       id: 'regression',
-      label: `No regression vs ${current.promptVersion} beyond 2 pts`,
-      detail: (regFails.length ? regFails : regs).map((x) => `${regKey(x.key)} ${pts(x.value ?? 0)}`).join(' · '),
+      label: `Nothing more than 2 points worse than ${current.promptVersion}`,
+      detail: (regFails.length ? regFails : regs).map((x) => `${regKey(x.key)} ${pts(x.value ?? 0)}`).join(', '),
       ok: regFails.length === 0,
     });
   }
   checks.push({
     id: 'cost',
-    label: 'Cost and p95 latency (reported, not gated)',
-    detail: `eval cost ${signed(costDelta)} · p95 ${signed(p95Delta)} vs ${current.promptVersion}`,
+    label: 'Cost and speed (shown for context, not a rule)',
+    detail: `test cost ${signed(costDelta)}, slowest 5% of files ${signed(p95Delta)} compared with ${current.promptVersion}`,
     ok: true,
     info: true,
   });
@@ -147,7 +147,7 @@ export function gateChecks(candidate: EvalRun, current: EvalRun): GateCheck[] {
 export function gateVerdict(candidate: EvalRun, current: EvalRun): string {
   const cand = candidate.promptVersion;
   const cur = current.promptVersion;
-  if (candidate.promoted) return `${cand} is now the production prompt. New runs record it on every insight.`;
+  if (candidate.promoted) return `${cand} is now the live prompt. New runs record it on every insight.`;
   const P = metric(candidate, 'precision');
   const P0 = metric(current, 'precision');
   const R = metric(candidate, 'recall');
@@ -161,9 +161,9 @@ export function gateVerdict(candidate: EvalRun, current: EvalRun): string {
   const precisionFell = p != null && p0 != null && p < p0;
   const tail = precisionFell
     ? `precision falls to ${pctOf(p)} (${pts(p! - p0!)}): about ${Math.round((1 - p!) * 10)} in 10 of its insights would be noise`
-    : `it misses ${candidate.blockedReasons.length} gate rule${candidate.blockedReasons.length === 1 ? '' : 's'}`;
+    : `it misses ${candidate.blockedReasons.length} go-live rule${candidate.blockedReasons.length === 1 ? '' : 's'}`;
   const slower = candidate.p95Ms > current.p95Ms;
   const costlier = candidate.costUsd > current.costUsd;
   const also = slower && costlier ? ' It is also slower and costs more to run.' : slower ? ' It is also slower.' : costlier ? ' It also costs more to run.' : '';
-  return `${cur} stays in production. ${parts.length ? `${parts[0]}, but ${tail}` : `${cand} is blocked: ${tail}`}.${also}`;
+  return `${cur} stays live. ${parts.length ? `${parts[0]}, but ${tail}` : `${cand} is blocked: ${tail}`}.${also}`;
 }

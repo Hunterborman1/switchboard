@@ -17,7 +17,7 @@ test.describe('Run view', () => {
     await startRun(page, 'file_c1042');
     await expect(page.locator('[data-tour="run.stepper"]')).toBeVisible();
     await expect(page.locator('[data-step="deliver"]')).toHaveAttribute('data-status', 'passed', { timeout: 20_000 });
-    await expect(page.locator('[data-tour="run.dropped"]')).toContainText('failed grounding');
+    await expect(page.locator('[data-tour="run.dropped"]')).toContainText('not found in the conversation');
     await expect(page.locator('[data-tour="run.gate"]')).toBeVisible();
     await expect(page.locator('[data-tour="run.trace"]')).toContainText('$0.00');
     const list = await events();

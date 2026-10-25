@@ -4,48 +4,59 @@
   gap: var(--sp-2);
 }
 
+.csmLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* This week's summary: light and calm, no filled hero block. */
 .hero {
   display: flex;
   align-items: center;
   gap: var(--sp-4);
-  padding: var(--sp-5);
-  border-radius: var(--radius-lg);
-  background: var(--cn-green-mid);
-  color: var(--text-on-dark);
-}
-
-.hero :global(.sl-eyebrow) {
-  color: var(--cn-sage);
-}
-
-.hero :global(.sl-p) {
-  color: rgba(242, 245, 228, 0.78);
+  padding: var(--sp-1) 0;
 }
 
 .heroText {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: 2px;
   min-width: 0;
+}
+
+.heroMeta {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .headline {
   margin: 0;
-  font-size: var(--fs-heading);
-  font-weight: var(--fw-light);
-  line-height: var(--lh-snug);
-  color: var(--text-on-dark);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
 .headline strong {
-  font-weight: var(--fw-medium);
-  color: var(--cn-sage);
+  font-weight: 600;
+  color: var(--accent-text);
+}
+
+.heroSub {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-secondary);
 }
 
 .split {
   display: grid;
   grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.3fr);
-  gap: var(--sp-5);
+  gap: var(--sp-6);
   align-items: start;
 }
 
@@ -81,8 +92,8 @@
 
 .itemActive,
 .itemActive:hover {
-  background: var(--uis-row-selected);
-  box-shadow: inset 3px 0 0 var(--cn-green);
+  background: var(--bg-muted);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 
 .unread {
@@ -113,18 +124,19 @@
 }
 
 .itemTitle {
-  font-size: var(--fs-body);
-  color: var(--cn-off-black);
-  line-height: var(--lh-compact);
+  font-size: 14px;
+  color: var(--text);
+  line-height: 20px;
 }
 
 .itemTitleUnread {
-  font-weight: var(--fw-medium);
+  font-weight: 500;
 }
 
 .itemSnippet {
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-tertiary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -140,9 +152,9 @@
   flex-direction: column;
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--cn-border-row);
-  border-radius: var(--radius-md);
-  background: var(--cn-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
 }
 
 .insightSummary {
@@ -160,7 +172,6 @@
   border: 1px solid var(--cn-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
 }
 
 .noteHead {
@@ -168,8 +179,8 @@
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-4);
-  background: var(--cn-wash);
-  border-bottom: 1px solid var(--cn-border-row);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
 
@@ -195,8 +206,8 @@
 .noteBody {
   margin: 0;
   padding: var(--sp-4) var(--sp-5);
-  font-size: var(--fs-body-lg);
-  line-height: var(--lh-relaxed);
+  font-size: 14px;
+  line-height: 22px;
   color: var(--cn-off-black);
   white-space: pre-wrap;
   background: var(--cn-white);
@@ -207,30 +218,19 @@
   align-items: flex-start;
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
-  border: 1px dashed var(--cn-border-strong);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
   color: var(--text-muted);
   font-size: var(--fs-body);
 }
 
-/* A wrapped KPI row never ends in an empty cell: the strip flows as wrapping flex
-   tiles (the 1px gap over the border colour still draws the hairlines). */
-.kpis > div {
-  display: flex !important;
-  flex-wrap: wrap;
-}
-
-.kpis > div > div {
-  flex: 1 1 170px;
-}
-
 @media (max-width: 560px) {
   .hero {
-    flex-direction: column;
     align-items: flex-start;
-    padding: var(--sp-4);
   }
   .headline {
-    font-size: var(--fs-title-lg);
+    font-size: 18px;
+    line-height: 26px;
   }
 }

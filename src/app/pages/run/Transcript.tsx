@@ -51,12 +51,12 @@ function renderTokens(text: string, mode: 'after' | 'before', previews: Map<stri
     const r = previews.get(token);
     out.push(
       mode === 'after' ? (
-        <span key={`${keyBase}-${m.index}`} className={styles.token} title={`${r?.kind ?? 'value'} redacted before any model call`}>
+        <span key={`${keyBase}-${m.index}`} className={styles.token} title={`A ${r?.kind ?? 'personal value'} was replaced before anything was sent to AI`}>
           <IconLock size={10} />
           {token.slice(1, -1)}
         </span>
       ) : (
-        <span key={`${keyBase}-${m.index}`} className={styles.masked} title={`Masked preview of ${token}. The original never leaves the server.`}>
+        <span key={`${keyBase}-${m.index}`} className={styles.masked} title={`Partly hidden preview of ${token}. The original never leaves the server.`}>
           {r?.preview ?? '•••'}
         </span>
       ),
@@ -128,7 +128,7 @@ export function Transcript({
         <div className={styles.headText}>
           <h2 className={styles.title}>Transcript</h2>
           <p className={styles.sub}>
-            {pending ? pendingLabel : `${turns.length} turns · ${redactionCount} value${redactionCount === 1 ? '' : 's'} redacted · ${highlights.filter((h) => h.kind !== 'dropped').length} evidence span${highlights.filter((h) => h.kind !== 'dropped').length === 1 ? '' : 's'}`}
+            {pending ? pendingLabel : `${turns.length} lines · ${redactionCount} personal detail${redactionCount === 1 ? '' : 's'} hidden · ${highlights.filter((h) => h.kind !== 'dropped').length} quote${highlights.filter((h) => h.kind !== 'dropped').length === 1 ? '' : 's'} found`}
           </p>
         </div>
         <div {...tourAnchor('run.redaction')} className={styles.toggle}>
@@ -142,8 +142,8 @@ export function Transcript({
             }}
             disabled={pending || redactionCount === 0}
             options={[
-              { value: 'after', label: 'What the model saw', title: 'Redacted text: tokens like [PHONE_1] replace personal data' },
-              { value: 'before', label: 'Before (masked)', title: 'Masked previews of the original values; originals never leave the server' },
+              { value: 'after', label: 'Sent to AI', title: 'The redacted text: placeholders like PHONE_1 replace personal details' },
+              { value: 'before', label: 'Before redaction', title: 'Partly hidden previews of the original values; originals never leave the server' },
             ]}
           />
         </div>
@@ -151,10 +151,10 @@ export function Transcript({
       {redactionCount > 0 && !pending ? (
         <div className={styles.legend}>
           <span className={styles.legendItem}>
-            <span className={styles.swatchEv} /> grounded quote
+            <span className={styles.swatchEv} /> Quote found
           </span>
           <span className={styles.legendItem}>
-            <span className={styles.swatchDrop} /> best match for a dropped quote
+            <span className={styles.swatchDrop} /> Closest match to a dropped quote
           </span>
           <span className={styles.legendItem}>
             {mode === 'after' ? (
@@ -165,7 +165,7 @@ export function Transcript({
             ) : (
               <span className={styles.masked}>J••• M•••</span>
             )}{' '}
-            {mode === 'after' ? 'redacted value' : 'masked original'}
+            {mode === 'after' ? 'Hidden personal detail' : 'Original, partly hidden'}
           </span>
         </div>
       ) : null}
@@ -209,7 +209,7 @@ export function Transcript({
                   <div className={styles.turnHead}>
                     <span className={styles.speaker}>{t.speaker}</span>
                     {t.ts ? <time className={styles.ts}>{t.ts}</time> : null}
-                    <span className={styles.tid}>{t.id}</span>
+                    <span className={styles.tid} title="Line ID">{t.id}</span>
                   </div>
                   <p className={styles.text}>{parts}</p>
                 </li>

@@ -8,6 +8,7 @@
  * returns to the opener. Emits picker.opened / picker.closed / file.selected.
  */
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import type { LibraryFile } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
@@ -206,7 +207,10 @@ export function FilePicker({
   const crumbs = query ? ['Library', `Search “${query}”`] : activeFolder === RECENT ? ['Library', 'Recent'] : ['Library', ...activeFolder.split('/')];
   const sortIcon = (k: SortKey) => (sort.key === k ? sort.dir === 'asc' ? <IconSortAsc size={14} /> : <IconSortDesc size={14} /> : null);
 
-  return (
+  // Portal to the product root: the page column animates in with a transform, which would
+  // otherwise become the containing block for this fixed overlay and clip it to the column.
+  const host = (typeof document !== 'undefined' && document.querySelector<HTMLElement>('.sl-app')) || document.body;
+  return createPortal(
     <div className={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && close('cancel')}>
       <div
         ref={dialogRef}
@@ -436,7 +440,8 @@ export function FilePicker({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    host,
   );
 }
 
