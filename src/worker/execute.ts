@@ -23,7 +23,7 @@ import { errorMessage, runPatch, runPipeline } from '../pipeline/run.ts';
 import type { LlmClient, PipelineInput, PipelineResult, ThemeNamingJob } from '../pipeline/types.ts';
 import { settle } from './budget.ts';
 import { getRawContent, getRunRow, j, nowIso, stepStatement, updateRunRow, updateRunStatement, type RunRow } from './db.ts';
-import { RunSuperseded, upsertThemeVectors, workerDeps } from './deps.ts';
+import { Ledger, RunSuperseded, upsertThemeVectors, workerDeps } from './deps.ts';
 import type { Env } from './env.ts';
 import type { Reporter } from './platform/sdk.ts';
 import { loadContext, type RunContext } from './runs.ts';
@@ -66,10 +66,14 @@ export function pipelineInput(runId: string, workspaceId: string, l: LoadedRun):
   };
 }
 
-/** Final run patch, budget settle, and the run-level span / log / work unit. */
+/**
+ * Final run patch, budget settle, and the run-level span / log / work unit. `settle: false`
+ * keeps the reservation open for work that still spends after the run is final (the fast
+ * path's deferred theme naming); the caller settles afterwards.
+ */
 export async function finalizeRun(
   env: Env,
-  o: { runId: string; workspaceId: string; loaded: LoadedRun; result: PipelineResult; rep: Reporter; rootSpan: string; executor: 'fast_path' | 'workflow'; handoff?: PipelineParams['handoff']; queue?: WriteQueue },
+  o: { runId: string; workspaceId: string; loaded: LoadedRun; result: PipelineResult; rep: Reporter; rootSpan: string; executor: 'fast_path' | 'workflow'; handoff?: PipelineParams['handoff']; queue?: WriteQueue; settle?: boolean },
 ): Promise<boolean> {
   const { runId, workspaceId, loaded, result, rep, rootSpan } = o;
   const startedMs = Date.parse(loaded.run.createdAt);
@@ -85,7 +89,7 @@ export async function finalizeRun(
   } else {
     changed = await updateRunRow(env.DB, runId, patch, { onlyIfLive: true });
   }
-  await settle(env, runId);
+  if (o.settle !== false) await settle(env, runId);
   if (changed) {
     const fields = { status: result.status, costUsd: result.costUsd, insights: patch.insightCount, dropped: patch.droppedCount, review: patch.reviewCount, executor: o.executor, ...(o.handoff ? { handoffAt: o.handoff.at, handoffReason: o.handoff.reason } : {}) };
     rep.span({ traceId: runId, spanId: rootSpan, parentId: null, name: 'run', start: loaded.run.createdAt, durationMs: Number(patch.durationMs), status: result.status === 'failed' ? 'error' : 'ok', attrs: { ...fields, fileId: loaded.run.fileId } });
@@ -109,6 +113,27 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | typeof TIMEOUT> 
 }
 
 /**
+ * Claim the run's durable Workflow with one conditional UPDATE before creating it, under a
+ * deterministic instance id. Whoever wins the claim (fast-path handoff: `<runId>`; stalled-run
+ * recovery: `<runId>-r`) is the only one that creates an instance, so a run never executes
+ * twice. Returns false when someone else already holds the claim or the run is not live.
+ */
+export async function claimWorkflow(env: Env, runId: string, instanceId: string): Promise<boolean> {
+  const r = await env.DB.prepare("UPDATE runs SET workflow_id = ? WHERE id = ? AND mode = 'live' AND workflow_id IS NULL").bind(instanceId, runId).run();
+  return (r.meta.changes ?? 0) === 1;
+}
+
+/** Create the claimed instance; an instance that already exists under that id is the same run. */
+export async function createClaimedWorkflow(env: Env, instanceId: string, params: PipelineParams): Promise<void> {
+  try {
+    await env.PIPELINE.create({ id: instanceId, params });
+  } catch (err) {
+    if (/already exists|already_exists|duplicate/i.test(String(err))) return;
+    throw err;
+  }
+}
+
+/**
  * Run the pipeline now, inside the request's waitUntil. Returns how it ended (for tests/logs).
  */
 export async function fastPath(env: Env, runId: string, workspaceId: string, preload?: { run: RunRow; content: string }): Promise<'finished' | 'handed_off' | 'superseded' | 'failed'> {
@@ -120,11 +145,15 @@ export async function fastPath(env: Env, runId: string, workspaceId: string, pre
   const trace: TraceCtx = { rep, traceId: runId, parentId: rootSpan, runId, workspaceId };
   const tel = pipelineTelemetry(trace);
   const queue = new WriteQueue(env.DB, runId, { guardLive: true });
+  // Every model call and ledger insert is awaited before this function returns (waitUntil).
+  const ledger = new Ledger();
+  // Aborts the fast path's model calls once it gives the run up (handoff, abandoned step).
+  const stop = new AbortController();
   const flushes: Promise<void>[] = [];
   try {
     const loaded = await loadRun(env, runId, workspaceId, preload);
     if (!loaded) return 'superseded';
-    const deps = workerDeps(env, { runId, workspaceId, trace, queue });
+    const deps = workerDeps(env, { runId, workspaceId, trace, queue, ledger, signal: stop.signal });
     deps.telemetry = tel;
     deps.speculativeExtract = true;
     const naming: ThemeNamingJob[] = [];
@@ -166,7 +195,8 @@ export async function fastPath(env: Env, runId: string, workspaceId: string, pre
         const out = await withTimeout(p, remaining);
         if (out === TIMEOUT) {
           abandoned = true;
-          p.catch(() => {});
+          stop.abort();
+          ledger.track(p);
           handoff = { at: key, reason: 'budget', error: `step exceeded the ${budgetMs}ms fast-path budget` };
           throw new HandOff(key);
         }
@@ -187,13 +217,14 @@ export async function fastPath(env: Env, runId: string, workspaceId: string, pre
 
     if (handoff) {
       const h: NonNullable<PipelineParams['handoff']> = handoff;
+      stop.abort(); // nothing on the fast path may spend after this (e.g. a speculative extract)
       await queue.drain();
       const resume = JSON.stringify(cache).length <= MAX_RESUME_BYTES ? cache : undefined;
+      if (!(await claimWorkflow(env, runId, runId))) return 'superseded';
       rep.log({ level: 'warn', component: 'workflow', event: 'run.handoff', message: `fast path handed the run to the durable workflow at ${h.at} (${h.reason}${h.error ? `: ${h.error}` : ''})`, traceId: runId, spanId: rootSpan, runId, workspaceId, durationMs: Date.now() - t0, fields: { at: h.at, reason: h.reason, completedSteps: cache.length, resumed: !!resume } });
       try {
         const params: PipelineParams = { runId, workspaceId, ...(resume ? { resume } : {}), handoff: h };
-        const instance = await env.PIPELINE.create({ id: runId, params });
-        await updateRunRow(env.DB, runId, { workflowId: instance.id });
+        await createClaimedWorkflow(env, runId, params);
         return 'handed_off';
       } catch (err) {
         rep.log({ level: 'error', component: 'workflow', event: 'workflow.create_failed', message: String(err).slice(0, 200), traceId: runId, spanId: rootSpan, runId, workspaceId, durationMs: null, fields: {} });
@@ -205,23 +236,29 @@ export async function fastPath(env: Env, runId: string, workspaceId: string, pre
       }
     }
 
-    await finalizeRun(env, { runId, workspaceId, loaded, result, rep, rootSpan, executor: 'fast_path', queue });
+    // The reservation stays open through theme naming: that call spends too.
+    const finalized = await finalizeRun(env, { runId, workspaceId, loaded, result, rep, rootSpan, executor: 'fast_path', queue, settle: false });
     // After the viewer has the result: name the run's new candidate themes (one batched call).
-    if (naming.length) {
+    if (naming.length && finalized) {
       trace.parentId = tel.stepSpan('theme');
       await nameThemes(env, deps.llm, runId, naming, queue, rep);
     }
+    await ledger.drain();
+    await settle(env, runId);
     return result.status === 'failed' ? 'failed' : 'finished';
   } catch (err) {
     rep.log({ level: 'error', component: 'workflow', event: 'fast_path.crashed', message: errorMessage(err).slice(0, 300), traceId: runId, spanId: rootSpan, runId, workspaceId, durationMs: Date.now() - t0, fields: {} });
     try {
       await updateRunRow(env.DB, runId, { status: 'failed', error: 'the pipeline could not run' }, { onlyIfLive: true });
+      await ledger.drain();
       await settle(env, runId);
     } catch {
       /* the read-time fallback will pick it up */
     }
     return 'failed';
   } finally {
+    // Abandoned and speculative calls were aborted above; wait for them and their ledger rows.
+    await ledger.drain().catch(() => {});
     await Promise.allSettled(flushes);
     await rep.flush();
   }

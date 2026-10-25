@@ -9,7 +9,12 @@ export interface Env {
   VECTORS: VectorizeIndex;
   AI: Ai;
   PIPELINE: Workflow;
+  /** Run creation, per workspace. */
   RL_RUNS: RateLimit;
+  /** Run creation, per client IP. */
+  RL_RUNS_IP: RateLimit;
+  /** Password / owner-token attempts, per client IP. */
+  RL_UNLOCK: RateLimit;
 
   MODEL_PRIMARY: string;
   MODEL_SECONDARY: string;
@@ -17,7 +22,8 @@ export interface Env {
 
   INVOCA_PASSWORD?: string;
   LINK_SIGNING_SECRET?: string;
-  SITE_PASSWORD?: string;
+  /** Random 32-byte secret; ?owner=<token> marks the owner's session (scripts/owner-link.ts). */
+  OWNER_TOKEN?: string;
   OPENROUTER_API_KEY?: string;
 
   /** Test/local overrides (never set in production). */

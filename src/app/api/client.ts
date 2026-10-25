@@ -75,7 +75,8 @@ export async function request<T>(method: Method, path: string, body?: unknown): 
     res = await fetch(`${API_BASE}${path}`, {
       method,
       credentials: 'include',
-      headers: body !== undefined ? { 'content-type': 'application/json', accept: 'application/json' } : { accept: 'application/json' },
+      // x-signal-loop: the Worker only accepts state changes that carry it (sibling /repo/* apps share this origin).
+      headers: body !== undefined ? { 'content-type': 'application/json', accept: 'application/json', 'x-signal-loop': '1' } : { accept: 'application/json', 'x-signal-loop': '1' },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (err) {
@@ -156,7 +157,7 @@ export async function postTelemetry(batch: TelemetryBatch, useBeacon: boolean): 
       navigator.sendBeacon(url, new Blob([payload], { type: 'application/json' }));
       return;
     }
-    await fetch(url, { method: 'POST', credentials: 'include', keepalive: true, headers: { 'content-type': 'application/json' }, body: payload });
+    await fetch(url, { method: 'POST', credentials: 'include', keepalive: true, headers: { 'content-type': 'application/json', 'x-signal-loop': '1' }, body: payload });
   } catch {
     /* telemetry must never affect the product */
   }

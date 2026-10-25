@@ -1,11 +1,13 @@
 /**
  * The $15 viewer budget. Spend comes from the ai_calls ledger (key_scope 'runtime'); a run
- * reserves its worst-case estimate with one conditional INSERT (atomic in D1), so concurrent
- * runs cannot overshoot. When what remains cannot cover another run, live AI flips off in D1
- * settings and in KV (fast path), and runs fall back to replay. Owner runs count too.
+ * reserves its worst-case estimate (sized from its input: estimateRunCostUsd) with one
+ * conditional INSERT (atomic in D1), so concurrent runs cannot overshoot, and at most
+ * MAX_UNSETTLED_RESERVATIONS runs hold a reservation at once. When what remains cannot cover
+ * another run, live AI flips off in D1 settings and in KV (fast path), and runs fall back to
+ * replay. A provider 402 (key out of credit) flips it off too. Owner runs count as well.
  */
 import type { Budget } from '../shared/contracts.ts';
-import { RESERVATION_TTL_MS, RUN_COST_ESTIMATE_USD } from '../shared/scoring.ts';
+import { estimateRunCostUsd, MAX_UNSETTLED_RESERVATIONS, RESERVATION_TTL_MS, RUN_COST_ESTIMATE_USD } from '../shared/scoring.ts';
 import { shouldFlipOff } from '../pipeline/budget.ts';
 import type { LlmCallRow } from '../pipeline/types.ts';
 import type { Env } from './env.ts';
@@ -16,6 +18,11 @@ export const KV_LIVE_FLAG = 'live_enabled';
 export function limitUsd(env: Env): number {
   const n = Number(env.BUDGET_LIMIT_USD);
   return Number.isFinite(n) && n > 0 ? n : 15;
+}
+
+/** The reservation for a live run over `contentChars` characters of input. */
+export function runEstimate(env: Env, contentChars: number): number {
+  return estimateRunCostUsd(contentChars, [env.MODEL_PRIMARY, env.MODEL_SECONDARY]);
 }
 
 export async function spentUsd(db: D1Database): Promise<number> {
@@ -59,9 +66,9 @@ export async function getBudget(env: Env): Promise<Budget> {
   return { limitUsd: limitUsd(env), spentUsd: Math.round(spent * 1e6) / 1e6, liveRuns: Number(runs?.live ?? 0), replayRuns: Number(runs?.replay ?? 0), liveEnabled: flag.enabled, reason: flag.enabled ? null : flag.reason };
 }
 
-export type Reservation = { ok: true } | { ok: false; reason: 'budget_reached' | 'disabled_by_owner' };
+export type Reservation = { ok: true; estimateUsd: number } | { ok: false; reason: 'budget_reached' | 'disabled_by_owner' | 'busy' };
 
-/** Atomically reserve one run's worst-case cost. */
+/** Atomically reserve one run's worst-case cost, within the global cap on unsettled reservations. */
 export async function reserve(env: Env, runId: string, estimate = RUN_COST_ESTIMATE_USD, now = Date.now()): Promise<Reservation> {
   const flag = await liveFlag(env);
   if (!flag.enabled) return { ok: false, reason: flag.reason === 'disabled_by_owner' ? 'disabled_by_owner' : 'budget_reached' };
@@ -71,14 +78,20 @@ export async function reserve(env: Env, runId: string, estimate = RUN_COST_ESTIM
      SELECT ?1, ?2, ?3, 0
      WHERE (SELECT COALESCE(SUM(cost_usd), 0) FROM ai_calls WHERE key_scope = 'runtime')
          + (SELECT COALESCE(SUM(est_usd), 0) FROM budget_reservations WHERE settled = 0 AND created_ms > ?4)
-         + ?2 <= ?5`,
+         + ?2 <= ?5
+       AND (SELECT COUNT(*) FROM budget_reservations WHERE settled = 0 AND created_ms > ?4) < ?6`,
   )
-    .bind(runId, estimate, now, now - RESERVATION_TTL_MS, limit)
+    .bind(runId, estimate, now, now - RESERVATION_TTL_MS, limit, MAX_UNSETTLED_RESERVATIONS)
     .run();
-  if ((res.meta.changes ?? 0) === 1) return { ok: true };
+  if ((res.meta.changes ?? 0) === 1) return { ok: true, estimateUsd: estimate };
   const spent = await spentUsd(env.DB);
-  if (shouldFlipOff(spent, limit, estimate)) await setLive(env, false, 'budget_reached');
-  return { ok: false, reason: 'budget_reached' };
+  if (shouldFlipOff(spent, limit, RUN_COST_ESTIMATE_USD)) {
+    await setLive(env, false, 'budget_reached');
+    return { ok: false, reason: 'budget_reached' };
+  }
+  // This run would not fit even alone; otherwise it fits once open reservations settle.
+  if (spent + estimate > limit) return { ok: false, reason: 'budget_reached' };
+  return { ok: false, reason: 'busy' };
 }
 
 /** Release a reservation; flip live off when the remaining budget cannot cover another run. */
@@ -86,6 +99,11 @@ export async function settle(env: Env, runId: string): Promise<void> {
   await env.DB.prepare('UPDATE budget_reservations SET settled = 1 WHERE run_id = ?').bind(runId).run();
   const spent = await spentUsd(env.DB);
   if (shouldFlipOff(spent, limitUsd(env), RUN_COST_ESTIMATE_USD)) await setLive(env, false, 'budget_reached');
+}
+
+/** OpenRouter answers 402 when the runtime key is out of credit: stop live AI right away. */
+export function isOutOfCredit(row: Pick<LlmCallRow, 'error'>): boolean {
+  return !!row.error && /^HTTP 402\b/.test(row.error);
 }
 
 export function aiCallStatement(db: D1Database, row: LlmCallRow, workspaceId: string | null, keyScope: 'runtime' | 'build'): D1PreparedStatement {

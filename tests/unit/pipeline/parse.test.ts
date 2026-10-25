@@ -110,6 +110,27 @@ describe('chat', () => {
     expect(d.turns[0]!.ts).toBe('14:05:00');
     expect(d.turns[3]!.ts).toBe('14:07:00');
   });
+  it('a Slack export (.txt) parses one turn per message, with dated stamps, thread replies and section markers', () => {
+    const raw = [
+      'Slack export · #deal-sunpeak-renewal',
+      'Exported 10/20/2026 12:06 PM · 4 messages',
+      '',
+      '[10/20/2026 11:20 AM] diego.alvarez: kicking off the renewal debrief here.',
+      '[10/20/2026 11:22 AM] diego.alvarez: amanda wants the voice agent pricing restructured',
+      '    ↳ [10/20/2026 11:24 AM] chris.donovan: so that is a 68k gap.',
+      'continued on a second line',
+      '--- #acct-sunpeak (internal, Invoca only) ---',
+      '[10/20/2026 1:05 PM] chris.donovan: looping in finance',
+    ].join('\n');
+    const d = parseDocument('file_sunpeak_slack.txt', raw);
+    expect(d.format).toBe('chat');
+    const msgs = d.turns.filter((t) => t.speaker !== 'unknown');
+    expect(msgs.map((t) => [t.speaker, t.ts])).toEqual([
+      ['diego.alvarez', '11:20:00'], ['diego.alvarez', '11:22:00'], ['chris.donovan', '11:24:00'], ['chris.donovan', '13:05:00'],
+    ]);
+    expect(msgs[2]!.text).toBe('so that is a 68k gap. continued on a second line');
+    expect(d.turns.some((t) => t.speaker === 'unknown' && t.text.startsWith('#acct-sunpeak'))).toBe(true);
+  });
 });
 
 describe('assignRoles', () => {

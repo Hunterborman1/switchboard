@@ -9,9 +9,9 @@ import { LIVE_FALLBACK_AFTER_MS } from '../shared/scoring.ts';
 import { effectiveRules } from '../pipeline/route.ts';
 import type { Taxonomy } from '../pipeline/types.ts';
 import { byteLength, randomId, sha256Hex } from '../pipeline/util.ts';
-import { reserve, settle } from './budget.ts';
+import { reserve, runEstimate, settle } from './budget.ts';
 import { getAccounts, getLibraryFile, getPeople, getRawContent, getRules, getRunRow, getSetting, insertRun, insertRunStatement, nowIso, rowToRun, SEED, updateRunRow, type RunRow } from './db.ts';
-import { fastPath, type PipelineParams } from './execute.ts';
+import { claimWorkflow, createClaimedWorkflow, fastPath, type PipelineParams } from './execute.ts';
 import type { Env } from './env.ts';
 import { getRecording, materializeReplay, replayRunFields } from './replay.ts';
 import type { Reporter } from './platform/sdk.ts';
@@ -132,9 +132,15 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
     return { ok: false, status: 404, code: 'no_recording', message: 'This file has no recorded run to replay' };
   }
 
-  // Budget gate (atomic reservation).
-  const r = await reserve(env, runId, undefined, now);
+  // Budget gate (atomic reservation, sized from this run's input).
+  const content = file ? libraryContent ?? '' : (input as { text: string }).text;
+  const r = await reserve(env, runId, runEstimate(env, content.length), now);
   rep.log({ level: 'info', component: 'budget', event: 'budget.check', message: r.ok ? 'reserved one run' : `live unavailable: ${r.reason}`, traceId, spanId: null, runId, workspaceId: ws, durationMs: null, fields: { allowed: r.ok, reason: r.ok ? null : r.reason } });
+  if (!r.ok && r.reason === 'busy') {
+    rep.log({ level: 'warn', component: 'budget', event: 'budget.busy', message: `live AI at capacity; ${file ? 'replaying recording' : 'custom text asked to retry'}`, traceId, spanId: null, runId, workspaceId: ws, durationMs: null, fields: { reason: r.reason } });
+    if (file && (await startReplay(env, base, file.id, 'live_busy', now))) return { ok: true, runId, mode: 'replay', modeReason: 'live_busy', duplicate: false };
+    return { ok: false, status: 429, code: 'live_busy', message: 'Live AI is busy with other viewers right now. Try again in a minute, or pick a library file to see a recorded run.' };
+  }
   if (!r.ok) {
     rep.log({ level: 'warn', component: 'budget', event: 'budget.reached', message: `live AI off (${r.reason}); ${file ? 'replaying recording' : 'custom text rejected'}`, traceId, spanId: null, runId, workspaceId: ws, durationMs: null, fields: { reason: r.reason } });
     const reason = r.reason === 'disabled_by_owner' ? 'live_disabled' : 'budget_reached';
@@ -149,7 +155,6 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
   }
 
   // Live: store the raw bytes (pasted text), insert the run, start the fast path.
-  const content = file ? libraryContent ?? '' : (input as { text: string }).text;
   const writes = [insertRunStatement(env.DB, base)];
   if (!file) writes.unshift(env.DB.prepare('INSERT OR IGNORE INTO raw_files (sha256, filename, size_bytes, content, created_at) VALUES (?,?,?,?,?)').bind(sha, filename, byteLength(content), content, nowIso()));
   await env.DB.batch(writes);
@@ -221,15 +226,16 @@ export async function recoverStalled(env: Env, run: RunRow, rep: Reporter, trace
   if (now - Date.parse(run.createdAt) < stalledAfter) return run;
   const last = await env.DB.prepare('SELECT MAX(COALESCE(finished_at, started_at)) AS at FROM run_steps WHERE run_id = ?').bind(run.id).first<{ at: string | null }>();
   if (last?.at && now - Date.parse(last.at) < stalledAfter) return run;
-  const claimed = await env.DB.prepare("UPDATE runs SET workflow_id = 'pending' WHERE id = ? AND mode = 'live' AND workflow_id IS NULL").bind(run.id).run();
-  if ((claimed.meta.changes ?? 0) !== 1) return (await getRunRow(env.DB, run.id)) ?? run;
+  // Deterministic instance id, claimed before creation (the fast path claims `<runId>`).
+  const instanceId = `${run.id}-r`;
+  if (!(await claimWorkflow(env, run.id, instanceId))) return (await getRunRow(env.DB, run.id)) ?? run;
   rep.log({ level: 'warn', component: 'workflow', event: 'run.handoff', message: 'fast path stalled; restarting the run on the durable workflow', traceId, spanId: null, runId: run.id, workspaceId: run.workspaceId, durationMs: now - Date.parse(run.createdAt), fields: { at: 'ingest', reason: 'stalled', completedSteps: 0, resumed: false } });
   await clearRunOutputs(env.DB, run.id);
   try {
     const params: PipelineParams = { runId: run.id, workspaceId: run.workspaceId, handoff: { at: 'ingest', reason: 'stalled', error: null } };
-    const instance = await env.PIPELINE.create({ id: run.id + "-r", params });
-    await updateRunRow(env.DB, run.id, { workflowId: instance.id, status: 'queued' });
-    return { ...run, workflowId: instance.id, status: 'queued' };
+    await createClaimedWorkflow(env, instanceId, params);
+    await updateRunRow(env.DB, run.id, { status: 'queued' }, { onlyIfLive: true });
+    return { ...run, workflowId: instanceId, status: 'queued' };
   } catch (err) {
     await updateRunRow(env.DB, run.id, { status: 'failed', error: 'the pipeline stalled and could not be restarted' });
     await settle(env, run.id);

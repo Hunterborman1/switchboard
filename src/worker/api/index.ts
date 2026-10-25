@@ -20,6 +20,7 @@ import type { ApiEnv } from '../env.ts';
 import { runDetail } from '../replay.ts';
 import { applyReview, changeTicket } from '../review.ts';
 import { createRun, maybeFallback } from '../runs.ts';
+import { newWorkspaceId, readCookie, verifyWorkspace, workspaceCookie, WS_COOKIE } from '../gate.ts';
 import { newSpanId, newTraceId, signalReporter, type TraceCtx } from '../telemetry.ts';
 import { themesView } from '../themes.ts';
 
@@ -29,8 +30,6 @@ type C = Context<{ Bindings: ApiEnv; Variables: Vars }>;
 /** The gated JSON API, mounted under /repo/invoca/api. */
 export const api = new Hono<{ Bindings: ApiEnv; Variables: Vars }>().basePath('/repo/invoca/api');
 
-const WS_COOKIE = 'sl_ws';
-const WS_RE = /^ws_[a-f0-9]{16}$/;
 
 function ok<T>(c: C, data: T, status: 200 | 201 = 200): Response {
   const body: Envelope<T> = { data, dataAsOf: nowIso() };
@@ -66,13 +65,12 @@ api.use('*', async (c, next) => {
   const rep = signalReporter(c.env);
   const traceId = newTraceId();
   const rootSpan = newSpanId();
-  // Workspace cookie: a random id per viewer session; set on first API call.
-  const cookie = c.req.header('cookie') ?? '';
-  const m = cookie.match(/(?:^|;\s*)sl_ws=([^;]+)/);
-  let ws = m && WS_RE.test(m[1]!) ? m[1]! : '';
+  // Workspace cookie: a random id per viewer session, HMAC-signed (gate.ts); set on first API
+  // call. An unsigned (legacy) or forged value is never trusted: that viewer gets a fresh one.
+  let ws = await verifyWorkspace(readCookie(c.req.header('cookie') ?? '', WS_COOKIE), c.env.LINK_SIGNING_SECRET);
   if (!ws) {
-    ws = `ws_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
-    c.header('set-cookie', `${WS_COOKIE}=${ws}; Path=/repo/invoca; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 86400}`, { append: true });
+    ws = newWorkspaceId();
+    c.header('set-cookie', await workspaceCookie(ws, c.env.LINK_SIGNING_SECRET), { append: true });
   }
   c.set('ws', ws);
   c.set('trace', { rep, traceId, parentId: rootSpan, runId: null, workspaceId: ws });
@@ -129,12 +127,16 @@ api.get('/library/:id', async (c) => {
 
 api.post('/runs', async (c) => {
   const ws = c.get('ws');
+  // Per workspace and per client IP (a new workspace is one cookie-clear away). Fails closed.
+  let allowed = false;
   try {
-    const rl = await c.env.RL_RUNS.limit({ key: ws });
-    if (!rl.success) return fail(c, 429, 'rate_limited', 'Too many runs in a minute. Wait a moment and try again.');
+    const ip = c.req.header('cf-connecting-ip') ?? c.req.header('x-real-ip') ?? 'unknown';
+    const [byWs, byIp] = await Promise.all([c.env.RL_RUNS.limit({ key: `ws:${ws}` }), c.env.RL_RUNS_IP.limit({ key: `ip:${ip}` })]);
+    allowed = byWs.success && byIp.success;
   } catch {
-    /* the limiter is best-effort; the budget is the hard stop */
+    allowed = false;
   }
+  if (!allowed) return fail(c, 429, 'rate_limited', 'Too many runs in a minute. Wait a moment and try again.');
   const b = await body(c, CreateRun);
   if (!b.ok) return b.res;
   const t = c.get('trace');
@@ -151,6 +153,20 @@ api.post('/runs', async (c) => {
   return ok(c, out, r.duplicate ? 200 : 201);
 });
 
+/** `b64url(createdAt|id)` → parts, or null for anything malformed. */
+export function decodeRunsCursor(cursor: string): { at: string; id: string } | null {
+  if (cursor.length > 200 || !/^[A-Za-z0-9_-]+=*$/.test(cursor)) return null;
+  let raw: string;
+  try {
+    raw = atob(cursor.replace(/-/g, '+').replace(/_/g, '/'));
+  } catch {
+    return null;
+  }
+  const [at, id, extra] = raw.split('|');
+  if (extra !== undefined || !at || !id || !Number.isFinite(Date.parse(at)) || !/^[A-Za-z0-9_-]{1,80}$/.test(id)) return null;
+  return { at, id };
+}
+
 api.get('/runs', async (c) => {
   const ws = c.get('ws');
   const limit = Math.min(200, Math.max(1, Number(c.req.query('limit') ?? 50) || 50));
@@ -158,11 +174,10 @@ api.get('/runs', async (c) => {
   let where = 'workspace_id IN (?, ?)';
   const binds: unknown[] = [SEED, ws];
   if (cursor) {
-    const [at, id] = atob(cursor.replace(/-/g, '+').replace(/_/g, '/')).split('|');
-    if (at && id) {
-      where += ' AND (created_at < ? OR (created_at = ? AND id < ?))';
-      binds.push(at, at, id);
-    }
+    const parsed = decodeRunsCursor(cursor);
+    if (!parsed) return fail(c, 400, 'invalid_cursor', 'The cursor is not valid; start from the first page');
+    where += ' AND (created_at < ? OR (created_at = ? AND id < ?))';
+    binds.push(parsed.at, parsed.at, parsed.id);
   }
   const { results } = await c.env.DB.prepare(`SELECT * FROM runs WHERE ${where} ORDER BY created_at DESC, id DESC LIMIT ?`).bind(...binds, limit + 1).all<Record<string, unknown>>();
   const nowMs = Date.now();
@@ -374,7 +389,8 @@ api.get('/health', async (c) => {
     getBudget(c.env),
     db.prepare('SELECT substr(created_at, 1, 10) AS day, ms, ok, cost_usd, fallback FROM ai_calls WHERE created_at >= ?').bind(since).all<{ day: string; ms: number; ok: number; cost_usd: number; fallback: number }>(),
     db.prepare('SELECT id, run_id, workspace_id, step, error, created_at FROM dlq WHERE workspace_id IN (?, ?) ORDER BY created_at DESC LIMIT 50').bind(SEED, c.get('ws')).all<Record<string, unknown>>(),
-    db.prepare('SELECT id, run_id, purpose, model, tokens_in, tokens_out, cost_usd, ms, ok, error, fallback, schema_retry, key_scope, created_at FROM ai_calls ORDER BY created_at DESC LIMIT 25').all<Record<string, unknown>>(),
+    // Individual calls: the seeded history and this viewer's own runs only.
+    db.prepare('SELECT id, run_id, purpose, model, tokens_in, tokens_out, cost_usd, ms, ok, error, fallback, schema_retry, key_scope, created_at FROM ai_calls WHERE workspace_id IN (?, ?) ORDER BY created_at DESC LIMIT 25').bind(SEED, c.get('ws')).all<Record<string, unknown>>(),
     db.prepare("SELECT status, mode, COUNT(*) AS n FROM runs WHERE workspace_id IN (?, ?) GROUP BY status, mode").bind(SEED, c.get('ws')).all<{ status: string; mode: string; n: number }>(),
   ]);
   const byDay = new Map<string, { ms: number[]; cost: number; failures: number; fallbacks: number }>();
@@ -444,13 +460,19 @@ api.post('/workspace/reset', async (c) => {
   if (ws === SEED) return fail(c, 403, 'forbidden', 'The seed workspace cannot be reset');
   const db = c.env.DB;
   const runIds = (await db.prepare('SELECT id FROM runs WHERE workspace_id = ?').bind(ws).all<{ id: string }>()).results.map((r) => r.id);
-  const stmts: D1PreparedStatement[] = [];
+  const stmts: D1PreparedStatement[] = [
+    // Pasted text this workspace uploaded, unless a library file or another workspace's run uses
+    // the same bytes (raw_files is content-addressed and shared). Runs first: it reads them.
+    db
+      .prepare('DELETE FROM raw_files WHERE sha256 IN (SELECT sha256 FROM runs WHERE workspace_id = ?1) AND sha256 NOT IN (SELECT sha256 FROM library_files) AND sha256 NOT IN (SELECT sha256 FROM runs WHERE workspace_id != ?1)')
+      .bind(ws),
+  ];
   for (let i = 0; i < runIds.length; i += 80) {
     const chunk = runIds.slice(i, i + 80);
     const q = chunk.map(() => '?').join(',');
     for (const t of ['run_steps', 'transcripts', 'redaction_vault']) stmts.push(db.prepare(`DELETE FROM ${t} WHERE run_id IN (${q})`).bind(...chunk));
   }
-  for (const t of ['runs', 'insights', 'themes', 'deliveries', 'notifications', 'reviews', 'overlays', 'routing_rules']) stmts.push(db.prepare(`DELETE FROM ${t} WHERE workspace_id = ?`).bind(ws));
+  for (const t of ['runs', 'insights', 'themes', 'deliveries', 'notifications', 'reviews', 'overlays', 'routing_rules', 'dlq']) stmts.push(db.prepare(`DELETE FROM ${t} WHERE workspace_id = ?`).bind(ws));
   await db.batch(stmts);
   await audit(db, { workspaceId: ws, actor: actorOf(c), action: 'workspace.reset', target: ws, before: { runs: runIds.length } });
   return ok(c, {});

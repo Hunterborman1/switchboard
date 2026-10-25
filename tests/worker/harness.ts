@@ -6,7 +6,7 @@
 import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { createTestHarness } from 'wrangler';
-import { passwordToken } from '../../src/worker/gate.ts';
+import { ownerSessionToken, passwordToken, signWorkspace } from '../../src/worker/gate.ts';
 import { runPipeline } from '../../src/pipeline/run.ts';
 import { toRecording } from '../../src/pipeline/replay.ts';
 import { hashEmbed } from '../../src/pipeline/theme.ts';
@@ -19,7 +19,14 @@ import { fixtureFile, world } from '../helpers/fixtures.ts';
 
 export const ORIGIN = 'https://repos.hunterborman.com';
 export const API = `${ORIGIN}/repo/invoca/api`;
-export const SECRETS = { INVOCA_PASSWORD: 'test-password', LINK_SIGNING_SECRET: 'test-link-secret', SITE_PASSWORD: 'test-site-password', OPENROUTER_API_KEY: 'test-openrouter-key' };
+export const SECRETS = { INVOCA_PASSWORD: 'test-password', LINK_SIGNING_SECRET: 'test-link-secret', OWNER_TOKEN: 'test-owner-token-0123456789abcdef0123456789', OPENROUTER_API_KEY: 'test-openrouter-key' };
+/** The shared host's site password: deliberately NOT a secret of this Worker. */
+export const SITE_PASSWORD = 'test-site-password';
+
+/** A signed sl_ws cookie value for a workspace id (what the Worker itself sets). */
+export function signedWs(ws: string): Promise<string> {
+  return signWorkspace(ws, SECRETS.LINK_SIGNING_SECRET);
+}
 
 export type MockRequest = { model: string; schema: string; user: string; body: Record<string, unknown>; status: number };
 
@@ -44,6 +51,7 @@ export function startMockOpenRouter(): Promise<{ url: string; requests: MockRequ
         res.end(JSON.stringify(payload));
       };
       if (user.includes('FORCE_LLM_ERROR')) return send(500, { error: { message: 'mock upstream failure', code: 500 } });
+      if (user.includes('OUT_OF_CREDIT')) return send(402, { error: { message: 'Insufficient credits', code: 402 } });
       if (user.includes('PRIMARY_DOWN') && model.startsWith('deepseek/')) return send(503, { error: { message: 'mock primary unavailable', code: 503 } });
       if (user.includes('SLOW_MODEL')) await new Promise((r) => setTimeout(r, 8000));
       let content: string;
@@ -81,16 +89,24 @@ export async function startHarness(opts: { vars?: Record<string, string> } = {})
   await worker.applyD1Migrations('DB');
   const env = (await worker.getEnv()) as { DB: D1Database; KV: KVNamespace };
   const pw = await passwordToken(SECRETS.INVOCA_PASSWORD);
-  const ownerToken = await ownerCookie(SECRETS.SITE_PASSWORD);
+  const ownerToken = await ownerSessionToken(SECRETS.OWNER_TOKEN);
+  const siteOwnerToken = await hostOwnerCookie(SITE_PASSWORD);
 
-  const call = async (path: string, init: RequestInit & { ws?: string | null; auth?: 'password' | 'owner' | 'none'; json?: unknown } = {}) => {
+  /**
+   * `ws` is signed like the Worker's own cookie; `rawWs` sends a value as-is (legacy/forged).
+   * `site: true` sends the app's x-signal-loop header (as the SPA's fetch wrapper does) on writes.
+   */
+  const call = async (path: string, init: RequestInit & { ws?: string | null; rawWs?: string; auth?: 'password' | 'owner' | 'hb_auth' | 'none'; json?: unknown; site?: boolean } = {}) => {
     const headers = new Headers(init.headers);
     const cookies: string[] = [];
     const auth = init.auth ?? 'password';
     if (auth === 'password') cookies.push(`hb_invoca=${pw}`);
-    if (auth === 'owner') cookies.push(`hb_auth=${ownerToken}`);
-    if (init.ws) cookies.push(`sl_ws=${init.ws}`);
+    if (auth === 'owner') cookies.push(`hb_invoca_owner=${ownerToken}`);
+    if (auth === 'hb_auth') cookies.push(`hb_auth=${siteOwnerToken}`);
+    if (init.ws) cookies.push(`sl_ws=${await signedWs(init.ws)}`);
+    if (init.rawWs !== undefined) cookies.push(`sl_ws=${init.rawWs}`);
     if (cookies.length) headers.set('cookie', cookies.join('; '));
+    if ((init.site ?? true) && !headers.has('x-signal-loop')) headers.set('x-signal-loop', '1');
     let body = init.body;
     if (init.json !== undefined) {
       headers.set('content-type', 'application/json');
@@ -110,7 +126,8 @@ export async function startHarness(opts: { vars?: Record<string, string> } = {})
   return { server, worker, env, mock, call, pw, ownerToken, close: async () => (await server.close(), await mock.close()) };
 }
 
-async function ownerCookie(sitePassword: string): Promise<string> {
+/** The shared host's hb_auth derivation (hb-repos): must grant nothing here. */
+async function hostOwnerCookie(sitePassword: string): Promise<string> {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey('raw', enc.encode(`hb-gate|${sitePassword}`), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode('hb-site-auth-v1'));

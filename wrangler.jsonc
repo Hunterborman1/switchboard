@@ -34,8 +34,13 @@
 
   "workflows": [{ "name": "signal-loop-pipeline", "binding": "PIPELINE", "class_name": "PipelineWorkflow" }],
 
-  // Abuse limits on run creation (per workspace); the $15 budget ledger is the hard stop.
-  "ratelimits": [{ "name": "RL_RUNS", "namespace_id": "4201", "simple": { "limit": 12, "period": 60 } }],
+  // Abuse limits (fail closed): run creation per workspace and per client IP, and password /
+  // owner-token attempts per IP. The $15 budget ledger is the hard stop on spend.
+  "ratelimits": [
+    { "name": "RL_RUNS", "namespace_id": "4201", "simple": { "limit": 12, "period": 60 } },
+    { "name": "RL_RUNS_IP", "namespace_id": "4202", "simple": { "limit": 30, "period": 60 } },
+    { "name": "RL_UNLOCK", "namespace_id": "4203", "simple": { "limit": 10, "period": 60 } }
+  ],
 
   "vars": {
     "MODEL_PRIMARY": "deepseek/deepseek-v4.1-flash",
@@ -46,5 +51,5 @@
   "observability": { "enabled": true }
 
   // Secrets (scripts/deploy.ts pushes them from .env):
-  //   INVOCA_PASSWORD, LINK_SIGNING_SECRET, SITE_PASSWORD (owner bypass), OPENROUTER_API_KEY (the $15 runtime key)
+  //   INVOCA_PASSWORD, LINK_SIGNING_SECRET, OWNER_TOKEN (owner session), OPENROUTER_API_KEY (the $15 runtime key)
 }
