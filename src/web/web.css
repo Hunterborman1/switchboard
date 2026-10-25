@@ -27,6 +27,13 @@ body { background: #0a231e; }
 }
 .hub__top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .hub__nav { display: flex; gap: 20px; font-size: 13px; }
+/* Secondary links: readable size and contrast, a visible underline on hover/focus. */
+.hub__nav .n-link,
+.hub__backups .n-link { font-size: 13px; color: var(--n-ink-2); border-bottom-color: rgb(242 245 228 / 0.22); padding-block: 4px; }
+.hub__nav .n-link:hover,
+.hub__nav .n-link:focus-visible,
+.hub__backups .n-link:hover,
+.hub__backups .n-link:focus-visible { color: var(--n-ink); border-bottom-color: var(--n-mint); }
 .hub__hero { padding-top: clamp(24px, 9vh, 120px); max-width: 1040px; }
 .hub__hero .n-lede { max-width: 62ch; }
 .hub__doors { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: clamp(12px, 1.6vw, 20px); }
@@ -85,6 +92,9 @@ body { background: #0a231e; }
   .hub-door { min-height: 0; }
   .hub__role { grid-template-columns: 1fr; }
   .hub__nav { display: none; }
+  /* The kicker stacks as two lines instead of a ragged three-line column. */
+  .hub__hero .n-eyebrow { display: grid; gap: 4px; }
+  .hub__hero .n-eyebrow__rule { display: none; }
 }
 
 /* ---------------------------------------------------------------- presenter */

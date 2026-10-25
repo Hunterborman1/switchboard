@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Button, Display, Lede, Reveal, Stat, Chip } from '../components';
 import { useCalm } from '../hooks';
-import { loadScoreboard, type Scoreboard } from '../../tour/api';
+import { loadScoreboard, tourApi, type Scoreboard } from '../../tour/api';
+import type { RunDetail } from '../../shared/contracts';
 import { useTour } from '../../tour/engine/TourProvider';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type AgentImpact, type LogEntry, type Span } from '../../shared/platform-contracts';
 
@@ -58,13 +59,42 @@ async function loadOps(runIds: string[]): Promise<OpsFacts> {
   return { logLines, spans, hours, ok };
 }
 
+type Tile = { v?: number; s?: string; text?: string; l: string };
+
+function TileView({ t }: { t: Tile }) {
+  if (t.text != null) {
+    return (
+      <div className="n-stat n-stat--sm">
+        <div className="n-stat__value n-stat__value--text">{t.text}</div>
+        <div className="n-stat__label">{t.l}</div>
+      </div>
+    );
+  }
+  return <Stat value={t.v ?? 0} suffix={t.s} label={t.l} size="sm" />;
+}
+
 export function ScorecardScene() {
   const tour = useTour();
   const navigate = useNavigate();
   const calm = useCalm();
   const [sb, setSb] = useState<Scoreboard | null>(null);
   const [ops, setOps] = useState<OpsFacts | null>(null);
+  const [fetchedRun, setFetchedRun] = useState<RunDetail | null>(null);
   const c = tour.ctx.counters;
+  const run = tour.ctx.run ?? fetchedRun;
+
+  // The viewer's own run (for grounded-quote and redaction facts) after a refresh.
+  useEffect(() => {
+    if (tour.ctx.run || !tour.ctx.runId) return;
+    let alive = true;
+    tourApi
+      .run(tour.ctx.runId)
+      .then((d) => alive && setFetchedRun(d))
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [tour.ctx.run, tour.ctx.runId]);
 
   useEffect(() => {
     let alive = true;
@@ -85,19 +115,40 @@ export function ScorecardScene() {
     navigate('/app/new');
   };
 
-  const you = [
-    { v: sb?.runs ?? (tour.ctx.runId ? 1 : 0), l: 'calls you ran' },
-    { v: c.approvals + c.edits + c.rejects, l: 'decisions you made' },
-    { v: c.rulesChanged, l: 'routing rules changed' },
-    { v: c.shipped, l: 'tickets shipped' },
+  // Tiles say what is true for this session. A zero the viewer didn't cause reads as a
+  // failure, so a zero system counter is swapped for a fact about their own run, or left out.
+  const runs = sb?.runs ?? (tour.ctx.runId ? 1 : 0);
+  const decisions = c.approvals + c.edits + c.rejects;
+  const you: Tile[] = [
+    { v: runs, l: runs === 1 ? 'call you ran' : 'calls you ran' },
+    ...(decisions > 0 ? [{ v: decisions, l: decisions === 1 ? 'decision you made' : 'decisions you made' }] : []),
+    c.rulesChanged > 0 ? { v: c.rulesChanged, l: c.rulesChanged === 1 ? 'routing rule changed' : 'routing rules changed' } : { text: 'Unchanged', l: 'routing rules' },
+    ...(c.shipped > 0 ? [{ v: c.shipped, l: c.shipped === 1 ? 'ticket shipped' : 'tickets shipped' }] : []),
     { v: tour.ctx.explored.length, l: 'scenarios explored', s: ' / 6' },
   ];
-  const sys = [
-    { v: sb?.insights ?? 0, l: 'insights extracted' },
-    { v: sb?.dropped ?? 0, l: 'hallucinated quotes rejected' },
-    { v: sb?.injections ?? 0, l: 'injection attempts caught' },
-    { v: sb?.routed ?? 0, l: 'insights routed' },
+  const ev = run ? run.insights.flatMap((i) => i.evidence) : [];
+  const grounded = ev.filter((e) => e.method !== 'failed').length;
+  const redacted = run ? run.redactions.reduce((a, r) => a + r.count, 0) : 0;
+  const sysAll: (Tile | null)[] = [
+    { v: sb?.insights ?? 0, l: sb?.insights === 1 ? 'insight extracted' : 'insights extracted' },
+    sb && sb.dropped > 0
+      ? { v: sb.dropped, l: sb.dropped === 1 ? 'made-up quote rejected' : 'made-up quotes rejected' }
+      : ev.length > 0
+        ? { v: grounded, s: ` / ${ev.length}`, l: 'quotes grounded in the transcript' }
+        : null,
+    sb && sb.injections > 0
+      ? { v: sb.injections, l: sb.injections === 1 ? 'injection attempt caught' : 'injection attempts caught' }
+      : redacted > 0
+        ? { v: redacted, l: redacted === 1 ? 'value redacted before the model' : 'values redacted before the model' }
+        : null,
+    ...(sb && sb.routed > 0 ? [{ v: sb.routed, l: sb.routed === 1 ? 'insight routed' : 'insights routed' }] : []),
   ];
+  const sys = sysAll.filter((t): t is Tile => t != null);
+  const lede = !sb
+    ? 'What you did, and what the system did.'
+    : sb.ok
+      ? 'Counted from your own workspace and this session, not a script.'
+      : 'Live figures were unavailable, so these counts come from this session only.';
 
   return (
     <div className="n-grid sc-score" data-testid="scorecard">
@@ -109,7 +160,7 @@ export function ScorecardScene() {
             </Display>
           </Reveal.Item>
           <Reveal.Item>
-            <Lede>Real numbers from your own workspace, not a script. {sb && !sb.ok ? 'Some live figures were unavailable, so counts come from this session.' : ''}</Lede>
+            <Lede>{lede}</Lede>
           </Reveal.Item>
         </Reveal>
       </div>
@@ -120,7 +171,7 @@ export function ScorecardScene() {
         <div className="sc-score__stats">
           {you.map((x) => (
             <Reveal.Item key={x.l}>
-              <Stat value={x.v} suffix={x.s} label={x.l} size="sm" />
+              <TileView t={x} />
             </Reveal.Item>
           ))}
         </div>
@@ -132,11 +183,11 @@ export function ScorecardScene() {
         <div className="sc-score__stats">
           {sys.map((x) => (
             <Reveal.Item key={x.l}>
-              <Stat value={x.v} label={x.l} size="sm" />
+              <TileView t={x} />
             </Reveal.Item>
           ))}
           <Reveal.Item>
-            <Stat value={sb?.costUsd ?? 0} prefix="$" decimals={sb && sb.costUsd < 0.1 ? 4 : 2} label="AI spend on your runs" size="sm" tone="accent" />
+            <Stat value={sb?.costUsd ?? 0} prefix="$" decimals={sb && sb.costUsd < 0.1 ? 4 : 2} label={sb && sb.liveRuns === 0 && sb.runs > 0 ? 'AI spend (replays are free)' : 'AI spend on your runs'} size="sm" tone="accent" />
           </Reveal.Item>
         </div>
       </Reveal>

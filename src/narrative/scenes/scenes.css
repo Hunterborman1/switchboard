@@ -73,6 +73,10 @@
 @media (max-width: 900px) {
   .sc-bh__canvas { aspect-ratio: 16 / 10; max-height: 44vh; }
 }
+/* Phones: the legend sits under the canvas, not over the bottom source. */
+@media (max-width: 640px) {
+  .sc-bh__legend { position: static; margin-top: 10px; padding-left: 4px; flex-wrap: wrap; gap: 8px 16px; }
+}
 
 /* ---------------------------------------------------------------- 02 why */
 .sc-why { align-content: center; }
@@ -280,6 +284,7 @@
 .sc-score { row-gap: var(--n-s-5); }
 .sc-score__panel { display: grid; gap: var(--n-s-5); align-content: start; }
 .sc-score__stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--n-s-5); }
+.sc-score .n-stat__value--text { font-size: clamp(1.4rem, 1.1rem + 0.8vw, 1.9rem); color: var(--n-ink-2); }
 .sc-score__ops {
   display: grid;
   gap: 8px;

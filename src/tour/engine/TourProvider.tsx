@@ -12,6 +12,8 @@ import type { Budget, RunDetail, Theme } from '../../shared/contracts';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type OverviewReport, type AgentRecord, type AgentImpact, type UsageReport, type LogEntry } from '../../shared/platform-contracts';
 import { STEPS, STEP_BY_ID, FIRST_STEP, MAIN_ORDER } from '../script/steps';
 import { tourApi } from '../api';
+import { isSpotlitTheme } from '../script/copy';
+import type { AnchorId } from '../anchors';
 import { TourPaceContext, type TourPace } from '../pace';
 import { freshPersisted, isPath, readStored, writeStored } from './storage';
 import type { CheckpointData, EvalsData, OpsData, Persisted, PresenterMsg, Step, TourApi, TourCtx, TourPath, TourStatus } from './types';
@@ -61,6 +63,12 @@ export function useTour(): TourValue {
   return v;
 }
 
+/** The step's target anchors in priority order (empty when the step has no target). */
+export function resolveTarget(step: Step, ctx: TourCtx): AnchorId[] {
+  const t = typeof step.target === 'function' ? step.target(ctx) : step.target;
+  return t == null ? [] : Array.isArray(t) ? t : [t];
+}
+
 export const resolveCopy = <T,>(c: T | ((ctx: TourCtx) => T), ctx: TourCtx): T => (typeof c === 'function' ? (c as (x: TourCtx) => T)(ctx) : c);
 
 function initial(): Persisted {
@@ -83,6 +91,14 @@ function initial(): Persisted {
   }
   if (!STEP_BY_ID[base.stepId]) return freshPersisted(FIRST_STEP);
   return base;
+}
+
+/** The previous main-path step for a scene with no history (deep link), or null. */
+function sceneFallbackBack(stepId: string): string | null {
+  const s = STEP_BY_ID[stepId];
+  if (!s || s.kind !== 'scene') return null;
+  const i = MAIN_ORDER.indexOf(stepId);
+  return i > 0 ? MAIN_ORDER[i - 1]! : null;
 }
 
 const stripBase = (p: string) => p.replace(/^\/repo\/invoca/, '') || '/';
@@ -211,6 +227,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
       let prevId = history.pop();
       // skip transient steps that auto-advance
       while (prevId === 'ch1.open') prevId = history.pop();
+      // A deep link into a scene has no history: step back along the main path instead.
+      if (!prevId) prevId = sceneFallbackBack(prev.stepId) ?? undefined;
       if (!prevId || !STEP_BY_ID[prevId]) return prev;
       const ps = STEP_BY_ID[prevId]!;
       return { ...prev, stepId: prevId, history, beat: ps.kind === 'scene' ? Math.max(0, (ps.beats ?? 1) - 1) : 0, chapterEnteredAt: ps.chapter === STEP_BY_ID[prev.stepId]?.chapter ? prev.chapterEnteredAt : Date.now() };
@@ -366,16 +384,24 @@ export function TourProvider({ children }: { children: ReactNode }) {
     };
   }, [step.chapter, state.status, peek, state.ctx.runId]);
 
-  // ch5: the theme the viewer's insight joined, else the biggest theme
+  // ch5: the theme the copy narrates must be the one on screen. Once a theme is opened, that
+  // one; before that, the card ch5.intro spotlights (theme.c1042); else the viewer's own
+  // insight's theme; else the biggest.
   useEffect(() => {
     if (state.status !== 'active' || step.chapter !== 'ch5') return;
     let alive = true;
-    const wanted = state.ctx.themeId ?? run?.insights.find((i) => i.themeId)?.themeId ?? null;
-    if (theme && (!wanted || theme.id === wanted)) return;
+    const opened = state.ctx.themeId;
+    if (theme && (opened ? theme.id === opened : isSpotlitTheme(theme))) return;
     tourApi
       .themes()
       .then((all) => {
-        const t = all.find((x) => x.id === wanted) ?? [...all].sort((a, b) => b.insightCount - a.insightCount)[0] ?? null;
+        const mine = new Set((run?.insights ?? []).map((i) => i.themeId).filter(Boolean));
+        const t =
+          (opened ? all.find((x) => x.id === opened) : undefined) ??
+          all.find(isSpotlitTheme) ??
+          all.find((x) => mine.has(x.id)) ??
+          [...all].sort((a, b) => b.insightCount - a.insightCount)[0] ??
+          null;
         if (alive && t) setTheme(t);
       })
       .catch(() => undefined);
@@ -568,7 +594,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     checkpoint,
     menuOpen,
     railOpen,
-    canGoBack: state.history.length > 0 || state.beat > 0,
+    canGoBack: state.history.length > 0 || state.beat > 0 || !!sceneFallbackBack(state.stepId),
     isReady: isReadyFn(step, ctx),
     setMenuOpen,
     setRailOpen,

@@ -134,7 +134,8 @@ export type Step = {
   route?: string | ((ctx: TourCtx) => string | null);
   scene?: SceneId;
   beats?: number;
-  target?: AnchorId;
+  /** What to spotlight. A list is a priority order: the first one on screen wins. */
+  target?: AnchorId | AnchorId[] | ((ctx: TourCtx) => AnchorId | AnchorId[]);
   /** Extra anchors that get a soft ring (e.g. the recommended file inside the picker). */
   highlight?: AnchorId[];
   placement?: Placement;

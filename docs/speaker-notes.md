@@ -82,15 +82,14 @@ If they pick something else, name the branch:
 - **Friendly check-in:** the right output is nothing.
 - **PHI-heavy healthcare call:** watch what reaches the model.
 
-## Ch2 · Watch it think (2:30)
+## Ch2 · Watch it think (2:15)
 
 **Click:** → as each step completes. Stop on Ground. If every quote grounded (the usual case on Brightline), click **See a rejected quote**, then **Back to my run**.
 
 **Say:**
-> What you're watching is the real execution. Every step writes a row and the UI animates from those rows.
+> Ten steps, each saved as it runs. What you're watching is the real execution, and the UI animates from those rows. (If the callout says it's a replay, say so: a recorded real execution at real speed.)
 > Redaction first. Only redacted text reaches a model; the original never leaves the Worker.
-> Screen is a cheap check before the expensive one: is it actionable, what language, is anyone trying to steer the model.
-> Extraction returns a fixed schema. No quote, no insight.
+> *(One beat on the main path)* A cheap screen checks it's worth reading, what language, and whether anyone is trying to steer the model. Then extraction returns a fixed schema. No quote, no insight.
 > *(On Ground)* This is the moment. Fourteen of fourteen quotes matched the transcript (read the real count off the callout). One of them was interrupted mid-sentence and still matched, because grounding checks the words, not the model's word.
 > *(See a rejected quote)* Across all 48 recordings exactly one quote failed. Here it is: a plausible sentence the customer never said. The closest span scored under 0.90, so the insight was dropped and counted, never shown as fact.
 > The gate decides who sees it next. 0.80 and up routes itself; anything high stakes goes to a person.
@@ -98,9 +97,9 @@ If they pick something else, name the branch:
 
 Branch extras: **privacy** → have them toggle before/after; **security** → point at the injection flag and the audit row; **negative** → "zero insights, and that's correct"; **messy** → lower confidence, more for review.
 
-## Ch3 · Human in the loop (1:45)
+## Ch3 · Human in the loop (2:00)
 
-**Click:** press **A** on the first item. Press **E** on another, change the type or severity, save. Then *Continue* (or *Try another file* if I'm ahead of time).
+**Click:** press **A** on the first item. Press **E** on another; the callout follows the edit form. Change the type or severity (Save stays disabled until a field changes), then **Save edit & route**. Then *Continue* (or *Try another file* if I'm ahead of time).
 
 **Say:**
 > The workflow is paused, waiting for a person. Every item says why it's here: "confidence 0.71, below 0.80".
@@ -115,12 +114,12 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 > The VP wants pricing objections on big accounts. One rule change, the flows re-route. No prompt changed, no redeploy, and it only affects your workspace.
 > The PM gets a Jira ticket with the quote and the ARR. Urgent items land in Slack, with a receipt.
 
-## Ch5 · Patterns, not anecdotes (1:00)
+## Ch5 · Patterns, not anecdotes (1:15)
 
 **Click:** open the highlighted theme.
 
 **Say:**
-> One complaint is an anecdote. The same thing from nine accounts is a pattern. (Read the theme off the screen: the top one is “Google Ads offline conversions arrive late”, 36 insights.)
+> One complaint is an anecdote. The same thing from nine accounts is a pattern. (Read the theme off the callout; it names the highlighted card, “Google Ads offline conversions arrive late”, with its live insight and account counts. If it says my call's insight just joined it, say that too.)
 > Membership is deterministic, embeddings and a similarity threshold. The model only names it.
 > ARR at stake, an eight-week trend, and quotes that click back to the exact turn.
 
@@ -132,24 +131,24 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 > Play the PM. Ship it.
 > The CSM hears back automatically, with the credit and a drafted note for the customer. Drafted, not sent. The relationship stays theirs.
 
-## Ch7 · Prove it (1:20)
+## Ch7 · Prove it (1:35)
 
 **Click:** **Promote** on the candidate prompt → read the gate → Health budget gauge.
 
 **Say:**
 > Precision and recall per insight type, against 48 hand-labelled golden files.
 > Sliced by mess level, because the messiest files are where systems quietly break. The current prompt still holds 90% recall on level 5.
-> The candidate is cheaper. Try to promote it. Blocked: precision fell 29 points, from 88.6% to 59.7%. The cheaper prompt invented insights customers never raised. One regression blocks promotion, whatever it saves.
+> v5 is a rewritten extraction prompt, scored on the same files. Its recall looks fine. Try to promote it. Blocked: precision fell 29 points, from 88.6% to 59.7%. It invented insights customers never raised. It also costs more on the eval set and is slower at p95, and the gate lists both. One regression is enough to block a prompt; this one had three. The callout reads all of these numbers from the eval runs, so they match the screen.
 > Cost: viewers share a hard $15 cap. Past it, runs replay recorded real executions. Never an outage.
 
-## Ch8 · Operate it (2:30)
+## Ch8 · Operate it (2:00)
 
-**Click:** the **Agent Ops** link → overview → registry → Signal Loop's page → usage → logs (filtered to my run) → trace → reliability.
+**Click:** the **Agent Ops** link → overview → registry → Signal Loop's page → usage → logs (filtered to my run) → trace → reliability. Seven beats; the needs-attention list and the standard checklist are on screen but not separate stops.
 
 **Say:**
 > Building the agent is half the job. Operating it is the other half. Signal Loop is one agent in Agent Ops.
-> This is the exec view: hours returned, value against AI cost, adoption. Two agents today; the registry is built for fifty.
-> Every agent has a named owner, a purpose and a review date, and is held to the same nine-check standard. Signal Loop passes all nine.
+> This is the exec view: hours returned first, then the value of that time against metered AI spend (build time not included), and adoption. Two agents today; the registry is built for fifty.
+> Every agent has a named owner, a purpose and a review date, and is held to the same nine-check standard. Signal Loop passes all nine. (The checks are under *How this works* on the agent page; the rollout scene covers the standard properly.)
 > That's you on the live panel. This session is in the data. Adoption is measured, not surveyed.
 > These are the logs from the run you just did, one trace ID end to end. And the waterfall shows where the time went.
 > SLOs with error budgets; alerts with an owner and a runbook. Acknowledged isn't resolved.
@@ -171,7 +170,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 **Click:** → once.
 
 **Say:**
-> Capture in the call, specialist agents checking each other, models cheap enough to process every call, drafted PRDs and customer replies, and plugging into Invoca's own Signal AI.
+> Capture in the call, specialist agents checking each other, models cheap enough to process every call (the card shows today's measured AI cost per call, a fraction of a cent), drafted PRDs and customer replies, and plugging into Invoca's own Signal AI.
 > What doesn't change: grounding in code, gates, routing as data, and human judgement where it counts.
 
 ## Part 15 · POC → production (0:45)
@@ -184,7 +183,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 ## Part 16 · Scorecard (0:45)
 
 **Say:**
-> These are real numbers from your session: what you did and what the system did.
+> Every number here is counted from your workspace and this session: what you did and what the system did. Where a counter would be zero, it shows a fact about your own run instead (quotes grounded, values redacted).
 > Everything's unlocked. Explore freely. I'm happy to go into cost, security, failure handling, build vs buy, or how I'd measure it.
 
 ---

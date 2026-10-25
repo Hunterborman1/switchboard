@@ -11,6 +11,8 @@ type P = { t: number; speed: number; src: number; dst: number; fate: 'reach' | '
 
 const OWNERS = ['Product', 'VP Product', 'Sales', 'Support', 'Competitive'];
 const CALLS = 6;
+/** Fewer sources on phones so the field and the owner column don't crowd. */
+const callsFor = (w: number) => (w < 640 ? 4 : CALLS);
 
 function rand(seed: number) {
   let s = seed;
@@ -31,6 +33,10 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
     let w = 0;
     let h = 0;
     let dpr = 1;
+    let alive = true;
+    // Resizing a canvas clears it. The animated loop repaints every frame; the reduced-motion
+    // still frame has to be repainted here, or it shows an empty panel after the first layout.
+    let repaint: (() => void) | null = null;
     const resize = () => {
       const r = canvas.getBoundingClientRect();
       dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -39,6 +45,7 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      repaint?.();
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -55,9 +62,10 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
       const callX = narrow ? w * 0.1 : w * 0.08;
       const ownX = narrow ? w * 0.9 : w * 0.92;
       const void_ = { x: w * 0.55, y: h * 0.62, r: Math.min(w, h) * (narrow ? 0.12 : 0.1) };
-      const callY = (i: number) => h * 0.14 + (i / (CALLS - 1)) * h * 0.72;
+      const calls = callsFor(w);
+      const callY = (i: number) => h * 0.14 + ((i % calls) / (calls - 1)) * h * 0.72;
       const ownY = (i: number) => h * 0.16 + (i / (OWNERS.length - 1)) * h * 0.68;
-      return { callX, ownX, void_, callY, ownY };
+      return { callX, ownX, void_, callY, ownY, calls };
     };
 
     const pos = (p: P) => {
@@ -96,7 +104,7 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
     };
 
     const drawFrame = () => {
-      const { callX, ownX, void_, callY, ownY } = geo();
+      const { callX, ownX, void_, callY, ownY, calls } = geo();
       g.clearRect(0, 0, w, h);
       const inten = intensityRef.current;
       // void
@@ -132,7 +140,7 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
         if (w > 520) g.fillText(OWNERS[i]!.toUpperCase(), ownX - 24, y);
       }
       // calls
-      for (let i = 0; i < CALLS; i++) {
+      for (let i = 0; i < calls; i++) {
         const y = callY(i);
         g.fillStyle = 'rgba(242,245,228,0.05)';
         g.strokeStyle = 'rgba(242,245,228,0.35)';
@@ -175,8 +183,12 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
     let last = performance.now();
     let acc = 0;
     if (calm) {
+      // One composed frame: particles spread along their paths, some reaching owners, some in the void.
       for (let i = 0; i < 70; i++) spawn(rnd());
+      repaint = drawFrame;
       drawFrame();
+      // Owner labels use a web font: repaint once it has loaded.
+      document.fonts?.ready.then(() => alive && drawFrame()).catch(() => undefined);
     } else {
       for (let i = 0; i < 40; i++) spawn(rnd());
       const loop = (now: number) => {
@@ -195,6 +207,7 @@ function useField(canvasRef: React.RefObject<HTMLCanvasElement>, intensity: numb
       raf = requestAnimationFrame(loop);
     }
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
     };

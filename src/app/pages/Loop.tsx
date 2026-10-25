@@ -181,7 +181,7 @@ export default function LoopPage() {
                     const unread = !n.read && !opened.has(n.id);
                     const active = n.id === selected?.id;
                     return (
-                      <li key={n.id}>
+                      <li key={n.id} data-tour={n === visible.find((x) => x.kind === 'shipped') ? 'loop.shipped' : undefined}>
                         <button type="button" className={`${styles.item}${active ? ` ${styles.itemActive}` : ''}`} onClick={() => open(n)} aria-current={active ? 'true' : undefined}>
                           <span className={`${styles.unread}${unread ? ` ${styles.unreadOn}` : ''}`} aria-label={unread ? 'Unread' : undefined} />
                           <span className={styles.itemBody}>

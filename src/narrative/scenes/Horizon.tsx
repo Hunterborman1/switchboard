@@ -1,7 +1,9 @@
 /**
  * 14 · The next 12–18 months. A horizon line with milestones receding into the distance.
  */
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { tourApi } from '../../tour/api';
 import { Display, Lede, Reveal } from '../components';
 import { useCalm } from '../hooks';
 import { EASE } from '../motion';
@@ -10,13 +12,39 @@ const MILES = [
   { when: '0–3 mo', title: 'Every call, by default', body: 'Ingest straight from the call recorder and CRM. No uploads, no opt-in friction.' },
   { when: '3–6 mo', title: 'Real-time, in-call capture', body: 'Signals surface while the call is live, so the CSM can confirm one with the customer before hanging up.' },
   { when: '6–9 mo', title: 'Specialist agents', body: 'An extractor, a critic that challenges each claim, and a router, each with its own evals.' },
+  // body is replaced with the measured per-call cost when the run ledger answers (usePerCallCost)
   { when: '9–12 mo', title: 'Cheaper, faster models', body: 'Unit cost keeps falling, so scanning every call (not a sample) becomes the obvious economics.' },
   { when: '12–15 mo', title: 'Drafted PRDs and replies', body: 'A theme becomes a first-draft PRD with quotes, and a drafted reply for each account that raised it.' },
   { when: '15–18 mo', title: 'Part of Invoca’s own platform', body: 'Plug into Invoca’s Signal AI and conversation data, so the internal loop and the product share one engine.' },
 ];
 
+/** Mean AI cost per live run, measured from the run ledger (the same figure as the cost backup). */
+function usePerCallCost(): number | null {
+  const [v, setV] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    tourApi
+      .runs(200)
+      .then((runs) => {
+        const live = runs.filter((r) => r.mode === 'live' && r.costUsd > 0);
+        if (alive && live.length) setV(live.reduce((a, r) => a + r.costUsd, 0) / live.length);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return v;
+}
+
 export function Horizon({ beat }: { beat: number }) {
   const calm = useCalm();
+  const perCall = usePerCallCost();
+  const miles = MILES.map((m) =>
+    m.title === 'Cheaper, faster models' && perCall != null
+      ? { ...m, body: `About $${perCall.toFixed(4)} of AI per call today, measured on this build. As that keeps falling, scanning every call, not a sample, is the obvious economics.` }
+      : m,
+  );
   return (
     <div className="n-grid sc-hz">
       <div className="n-col-12">
@@ -50,7 +78,7 @@ export function Horizon({ beat }: { beat: number }) {
           })}
         </svg>
         <ol className="sc-hz__miles">
-          {MILES.map((m, i) => (
+          {miles.map((m, i) => (
             <motion.li key={m.title} initial={calm ? false : { opacity: 0, y: 14, filter: 'blur(8px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={calm ? { duration: 0 } : { duration: 0.6, ease: EASE, delay: 0.4 + i * 0.12 }}>
               <span className="n-label" style={{ color: 'var(--n-accent)' }}>{m.when}</span>
               <h3>{m.title}</h3>

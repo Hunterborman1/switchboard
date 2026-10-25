@@ -87,10 +87,19 @@
   padding: var(--n-s-5) var(--n-gutter);
 }
 .n-scene__top {
-  padding-right: calc(var(--n-gutter) + 300px);
+  /* room for the walkthrough HUD (340px) top-right */
+  padding-right: calc(var(--n-gutter) + 356px);
 }
 @media (max-width: 760px) {
   .n-scene__top { padding-right: var(--n-gutter); }
+}
+/* Phones: keep the mark and the part number on one line each; the full label is the section's aria-label. */
+@media (max-width: 480px) {
+  .n-scene__top .n-mark b,
+  .n-scene__top .n-mark span,
+  .n-scene__top .n-eyebrow__rule,
+  .n-scene__top .n-eyebrow > span:last-child { display: none; }
+  .n-scene__top .n-eyebrow { white-space: nowrap; }
 }
 .n-scene__body {
   position: relative;
@@ -98,6 +107,13 @@
   padding: var(--n-s-3) var(--n-gutter) var(--n-s-5);
   display: grid;
   align-content: center;
+}
+/* The keyed stage inside a persistent scene: only this cross-fades between scenes. */
+.n-scene__stage { display: grid; align-content: center; min-width: 0; }
+.n-scene__skeleton { display: grid; justify-items: center; gap: 14px; color: var(--n-ink-3); }
+.n-scene__skeleton svg { animation: n-breathe 1.8s var(--n-ease) infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .n-scene__skeleton svg { animation: none; }
 }
 .n-scene__bottom {
   border-top: 1px solid var(--n-line);

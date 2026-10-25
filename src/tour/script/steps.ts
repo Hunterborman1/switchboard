@@ -3,13 +3,13 @@
  * when the viewer does the real thing (an event from src/shared/events.ts) or when the
  * real pipeline reaches the step being narrated.
  */
-import type { Step, TourCtx, TourPath } from '../engine/types';
+import { PATH_LABELS, type Step, type TourCtx, type TourPath } from '../engine/types';
 import { R } from './routes';
 import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import {
-  budgetCopy, extractCopy, gateCopy, groundCopy, messyCopy, opsAttentionCopy, opsKpiCopy, opsLiveCopy, opsLogsCopy,
-  opsRegistryCopy, opsStandardCopy, promoteCopy, redactCopy, runSettled, screenCopy, stepDone, traceCopy, usd,
-  rejectedCopy, candidateCopy, themeCopy,
+  budgetCopy, extractCopy, gateCopy, groundCopy, messyCopy, opsKpiCopy, opsLiveCopy, opsLogsCopy,
+  opsRegistryCopy, promoteCopy, redactCopy, runSettled, screenCopy, stepDone, traceCopy, usd,
+  rejectedCopy, candidateCopy, candidateTitle, themeCopy, introCopy, editCopy,
 } from './copy';
 
 const runRoute = (ctx: TourCtx) => (ctx.runId ? R.run(ctx.runId) : null);
@@ -20,6 +20,8 @@ const themeRoute = (ctx: TourCtx) => {
   const id = ctx.themeId ?? ctx.theme?.id;
   return id ? R.theme(id) : null;
 };
+/** Branches where the screen result is the story (injection flag, nothing actionable). */
+const screenMatters = (ctx: TourCtx) => has(ctx, 'security') || has(ctx, 'negative') || !!ctx.run?.screen?.injection_suspected || ctx.run?.screen?.actionable === false;
 const anchorPresent = (id: string) => typeof document !== 'undefined' && !!document.querySelector(`[data-tour="${id}"]`);
 
 const PATH_INTRO: Record<TourPath, { title: string; body: string }> = {
@@ -87,7 +89,7 @@ export const STEPS: Step[] = [
     id: 'ch1.run', chapter: 'ch1', kind: 'product', route: R.newCall, target: 'new.run', placement: 'top',
     title: (ctx) => PATH_INTRO[ctx.path].title,
     body: (ctx) => PATH_INTRO[ctx.path].body,
-    more: 'Each run is a Cloudflare Workflow with ten durable steps. Every step writes a row: status, timing, hashes, model, tokens, cost. The UI animates from those rows.',
+    more: 'Each run is a Cloudflare Workflow with ten steps, each saved as it runs. Every step writes a row: status, timing, hashes, model, tokens, cost. The UI animates from those rows.',
     waitFor: { event: 'run.started', hint: 'Click Run pipeline' },
     next: 'ch2.intro',
     checkpoint: () => ({ value: 0, label: 'fields typed by the CSM', sub: '1 call in · the system does the data entry' }),
@@ -97,9 +99,9 @@ export const STEPS: Step[] = [
   // ============================================================ ch2 · watch it think
   {
     id: 'ch2.intro', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.stepper', placement: 'bottom', pace: 'slow',
-    title: 'Ten durable steps',
-    body: 'What you’re watching is the real execution, not an animation. Each step writes a row as it runs.',
-    more: 'If live AI is unavailable or over budget, the run replays a recorded real execution at real speed, and says so on screen.',
+    title: 'Ten steps, each saved as it runs',
+    body: introCopy,
+    more: 'Each step is retried on failure and resumes from its saved result. If live AI is unavailable or over budget, the run replays a recorded real execution at real speed, and says so on screen.',
     ready: (ctx) => !!ctx.run, readyLabel: 'Starting the run…',
     waitFor: 'next', next: 'ch2.redact',
   },
@@ -108,13 +110,13 @@ export const STEPS: Step[] = [
     title: 'Redaction comes first', body: redactCopy,
     more: 'Regex plus validators (Luhn for cards, date sanity for DOB) swap values for reversible tokens like [PATIENT_1]. The original never leaves the Worker; the browser only sees a masked preview.',
     ready: (ctx) => stepDone(ctx.run, 'redact'), readyLabel: 'Redacting…',
-    waitFor: 'next', next: (ctx) => (has(ctx, 'privacy') ? 'ch2.privacy' : 'ch2.screen'),
+    waitFor: 'next', next: (ctx) => (has(ctx, 'privacy') ? 'ch2.privacy' : screenMatters(ctx) ? 'ch2.screen' : 'ch2.extract'),
   },
   {
     id: 'ch2.privacy', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.redaction', placement: 'bottom', pace: 'slow',
     title: 'Before and after', body: 'Toggle it. Only the redacted side ever reached a model. Tokens keep the meaning, drop the identity.',
     waitFor: { event: 'redaction.toggled', hint: 'Toggle before / after' },
-    next: 'ch2.screen',
+    next: (ctx) => (screenMatters(ctx) ? 'ch2.screen' : 'ch2.extract'),
   },
   {
     id: 'ch2.screen', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.screen', placement: 'left', pace: 'slow',
@@ -131,7 +133,8 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: (ctx) => (has(ctx, 'negative') || (ctx.run?.insights.length === 0 && runSettled(ctx.run)) ? 'ch2.trace' : 'ch2.ground'),
   },
   {
-    id: 'ch2.ground', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.dropped', placement: 'left', pace: 'slow', anchorTimeoutMs: 2500,
+    // A dropped quote is the story when there is one; otherwise point at the Ground step itself.
+    id: 'ch2.ground', chapter: 'ch2', kind: 'product', route: runRoute, target: ['run.dropped', 'run.ground'], placement: 'bottom', pace: 'slow', anchorTimeoutMs: 2500,
     title: (ctx) => groundCopy(ctx).title, body: (ctx) => groundCopy(ctx).body, more: (ctx) => groundCopy(ctx).more,
     ready: (ctx) => stepDone(ctx.run, 'ground'), readyLabel: 'Grounding quotes…',
     waitFor: 'next', next: (ctx) => (has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate'),
@@ -166,7 +169,7 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: 'ch2.trace',
   },
   {
-    id: 'ch2.trace', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.trace', placement: 'left',
+    id: 'ch2.trace', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.trace', placement: 'bottom',
     title: 'Nothing is a black box', body: traceCopy,
     ready: (ctx) => runSettled(ctx.run) || stepDone(ctx.run, 'route'), readyLabel: 'Finishing the run…',
     waitFor: 'next', next: (ctx) => (has(ctx, 'clean') ? 'ch2.clean' : 'ch3.intro'),
@@ -203,16 +206,22 @@ export const STEPS: Step[] = [
     next: 'ch3.edit',
   },
   {
-    id: 'ch3.edit', chapter: 'ch3', kind: 'product', route: R.review, target: 'review.edit', placement: 'top', interact: 'all',
-    title: 'Now correct one', body: 'Press E. Your fix is saved as labelled data, with a before/after audit diff.',
+    // Pressing Edit swaps the button for the edit form: follow it, and say what saving needs.
+    id: 'ch3.edit', chapter: 'ch3', kind: 'product', route: R.review, target: ['review.editform', 'review.edit'], placement: 'right', interact: 'all',
+    title: 'Now correct one', body: editCopy,
     more: 'Edits follow the operator_actions pattern: idempotency key, before, after, reviewer, reason. They become eval cases, which is how the next prompt version gets better.',
-    waitFor: { event: 'review.action', where: (e) => e.name === 'review.action' && (e.action === 'edit' || e.action === 'reject'), hint: 'Press E or click Edit' },
+    waitFor: { event: 'review.action', where: (e) => e.name === 'review.action' && (e.action === 'edit' || e.action === 'reject'), hint: 'Edit, change a field, save' },
     next: 'ch3.fork',
   },
   {
     id: 'ch3.fork', chapter: 'ch3', kind: 'product', placement: 'bottom',
     title: 'Try another file?',
-    body: (ctx) => `Scenarios explored: ${ctx.explored.length} of 6. Each file takes a different path through the same system.`,
+    body: (ctx) => {
+      // Name what's left, best stories first, instead of a generic "another file".
+      const left = (['security', 'privacy', 'messy', 'negative', 'clean'] as TourPath[]).filter((p) => !ctx.explored.includes(p)).map((p) => PATH_LABELS[p].toLowerCase());
+      const next = left.length ? ` Still to try: ${left.slice(0, 3).join(', ')}.` : '';
+      return `Scenarios explored: ${ctx.explored.length} of 6. Each file takes a different path through the same system.${next}`;
+    },
     waitFor: 'next', next: 'ch4.intro',
     actions: [
       { label: 'Try another file', to: 'ch1.intro', variant: 'ghost' },
@@ -236,7 +245,7 @@ export const STEPS: Step[] = [
     next: 'ch4.sankey',
   },
   {
-    id: 'ch4.sankey', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.sankey', placement: 'top',
+    id: 'ch4.sankey', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.sankey', placement: 'bottom',
     title: 'The flows re-route', body: 'Same insights, new owner. No prompt changed, no redeploy. The edit is in your workspace only.',
     waitFor: 'next', next: 'ch4.jira',
   },
@@ -285,8 +294,8 @@ export const STEPS: Step[] = [
     next: 'ch6.inbox',
   },
   {
-    id: 'ch6.inbox', chapter: 'ch6', kind: 'product', route: R.loop, target: 'loop.inbox', placement: 'left',
-    title: 'The CSM hears back', body: 'Automatically. Their feedback shipped, and they get the credit.',
+    id: 'ch6.inbox', chapter: 'ch6', kind: 'product', route: R.loop, target: ['loop.shipped', 'loop.inbox'], placement: 'right',
+    title: 'The CSM hears back', body: 'Automatically, the moment it ships. Their feedback shipped, and they get the credit.',
     waitFor: 'next', next: 'ch6.note',
   },
   {
@@ -309,8 +318,8 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: 'ch7.candidate',
   },
   {
-    id: 'ch7.candidate', chapter: 'ch7', kind: 'product', route: R.evals, target: 'evals.candidate', placement: 'left',
-    title: 'A cheaper prompt?', body: candidateCopy,
+    id: 'ch7.candidate', chapter: 'ch7', kind: 'product', route: R.evals, target: 'evals.candidate', placement: 'bottom',
+    title: candidateTitle, body: candidateCopy,
     waitFor: 'next', next: 'ch7.promote',
   },
   {
@@ -345,11 +354,6 @@ export const STEPS: Step[] = [
     id: 'ch8.kpis', chapter: 'ch8', kind: 'product', route: R.ops, target: 'ops.overview.kpis', placement: 'bottom',
     title: 'What the exec sees', body: opsKpiCopy,
     more: 'Hours returned = Σ(registered baseline minutes per unit − measured human review minutes). Baselines are labelled assumptions until the 2-week time study replaces them.',
-    waitFor: 'next', next: 'ch8.attention',
-  },
-  {
-    id: 'ch8.attention', chapter: 'ch8', kind: 'product', route: R.ops, target: 'ops.overview.attention', placement: 'left',
-    title: 'What needs attention', body: opsAttentionCopy,
     waitFor: 'next', next: 'ch8.registry',
   },
   {
@@ -360,12 +364,7 @@ export const STEPS: Step[] = [
   {
     id: 'ch8.review', chapter: 'ch8', kind: 'product', route: R.opsAgent(SIGNAL_LOOP_AGENT_ID), target: 'ops.agent.review', placement: 'bottom',
     title: 'Owned past launch', body: opsRegistryCopy,
-    waitFor: 'next', next: 'ch8.standard',
-  },
-  {
-    id: 'ch8.standard', chapter: 'ch8', kind: 'product', route: R.opsAgent(SIGNAL_LOOP_AGENT_ID), target: 'ops.agent.standard', placement: 'left',
-    title: 'The agent standard', body: opsStandardCopy,
-    more: 'Owner, purpose and success metric, security & data review, evals with a promotion gate, logs and traces, spend cap, human review on high-stakes output, rollback and runbook, review cadence.',
+    more: 'The agent standard: owner, purpose and success metric, security & data review, evals with a promotion gate, logs and traces, spend cap, human review on high-stakes output, rollback and runbook, review cadence.',
     waitFor: 'next', next: 'ch8.usage',
   },
   {
@@ -379,7 +378,7 @@ export const STEPS: Step[] = [
     waitFor: 'next', next: 'ch8.trace',
   },
   {
-    id: 'ch8.trace', chapter: 'ch8', kind: 'product', route: (ctx) => (ctx.ops?.traceId ? R.opsTrace(ctx.ops.traceId) : null), target: 'ops.trace.waterfall', placement: 'top', anchorTimeoutMs: 3500,
+    id: 'ch8.trace', chapter: 'ch8', kind: 'product', route: (ctx) => (ctx.ops?.traceId ? R.opsTrace(ctx.ops.traceId) : null), target: 'ops.trace.waterfall', placement: 'bottom', anchorTimeoutMs: 3500,
     title: 'Where the time went', body: 'Every span of your run: the steps, each model call, retries and deliveries.',
     waitFor: 'next', next: 'ch8.slos',
   },
@@ -417,4 +416,4 @@ export const STEP_BY_ID: Record<string, Step> = Object.fromEntries(STEPS.map((s)
 export const FIRST_STEP = 'cold-open';
 export const firstStepOf = (chapter: string): string => STEPS.find((s) => s.chapter === chapter)?.id ?? FIRST_STEP;
 /** The main-path order, for progress. */
-export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.messy', 'ch2.clean', 'ch2.rejected', 'ch1.open'].includes(s.id)).map((s) => s.id);
+export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.screen', 'ch2.messy', 'ch2.clean', 'ch2.rejected', 'ch1.open'].includes(s.id)).map((s) => s.id);

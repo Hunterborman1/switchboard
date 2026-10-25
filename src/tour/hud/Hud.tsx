@@ -40,63 +40,108 @@ function Timer() {
   );
 }
 
-/** Compact objective HUD, top-right. Steps aside when the spotlight sits underneath it. */
+/**
+ * Objective HUD. On scenes: a slim card top-right (scenes carry their own eyebrow, so it
+ * starts collapsed). On product steps the callout already says what to do, so the HUD is a
+ * 40 px pill in one fixed corner (bottom-right) that expands on click; it fades out of the
+ * way (never jumps) when the spotlight sits underneath it.
+ */
 export function Hud() {
   const tour = useTour();
   const { step, ctx } = tour;
   const ref = useRef<HTMLDivElement>(null);
-  const [dodge, setDodge] = useState(false);
+  const [faded, setFaded] = useState(false);
   const [collapsedPref, setCollapsed] = useState<boolean | null>(null);
+  const [productOpen, setProductOpen] = useState(false);
   const ch = chapterById(step.chapter);
+  const product = step.kind === 'product';
   // Scenes carry their own eyebrow: keep the HUD to one line there unless the viewer opens it.
   const collapsed = collapsedPref ?? step.kind === 'scene';
 
+  // Each new product step starts with the pill, so the HUD never covers the page while a callout is open.
+  useEffect(() => setProductOpen(false), [step.id]);
+
+  // Product pages get bottom padding while the tour runs, so the pill never hides the last row.
   useEffect(() => {
-    if (step.kind !== 'product') {
-      setDodge(false);
+    if (tour.status !== 'active' || !product) return;
+    const root = document.documentElement;
+    root.dataset.slTour = 'product';
+    return () => {
+      delete root.dataset.slTour;
+    };
+  }, [tour.status, product]);
+
+  useEffect(() => {
+    if (!product) {
+      setFaded(false);
       return;
     }
     const t = window.setInterval(() => {
       const ring = document.querySelector('.t-spot__ring');
       const hud = ref.current;
-      if (!ring || !hud) return setDodge(false);
+      if (!ring || !hud) return setFaded(false);
       const a = ring.getBoundingClientRect();
       const hb = hud.getBoundingClientRect();
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const top = { left: vw - 14 - hb.width, right: vw - 14, top: 14, bottom: 14 + hb.height };
-      const bottom = { left: top.left, right: top.right, top: vh - 14 - hb.height, bottom: vh - 14 };
-      const hits = (r: { left: number; right: number; top: number; bottom: number }) => !(a.right < r.left || a.left > r.right || a.bottom < r.top || a.top > r.bottom);
-      const home = step.kind === 'product' ? bottom : top;
-      const away = step.kind === 'product' ? top : bottom;
-      setDodge(hits(home) && !hits(away));
+      setFaded(!(a.right < hb.left || a.left > hb.right || a.bottom < hb.top || a.top > hb.bottom));
     }, 400);
     return () => window.clearInterval(t);
-  }, [step.kind, step.id]);
+  }, [product, step.id, productOpen]);
 
   if (tour.status !== 'active') return null;
   const objective = step.objective ? resolveCopy(step.objective, ctx) : ch.objective;
   const label = ch.productIndex ? `Chapter ${ch.productIndex} / ${PRODUCT_CHAPTERS}` : ch.layer === 'narrative' ? `Part ${String(ch.part).padStart(2, '0')}` : 'Finale';
+  const short = ch.productIndex ? `Ch ${ch.productIndex} / ${PRODUCT_CHAPTERS}` : label;
+  const scenarios = `Scenarios explored ${ctx.explored.length}/6`;
+
+  const chaptersBtn = (
+    <button className="t-icon-btn" onClick={() => tour.setRailOpen(true)} aria-label="Chapters" title="Chapters">
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </button>
+  );
+
+  if (product && !productOpen) {
+    return createPortal(
+      <div ref={ref} className={`t-hud t-hud--pill sl-n-portal ${faded ? 't-hud--faded' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
+        <button className="t-hud__pillbtn" onClick={() => setProductOpen(true)} aria-expanded={false} title={`${ch.title} · ${objective}`}>
+          <span className="t-pill__dot" aria-hidden="true" />
+          <span className="t-hud__chapter">{short}</span>
+          <span className="n-sr">
+            {ch.title}. Objective: {objective}. {scenarios}. Show details.
+          </span>
+        </button>
+        {tour.presenting && <Timer />}
+        {chaptersBtn}
+      </div>,
+      document.body,
+    );
+  }
 
   return createPortal(
-    <div ref={ref} className={`t-hud sl-n-portal ${step.kind === 'product' ? 't-hud--product' : ''} ${dodge ? 't-hud--dodge' : ''} ${collapsed ? 't-hud--collapsed' : ''} ${step.kind === 'scene' ? 't-hud--scene' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
+    <div ref={ref} className={`t-hud sl-n-portal ${product ? 't-hud--product' : ''} ${collapsed && !product ? 't-hud--collapsed' : ''} ${step.kind === 'scene' ? 't-hud--scene' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
       <div className="t-hud__row">
         <span className="t-hud__chapter">{label}</span>
-        <span className="t-hud__title">{ch.title}</span>
+        {/* On product steps the objective is the useful line; the chapter title is in the callout. */}
+        {!product && <span className="t-hud__title" title={ch.title}>{ch.title}</span>}
         <span className="t-hud__spacer" />
         {tour.presenting && <Timer />}
-        <button className="t-icon-btn" onClick={() => tour.setRailOpen(true)} aria-label="Chapters" title="Chapters">
-          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-        <button className="t-icon-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Expand' : 'Collapse'} title={collapsed ? 'Expand' : 'Collapse'}>
-          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" style={{ transform: collapsed ? 'rotate(180deg)' : 'none' }}>
-            <path d="M4 10l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-          </svg>
-        </button>
+        {chaptersBtn}
+        {product ? (
+          <button className="t-icon-btn" onClick={() => setProductOpen(false)} aria-label="Collapse" title="Collapse" aria-expanded>
+            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+            </svg>
+          </button>
+        ) : (
+          <button className="t-icon-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Expand' : 'Collapse'} title={collapsed ? 'Expand' : 'Collapse'} aria-expanded={!collapsed}>
+            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" style={{ transform: collapsed ? 'rotate(180deg)' : 'none' }}>
+              <path d="M4 10l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+            </svg>
+          </button>
+        )}
       </div>
-      {!collapsed && (
+      {(product || !collapsed) && (
         <>
           <p className="t-hud__objective">
             <span className="t-hud__k">Objective</span> {objective}
@@ -237,14 +282,56 @@ export function PauseMenu() {
   const navigate = useNavigate();
   const calm = useCalm();
   const first = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const open = tour.menuOpen && tour.status === 'active';
+  // Modal for real: everything behind the menu is inert, Tab cycles inside it, and focus
+  // goes back where it was when the menu closes.
   useEffect(() => {
-    if (tour.menuOpen) window.setTimeout(() => first.current?.focus(), 30);
-  }, [tour.menuOpen]);
+    if (!open) return;
+    const prevFocus = document.activeElement as HTMLElement | null;
+    const marked: HTMLElement[] = [];
+    const t = window.setTimeout(() => {
+      const dlg = dialogRef.current;
+      if (dlg) {
+        for (const el of Array.from(document.body.children) as HTMLElement[]) {
+          if (el.contains(dlg) || el.inert) continue;
+          el.inert = true;
+          marked.push(el);
+        }
+      }
+      first.current?.focus();
+    }, 30);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const dlg = dialogRef.current;
+      if (!dlg) return;
+      const items = Array.from(dlg.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'));
+      if (!items.length) return;
+      const a = items[0]!;
+      const z = items[items.length - 1]!;
+      const inside = dlg.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === a || !inside)) {
+        e.preventDefault();
+        z.focus();
+      } else if (!e.shiftKey && (document.activeElement === z || !inside)) {
+        e.preventDefault();
+        a.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      window.clearTimeout(t);
+      marked.forEach((el) => (el.inert = false));
+      document.removeEventListener('keydown', onKey, true);
+      if (prevFocus?.isConnected) prevFocus.focus({ preventScroll: true });
+    };
+  }, [open]);
   return createPortal(
     <AnimatePresence>
-      {tour.menuOpen && tour.status === 'active' && (
+      {open && (
         <motion.div className="t-menu-scrim sl-n-portal" data-tour-ui initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: calm ? 0 : 0.2 }} onClick={() => tour.setMenuOpen(false)}>
           <motion.div
+            ref={dialogRef}
             className="t-menu n-glass"
             role="dialog"
             aria-modal="true"

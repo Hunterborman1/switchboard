@@ -435,6 +435,7 @@ function EditForm({
     <form
       className={styles.form}
       aria-label="Edit insight"
+      data-tour="review.editform"
       onSubmit={(e) => {
         e.preventDefault();
         if (changed && !tooShort) onSave(edits);

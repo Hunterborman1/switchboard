@@ -1,16 +1,23 @@
 /**
- * Product-layer overlay: spotlight + anchored callout. Renders only on product steps
- * while the tour is active. Falls back to a centred callout when the anchor never mounts.
+ * Product-layer overlay: spotlight + callout. Renders only on product steps while the tour
+ * is active.
+ *
+ * Placement rule: the callout never sits on top of the thing it is pointing at. It tries the
+ * step's preferred side, then below, above, right and left, and takes the first side with
+ * room for the whole card. If no side has room (a full-width or very tall target), it floats
+ * as a solid card in the corner of the content area that covers the least of the target,
+ * never over the product's left rail. Phones get a bottom (or top) sheet.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { arrow as arrowMw, autoUpdate, flip, FloatingArrow, offset, shift, size, useFloating } from '@floating-ui/react';
+import { arrow as arrowMw, autoUpdate, FloatingArrow, offset, shift, size, useFloating, type Placement } from '@floating-ui/react';
 import { useMediaQuery } from '../../narrative/hooks';
 import type { AnchorId } from '../anchors';
 import { TourCallout } from './Callout';
 import { Spotlight } from './Spotlight';
-import { useTour } from './TourProvider';
+import { resolveTarget, useTour } from './TourProvider';
 import { findAnchor, useAnchor, useRect, type Box } from './useAnchor';
+import { floatPosition, GAP, HEADER, MARGIN, MAX_W, PILL_CLEAR, planPlacement, sideOf } from './placement';
 
 function useHighlights(ids: AnchorId[] | undefined): Box[] {
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -64,6 +71,15 @@ function useIdle(ms: number, key: string): boolean {
   return idle;
 }
 
+/** Left edge of the product's content column (right of the app rail), or 0 inside a dialog. */
+function contentLeft(target: HTMLElement | null): number {
+  if (target?.closest('[role="dialog"], dialog')) return 0;
+  const main = document.getElementById('main-content');
+  if (!main) return 0;
+  const l = main.getBoundingClientRect().left;
+  return l > 0 && l < window.innerWidth / 2 ? l : 0;
+}
+
 export function TourOverlay() {
   const tour = useTour();
   const { step, status } = tour;
@@ -74,9 +90,10 @@ export function TourOverlay() {
 
 function OverlayInner() {
   const tour = useTour();
-  const { step } = tour;
+  const { step, ctx } = tour;
   const isSheet = useMediaQuery('(max-width: 720px)');
-  const anchor = useAnchor(step.target, step.anchorTimeoutMs ?? 6000, step.id);
+  const targets = resolveTarget(step, ctx);
+  const anchor = useAnchor(targets, step.anchorTimeoutMs ?? 6000, step.id);
   const liveBox = useRect(anchor.el, 8);
   const lastBox = useRef<Box | null>(null);
   if (liveBox) lastBox.current = liveBox;
@@ -93,19 +110,36 @@ function OverlayInner() {
   const [shakeKey, setShakeKey] = useState(0);
   const arrowRef = useRef<SVGSVGElement>(null);
 
+  // Measured callout height (the card's natural height, before any max-height cap).
+  const [cardH, setCardH] = useState(260);
+  const cardHRef = useRef(cardH);
+  cardHRef.current = cardH;
+  const roRef = useRef<ResizeObserver | null>(null);
+  const measureRef = useCallback((node: HTMLDivElement | null) => {
+    roRef.current?.disconnect();
+    if (!node) return;
+    const card = node.querySelector<HTMLElement>('.t-callout__card') ?? node;
+    const ro = new ResizeObserver(() => {
+      const h = Math.ceil(card.scrollHeight);
+      if (h > 0) setCardH((prev) => (Math.abs(prev - h) > 4 ? h : prev));
+    });
+    ro.observe(card);
+    roRef.current = ro;
+  }, []);
+  useEffect(() => () => roRef.current?.disconnect(), []);
+
   const waitingOnUser = !!step.waitFor && step.waitFor !== 'next';
   const interact = step.interact ?? (waitingOnUser ? 'target' : 'none');
-  const missing = !!step.target && anchor.status === 'missing';
-  // Large targets (a full dialog) leave no room beside them: dock the callout in the free
-  // gutter on the left when there is one, otherwise anchor with a height cap.
-  // (When the gutter is narrower than a callout, it docks anyway and overlaps the target's edge.)
-  const gutterL = liveBox ? liveBox.x : 0;
-  const gutterR = liveBox ? window.innerWidth - (liveBox.x + liveBox.w) : 0;
-  const dockRight = gutterR > gutterL + 40;
-  const dockWidth = liveBox ? Math.max(300, Math.min(340, Math.max(gutterL, gutterR) - 32)) : 0;
-  const big = !!liveBox && (liveBox.h > window.innerHeight * 0.6 || liveBox.w > window.innerWidth * 0.7);
-  const docked = !isSheet && big;
-  const anchored = !!anchor.el && !isSheet && !docked;
+  const missing = targets.length > 0 && anchor.status === 'missing';
+
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const safeLeft = contentLeft(anchor.el);
+  const pref = sideOf(step.placement);
+  const plan = liveBox && !isSheet ? planPlacement(liveBox, pref, cardH, vw, vh, safeLeft) : null;
+  const anchored = !!anchor.el && !isSheet && !!plan;
+  const floating = !!anchor.el && !isSheet && !plan && !!liveBox;
+
   // While the anchor mounts, hold the callout ~0.7s (avoids a centre→target jump), then show it centred.
   const [patience, setPatience] = useState(false);
   useEffect(() => {
@@ -114,14 +148,29 @@ function OverlayInner() {
     return () => window.clearTimeout(t);
   }, [step.id]);
 
-  // bring the target into view once
+  // Bring the target into view. If it would leave room for the callout below it when parked
+  // under the header, park it there; otherwise centre it (or align its top when it's tall).
   useEffect(() => {
     if (!anchor.el) return;
     const el = anchor.el;
-    // Re-check a few times: product dialogs closing or focus returning can scroll it away again.
     const ensure = (smooth: boolean) => {
       const r = el.getBoundingClientRect();
-      if (r.top < 64 || r.bottom > window.innerHeight - 40) el.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
+      const h = window.innerHeight;
+      const need = cardHRef.current + GAP + MARGIN;
+      const fitsUnder = r.height + HEADER + 8 + need <= h;
+      const offscreen = r.top < HEADER - 8 || r.bottom > h - 24;
+      const left = contentLeft(el);
+      const box = { x: r.left - 8, y: r.top - 8, w: r.width + 16, h: r.height + 16 };
+      const noRoom = window.innerWidth > 720 && !planPlacement(box, pref, cardHRef.current, window.innerWidth, h, left);
+      const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
+      if ((offscreen || noRoom) && (fitsUnder || r.height > h - HEADER - 40)) {
+        const prev = el.style.scrollMarginTop;
+        el.style.scrollMarginTop = `${HEADER + 12}px`;
+        el.scrollIntoView({ block: 'start', behavior });
+        el.style.scrollMarginTop = prev;
+      } else if (offscreen) {
+        el.scrollIntoView({ block: 'center', behavior });
+      }
     };
     ensure(true);
     const timers = [450, 1200].map((ms) => window.setTimeout(() => ensure(false), ms));
@@ -130,7 +179,7 @@ function OverlayInner() {
       window.setTimeout(() => f?.focus({ preventScroll: true }), 80);
     }
     return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [anchor.el, waitingOnUser, interact]);
+  }, [anchor.el, waitingOnUser, interact, pref]);
 
   useEffect(() => setShakeKey(0), [step.id]);
   useEffect(() => {
@@ -139,17 +188,17 @@ function OverlayInner() {
     return () => document.removeEventListener('sl-tour-nudge', nudge);
   }, []);
 
-  const { refs, floatingStyles, context, placement } = useFloating({
-    placement: step.placement ?? 'bottom',
+  const placement: Placement = plan ? (step.placement && sideOf(step.placement) === plan.side ? step.placement : plan.side) : 'bottom';
+  const { refs, floatingStyles, context, placement: finalPlacement } = useFloating({
+    placement,
     strategy: 'fixed',
     elements: { reference: anchored ? anchor.el : null },
     whileElementsMounted: autoUpdate,
     middleware: [
-      offset(20),
-      flip({ padding: 16, fallbackAxisSideDirection: 'start' }),
-      shift({ padding: 12 }),
+      offset(GAP),
+      shift({ padding: { left: safeLeft + 12, right: 12, top: 12, bottom: PILL_CLEAR } }),
       size({
-        padding: 12,
+        padding: { top: 12, right: 12, left: 12, bottom: PILL_CLEAR },
         apply({ availableHeight, elements }) {
           elements.floating.style.maxHeight = `${Math.max(180, availableHeight)}px`;
         },
@@ -158,26 +207,39 @@ function OverlayInner() {
     ],
   });
 
-  const mode = isSheet ? 'sheet' : docked ? 'dock' : anchored ? 'anchored' : 'center';
+  const mode = isSheet ? 'sheet' : anchored ? 'anchored' : floating ? 'float' : 'center';
   // On phones the callout is a sheet; if the target sits in the lower half, the sheet goes to the top.
-  const sheetTop = mode === 'sheet' && !!liveBox && liveBox.y + liveBox.h / 2 > window.innerHeight * 0.5;
-  const style = useMemo(
-    () => (mode === 'anchored' ? floatingStyles : mode === 'dock' ? (dockRight ? { width: dockWidth, left: 'auto', right: 16 } : { width: dockWidth }) : sheetTop ? { top: 96, bottom: 'auto' } : undefined),
-    [mode, floatingStyles, dockWidth, dockRight, sheetTop],
+  const sheetTop = mode === 'sheet' && !!liveBox && liveBox.y + liveBox.h / 2 > vh * 0.5;
+  const floatW = Math.min(MAX_W, vw - safeLeft - MARGIN * 2);
+  const floatPos = mode === 'float' ? floatPosition(liveBox, floatW, Math.min(cardH, vh - HEADER - MARGIN * 2), vw, vh, safeLeft) : null;
+  const style = useMemo<CSSProperties | undefined>(() => {
+    if (mode === 'anchored') return { ...floatingStyles, width: plan?.width };
+    if (mode === 'float' && floatPos) return { left: floatPos.left, top: floatPos.top, width: floatW, maxHeight: vh - floatPos.top - MARGIN };
+    if (sheetTop) return { top: 96, bottom: 'auto' };
+    return undefined;
+  }, [mode, floatingStyles, plan?.width, floatPos?.left, floatPos?.top, floatW, vh, sheetTop]);
+
+  const setFloating = refs.setFloating;
+  const calloutRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      setFloating(node);
+      measureRef(node);
+    },
+    [setFloating, measureRef],
   );
 
   return (
     <>
       <Spotlight box={box} interact={interact} hint={idle && waitingOnUser} onBlocked={() => setShakeKey((k) => k + 1)} highlights={highlights} />
       {/* while waiting for an anchor, hold the callout back for a beat to avoid a centre→target jump */}
-      {(anchor.status !== 'waiting' || !step.target || patience) && (
+      {(anchor.status !== 'waiting' || targets.length === 0 || patience) && (
         <TourCallout
           mode={mode}
           missing={missing}
-          floatingRef={mode === 'anchored' ? refs.setFloating : undefined}
+          floatingRef={calloutRef}
           style={style}
           shakeKey={shakeKey}
-          arrow={mode === 'anchored' ? <FloatingArrow ref={arrowRef} context={context} width={16} height={8} fill="rgb(10 35 30 / 0.92)" stroke="rgb(242 245 228 / 0.14)" strokeWidth={1} data-placement={placement} /> : null}
+          arrow={mode === 'anchored' ? <FloatingArrow ref={arrowRef} context={context} width={16} height={8} fill="#12352e" stroke="rgb(242 245 228 / 0.16)" strokeWidth={1} data-placement={finalPlacement} /> : null}
         />
       )}
     </>
