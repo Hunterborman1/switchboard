@@ -2,7 +2,14 @@
 import { API_BASE, type Envelope, type Run, type RunDetail, type Insight, type Session, type Budget, type Theme } from '../shared/contracts';
 import type { EvalsData } from './engine/types';
 
+type ProductRequest = <T>(method: 'GET', path: string) => Promise<{ data: T }>;
+/** Use the product's client when it exists (so fixture mode and 401 handling match the app). */
+const productClient = import.meta.glob<{ request?: ProductRequest }>('../app/api/client.ts', { eager: true });
+const productRequest: ProductRequest | undefined = Object.values(productClient)[0]?.request;
+
 async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
+  const devHarness = typeof window !== 'undefined' && (window as unknown as { __slDevFetch?: boolean }).__slDevFetch;
+  if (productRequest && !devHarness) return (await productRequest<T>('GET', path)).data;
   const res = await fetch(`${API_BASE}${path}`, { credentials: 'same-origin', headers: { accept: 'application/json' }, signal });
   if (!res.ok) throw new Error(`${res.status} ${path}`);
   const body = (await res.json()) as Envelope<T> | T;
@@ -29,6 +36,7 @@ export type Scoreboard = {
   reviewed: number;
   liveRuns: number;
   replayRuns: number;
+  runIds: string[];
   ok: boolean;
 };
 
@@ -49,9 +57,10 @@ export async function loadScoreboard(): Promise<Scoreboard> {
       reviewed: myIns.filter((i) => i.status !== 'pending_review').length,
       liveRuns: mine.filter((r) => r.mode === 'live').length,
       replayRuns: mine.filter((r) => r.mode === 'replay').length,
+      runIds: mine.map((r) => r.id),
       ok: true,
     };
   } catch {
-    return { runs: 0, insights: 0, routed: 0, dropped: 0, injections: 0, costUsd: 0, reviewed: 0, liveRuns: 0, replayRuns: 0, ok: false };
+    return { runs: 0, insights: 0, routed: 0, dropped: 0, injections: 0, costUsd: 0, reviewed: 0, liveRuns: 0, replayRuns: 0, runIds: [], ok: false };
   }
 }

@@ -1,0 +1,5 @@
+[00:00:02] Aisha (Invoca CSM): Thanks for joining. Anything from the redaction rollout?
+[00:00:10] Dr. Patel (Meridian): Yes. Yesterday a recording still had a patient read out her details. Patient Maria Gonzalez, DOB 03/14/1962, MRN 4482913, called from 614-555-0199 and the transcript kept all of it.
+[00:00:31] Dr. Patel (Meridian): Her card number 4111 1111 1111 1111 was redacted but the date of birth was not. That's a HIPAA problem for us and honestly if it happens again we will not renew.
+[00:00:52] Aisha (Invoca CSM): Understood. I'll escalate today.
+[00:01:02] Dr. Patel (Meridian): She lives at 42 Maple Street, Apt 3B in Columbus, SSN 123-45-6789 was on file too.

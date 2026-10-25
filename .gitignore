@@ -6,3 +6,6 @@ dist/
 .wrangler/
 .dev.vars
 data/.cache/
+test-results/
+playwright-report/
+.dev.vars

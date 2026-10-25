@@ -1,0 +1,122 @@
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: var(--sp-3) var(--sp-4) !important;
+  background: var(--cn-white) !important;
+  border: 1px solid var(--cn-border) !important;
+  border-left: 3px solid var(--cn-border-strong) !important;
+  border-radius: var(--radius-lg) !important;
+  text-align: left;
+  min-width: 0;
+  transition: box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.tile:hover {
+  box-shadow: var(--shadow-sm);
+}
+.tile[data-tone='warning'] { border-left-color: var(--cn-warning) !important; }
+.tile[data-tone='success'] { border-left-color: var(--cn-success) !important; }
+.tile[data-tone='danger'] { border-left-color: var(--cn-danger) !important; }
+.tileOn {
+  background: var(--uis-row-selected) !important;
+  border-color: color-mix(in srgb, var(--cn-green) 45%, transparent) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cn-green) 45%, transparent);
+}
+.tileLabel {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-subtle);
+}
+.tileValue {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--fs-metric);
+  font-weight: var(--fw-light);
+  color: var(--cn-off-black);
+  line-height: 1.1;
+}
+.tileDen {
+  font-size: var(--fs-meta);
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+}
+.tileHelp {
+  font-size: var(--fs-caption);
+  color: var(--text-subtle);
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--cn-border);
+  flex-wrap: wrap;
+}
+/* the DataTable draws its own card frame; inside our panel drop it */
+.toolbar + div > div,
+.toolbar + div {
+  border: none !important;
+  border-radius: 0 !important;
+}
+.rowBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  min-width: 220px;
+  max-width: 520px;
+  border-radius: var(--radius-sm);
+  white-space: normal;
+}
+.rowBtn:hover .sl-cell-title,
+.rowBtn:hover > span:first-child {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.conf {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  white-space: nowrap;
+}
+.confTrack {
+  position: relative;
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--cn-chart-track);
+  overflow: hidden;
+}
+.confTrack i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+}
+@media (max-width: 1100px) {
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tileHelp {
+    display: none;
+  }
+  .toolbar :global(.sl-filters) > * {
+    flex: 1 1 100%;
+  }
+}

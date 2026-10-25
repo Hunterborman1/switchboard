@@ -1,0 +1,209 @@
+/* Signal Loop product layer: layout primitives shared by every page. Tokens only
+   (HB cn/sp/fs tokens and the UIS bridge); everything under .sl-app. */
+
+.sl-app {
+  --sl-gap: var(--sp-5);
+  --sl-panel-pad: var(--sp-5);
+}
+
+.sl-app .sl-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-gap);
+  min-width: 0;
+  animation: cn-rise var(--dur-slow) var(--ease-out) both;
+}
+
+.sl-app .sl-row { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; flex-wrap: wrap; }
+.sl-app .sl-row-nowrap { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+.sl-app .sl-spread { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); min-width: 0; flex-wrap: wrap; }
+.sl-app .sl-stack { display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; }
+.sl-app .sl-stack-sm { display: flex; flex-direction: column; gap: var(--sp-15); min-width: 0; }
+.sl-app .sl-stack-lg { display: flex; flex-direction: column; gap: var(--sp-5); min-width: 0; }
+.sl-app .sl-grow { flex: 1; min-width: 0; }
+
+.sl-app .sl-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sl-gap); }
+.sl-app .sl-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sl-gap); }
+.sl-app .sl-grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--sl-gap); }
+@media (max-width: 1100px) { .sl-app .sl-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .sl-app { --sl-gap: var(--sp-4); --sl-panel-pad: var(--sp-4); }
+  .sl-app .sl-grid-2, .sl-app .sl-grid-3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Panel: HB Card grammar (white, hairline, 8px) with a header row. */
+.sl-app .sl-panel {
+  background: var(--cn-white);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+  overflow: clip;
+}
+.sl-app .sl-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sl-panel-pad);
+  border-bottom: 1px solid var(--cn-border);
+  flex-wrap: wrap;
+}
+.sl-app .sl-panel-head-flat { border-bottom: none; padding-bottom: 0; }
+.sl-app .sl-panel-title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-medium);
+  color: var(--cn-off-black);
+  line-height: var(--lh-snug);
+}
+.sl-app .sl-panel-sub {
+  margin: 2px 0 0;
+  font-size: var(--fs-meta);
+  color: var(--text-subtle);
+  line-height: var(--lh-normal);
+}
+.sl-app .sl-panel-body { padding: var(--sl-panel-pad); min-width: 0; }
+.sl-app .sl-panel-body-flush { padding: 0; }
+
+.sl-app .sl-eyebrow {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.sl-app .sl-muted { color: var(--text-muted); }
+.sl-app .sl-subtle { color: var(--text-subtle); }
+.sl-app .sl-meta { font-size: var(--fs-meta); color: var(--text-subtle); }
+.sl-app .sl-caption { font-size: var(--fs-caption); color: var(--text-subtle); }
+.sl-app .sl-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.sl-app .sl-num { font-variant-numeric: tabular-nums; }
+.sl-app .sl-strong { font-weight: var(--fw-medium); color: var(--cn-off-black); }
+.sl-app .sl-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.sl-app .sl-body { font-size: var(--fs-body-lg); line-height: var(--lh-copy); color: var(--text); margin: 0; }
+.sl-app .sl-p { margin: 0; font-size: var(--fs-body); line-height: var(--lh-copy); color: var(--text-muted); }
+.sl-app .sl-divider { height: 1px; background: var(--cn-border-row); border: 0; margin: 0; }
+
+/* Inline link-button: looks like a link, is a button. */
+.sl-app .sl-linkbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-link);
+  font-size: inherit;
+  font-weight: var(--fw-medium);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  border-radius: var(--radius-xs);
+}
+.sl-app .sl-linkbtn:hover { opacity: 0.8; }
+.sl-app a.sl-quietlink { color: inherit; text-decoration: none; }
+.sl-app a.sl-quietlink:hover { color: var(--text-link); text-decoration: underline; opacity: 1; }
+
+/* Key hints */
+.sl-app kbd, .sl-app .sl-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid var(--cn-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--cn-white);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+/* Type dot + label (categorical identity, always with words). */
+.sl-app .sl-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-meta);
+  color: var(--cn-off-black);
+  white-space: nowrap;
+}
+.sl-app .sl-type i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+/* A quoted span of customer speech. */
+.sl-app .sl-quote {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 3px solid var(--cn-green-soft);
+  background: var(--cn-wash);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-copy);
+  color: var(--cn-off-black);
+}
+.sl-app .sl-quote::before { content: '“'; color: var(--text-subtle); }
+.sl-app .sl-quote::after { content: '”'; color: var(--text-subtle); }
+
+/* Disabled-with-reason hint under a control. */
+.sl-app .sl-why-disabled {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-subtle);
+}
+
+/* Toast stack */
+.sl-app .sl-toasts {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.sl-app .sl-toasts > * { pointer-events: auto; animation: sl-toast-in var(--dur-slow) var(--ease-out) both; }
+@keyframes sl-toast-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* Shared highlight flash */
+@keyframes sl-flash {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--cn-green) 55%, transparent); background-color: color-mix(in srgb, var(--cn-green-soft) 45%, transparent); }
+  100% { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* Responsive table wrapper: never let a table widen the page. */
+.sl-app .sl-scroll-x { overflow-x: auto; min-width: 0; max-width: 100%; overscroll-behavior-inline: contain; }
+
+/* Filter bar */
+.sl-app .sl-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.sl-app .sl-filters > * { min-width: 0; }
+
+.sl-app .sl-skip {
+  position: absolute;
+  left: 8px;
+  top: -40px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--cn-white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.sl-app .sl-skip:focus { top: 8px; }
+
+/* Data table cells in our tables */
+.sl-app .sl-cell-title { font-size: var(--fs-body); color: var(--cn-off-black); line-height: var(--lh-compact); }
+.sl-app .sl-cell-sub { font-size: var(--fs-caption); color: var(--text-subtle); margin-top: 2px; }
+
+.sl-app .sl-fade-in { animation: cn-rise var(--dur-slow) var(--ease-out) both; }
+
+/* The UIS PageHeader carries its own bottom margin; inside .sl-page the column gap spaces it. */
+.sl-app .sl-page > header[data-testid='page-header'] { margin-bottom: 0; }

@@ -19,6 +19,15 @@ export interface Env {
   LINK_SIGNING_SECRET?: string;
   SITE_PASSWORD?: string;
   OPENROUTER_API_KEY?: string;
+
+  /** Test/local overrides (never set in production). */
+  OPENROUTER_BASE_URL?: string;
+  /** 'hash' forces the deterministic local embedding (tests, offline dev). */
+  EMBED_MODE?: string;
+  /** 'd1' forces the D1 cosine scan instead of Vectorize (tests, local dev). */
+  VECTOR_MODE?: string;
+  /** Live runs slower than this fall back to replay (ms, default 25000). */
+  LIVE_FALLBACK_MS?: string;
 }
 
 /** Env as seen by API handlers: the gate's decision is attached. */

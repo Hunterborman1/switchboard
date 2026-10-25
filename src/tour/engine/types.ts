@@ -1,5 +1,6 @@
 import type { Placement } from '@floating-ui/react';
-import type { RunDetail, EvalRun } from '../../shared/contracts';
+import type { RunDetail, EvalRun, Budget } from '../../shared/contracts';
+import type { OverviewReport, AgentRecord, AgentImpact, UsageReport } from '../../shared/platform-contracts';
 import type { SignalEvent } from '../../shared/events';
 import type { AnchorId } from '../anchors';
 
@@ -28,6 +29,7 @@ export type ChapterId =
   | 'ch5'
   | 'ch6'
   | 'ch7'
+  | 'ch8'
   | 'rollout'
   | 'horizon'
   | 'production'
@@ -71,6 +73,14 @@ export type Counters = {
 
 export type EvalsData = { latest: EvalRun; history: EvalRun[]; candidate: EvalRun | null };
 
+export type OpsData = {
+  overview: OverviewReport | null;
+  agent: (AgentRecord & { impact?: AgentImpact }) | null;
+  live: UsageReport['live'] | null;
+  traceId: string | null;
+  logCount: number | null;
+};
+
 export type TourCtx = {
   path: TourPath;
   fileId: string | null;
@@ -81,6 +91,10 @@ export type TourCtx = {
   /** Live RunDetail for ctx.runId (polled by the provider; not persisted). */
   run: RunDetail | null;
   evals: EvalsData | null;
+  budget: Budget | null;
+  ops: OpsData | null;
+  /** Current router pathname (relative to the basename). */
+  pathname: string;
   lastEvent: SignalEvent | null;
 };
 
@@ -138,6 +152,8 @@ export type Step = {
   pace?: 'slow' | 'normal';
   /** Chapter-end checkpoint shown when leaving this step into another chapter. */
   checkpoint?: (ctx: TourCtx) => CheckpointData | null;
+  /** Where clicks are allowed: just the cutout, everywhere (dimmed), or nowhere. Default: 'target' when waiting on an event, else 'none'. */
+  interact?: 'target' | 'all' | 'none';
   /** Anchor wait before falling back to a centred callout. */
   anchorTimeoutMs?: number;
   /** Speaker notes for the presenter view. */
@@ -151,7 +167,7 @@ export type Persisted = {
   stepId: string;
   beat: number;
   history: string[];
-  ctx: Omit<TourCtx, 'run' | 'evals' | 'lastEvent'>;
+  ctx: Omit<TourCtx, 'run' | 'evals' | 'budget' | 'ops' | 'pathname' | 'lastEvent'>;
   startedAt: number | null;
   chapterEnteredAt: number | null;
   finished: boolean;
