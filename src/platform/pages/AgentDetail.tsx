@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { MetricStrip } from '../ui/Kpis';
 import { tourAnchor } from '../../tour/anchors';
+import { rewriteModelIds } from '../../shared/modelLabels';
 import type { AgentDetail as Detail } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
@@ -300,9 +301,9 @@ export function AgentDetail() {
                 <div>
                   <div className="hd">
                     <span className="ao-tag">{KIND_LABEL[c.kind] ?? c.kind}</span>
-                    <b>{c.title}</b>
+                    <b>{rewriteModelIds(c.title)}</b>
                   </div>
-                  <p>{c.detail}</p>
+                  <p>{rewriteModelIds(c.detail)}</p>
                   <div className="meta">
                     <span>{f.time(c.at, timezone)}</span>
                     <span>{c.actor}</span>

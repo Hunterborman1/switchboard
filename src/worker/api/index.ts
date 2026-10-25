@@ -137,7 +137,7 @@ api.post('/runs', async (c) => {
   const b = await body(c, CreateRun);
   if (!b.ok) return b.res;
   const t = c.get('trace');
-  const r = await createRun(c.env, ws, b.data, t.rep, t.traceId);
+  const r = await createRun(c.env, ws, b.data, t.rep, t.traceId, (p) => c.executionCtx.waitUntil(p));
   if (!r.ok) return fail(c, r.status, r.code, r.message);
   t.rep.track({ sessionId: ws, actorId: actorOf(c), actorRole: c.env.ACCESS.via === 'owner' ? 'owner' : 'viewer', kind: 'run_created', path: null, props: { runId: r.runId, mode: r.mode, duplicate: r.duplicate, fileId: 'fileId' in b.data ? b.data.fileId : null }, durationMs: null });
   // (duplicates are logged as run.duplicate inside createRun)

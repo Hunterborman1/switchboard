@@ -12,6 +12,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { ConsoleShell, type ConsoleNavGroup } from '../uis/ConsoleShell';
 import { TimezoneProvider } from '../uis/TimezoneContext';
 import { TimezoneToggle } from '../uis/TimezoneToggle';
+import { TourPillSlot } from '../tour/hud/pillSlot';
 import type { PlatformMeta } from '../worker/platform/types';
 import { useApi } from './lib/api';
 import { day, dayYear } from './lib/format';
@@ -79,6 +80,7 @@ function Brand({ collapsed }: { collapsed?: boolean }) {
 function Footer({ collapsed }: { collapsed: boolean }) {
   return (
     <div className="ao-footer">
+      <TourPillSlot placement="rail" compact={collapsed} />
       <Link to="/app" className={`ao-agent-link${collapsed ? ' is-collapsed' : ''}`} aria-label={collapsed ? 'Open Signal Loop, the agent' : undefined} title={collapsed ? 'Open Signal Loop' : undefined}>
         <IconAgent size={16} />
         {collapsed ? null : (
@@ -161,6 +163,7 @@ function ShellInner({ children }: { children?: ReactNode }) {
           groups={GROUPS}
           footer={<Footer collapsed={false} />}
           footerCollapsed={<Footer collapsed />}
+          mobileBarEnd={<TourPillSlot placement="bar" />}
           className="ao-shell"
         >
           <TopBar />

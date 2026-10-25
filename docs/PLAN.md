@@ -212,6 +212,7 @@ On top of those, there are about **220 backfill transcripts** spread over 6 week
 ## 6. The system (fully functional, tested on every file)
 
 ### Pipeline: a Cloudflare Workflow with 10 durable steps
+*As built:* live runs execute on a fast path inside the request's `waitUntil` and hand off to this Workflow (resuming after the last completed step) when a step throws or the run runs long. See [ARCHITECTURE.md](ARCHITECTURE.md).
 Every step writes a `run_steps` row with status, timing, input and output hashes, model, tokens and cost. **The UI and the walkthrough animate from those rows.** What the panel watches is the real execution.
 1. **Ingest:** store the raw file in R2, hash it (SHA-256), and skip it if the hash has been seen before (idempotent).
 2. **Normalize:** detect the format (vtt, txt, md, eml, chat dump), parse speakers and turns, and assign turn IDs.

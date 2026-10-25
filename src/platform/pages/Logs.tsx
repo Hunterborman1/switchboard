@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { relabelModelsDeep, rewriteModelIds } from '../../shared/modelLabels';
 import type { LogEntry } from '../../shared/platform-contracts';
 import { tourAnchor } from '../../tour/anchors';
 import { useTimezone } from '../../uis/TimezoneContext';
@@ -252,7 +253,7 @@ export function Logs() {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
                     }}
-                    aria-label={`${l.level} ${l.event}: ${l.message}`}
+                    aria-label={`${l.level} ${l.event}: ${rewriteModelIds(l.message)}`}
                   >
                     <td className="ao-mono" style={{ whiteSpace: 'nowrap' }} title={f.time(l.at, timezone, true)}>
                       <span className="ao-hide-sm">{f.time(l.at, timezone, true).replace(/ (UTC|PT)$/, '').replace(/ \d\d:\d\d:\d\d$/, '')} </span>
@@ -267,7 +268,7 @@ export function Logs() {
                       {l.event}
                     </td>
                     <td className="msg">
-                      <span title={l.message}>{l.message}</span>
+                      <span title={rewriteModelIds(l.message)}>{rewriteModelIds(l.message)}</span>
                     </td>
                     <td className="ao-hide-sm">
                       <Link className="ao-trace-btn" to={`/ops/traces/${l.traceId}`} title={l.traceId}>
@@ -326,7 +327,7 @@ export function Logs() {
               <SourceChip source={open.source} />
               <span className="ao-tag">{open.component}</span>
             </div>
-            <p style={{ margin: 0, fontSize: 'var(--fs-body-lg)', lineHeight: 1.5 }}>{open.message}</p>
+            <p style={{ margin: 0, fontSize: 'var(--fs-body-lg)', lineHeight: 1.5 }}>{rewriteModelIds(open.message)}</p>
             <dl className="ao-kv">
               <dt>Trace id</dt>
               <dd className="ao-mono">{open.traceId}</dd>
@@ -341,7 +342,7 @@ export function Logs() {
             </dl>
             <div>
               <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Fields</h3>
-              <pre className="ao-json">{JSON.stringify(open.fields, null, 2)}</pre>
+              <pre className="ao-json">{JSON.stringify(relabelModelsDeep(open.fields), null, 2)}</pre>
             </div>
           </>
         ) : null}

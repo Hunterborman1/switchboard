@@ -346,3 +346,20 @@
 }
 .t-pill:hover { transform: translateY(-1px); border-color: var(--n-accent); }
 .t-pill__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--n-accent); box-shadow: 0 0 10px var(--n-accent); }
+
+/* Docked into product chrome (pillSlot.tsx): in flow, never over page content. */
+.t-pill-slot:empty { display: none; }
+.t-pill-slot--rail { display: flex; }
+.t-pill-slot--rail.is-compact { justify-content: center; }
+.t-pill-slot--bar { display: inline-flex; margin-left: 8px; }
+.t-pill--docked {
+  position: static;
+  z-index: auto;
+  max-width: 100%;
+  box-shadow: 0 0 18px -10px var(--n-accent-glow);
+}
+.t-pill--docked .t-pill__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-pill--rail { width: 100%; height: 36px; justify-content: flex-start; }
+.t-pill--rail.is-compact { width: 36px; height: 36px; padding: 0; justify-content: center; }
+.t-pill--bar { min-height: 44px; height: 44px; padding: 0 14px 0 12px; gap: 8px; font-size: 12.5px; }
+.t-pill--docked:hover { transform: none; }

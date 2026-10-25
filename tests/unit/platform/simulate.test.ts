@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { simulate } from '../../../scripts/platform/simulate';
+import { loadBackfill, simulate } from '../../../scripts/platform/simulate';
 import { buildSeedStatements } from '../../../scripts/platform/seed';
 import { IngestBatch, STANDARD_CHECKS, SIGNAL_LOOP_AGENT_ID } from '../../../src/shared/platform-contracts';
 
-const sim = simulate();
+const backfill = loadBackfill();
+const sim = simulate({ backfill });
 
 describe('simulated org history', () => {
   it('is deterministic for a seed and end date', () => {
@@ -47,6 +48,55 @@ describe('simulated org history', () => {
     expect(inc(failed[0]!.at)).toBe(true);
     const fallbacks = sim.logs.filter((l) => l.event === 'ai.call' && l.fields.fallback === true && inc(l.at));
     expect(fallbacks.length).toBeGreaterThan(0);
+  });
+
+  describe.runIf(backfill !== null)('Signal Loop from the real backfill', () => {
+    const bf = backfill!;
+    const slWork = sim.work.filter((w) => w.agentId === SIGNAL_LOOP_AGENT_ID);
+    const slLogs = sim.logs.filter((l) => l.agentId === SIGNAL_LOOP_AGENT_ID);
+
+    it('has one work unit per real run (plus the incident’s failed run) at the real time and cost', () => {
+      expect(slWork).toHaveLength(bf.runs.length + 1);
+      const byId = new Map(slWork.map((w) => [w.id, w]));
+      for (const r of bf.runs) expect(byId.get(`wu_${r.runId.replace(/^run_/, '')}`)?.at).toBe(new Date(Date.parse(r.createdAt)).toISOString());
+      const real = bf.runs.reduce((s, r) => s + r.costUsd, 0);
+      expect(slWork.reduce((s, w) => s + w.aiCostUsd, 0)).toBeCloseTo(real, 6);
+      const actors = new Set(slWork.map((w) => w.actorId));
+      const people = new Set(sim.people.map((p) => p.id));
+      expect([...actors].every((a) => a !== null && people.has(a))).toBe(true);
+      expect(actors.size).toBeLessThanOrEqual(6);
+    });
+
+    it('traces each real run with its real steps, model calls, grounding and deliveries', () => {
+      const finished = new Set(slLogs.filter((l) => l.event === 'run.finished').map((l) => l.runId));
+      expect(bf.runs.every((r) => finished.has(r.runId))).toBe(true);
+      const calls = slLogs.filter((l) => l.event === 'ai.call' && l.fields.ok === true && l.runId?.startsWith('run_') && !l.runId.includes('incident'));
+      expect(calls).toHaveLength(bf.runs.reduce((s, r) => s + r.steps.filter((x) => x.model && x.status !== 'skipped').length, 0));
+      const ground = slLogs.filter((l) => l.event === 'grounding.checked');
+      expect(ground.length).toBe(bf.runs.filter((r) => r.grounding && r.steps.some((s) => s.key === 'ground' && s.status !== 'skipped')).length);
+      expect(ground.every((l) => ['passed', 'total', 'dropped'].every((k) => typeof l.fields[k] === 'number'))).toBe(true);
+      const sent = slLogs.filter((l) => l.event === 'delivery.sent' || l.event === 'delivery.failed');
+      expect(sent).toHaveLength(bf.runs.reduce((s, r) => s + r.deliveryDetail.length, 0));
+      expect(new Set(sent.map((l) => l.fields.channel))).toEqual(new Set(bf.runs.flatMap((r) => r.deliveryDetail.map((d) => d.channel))));
+    });
+
+    it('keeps a clear top-3 of Signal Loop users', () => {
+      const n = new Map<string, number>();
+      for (const w of slWork) n.set(w.actorId!, (n.get(w.actorId!) ?? 0) + 1);
+      const ranked = [...n.values()].sort((a, b) => b - a);
+      expect(ranked[2]!).toBeGreaterThan(ranked[3]!);
+    });
+  });
+
+  it('falls back to purely simulated Signal Loop runs without a backfill', () => {
+    const plain = simulate({ backfill: null });
+    expect(plain.logs.length).toBeLessThanOrEqual(5000);
+    expect(plain.events.length).toBeLessThan(1500);
+    const sl = plain.work.filter((w) => w.agentId === SIGNAL_LOOP_AGENT_ID);
+    expect(sl.length).toBeGreaterThan(50);
+    expect(sl.every((w) => /^wu_sl_\d{4}$/.test(w.id))).toBe(true);
+    expect(sl.filter((w) => w.outcome === 'failed')).toHaveLength(1);
+    expect(plain.work.filter((w) => w.agentId === 'agt_rfp_responder')).toEqual(sim.work.filter((w) => w.agentId === 'agt_rfp_responder'));
   });
 
   it('gives Gumloop a slower latency profile than Signal Loop’s API', () => {

@@ -12,6 +12,7 @@ import { StatusChip } from '../../uis/StatusChip';
 import { useEvals } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { money, ms } from '../lib/labels';
+import { useModelLabels } from '../lib/models';
 import { LevelHeatmap, MetricCard, TypeBars } from './evals/EvalParts';
 import { PromotionGate } from './evals/PromotionGate';
 import { LOWER_IS_BETTER, f1, metric, pooled } from './evals/evalModel';
@@ -94,6 +95,7 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
 
 export default function EvalsPage() {
   const evals = useEvals();
+  const { label: modelLabel } = useModelLabels();
 
   if (evals.loading) {
     return (
@@ -172,7 +174,7 @@ export default function EvalsPage() {
             <span className="sl-mono">{latest.promptVersion}</span> on {latest.files} golden files
           </p>
           <p className="sl-meta">
-            Model <span className="sl-mono">{latest.model}</span> · judge <span className="sl-mono">{latest.judgeModel ?? '—'}</span> (a different model family) · run <RelativeTime value={latest.createdAt} />
+            Model <span className="sl-strong">{modelLabel(latest.model)}</span> · judge <span className="sl-strong">{modelLabel(latest.judgeModel) ?? '—'}</span> (a different model family) · run <RelativeTime value={latest.createdAt} />
           </p>
         </div>
         <div className={styles.trend}>
@@ -230,7 +232,7 @@ export default function EvalsPage() {
               </Badge>
             </span>
           }
-          sub={`Evaluated on the same ${candidate.files} golden files, judged by ${candidate.judgeModel ?? 'the secondary model'}.`}
+          sub={`Evaluated on the same ${candidate.files} golden files, judged by ${modelLabel(candidate.judgeModel) ?? 'the secondary model'}.`}
           anchor={tourAnchor('evals.candidate')}
         >
           <div className={styles.candidateGrid}>

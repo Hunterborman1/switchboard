@@ -6,6 +6,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import type { AgentRecord, Alert, DataSource, Slo } from '../../shared/platform-contracts';
 import type { ReviewStatus } from '../../worker/platform/types';
 import { IconAlert, IconInfo, IconX } from './icons';
+import { modelAgentId, modelLabel } from '../../shared/modelLabels';
 
 // ---------------------------------------------------------------- vocabularies
 
@@ -399,6 +400,20 @@ export function Avatar({ name, color }: { name: string; color?: string }) {
   return (
     <span className="ao-avatar" style={color ? { background: color } : undefined} aria-hidden="true">
       {ini}
+    </span>
+  );
+}
+
+/**
+ * A model by role, never by vendor id (ids appear only on the product's Settings page).
+ * In cross-agent tables pass `names` to suffix the owning agent.
+ */
+export function ModelName({ id, names }: { id: string; names?: Record<string, string> }) {
+  const agent = names ? modelAgentId(id) : null;
+  return (
+    <span>
+      {modelLabel(id)}
+      {agent && names?.[agent] ? <span className="ao-muted"> · {names[agent]}</span> : null}
     </span>
   );
 }

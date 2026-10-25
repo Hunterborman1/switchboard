@@ -18,6 +18,7 @@ import type { AiCallRow, DlqRow } from '../api/types';
 import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { IconArrowUpRight } from '../components/icons';
 import { int, money, ms } from '../lib/labels';
+import { useModelLabels } from '../lib/models';
 import styles from './health/Health.module.css';
 
 const RUNGS = [3.75, 7.5, 11.25, 15];
@@ -57,6 +58,7 @@ function ChartTooltip({ active, payload, label, fmt }: { active?: boolean; paylo
 
 export default function HealthPage() {
   const health = useHealth();
+  const { label: modelLabel, rewrite: rewriteModels } = useModelLabels();
 
   if (health.loading) {
     return (
@@ -114,7 +116,7 @@ export default function HealthPage() {
       ),
     },
     { key: 'step', header: 'Step', render: (r) => <span className="sl-mono">{r.step ?? '—'}</span> },
-    { key: 'error', header: 'Error', render: (r) => <span className={styles.error}>{r.error}</span> },
+    { key: 'error', header: 'Error', render: (r) => <span className={styles.error}>{r.error ? rewriteModels(r.error) : r.error}</span> },
     { key: 'attempts', header: 'Attempts', render: (r) => <span className="sl-mono">{r.attempts ?? '—'}</span> },
     { key: 'ops', header: 'Agent Ops', render: (r) => <OpsLinks runId={r.runId} /> },
   ];
@@ -122,7 +124,7 @@ export default function HealthPage() {
   const recentCols: DataTableColumn<AiCallRow>[] = [
     { key: 'at', header: 'When', sortable: true, sortValue: (r) => r.at, render: (r) => <RelativeTime value={r.at} /> },
     { key: 'step', header: 'Step', render: (r) => <span className="sl-mono">{r.step ?? '—'}</span> },
-    { key: 'model', header: 'Model', render: (r) => <span className="sl-mono sl-ellipsis" style={{ display: 'inline-block', maxWidth: 260 }} title={r.model}>{r.model}</span> },
+    { key: 'model', header: 'Model', render: (r) => <span className="sl-ellipsis" style={{ display: 'inline-block', maxWidth: 260 }}>{modelLabel(r.model) ?? '—'}</span> },
     {
       key: 'tokens',
       header: 'Tokens in / out',

@@ -14,6 +14,7 @@ import { Hint } from '../../components/Hint';
 import { GateChip, SeverityTag, TypeTag } from '../../components/ui';
 import { IconArrowUpRight, IconChannels, IconMail, IconQuote, IconShieldAlert, IconTheme, IconTicket, IconHash, IconInbox } from '../../components/icons';
 import { AREA_LABEL, CHANNEL_LABEL, money, ms } from '../../lib/labels';
+import { useModelLabels } from '../../lib/models';
 import type { DisplayStep } from './useReveal';
 import styles from './RunParts.module.css';
 
@@ -337,6 +338,7 @@ export function ScreenCard({ screen, pending, model, ms: took }: { screen: Scree
 // ---------------------------------------------------------------- trace
 
 export function TracePanel({ runId, steps, totalCost, totalMs }: { runId: string; steps: DisplayStep[]; totalCost: number; totalMs: number | null }) {
+  const { label: modelLabel } = useModelLabels();
   const shown = steps.filter((s) => s.display !== 'pending');
   const starts = shown.map((s) => s.startedAt).filter((x): x is string => !!x).sort();
   const ends = shown.map((s) => s.finishedAt ?? new Date().toISOString()).sort();
@@ -352,7 +354,7 @@ export function TracePanel({ runId, steps, totalCost, totalMs }: { runId: string
         ? [
             {
               id: `${key}-seg`,
-              detail: `${STEP_LABELS[key]} · ${s.display} · ${ms(s.durationMs)}${s.model ? ` · ${s.model}` : ''}`,
+              detail: `${STEP_LABELS[key]} · ${s.display} · ${ms(s.durationMs)}${s.model ? ` · ${modelLabel(s.model)}` : ''}`,
               startedAt: s.startedAt!,
               finishedAt: s.display === 'running' ? null : s.finishedAt,
               severity: s.display === 'failed' ? 'red' : s.display === 'warned' ? 'yellow' : s.display === 'skipped' || s.display === 'running' ? 'neutral' : 'green',
@@ -414,7 +416,7 @@ export function TracePanel({ runId, steps, totalCost, totalMs }: { runId: string
                   <td>
                     <StepStatus status={s.display} />
                   </td>
-                  <td className={styles.model}>{s.display === 'pending' || s.display === 'running' ? '—' : s.model ?? <span className="sl-subtle">code</span>}</td>
+                  <td className={styles.model}>{s.display === 'pending' || s.display === 'running' ? '—' : modelLabel(s.model) ?? <span className="sl-subtle">code</span>}</td>
                   <td className={styles.num}>{s.tokensIn != null && s.display !== 'pending' ? s.tokensIn.toLocaleString() : '—'}</td>
                   <td className={styles.num}>{s.tokensOut != null && s.display !== 'pending' ? s.tokensOut.toLocaleString() : '—'}</td>
                   <td className={styles.num}>{s.costUsd != null && s.display !== 'pending' ? money(s.costUsd, { precise: true }) : '—'}</td>

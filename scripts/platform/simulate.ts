@@ -9,18 +9,34 @@
  * after launch, the RFP agent's pilot → production step, a primary-model incident on Signal
  * Loop (fallback to the secondary model, then recovery), Gumloop's slower latency profile.
  *
- * Signal Loop hook: if data/backfill/ exists (real pipeline runs over synthetic transcripts,
- * produced by the backend), `loadBackfill()` is where those runs replace the simulated Signal
- * Loop runs. Rows stay source 'simulated' either way, because the users are synthetic. Only
- * telemetry that arrives through the SDK at runtime is 'live'.
+ * Signal Loop from real runs: when data/backfill/runs.json exists (real pipeline executions
+ * over synthetic transcripts; history.json adds the ground step's quote counts and each
+ * delivery's attempts), `loadBackfill()` validates it and Signal Loop's history is derived
+ * from it instead of the RNG: one work unit and one trace per real run, at the real time
+ * (moved with --end like everything else), with the real step order and durations, one
+ * ai.call per model step (real model, tokens, cost), grounding.checked {passed, total,
+ * dropped}, real delivery channels and retries, real insight/gate counts, and the work unit's
+ * cost = the run's costUsd. Outcome comes from what happened: reviewed → edited / accepted /
+ * rejected from the real review actions, auto-routed or nothing to route → automatic, still
+ * awaiting review → drawn from the agent's outcome mix. Runs keep their real CSM when that
+ * person is in the agent's user pool; the others go to pool users by the adoption ramp. The
+ * RNG still supplies what the pipeline does not record: sessions and page views around each
+ * run, request latency, ids, office-hours timing for overnight reviews, and the incident
+ * overlay (real runs inside its window get primary-model 503s and fallbacks; one extra run
+ * fails after retries at no cost). Without the backfill, Signal Loop runs are fully simulated.
+ *
+ * Rows stay source 'simulated' either way, because the users are synthetic. Only telemetry
+ * that arrives through the SDK at runtime is 'live'.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { z } from 'zod';
 import { createRng, type Rng } from '../data/lib/rng.ts';
 import { addDays, daysBetween, isoDay, weekdayIndex } from '../../src/worker/platform/math.ts';
 import type { AgentRecord, Alert, ChangeEntry, LogEntry, Span, UsageEvent, UsageKind, WorkUnit } from '../../src/shared/platform-contracts.ts';
 import type { AgentProfile } from '../../src/worker/platform/types.ts';
 
 const ROOT = new URL('../../', import.meta.url);
+const SIGNAL_LOOP_ID = 'agt_signal_loop';
 const CANONICAL_END = '2026-10-24';
 const WINDOW_DAYS = 41; // 2026-09-14 … 2026-10-24 inclusive
 
@@ -72,9 +88,13 @@ function shiftDate(v: string, days: number): string {
   return v.length <= 10 ? isoDay(addDays(v, days)) : addDays(v, days);
 }
 
+function loadWorldPeople(): { id: string; name: string; role: string; title: string }[] {
+  return readJson<{ id: string; name: string; role: string; title: string }[]>('data/world/people.json');
+}
+
 export function loadPeople(): Person[] {
   const own = readJson<{ departmentMap: Record<string, string>; people: Person[]; worldUsers: string[] }>('data/platform/people.json');
-  const world = readJson<{ id: string; name: string; role: string; title: string }[]>('data/world/people.json');
+  const world = loadWorldPeople();
   const depts = readJson<{ personId: string; department: string }[]>('data/world/departments.json');
   const fromWorld: Person[] = own.worldUsers.flatMap((id) => {
     const w = world.find((p) => p.id === id);
@@ -85,12 +105,101 @@ export function loadPeople(): Person[] {
   return [...own.people, ...fromWorld];
 }
 
-/** Real Signal Loop runs from the backend's backfill, if present (hook; see file header). */
-export function loadBackfill(): unknown[] | null {
-  const dir = new URL('data/backfill/', ROOT);
-  if (!existsSync(dir)) return null;
-  const files = readdirSync(dir).filter((f) => f.endsWith('.json'));
-  return files.length ? files : null;
+// ---------------------------------------------------------------- real Signal Loop backfill
+
+const BackfillStep = z.object({
+  key: z.string(),
+  status: z.string(), // passed | warned | skipped | failed
+  startedAt: z.string(),
+  durationMs: z.number(),
+  model: z.string().nullable(),
+  tokensIn: z.number().nullable(),
+  tokensOut: z.number().nullable(),
+  costUsd: z.number().nullable(),
+});
+const BackfillRunRow = z.object({
+  runId: z.string(),
+  fileId: z.string(),
+  accountId: z.string(),
+  csmId: z.string().nullable(),
+  createdAt: z.string(),
+  finishedAt: z.string(),
+  durationMs: z.number(),
+  costUsd: z.number(),
+  status: z.string(), // completed | awaiting_review | failed
+  promptVersion: z.string(),
+  steps: z.array(BackfillStep),
+  insights: z.object({ total: z.number(), autoRoute: z.number(), review: z.number(), held: z.number(), dropped: z.number() }),
+  reviews: z.array(z.object({ action: z.string(), reviewer: z.string(), at: z.string() })),
+  deliveries: z.array(z.object({ channel: z.string(), attempts: z.number(), at: z.string() })),
+  fallbacks: z.number(),
+  models: z.array(z.string()),
+});
+const BackfillHistory = z.object({
+  steps: z.array(z.object({ runId: z.string(), key: z.string(), detail: z.record(z.string(), z.unknown()).nullable().optional() })),
+  insights: z.array(z.object({ id: z.string(), runId: z.string() })),
+  deliveries: z.array(
+    z.object({
+      insightId: z.string(),
+      channel: z.string(),
+      destination: z.string().nullable().optional(),
+      status: z.string(),
+      receipt: z.string().nullable().optional(),
+      createdAt: z.string(),
+      attempts: z.array(z.object({ at: z.string(), ok: z.boolean(), ms: z.number(), note: z.string().nullable().optional() })),
+    }),
+  ),
+});
+
+export type BackfillGrounding = { passed: number; total: number; dropped: number };
+export type BackfillDelivery = { channel: string; destination: string | null; at: string; receipt: string | null; attempts: { at: string; ok: boolean; ms: number | null; note: string | null }[] };
+export type BackfillRun = z.infer<typeof BackfillRunRow> & { grounding: BackfillGrounding | null; deliveryDetail: BackfillDelivery[] };
+export type Backfill = { runs: BackfillRun[]; generatedAt: string | null };
+
+/**
+ * Real Signal Loop runs from data/backfill/ (runs.json, plus history.json for the ground step's
+ * quote counts and each delivery's attempts), or null when the backfill is absent. Validated, then
+ * joined per run; nothing here is random.
+ */
+export function loadBackfill(): Backfill | null {
+  const runsUrl = new URL('data/backfill/runs.json', ROOT);
+  if (!existsSync(runsUrl)) return null;
+  const runs = z.array(BackfillRunRow).parse(JSON.parse(readFileSync(runsUrl, 'utf8')));
+  if (!runs.length) return null;
+  const histUrl = new URL('data/backfill/history.json', ROOT);
+  const raw: unknown = existsSync(histUrl) ? JSON.parse(readFileSync(histUrl, 'utf8')) : null;
+  const hist = raw ? BackfillHistory.safeParse(raw) : null;
+  const history = hist?.success ? hist.data : null;
+  const generatedAt = raw && typeof raw === 'object' && 'generatedAt' in raw && typeof raw.generatedAt === 'string' ? raw.generatedAt : null;
+
+  const groundByRun = new Map<string, BackfillGrounding>();
+  for (const s of history?.steps ?? []) {
+    if (s.key !== 'ground' || !s.detail) continue;
+    const { quotes, grounded, droppedInsights } = s.detail;
+    if (typeof quotes === 'number' && typeof grounded === 'number') groundByRun.set(s.runId, { passed: grounded, total: quotes, dropped: typeof droppedInsights === 'number' ? droppedInsights : 0 });
+  }
+  const runOfInsight = new Map((history?.insights ?? []).map((i) => [i.id, i.runId]));
+  const deliveriesByRun = new Map<string, BackfillDelivery[]>();
+  for (const d of history?.deliveries ?? []) {
+    const runId = runOfInsight.get(d.insightId);
+    if (!runId) continue;
+    const list = deliveriesByRun.get(runId) ?? [];
+    list.push({ channel: d.channel, destination: d.destination ?? null, at: d.createdAt, receipt: d.receipt ?? null, attempts: d.attempts.map((a) => ({ at: a.at, ok: a.ok, ms: a.ms, note: a.note ?? null })) });
+    deliveriesByRun.set(runId, list);
+  }
+
+  return {
+    generatedAt,
+    runs: runs.map((r) => {
+      const groundStep = r.steps.find((s) => s.key === 'ground');
+      const grounding = groundByRun.get(r.runId) ?? (groundStep && groundStep.status !== 'skipped' ? { passed: r.insights.total, total: r.insights.total + r.insights.dropped, dropped: r.insights.dropped } : null);
+      // Prefer history's per-attempt detail; fall back to runs.json's summary (attempt latency unknown).
+      const deliveryDetail =
+        deliveriesByRun.get(r.runId)?.sort((a, b) => a.at.localeCompare(b.at)) ??
+        r.deliveries.map((d) => ({ channel: d.channel, destination: null, at: d.at, receipt: null, attempts: Array.from({ length: Math.max(1, d.attempts) }, (_, i) => ({ at: d.at, ok: i === d.attempts - 1, ms: null, note: null })) }));
+      return { ...r, grounding, deliveryDetail };
+    }),
+  };
 }
 
 // ---------------------------------------------------------------- helpers
@@ -131,7 +240,7 @@ function iso(ms: number): string {
 
 // ---------------------------------------------------------------- generator
 
-export function simulate(opts: { end?: string; seed?: string } = {}): SimOutput {
+export function simulate(opts: { end?: string; seed?: string; backfill?: Backfill | null } = {}): SimOutput {
   const end = opts.end ?? CANONICAL_END;
   const shift = Math.round((Date.parse(end) - Date.parse(CANONICAL_END)) / 86_400_000);
   const from = isoDay(addDays(end, -(WINDOW_DAYS - 1)));
@@ -142,6 +251,7 @@ export function simulate(opts: { end?: string; seed?: string } = {}): SimOutput 
   const out: SimOutput = { window: { from, to: end }, agents: [], people, changelog: [], alerts: [], events: [], logs: [], spans: [], work: [] };
   const days = daysBetween(from, end);
   const endMs = Date.parse(`${end}T23:59:59.000Z`);
+  const backfill = opts.backfill === undefined ? loadBackfill() : opts.backfill;
 
   for (const a of seed.agents) {
     const r = { ...a.record };
@@ -155,7 +265,7 @@ export function simulate(opts: { end?: string; seed?: string } = {}): SimOutput 
       retiredAt: a.profile.retiredAt ? shiftDate(a.profile.retiredAt, shift) : null,
     };
     out.agents.push({ record: r, profile });
-    generateAgent(rng.fork(r.id), r, profile, a.sim, days, shift, person, out, endMs);
+    generateAgent(rng.fork(r.id), r, profile, a.sim, days, shift, person, out, endMs, r.id === SIGNAL_LOOP_ID ? backfill : null);
     out.changelog.push(...changelogFor(r.id, shift));
   }
   for (const al of seed.alerts) out.alerts.push({ ...al, at: shiftDate(al.at, shift), resolvedAt: al.resolvedAt ? shiftDate(al.resolvedAt, shift) : null });
@@ -167,13 +277,17 @@ export function simulate(opts: { end?: string; seed?: string } = {}): SimOutput 
 
 type RunCtx = { rng: Rng; agent: AgentRecord; sim: SimParams; out: SimOutput; incident: SimParams['incidents'][number] | null };
 
-function generateAgent(rng: Rng, agent: AgentRecord, profile: AgentProfile, sim: SimParams, days: string[], shift: number, person: Map<string, Person>, out: SimOutput, endMs: number) {
+function generateAgent(rng: Rng, agent: AgentRecord, profile: AgentProfile, sim: SimParams, days: string[], shift: number, person: Map<string, Person>, out: SimOutput, endMs: number, backfill: Backfill | null) {
   const short = agent.id.replace(/^agt_/, '').split('_').map((w) => w[0]).join('');
   let seq = 0;
   const adoptStart = Date.parse(shiftDate(sim.adoption.start, shift));
   const pilotUntil = sim.pilotUntil ? Date.parse(shiftDate(sim.pilotUntil, shift)) : 0;
   const incidents = sim.incidents.map((i) => ({ ...i, start: shiftDate(i.start, shift), end: shiftDate(i.end, shift) }));
   const users = sim.pool.ids.map((id, idx) => ({ id, adoptedAt: adoptStart + (sim.adoption.rampDays * 86_400_000 * idx) / Math.max(1, sim.pool.ids.length), engagement: 0.75 + rng.next() * 0.5 }));
+  if (backfill) {
+    generateFromBackfill({ rng, agent, profile, sim, shift, person, out, endMs, startMs: Date.parse(`${days[0]}T00:00:00.000Z`), short, users, incidents }, backfill);
+    return;
+  }
 
   const runs: { at: number; actor: string; session: string; forceFail?: boolean }[] = [];
   for (const day of days) {
@@ -383,6 +497,307 @@ function traceRun(ctx: RunCtx, at: number, runId: string, traceId: string, outco
   return cost;
 }
 
+// ---------------------------------------------------------------- Signal Loop from real runs
+
+type PoolUser = { id: string; adoptedAt: number; engagement: number };
+type Incident = SimParams['incidents'][number];
+type BackfillCtx = { rng: Rng; agent: AgentRecord; profile: AgentProfile; sim: SimParams; shift: number; person: Map<string, Person>; out: SimOutput; endMs: number; startMs: number; short: string; users: PoolUser[]; incidents: Incident[] };
+type Clock = (isoTime: string) => number;
+
+const SESSION_GAP_MS = 90 * 60_000;
+const round6 = (n: number) => Math.round(n * 1e6) / 1e6;
+
+/** Work-unit outcome from what really happened to the run's insights. */
+function backfillOutcome(rng: Rng, sim: SimParams, run: BackfillRun): Outcome {
+  if (run.status === 'failed') return 'failed';
+  const actions = run.reviews.map((r) => r.action);
+  if (actions.includes('edit')) return 'edited';
+  if (actions.includes('approve')) return 'accepted';
+  if (run.insights.autoRoute > 0 || run.insights.total === 0) return 'automatic'; // routed (or nothing to route) without a person
+  if (actions.length) return 'rejected';
+  // Still waiting for review when the backfill ended: draw from the agent's reviewed-outcome mix.
+  const mix = (['accepted', 'edited', 'rejected'] as const).map((k) => [k, sim.outcomes[k]] as const);
+  return rng.weighted(mix.map(([k]) => k), mix.map(([, w]) => w));
+}
+
+/**
+ * Signal Loop's history from the real backfill: one work unit and one trace per real run, at
+ * its real (window-shifted) time, with its real steps, model calls, cost, grounding, gate counts
+ * and deliveries. The planted incident overlays the real runs inside its window (primary 503s →
+ * fallback) and adds the single run that failed after retries. Synthetic users wrap the runs in
+ * sessions; review actions and the deliveries they trigger keep their real times, except that
+ * off-hours reviews move to the reviewer's next working slot.
+ */
+function generateFromBackfill(c: BackfillCtx, backfill: Backfill) {
+  const { rng, agent, sim, out, users, person } = c;
+  const shiftMs = c.shift * 86_400_000;
+  const T: Clock = (t) => Date.parse(t) + shiftMs;
+  const pool = new Set(sim.pool.ids);
+  const byName = new Map(loadWorldPeople().map((p) => [p.name, p.id]));
+  const runs = backfill.runs.filter((r) => T(r.createdAt) >= c.startMs && T(r.finishedAt) <= c.endMs).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+  // The backfill stamps reviews at a fixed lag after the run, often overnight. Synthetic reviewers
+  // keep office hours: an off-hours review (and the delivery it triggers) moves to the next
+  // weekday working slot, unless that falls past the window.
+  const reviewShift = new Map<string, number>();
+  const reviewAt = (t: string) => {
+    const real = T(t);
+    if (!reviewShift.has(t)) {
+      const pt = new Date(real + PT_OFFSET_H * 3_600_000);
+      const ptHour = pt.getUTCHours();
+      const weekend = pt.getUTCDay() === 0 || pt.getUTCDay() === 6;
+      let moved = real;
+      if (weekend || ptHour < 7 || ptHour >= 18) {
+        let day = isoDay(pt.toISOString());
+        if (weekend || ptHour >= 18) day = isoDay(addDays(day, 1));
+        while ([0, 6].includes(new Date(`${day}T12:00:00.000Z`).getUTCDay())) day = isoDay(addDays(day, 1));
+        moved = Math.max(real + 60_000, sessionStart(rng, day));
+      }
+      reviewShift.set(t, moved <= c.endMs ? moved - real : 0);
+    }
+    return real + (reviewShift.get(t) ?? 0);
+  };
+
+  const adopted = (at: number) => {
+    const ok = users.filter((u) => u.adoptedAt <= at);
+    const from = ok.length ? ok : users.slice(0, 1);
+    return rng.weighted(from.map((u) => u.id), from.map((u) => u.engagement));
+  };
+
+  // 1. Activities in time order: each real run, each real review, plus the incident's failed run.
+  type RunAct = { at: number; actor: string; kind: 'run'; run: BackfillRun | null; runId: string; incident: Incident | null };
+  type ReviewAct = { at: number; actor: string; kind: 'review'; runId: string; action: string; outcome: Outcome };
+  const acts: (RunAct | ReviewAct)[] = [];
+  const incidentOf = (at: number) => c.incidents.find((i) => at >= Date.parse(i.start) && at <= Date.parse(i.end)) ?? null;
+  const outcomes = new Map<string, Outcome>();
+  for (const run of runs) {
+    const at = T(run.createdAt);
+    const actor = run.csmId && pool.has(run.csmId) ? run.csmId : adopted(at);
+    const outcome = backfillOutcome(rng, sim, run);
+    outcomes.set(run.runId, outcome);
+    acts.push({ at, actor, kind: 'run', run, runId: run.runId, incident: incidentOf(at) });
+    for (const rv of run.reviews) {
+      const rat = reviewAt(rv.at);
+      if (rat > c.endMs) continue;
+      const reviewer = byName.get(rv.reviewer);
+      acts.push({ at: rat, actor: reviewer && pool.has(reviewer) ? reviewer : actor, kind: 'review', runId: run.runId, action: rv.action, outcome });
+    }
+  }
+  c.incidents.forEach((inc, k) => {
+    const at = Date.parse(inc.start) + Math.floor(0.55 * (Date.parse(inc.end) - Date.parse(inc.start)));
+    if (at < c.startMs || at > c.endMs) return;
+    const runId = `run_${c.short}_incident_${String(k + 1).padStart(2, '0')}`;
+    outcomes.set(runId, 'failed');
+    acts.push({ at, actor: adopted(at), kind: 'run', run: null, runId, incident: inc });
+  });
+  acts.sort((a, b) => a.at - b.at || a.runId.localeCompare(b.runId));
+
+  // 2. Sessions (synthetic users) around the real activity, then each run's trace and work unit.
+  const open = new Map<string, { id: string; last: number }>();
+  const ctxFor = (incident: Incident | null): RunCtx => ({ rng, agent, sim, out, incident });
+  const features = (Object.entries(sim.features) as [UsageKind, number][]).filter(([k]) => k !== 'review_action');
+  const ev = (sessionId: string, actor: string, kind: UsageKind, at: number, path: string | null, props: Record<string, unknown> = {}, durationMs: number | null = null) =>
+    out.events.push({ id: `evt_${c.short}_${hex(rng, 12)}`, agentId: agent.id, source: 'simulated', sessionId, actorId: actor, actorRole: person.get(actor)?.role ?? 'unknown', kind, path, props, at: iso(at), durationMs });
+  const session = (actor: string, at: number, reviewing: boolean) => {
+    const cur = open.get(actor);
+    if (cur && cur.last <= at && at - cur.last < SESSION_GAP_MS) return cur;
+    const s = { id: `ses_${c.short}_${hex(rng, 10)}`, last: at };
+    open.set(actor, s);
+    const n = reviewing ? 1 : 1 + (rng.chance(0.45) ? 1 : 0);
+    let t = Math.max(c.startMs, at - (n + 1) * (40_000 + Math.floor(rng.next() * 50_000)));
+    ev(s.id, actor, 'session_start', t, null);
+    for (let i = 0; i < n; i++) {
+      t = Math.min(t + 20_000 + Math.floor(rng.next() * 25_000), at - 1_000);
+      const kind: UsageKind = reviewing || i === 0 ? 'page_view' : rng.weighted(features.map(([k]) => k), features.map(([, w]) => w));
+      const path = reviewing ? '/app/review' : pathFor(kind);
+      ev(s.id, actor, kind, t, path, {}, kind === 'page_view' ? 8_000 + Math.floor(rng.next() * 40_000) : null);
+      if (kind === 'page_view') apiRequest(ctxFor(null), t - 500, path, s.id);
+    }
+    return s;
+  };
+
+  let seq = 0;
+  for (const a of acts) {
+    const s = session(a.actor, a.at, a.kind === 'review');
+    if (a.kind === 'review') {
+      ev(s.id, a.actor, 'review_action', a.at, '/app/review', { runId: a.runId, action: a.action, outcome: a.outcome }, Math.floor(20_000 + rng.next() * 150_000));
+      s.last = Math.max(s.last, a.at);
+      continue;
+    }
+    seq++;
+    const outcome = outcomes.get(a.runId) ?? 'failed';
+    ev(s.id, a.actor, 'run_created', a.at, '/app/new', { runId: a.runId });
+    const ctx = ctxFor(a.incident);
+    const { cost, endAt } = a.run ? traceBackfillRun(ctx, c, a.run, outcome, s.id, T, reviewShift) : traceIncidentFailure(ctx, c.profile, a.at, a.runId, s.id);
+    s.last = Math.max(s.last, endAt);
+    if (a.run && endAt + 60_000 <= c.endMs && rng.chance(0.5)) {
+      ev(s.id, a.actor, 'run_viewed', endAt + 20_000 + Math.floor(rng.next() * 40_000), '/app/runs', { runId: a.runId }, 10_000 + Math.floor(rng.next() * 50_000));
+      s.last = Math.max(s.last, endAt + 60_000);
+    }
+    const reviews = a.run?.reviews.length ?? 0;
+    const human = outcome === 'failed' || outcome === 'automatic' ? 0 : sim.humanMinutes[outcome] * Math.max(1, reviews) * (0.7 + rng.next() * 0.6);
+    out.work.push({
+      id: a.run ? `wu_${a.runId.replace(/^run_/, '')}` : `wu_${c.short}_${String(seq).padStart(4, '0')}`,
+      agentId: agent.id,
+      source: 'simulated',
+      at: iso(a.at),
+      kind: agent.unitLabel.replace(/\s+/g, '_'),
+      actorId: a.actor,
+      minutesSavedEstimate: outcome === 'accepted' || outcome === 'edited' || outcome === 'automatic' ? agent.baselineMinutesPerUnit : 0,
+      humanMinutesSpent: Math.round(human * 10) / 10,
+      aiCostUsd: round6(cost),
+      outcome,
+    });
+  }
+}
+
+/** One real run's trace: request → real workflow steps → real model calls → grounding → deliveries. */
+function traceBackfillRun(ctx: RunCtx, c: BackfillCtx, run: BackfillRun, outcome: Outcome, sessionId: string, T: Clock, reviewShift: Map<string, number>): { cost: number; endAt: number } {
+  const { rng, sim, incident } = ctx;
+  const runId = run.runId;
+  const traceId = hex(rng, 32);
+  const root = hex(rng, 16);
+  const at = T(run.createdAt);
+  const primary = sim.models[0]![0];
+  const secondary = sim.models[1]?.[0] ?? primary;
+
+  const reqId = hex(rng, 16);
+  const reqMs = lognormal(rng, sim.latencyMs, sim.latencySigma) * (incident ? incident.latencyMult : 1);
+  span(ctx, traceId, reqId, root, 'POST /api/runs', at, reqMs, 'ok', { 'http.status': 202, runId, fileId: run.fileId });
+  log(ctx, at + reqMs, 'info', 'api', 'http.request', 'POST /api/runs 202', traceId, reqId, runId, Math.round(reqMs), { method: 'POST', route: 'POST /api/runs', status: 202, session: sessionId });
+
+  const wfId = hex(rng, 16);
+  const wfStart = T(run.steps[0]?.startedAt ?? run.createdAt);
+  const finished = T(run.finishedAt);
+  let offset = 0; // incident overlay: failed primary attempts push the later steps back
+  let end = finished;
+  const failed = run.status === 'failed';
+  for (const step of run.steps) {
+    const sid = hex(rng, 16);
+    const start = T(step.startedAt) + offset;
+    if (step.status === 'skipped') {
+      span(ctx, traceId, sid, wfId, `step.${step.key}`, start, 1, 'ok', { step: step.key, status: 'skipped' });
+      continue;
+    }
+    let extra = 0;
+    if (step.model) {
+      const fellBack = incident !== null && secondary !== primary && rng.chance(incident.fallbackRate);
+      let t = start + 2;
+      if (fellBack) {
+        const failMs = Math.round(2_000 + rng.next() * 6_000);
+        const fid = hex(rng, 16);
+        span(ctx, traceId, fid, sid, `ai.generate ${step.model}`, t, failMs, 'error', { model: step.model, step: step.key, error: '503 Service Unavailable', retry: 0 });
+        log(ctx, t + failMs, 'warn', 'ai', 'ai.call', `${step.key}: ${step.model} failed (503); falling back to ${secondary}`, traceId, fid, runId, failMs, { model: step.model, ok: false, fallback: false, step: step.key, tokensIn: 0, tokensOut: 0, costUsd: 0 });
+        t += failMs;
+        extra = failMs;
+      }
+      const model = fellBack ? secondary : step.model;
+      const callMs = Math.max(1, step.durationMs - 4);
+      const fields = { model, ok: true, fallback: fellBack, step: step.key, tokensIn: step.tokensIn ?? 0, tokensOut: step.tokensOut ?? 0, costUsd: round6(step.costUsd ?? 0), promptVersion: run.promptVersion };
+      const aid = hex(rng, 16);
+      span(ctx, traceId, aid, sid, `ai.generate ${model}`, t, callMs, 'ok', fields);
+      log(ctx, t + callMs, 'info', 'ai', 'ai.call', `${step.key}: ${model} ${fields.tokensIn}→${fields.tokensOut} tokens`, traceId, aid, runId, callMs, fields);
+    }
+    const stepMs = Math.max(1, step.durationMs + extra);
+    const stepFailed = step.status === 'failed';
+    span(ctx, traceId, sid, wfId, `step.${step.key}`, start, stepMs, stepFailed ? 'error' : 'ok', { step: step.key, attempt: 1, status: step.status });
+    offset += extra;
+    const done = start + stepMs;
+    if (stepFailed) {
+      log(ctx, done, 'error', 'workflow', 'step.failed', `${step.key} failed`, traceId, sid, runId, stepMs, { step: step.key });
+      break;
+    }
+    log(ctx, done, step.status === 'warned' ? 'warn' : 'debug', 'workflow', 'step.finished', `${step.key} ${step.status === 'warned' ? 'finished with warnings' : 'ok'}`, traceId, sid, runId, stepMs, { step: step.key, status: step.status });
+    if (step.key === 'ground' && run.grounding) {
+      const g = run.grounding;
+      const level = g.total > g.passed || g.dropped ? 'warn' : 'info';
+      log(ctx, done, level, 'workflow', 'grounding.checked', `${g.passed} of ${g.total} quotes grounded${g.dropped ? `; ${g.dropped} insight${g.dropped === 1 ? '' : 's'} dropped` : ''}`, traceId, sid, runId, null, { passed: g.passed, total: g.total, dropped: g.dropped });
+    }
+    if (step.key === 'deliver') {
+      for (const d of run.deliveryDetail) if (T(d.at) <= finished + 1_000) end = Math.max(end, deliverySpans(ctx, traceId, sid, runId, d, T, offset));
+    }
+  }
+  const wfEnd = finished + offset;
+  span(ctx, traceId, wfId, root, 'workflow signal-loop-pipeline', wfStart, wfEnd - wfStart, failed ? 'error' : 'ok', { runId, steps: run.steps.length, promptVersion: run.promptVersion });
+  if (!failed) log(ctx, wfEnd, 'debug', 'budget', 'budget.check', `run cost $${run.costUsd.toFixed(4)} within per-run cap $${c.profile.perRunCapUsd.toFixed(2)}`, traceId, wfId, runId, null, { costUsd: round6(run.costUsd), capUsd: c.profile.perRunCapUsd });
+  end = Math.max(end, wfEnd);
+  const ins = run.insights;
+  span(ctx, traceId, root, null, `run ${runId}`, at, end - at, failed ? 'error' : 'ok', { runId, outcome, costUsd: round6(run.costUsd), insights: ins.total });
+  log(ctx, end, failed ? 'error' : 'info', 'workflow', 'run.finished', `${runId} ${failed ? 'failed' : outcome} · ${ins.total} insight${ins.total === 1 ? '' : 's'}`, traceId, root, runId, Math.round(end - at), { outcome, costUsd: round6(run.costUsd), ok: !failed, status: run.status, insights: ins.total, autoRoute: ins.autoRoute, review: ins.review, held: ins.held, dropped: ins.dropped });
+
+  // Deliveries a reviewer's approval triggered later: their own short trace, when the review happened.
+  const groups = new Map<string, BackfillDelivery[]>();
+  for (const d of run.deliveryDetail) if (T(d.at) > finished + 1_000 && T(d.at) + (reviewShift.get(d.at) ?? 0) <= c.endMs) groups.set(d.at, [...(groups.get(d.at) ?? []), d]);
+  for (const [atIso, ds] of groups) {
+    const moved = reviewShift.get(atIso) ?? 0;
+    const tId = hex(rng, 32);
+    const rId = hex(rng, 16);
+    const start = T(atIso) + moved - 40;
+    let last = start + lognormal(rng, sim.latencyMs * 0.6, sim.latencySigma);
+    for (const d of ds) last = Math.max(last, deliverySpans(ctx, tId, rId, runId, d, T, moved));
+    span(ctx, tId, rId, null, 'POST /api/insights/review', start, last - start, 'ok', { 'http.status': 200, runId, deliveries: ds.length });
+    log(ctx, last, 'info', 'api', 'http.request', 'POST /api/insights/review 200', tId, rId, runId, Math.round(last - start), { method: 'POST', route: 'POST /api/insights/review', status: 200 });
+  }
+  return { cost: run.costUsd, endAt: end };
+}
+
+/** One real delivery: a span per attempt, retry warnings, one delivery.sent (or .failed). Returns its end time. */
+function deliverySpans(ctx: RunCtx, traceId: string, parent: string, runId: string, d: BackfillDelivery, T: Clock, offset: number): number {
+  let end = T(d.at) + offset;
+  d.attempts.forEach((a, i) => {
+    const sid = hex(ctx.rng, 16);
+    const start = T(a.at) + offset;
+    const ms = a.ms ?? 150 + Math.round(ctx.rng.next() * 400);
+    span(ctx, traceId, sid, parent, `delivery.${d.channel}`, start, ms, a.ok ? 'ok' : 'error', { channel: d.channel, destination: d.destination, attempt: i + 1, 'http.status': a.ok ? 201 : 503 });
+    end = Math.max(end, start + ms);
+    if (i < d.attempts.length - 1) {
+      if (!a.ok) log(ctx, start + ms, 'warn', 'delivery', 'delivery.retry', `${d.channel}: ${a.note ?? 'attempt failed'}`, traceId, sid, runId, ms, { channel: d.channel, attempt: i + 1 });
+      return;
+    }
+    const msg = a.ok ? `${d.channel}: delivered${d.receipt ? ` (${d.receipt})` : ''}` : `${d.channel}: ${a.note ?? 'failed'}`;
+    log(ctx, start + ms, a.ok ? 'info' : 'error', 'delivery', a.ok ? 'delivery.sent' : 'delivery.failed', msg, traceId, sid, runId, ms, { channel: d.channel, ok: a.ok, attempts: d.attempts.length, destination: d.destination, receipt: d.receipt });
+  });
+  return end;
+}
+
+/** The planted incident's one failed run: primary 503s, the fallback times out, screen gives up. No spend. */
+function traceIncidentFailure(ctx: RunCtx, profile: AgentProfile, at: number, runId: string, sessionId: string): { cost: number; endAt: number } {
+  const { rng, sim, incident } = ctx;
+  const primary = sim.models[0]![0];
+  const secondary = sim.models[1]?.[0] ?? primary;
+  const traceId = hex(rng, 32);
+  const root = hex(rng, 16);
+  const reqId = hex(rng, 16);
+  const reqMs = lognormal(rng, sim.latencyMs, sim.latencySigma) * (incident?.latencyMult ?? 1);
+  span(ctx, traceId, reqId, root, 'POST /api/runs', at, reqMs, 'ok', { 'http.status': 202, runId });
+  log(ctx, at + reqMs, 'info', 'api', 'http.request', 'POST /api/runs 202', traceId, reqId, runId, Math.round(reqMs), { method: 'POST', route: 'POST /api/runs', status: 202, session: sessionId });
+  const wfId = hex(rng, 16);
+  let t = at + 5;
+  for (const key of ['ingest', 'normalize', 'redact']) {
+    const sid = hex(rng, 16);
+    const ms = 1 + Math.round(rng.next() * 8);
+    span(ctx, traceId, sid, wfId, `step.${key}`, t, ms, 'ok', { step: key, attempt: 1, status: 'passed' });
+    log(ctx, t + ms, 'debug', 'workflow', 'step.finished', `${key} ok`, traceId, sid, runId, ms, { step: key, status: 'passed' });
+    t += ms;
+  }
+  const sid = hex(rng, 16);
+  const stepStart = t;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const model = attempt === 1 ? primary : secondary;
+    const ms = Math.round(2_000 + rng.next() * 6_000);
+    const aid = hex(rng, 16);
+    span(ctx, traceId, aid, sid, `ai.generate ${model}`, t, ms, 'error', { model, step: 'screen', error: attempt === 1 ? '503 Service Unavailable' : 'timeout', retry: attempt - 1 });
+    log(ctx, t + ms, 'warn', 'ai', 'ai.call', `screen: ${model} ${attempt === 1 ? `failed (503); falling back to ${secondary}` : 'timed out'}`, traceId, aid, runId, ms, { model, ok: false, fallback: attempt > 1, step: 'screen', tokensIn: 0, tokensOut: 0, costUsd: 0 });
+    t += ms + 2_000;
+  }
+  span(ctx, traceId, sid, wfId, 'step.screen', stepStart, t - stepStart, 'error', { step: 'screen', attempt: 3, status: 'failed' });
+  log(ctx, t, 'error', 'workflow', 'step.failed', `screen failed after 3 attempts (${incident?.note ?? 'provider errors'})`, traceId, sid, runId, Math.round(t - stepStart), { step: 'screen', attempts: 3 });
+  span(ctx, traceId, wfId, root, 'workflow signal-loop-pipeline', at + 5, t - at - 5, 'error', { runId, steps: 10 });
+  span(ctx, traceId, root, null, `run ${runId}`, at, t - at, 'error', { runId, outcome: 'failed', costUsd: 0 });
+  log(ctx, t, 'error', 'workflow', 'run.finished', `${runId} failed`, traceId, root, runId, Math.round(t - at), { outcome: 'failed', costUsd: 0, ok: false, capUsd: profile.perRunCapUsd });
+  return { cost: 0, endAt: t };
+}
+
 // ---------------------------------------------------------------- changelog
 
 function changelogFor(agentId: string, shift: number): ChangeEntry[] {
@@ -417,7 +832,20 @@ function changelogFor(agentId: string, shift: number): ChangeEntry[] {
 const isMain = process.argv[1]?.replace(/\\/g, '/').endsWith('scripts/platform/simulate.ts');
 if (isMain) {
   const endArg = process.argv.indexOf('--end');
-  const sim = simulate({ end: endArg > 0 ? process.argv[endArg + 1] : undefined });
-  const by = <T extends { agentId: string }>(rows: T[]) => Object.fromEntries(sim.agents.map((a) => [a.record.id, rows.filter((r) => r.agentId === a.record.id).length]));
-  console.log(JSON.stringify({ window: sim.window, people: sim.people.length, events: by(sim.events), work: by(sim.work), logs: by(sim.logs), spans: by(sim.spans), changelog: sim.changelog.length, alerts: sim.alerts.length, backfill: loadBackfill() ? 'present' : 'absent (simulated Signal Loop runs)' }, null, 2));
+  const backfill = loadBackfill();
+  const sim = simulate({ end: endArg > 0 ? process.argv[endArg + 1] : undefined, backfill });
+  const ids = sim.agents.map((a) => a.record.id);
+  const by = <T extends { agentId: string }>(rows: T[]) => Object.fromEntries(ids.map((id) => [id, rows.filter((r) => r.agentId === id).length]));
+  const sum = (id: string, f: (w: WorkUnit) => number) => sim.work.filter((w) => w.agentId === id).reduce((s, w) => s + f(w), 0);
+  const impact = Object.fromEntries(
+    ids.map((id) => {
+      const outcomes: Record<string, number> = {};
+      for (const w of sim.work) if (w.agentId === id) outcomes[w.outcome] = (outcomes[w.outcome] ?? 0) + 1;
+      return [id, { aiCostUsd: round6(sum(id, (w) => w.aiCostUsd)), minutesSaved: sum(id, (w) => w.minutesSavedEstimate), humanMinutes: Math.round(sum(id, (w) => w.humanMinutesSpent) * 10) / 10, outcomes }];
+    }),
+  );
+  const backfillSummary = backfill
+    ? { runs: backfill.runs.length, costUsd: round6(backfill.runs.reduce((s, r) => s + r.costUsd, 0)), generatedAt: backfill.generatedAt, firstRun: backfill.runs[0]?.createdAt ?? null }
+    : 'absent (simulated Signal Loop runs)';
+  console.log(JSON.stringify({ window: sim.window, people: sim.people.length, events: by(sim.events), work: by(sim.work), logs: by(sim.logs), spans: by(sim.spans), impact, changelog: sim.changelog.length, alerts: sim.alerts.length, backfill: backfillSummary }, null, 2));
 }

@@ -45,7 +45,7 @@ export function startMockOpenRouter(): Promise<{ url: string; requests: MockRequ
       };
       if (user.includes('FORCE_LLM_ERROR')) return send(500, { error: { message: 'mock upstream failure', code: 500 } });
       if (user.includes('PRIMARY_DOWN') && model.startsWith('deepseek/')) return send(503, { error: { message: 'mock primary unavailable', code: 503 } });
-      if (user.includes('SLOW_MODEL')) await new Promise((r) => setTimeout(r, 4000));
+      if (user.includes('SLOW_MODEL')) await new Promise((r) => setTimeout(r, 8000));
       let content: string;
       const key = `${schema}:${user.length}`;
       if (user.includes('FORCE_BAD_JSON') && schema === 'insights' && !badJsonSeen.has(key) && messages.length === 1) {

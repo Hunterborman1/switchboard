@@ -68,11 +68,14 @@ describe('reports over seeded history', () => {
     expect((await h.call(P('/agents/agt_nope'))).status).toBe(404);
   });
 
-  it('observability: Signal Loop run success is at risk after the planted incident', async () => {
+  it('observability: the planted incident spends part of Signal Loop’s run-success budget', async () => {
     const r = await h.call(P(`/observability?agentId=${SIGNAL_LOOP_AGENT_ID}&range=6w`));
     const run = r.json.data.slos.find((s: { key: string }) => s.key === 'run_success');
-    expect(run.status).toBe('at_risk');
+    // One failed run. Over ~160 real backfill runs in the 28-day window that leaves the SLO met
+    // with budget left (it read "at risk" when the simulated volume was lower).
     expect(run.denominator - run.numerator).toBe(1);
+    expect(run.status).not.toBe('breached');
+    expect(run.errorBudgetRemaining).toBeLessThan(1);
     expect(r.json.data.hourly.length).toBeGreaterThanOrEqual(40);
     expect(r.json.data.models[0].model).toBe('deepseek/deepseek-v4.1-flash');
     expect(r.json.data.alerts.find((a: { id: string }) => a.id === 'alr_hist_sl_fallback').status).toBe('resolved');

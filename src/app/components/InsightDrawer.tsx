@@ -18,6 +18,7 @@ import { Skeleton } from '../../uis/Skeleton';
 import { StatusChip } from '../../uis/StatusChip';
 import { useInsightDetail } from '../api/hooks';
 import { AREA_LABEL, CHANNEL_LABEL, STATUS_LABEL, STATUS_TONE, money, renewalIn } from '../lib/labels';
+import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
 import { EvidenceContext } from './EvidenceContext';
@@ -67,6 +68,7 @@ function ReviewDiff({ r }: { r: ReviewRecord }) {
 export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const q = useInsightDetail(id);
   const world = useWorldIndex();
+  const { label: modelLabel } = useModelLabels();
   const panelRef = useRef<HTMLDivElement>(null);
   const opened = useRef<string | null>(null);
 
@@ -205,7 +207,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
                   </div>
                   <div>
                     <dt>Prompt · model</dt>
-                    <dd className="sl-mono sl-ellipsis" title={`${ins.promptVersion} · ${ins.model}`}>
+                    <dd className="sl-mono sl-ellipsis" title={`${ins.promptVersion} · ${modelLabel(ins.model) ?? 'no model'}`}>
                       {ins.promptVersion}
                     </dd>
                   </div>

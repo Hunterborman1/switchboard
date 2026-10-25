@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { MetricStrip } from '../ui/Kpis';
 import type { Span } from '../../shared/platform-contracts';
+import { relabelModelsDeep, rewriteModelIds } from '../../shared/modelLabels';
 import { tourAnchor } from '../../tour/anchors';
 import { useTimezone } from '../../uis/TimezoneContext';
 import type { RegistryRow, TraceView } from '../../worker/platform/types';
@@ -163,13 +164,13 @@ export function Trace() {
                     className="ao-wf-row"
                     aria-pressed={sel === r.span.spanId}
                     onClick={() => setSel(sel === r.span.spanId ? null : r.span.spanId)}
-                    aria-label={`${r.span.name}, ${f.ms(r.span.durationMs)}, starts at ${f.ms(r.startMs)}${r.span.status === 'error' ? ', error' : ''}`}
+                    aria-label={`${rewriteModelIds(r.span.name)}, ${f.ms(r.span.durationMs)}, starts at ${f.ms(r.startMs)}${r.span.status === 'error' ? ', error' : ''}`}
                     data-kind={k.key}
                   >
                     <span className="ao-wf-name" style={{ paddingLeft: r.depth * 14 }}>
                       <span className="kd" style={{ background: k.color }} aria-hidden="true" />
-                      <span className="nm" title={r.span.name}>
-                        {r.span.name}
+                      <span className="nm" title={rewriteModelIds(r.span.name)}>
+                        {rewriteModelIds(r.span.name)}
                       </span>
                       {r.span.attrs.fallback === true ? <span className="ao-pill warning" style={{ fontSize: 10 }}>fallback</span> : null}
                       {r.span.status === 'error' ? <span className="ao-pill danger" style={{ fontSize: 10 }}>error</span> : null}
@@ -192,11 +193,11 @@ export function Trace() {
       </Panel>
 
       {selected ? (
-        <Panel title={selected.name} sub={`Span ${selected.spanId} · ${f.ms(selected.durationMs)} · ${selected.status}`} actions={<button type="button" className="ao-btn sm" onClick={() => setSel(null)}>Close</button>}>
+        <Panel title={rewriteModelIds(selected.name)} sub={`Span ${selected.spanId} · ${f.ms(selected.durationMs)} · ${selected.status}`} actions={<button type="button" className="ao-btn sm" onClick={() => setSel(null)}>Close</button>}>
           <div className="ao-grid g-2">
             <div>
               <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Attributes</h3>
-              <pre className="ao-json">{JSON.stringify(selected.attrs, null, 2)}</pre>
+              <pre className="ao-json">{JSON.stringify(relabelModelsDeep(selected.attrs), null, 2)}</pre>
             </div>
             <div>
               <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Logs on this span</h3>
@@ -206,7 +207,7 @@ export function Trace() {
                     <li key={l.id} style={{ display: 'flex', gap: 8, alignItems: 'baseline', fontSize: 'var(--fs-body-sm)' }}>
                       <span className={`ao-lv ${l.level}`}>{l.level}</span>
                       <span className="ao-mono">{l.event}</span>
-                      <span>{l.message}</span>
+                      <span>{rewriteModelIds(l.message)}</span>
                     </li>
                   ))}
                 </ul>
@@ -246,7 +247,7 @@ export function Trace() {
                   <td className="ao-hide-sm">{l.component}</td>
                   <td className="ao-mono ao-hide-sm">{l.event}</td>
                   <td className="msg">
-                    <span title={l.message}>{l.message}</span>
+                    <span title={rewriteModelIds(l.message)}>{rewriteModelIds(l.message)}</span>
                   </td>
                   <td className="num ao-mono">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
                 </tr>

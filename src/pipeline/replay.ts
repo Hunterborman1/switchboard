@@ -54,6 +54,37 @@ export function toRecording(fileId: string, r: PipelineResult, recordedAt: strin
   };
 }
 
+/**
+ * Re-time a recording to the fast path's shape. Recordings were made with the sequential core
+ * (screen, then extract; theme names generated inside the theme step). Live runs now start
+ * extraction alongside screening and name new themes after the run, so a replay shows:
+ * extract waiting only for the remainder of its call, and theme without the naming call.
+ * Step order, outputs, costs and every other duration are unchanged.
+ */
+export function fastPathTiming(rec: ReplayRecording, themeBaseMs = 380): ReplayRecording {
+  const byKey = new Map(rec.steps.map((s) => [s.key, s]));
+  const screen = byKey.get('screen');
+  const durations = new Map<StepKey, number>();
+  for (const s of rec.steps) {
+    let d = s.durationMs ?? 0;
+    if (s.key === 'extract' && screen && s.status !== 'skipped' && s.model) d = Math.max(150, d - (screen.durationMs ?? 0));
+    if (s.key === 'theme' && s.model) d = Math.min(d, themeBaseMs);
+    durations.set(s.key, d);
+  }
+  let t = rec.steps[0]?.offsetMs ?? 0;
+  const ordered = [...rec.steps].sort((a, b) => STEP_KEYS.indexOf(a.key) - STEP_KEYS.indexOf(b.key));
+  const steps = ordered.map((s, i) => {
+    const prev = ordered[i - 1];
+    // Keep any recorded gap between steps (normally 0-2ms).
+    const gap = prev ? Math.max(0, s.offsetMs - (prev.offsetMs + (prev.durationMs ?? 0))) : 0;
+    t += gap;
+    const out = { ...s, offsetMs: t, durationMs: s.durationMs === null ? null : durations.get(s.key)! };
+    t += out.durationMs ?? 0;
+    return out;
+  });
+  return { ...rec, steps, totalMs: t, run: { ...rec.run, durationMs: Math.min(rec.run.durationMs, t) } };
+}
+
 export type StoredStep = RunStep & { offsetMs: number | null };
 
 /** What each step looks like `nowMs` after a replay run was created at `startMs`. */

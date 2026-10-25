@@ -20,6 +20,8 @@
     "dev:vars": "node scripts/lib/dev-vars.ts",
     "db:seed:local": "node scripts/seed.ts --local",
     "db:seed:remote": "node scripts/seed.ts --remote",
+    "db:seed:platform:local": "node scripts/platform/seed.ts --local",
+    "db:seed:platform:remote": "node scripts/platform/seed.ts --remote",
     "backfill": "node --env-file=.env scripts/backfill.ts",
     "replays:record": "node --env-file=.env scripts/record-replays.ts",
     "eval": "node --env-file=.env scripts/eval.ts",
@@ -46,7 +48,6 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.23.0",
     "@cloudflare/workers-types": "^5.20261025.1",
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",

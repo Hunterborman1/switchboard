@@ -39,6 +39,7 @@ import {
 } from './components/icons';
 import { refreshTourStateFromUrl } from './state';
 import { trackPage } from './telemetry';
+import { TourPillSlot } from '../tour/hud/pillSlot';
 
 const ShellCtx = createContext(false);
 
@@ -103,6 +104,7 @@ function Footer({ collapsed }: { collapsed: boolean }) {
   );
   return (
     <div className="sl-footer">
+      <TourPillSlot placement="rail" compact={collapsed} />
       {collapsed ? <Hint label="Agent Ops: logs, traces, usage and cost for every agent" placement="right">{link}</Hint> : link}
       {!collapsed ? (
         <div className="sl-footer-ws">
@@ -160,6 +162,7 @@ function ShellInner() {
             groups={groups}
             footer={<Footer collapsed={false} />}
             footerCollapsed={<Footer collapsed />}
+            mobileBarEnd={<TourPillSlot placement="bar" />}
           >
             <Suspense fallback={<RouteFallback />}>
               <Outlet />

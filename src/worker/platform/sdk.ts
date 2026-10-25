@@ -21,10 +21,18 @@ export type Reporter = {
 export function reporter(env: Env, agentId: string): Reporter {
   const batch: IngestBatch = { agentId, events: [], logs: [], spans: [], work: [] };
   const now = () => new Date().toISOString();
+  // Workers freeze the clock during synchronous work, so several logs can share a millisecond.
+  // Nudge ties forward by 1ms so log order is stable and matches emit order.
+  let lastLogMs = 0;
+  const logAt = (at: string | undefined) => {
+    const ms = Math.max(at ? Date.parse(at) : Date.now(), lastLogMs + 1);
+    lastLogMs = ms;
+    return new Date(ms).toISOString();
+  };
   const id = () => crypto.randomUUID();
   return {
     log(e) {
-      const row: LogEntry = { id: id(), agentId, source: 'live', at: e.at ?? now(), ...e } as LogEntry;
+      const row: LogEntry = { id: id(), agentId, source: 'live', ...e, at: logAt(e.at) } as LogEntry;
       console.log(JSON.stringify({ level: row.level, event: row.event, msg: row.message, trace: row.traceId, run: row.runId, ms: row.durationMs, ...row.fields }));
       batch.logs.push(row);
     },

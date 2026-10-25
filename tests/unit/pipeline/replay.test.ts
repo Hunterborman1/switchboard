@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { replayTotalMs, revealSteps, stepDone, toRecording, type StoredStep } from '../../../src/pipeline/replay.ts';
+import { fastPathTiming, replayTotalMs, revealSteps, stepDone, toRecording, type ReplayRecording, type StoredStep } from '../../../src/pipeline/replay.ts';
 import { runPipeline } from '../../../src/pipeline/run.ts';
 import { hashEmbed } from '../../../src/pipeline/theme.ts';
 import { memStore } from '../../../scripts/lib/memstore.ts';
@@ -44,5 +44,26 @@ describe('replay timing', () => {
     expect(blob).not.toContain('Whitfield');
     expect(blob).not.toContain('modelInputs');
     expect(rec.run.status).toBe(r.status);
+  });
+});
+
+describe('fast-path re-timing of recordings', () => {
+  const step = (key: string, offsetMs: number, durationMs: number, model: string | null = null) => ({ key, offsetMs, durationMs, model, status: 'passed', tokensIn: null, tokensOut: null, costUsd: null, summary: 's', detail: null });
+  const rec = {
+    version: 1, fileId: 'f', recordedAt: '2026-10-21T17:00:00Z', promptVersion: 'v4', model: 'm', totalMs: 4238,
+    run: { sha256: 'x', format: 'vtt', status: 'completed', costUsd: 0.001, durationMs: 4238, injectionFlagged: false, actionable: true },
+    steps: [step('ingest', 0, 1), step('normalize', 1, 1), step('redact', 2, 3), step('screen', 5, 357, 'm'), step('extract', 362, 2859, 'm'), step('ground', 3221, 3), step('score', 3224, 0), step('theme', 3224, 1014, 'm'), step('route', 4238, 0), step('deliver', 4238, 0)],
+    turns: [], redactions: [], screen: null, insights: [], deliveries: [], notifications: [], newThemes: [],
+  } as unknown as ReplayRecording;
+
+  it('overlaps extract with screen and drops theme naming from the theme step', () => {
+    const r = fastPathTiming(rec);
+    const by = Object.fromEntries(r.steps.map((s) => [s.key, s]));
+    expect(by.extract!.durationMs).toBe(2859 - 357);
+    expect(by.theme!.durationMs).toBe(380);
+    expect(r.totalMs).toBe(4238 - 357 - (1014 - 380));
+    // Contiguous, ordered offsets.
+    for (let i = 1; i < r.steps.length; i++) expect(r.steps[i]!.offsetMs).toBe(r.steps[i - 1]!.offsetMs + (r.steps[i - 1]!.durationMs ?? 0));
+    expect(by.screen!.durationMs).toBe(357);
   });
 });

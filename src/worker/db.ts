@@ -67,7 +67,11 @@ export function publicRun(r: RunRow): Run {
 }
 
 export async function insertRun(db: D1Database, r: RunRow): Promise<void> {
-  await db
+  await insertRunStatement(db, r).run();
+}
+
+export function insertRunStatement(db: D1Database, r: RunRow): D1PreparedStatement {
+  return db
     .prepare(
       `INSERT INTO runs (id, workspace_id, file_id, filename, account_id, call_id, status, mode, mode_reason, sha256, created_at, finished_at, duration_ms, cost_usd, prompt_version,
         insight_count, dropped_count, review_count, injection_flagged, actionable, error, workflow_id, replay_of, format, screen, key_scope)
@@ -77,8 +81,7 @@ export async function insertRun(db: D1Database, r: RunRow): Promise<void> {
       r.id, r.workspaceId, r.fileId, r.filename, r.accountId, r.callId, r.status, r.mode, r.modeReason, r.sha256, r.createdAt, r.finishedAt, r.durationMs, r.costUsd, r.promptVersion,
       r.insightCount, r.droppedCount, r.reviewCount, r.injectionFlagged ? 1 : 0, r.actionable === null ? null : r.actionable ? 1 : 0, r.error, r.workflowId, r.replayOf, r.format,
       r.screen ? JSON.stringify(r.screen) : null, r.keyScope,
-    )
-    .run();
+    );
 }
 
 const RUN_COLUMNS: Record<string, string> = {
@@ -87,7 +90,8 @@ const RUN_COLUMNS: Record<string, string> = {
   screen: 'screen', createdAt: 'created_at', replayOf: 'replay_of', promptVersion: 'prompt_version',
 };
 
-export async function updateRunRow(db: D1Database, runId: string, patch: Record<string, unknown>, opts: { onlyIfLive?: boolean } = {}): Promise<number> {
+/** The UPDATE for a run-row patch (null when the patch names no known column). */
+export function updateRunStatement(db: D1Database, runId: string, patch: Record<string, unknown>, opts: { onlyIfLive?: boolean } = {}): D1PreparedStatement | null {
   const sets: string[] = [];
   const vals: unknown[] = [];
   for (const [k, v] of Object.entries(patch)) {
@@ -96,8 +100,14 @@ export async function updateRunRow(db: D1Database, runId: string, patch: Record<
     sets.push(`${col} = ?`);
     vals.push(typeof v === 'boolean' ? (v ? 1 : 0) : v !== null && typeof v === 'object' ? JSON.stringify(v) : v ?? null);
   }
-  if (!sets.length) return 0;
-  const res = await db.prepare(`UPDATE runs SET ${sets.join(', ')} WHERE id = ?${opts.onlyIfLive ? " AND mode = 'live'" : ''}`).bind(...vals, runId).run();
+  if (!sets.length) return null;
+  return db.prepare(`UPDATE runs SET ${sets.join(', ')} WHERE id = ?${opts.onlyIfLive ? " AND mode = 'live'" : ''}`).bind(...vals, runId);
+}
+
+export async function updateRunRow(db: D1Database, runId: string, patch: Record<string, unknown>, opts: { onlyIfLive?: boolean } = {}): Promise<number> {
+  const stmt = updateRunStatement(db, runId, patch, opts);
+  if (!stmt) return 0;
+  const res = await stmt.run();
   return res.meta.changes ?? 0;
 }
 

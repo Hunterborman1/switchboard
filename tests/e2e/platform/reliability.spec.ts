@@ -6,9 +6,10 @@ test('reliability: SLO cards with error budgets, charts, models, agent switch', 
   await open(page, '/ops/reliability');
   const slos = anchor(page, 'ops.slos').first();
   await expect(slos.locator('[data-slo]')).toHaveCount(5);
-  await expect(slos.locator('[data-slo="run_success"]')).toContainText('At risk');
+  await expect(slos.locator('[data-slo="run_success"]')).toContainText('Meeting');
   await expect(slos.getByText('Error budget left').first()).toBeVisible();
-  await expect(page.getByRole('table', { name: 'Models' })).toContainText('deepseek/deepseek-v4.1-flash');
+  await expect(page.getByRole('table', { name: 'Models' })).toContainText('Primary · fast tier');
+  await expect(page.getByRole('table', { name: 'Models' })).not.toContainText('deepseek/');
   await page.getByLabel('Agent', { exact: true }).selectOption('all');
   await expect(page).toHaveURL(/agentId=all/);
   await expect(anchor(page, 'ops.slos').first().locator('[data-slo]')).toHaveCount(9);
