@@ -20,8 +20,8 @@ export function money(v: number | null | undefined, opts: { est?: boolean; preci
   if (v === 0) return '$0';
   const abs = Math.abs(v);
   let s: string;
-  if (opts.precise) s = `$${v.toFixed(abs < 0.01 && abs > 0 ? 4 : abs < 1 ? 3 : 2)}`;
-  else if (abs < 0.01 && abs > 0) s = `$${v.toFixed(4)}`;
+  if (opts.precise) s = abs < 0.00005 ? 'under 1¢' : `$${v.toFixed(abs < 0.01 ? 4 : abs < 1 ? 3 : 2)}`;
+  else if (abs < 0.01) s = 'under 1¢';
   else if (abs < 1) s = `$${v.toFixed(2)}`;
   else if (abs < 100) s = `$${v.toFixed(2)}`;
   else s = `$${Math.round(v).toLocaleString('en-US')}`;

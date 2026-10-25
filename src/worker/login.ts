@@ -24,14 +24,13 @@ export function loginPage({ next, notice }: { next: string; notice?: string | nu
   .mark{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:14px;letter-spacing:-.01em}
   .mark span{color:var(--text-3);font-weight:400;letter-spacing:0}
   main{display:grid;place-items:center;padding:32px 16px}
-  .card{width:100%;max-width:400px;padding:32px;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-2);animation:enter .18s cubic-bezier(.2,0,0,1) both}
-  @keyframes enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  h1{font-size:24px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
+  .card{width:100%;max-width:400px;padding:32px;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-2)}
+  h1{font-size:24px;font-weight:600;line-height:1.25;letter-spacing:-.015em;color:var(--text)}
   p.lede{color:var(--text-2);margin:8px 0 24px}
   label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
   input{width:100%;height:40px;padding:0 12px;border-radius:6px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text);font:inherit;font-size:16px;outline:none;transition:border-color .12s}
   input:focus{border-color:var(--accent);outline:2px solid var(--accent);outline-offset:1px}
-  button{width:100%;height:40px;margin-top:16px;border:0;border-radius:6px;background:var(--accent);color:#fff;font:500 14px/1 "Inter Variable",Inter,sans-serif;cursor:pointer;transition:background .12s}
+  button{width:100%;height:40px;margin-top:16px;border:0;border-radius:6px;background:#008463;color:#fff;opacity:1;font:500 14px/1 "Inter Variable",Inter,sans-serif;cursor:pointer;transition:background .12s}
   button:hover{background:var(--accent-hover)} button:active{background:var(--accent-text)}
   button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .notice{margin-bottom:16px;padding:10px 12px;border-radius:6px;background:var(--danger-subtle);color:var(--danger);font-size:13px}

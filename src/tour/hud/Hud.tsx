@@ -485,7 +485,7 @@ export function ResumePill() {
   if (tour.status === 'active' || !slot) return null;
   const label = tour.status === 'idle' ? 'Start the walkthrough' : tour.finished ? 'Replay the walkthrough' : 'Resume walkthrough';
   const placement = slot.el.dataset.tourPillSlot === 'bar' ? 'bar' : 'rail';
-  const shortLabel = tour.status === 'idle' ? 'Walkthrough' : tour.finished ? 'Replay tour' : 'Resume tour';
+  const shortLabel = tour.status === 'idle' ? 'Tour' : tour.finished ? 'Replay' : 'Resume';
   return createPortal(
     <button
       type="button"

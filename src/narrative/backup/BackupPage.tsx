@@ -132,7 +132,7 @@ function Cost() {
     <>
       <div className="bk-stats">
         <Card>
-          {perCall != null ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.004} prefix="~$" decimals={3} label="per call (estimate)" tone="accent" note="live figures unavailable right now" />}
+          {perCall != null && perCall > 0 ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.004} prefix="~$" decimals={3} label="per call (estimate)" tone="accent" note="live figures unavailable right now" />}
         </Card>
         <Card>
           <Stat value={(perCall ?? 0.004) * 1000} prefix="$" decimals={2} label="per 1,000 calls" note="before volume discounts or caching" />

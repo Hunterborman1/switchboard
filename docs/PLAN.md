@@ -17,7 +17,7 @@ What changed from v1:
 
 ## 1. The experience in one paragraph
 
-The presentation is a walkthrough that runs on the real system. Short narrative "scenes" frame the problem: the black hole, the people involved, current state, future state.
+The presentation is a walkthrough that runs on the real system. Short narrative "scenes" frame the problem: where feedback gets lost, the people involved, current state, future state.
 Then the viewer steps into the product and *does* the work, chapter by chapter:
 1. Open the file picker and choose a call. One file is highlighted for the walkthrough, but any file can be picked, and each choice leads somewhere different.
 2. Watch it run through the real pipeline.
@@ -106,7 +106,7 @@ I'm building it rather than using a library. Shepherd and Intro.js are AGPL, and
 | # | Part | Layer | What happens | Time |
 |---|---|---|---|---|
 | 0 | **Cold open** | Narrative | A waveform resolves into the line "Every call is a signal." | 0:30 |
-| 1 | **The black hole** | Narrative | Feedback particles leave customer calls and most vanish. A counter reads "4 of 10 reach an owner" (labelled as an assumption). | 1:30 |
+| 1 | **Where feedback gets lost** | Narrative | Feedback particles leave customer calls and most vanish. A counter reads "4 of 10 reach an owner" (labelled as an assumption). | 1:30 |
 | 2 | **Why this option** | Narrative | Invoca turns *its customers'* calls into signals; this does the same for *Invoca's own* CSM calls. | 0:45 |
 | 3 | **Jobs to be Done** | Narrative (interactive) | Four persona cards (CSM, PM, VP Product, Sales/Competitive/Support). Click one to flip it and see its job, struggle and success measure. Includes the emotional job: be the advocate, not the stenographer. | 2:30 |
 | 4 | **Current → future state** | Narrative | An animated swimlane shows leaks at each handoff, then **morphs** into the future state as the leaks seal and the loop closes. | 2:30 |

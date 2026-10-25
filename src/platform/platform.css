@@ -71,18 +71,12 @@
 .ao-app [data-testid='console-main'] { min-width: 0; padding: 0; max-width: none; background: var(--ao-bg); }
 
 /* Brand + product switcher (the brand slot of the shared ConsoleShell). */
-.ao-app .ao-brand { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 4px 6px; color: var(--ao-text); text-decoration: none; }
-.ao-app .ao-brand:hover { opacity: 1; }
-.ao-app .ao-brand-mark { width: 20px; height: 20px; flex: none; border-radius: 5px; background: var(--ao-accent); display: grid; place-items: center; }
-.ao-app .ao-brand-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ao-app .ao-brand-tag { margin-left: auto; font-size: 12px; color: var(--ao-text-3); font-weight: 400; }
-.ao-app .ao-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px; border-radius: 6px; background: var(--ao-bg-muted); }
-.ao-app .ao-switch a { display: flex; align-items: center; justify-content: center; min-height: 26px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 500; color: var(--ao-text-2); text-decoration: none; white-space: nowrap; transition: background 120ms var(--ao-ease-enter), color 120ms var(--ao-ease-enter); }
-.ao-app .ao-switch a:hover { color: var(--ao-text); opacity: 1; }
-.ao-app .ao-switch a[aria-current='true'] { background: var(--ao-bg); color: var(--ao-text); box-shadow: var(--ao-shadow-1); }
+.ao-app .ao-mobile-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
 .ao-app .ao-brand-collapsed { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; }
 
-.ao-app .ao-footer { display: grid; gap: 8px; }
+.ao-app .ao-footer { display: grid; gap: 8px; justify-items: stretch; }
+.ao-app .ao-footer-switch { justify-self: center; width: 36px; height: 32px; }
+.ao-app .ao-footer-switch:hover { background: var(--ao-bg-muted); }
 .ao-app .ao-footer-note { margin: 0; font-size: 12px; color: var(--ao-text-3); line-height: 1.45; padding: 0 6px; }
 
 /* Top bar: section title on the left; data note and time zone on the right. Solid, sticky. */
@@ -399,6 +393,9 @@
 .ao-app .ao-filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; padding: 16px 20px; border-bottom: 1px solid var(--ao-border); }
 .ao-app .ao-filters .grow { flex: 1 1 240px; }
 .ao-app .ao-filters .grow .ao-input { width: 100%; }
+.ao-app .ao-checkfield { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; color: var(--ao-text); cursor: pointer; white-space: nowrap; }
+.ao-app .ao-checkfield input { width: 16px; height: 16px; margin: 0; accent-color: var(--ao-accent); }
+.ao-app .ao-checkfield:has(input:disabled) { color: var(--ao-text-3); cursor: default; }
 .ao-app .ao-lv { display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; }
 .ao-app .ao-lv.debug { background: var(--ao-bg-muted); color: var(--ao-text-2); }
 .ao-app .ao-lv.info { background: var(--ao-info-subtle); color: var(--ao-info); }
@@ -602,6 +599,7 @@
   .ao-app .ao-filters { gap: 10px; }
   .ao-app .ao-filters .ao-field { flex: 1 1 45%; }
   .ao-app .ao-filters .ao-field.grow { flex: 1 1 100%; }
+  .ao-app .ao-filters div.ao-field { flex: 1 1 100%; }
   .ao-app .ao-filters .ao-select, .ao-app .ao-filters .ao-input { width: 100%; }
   .ao-app .ao-logtable td.msg { max-width: none; white-space: normal; }
   .ao-app .ao-logtable td.msg span { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }

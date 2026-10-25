@@ -1,5 +1,5 @@
 /**
- * Part 1 · The insight black hole. A flat flow: where customer feedback comes from, each
+ * Part 1 · Where feedback gets lost. A flat flow: where customer feedback comes from, each
  * handoff it has to survive, and how much is lost at each one. Beat 0 shows the sources,
  * beat 1 reveals the handoffs one after another, beat 2 labels the figures as an assumption.
  */

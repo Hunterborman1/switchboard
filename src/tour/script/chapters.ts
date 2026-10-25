@@ -3,7 +3,7 @@ import type { Chapter, ChapterId } from '../engine/types';
 /** The parts of the talk, in order. targetSec sums to 25:00. */
 export const CHAPTERS: Chapter[] = [
   { id: 'cold-open', part: 0, title: 'Cold open', layer: 'narrative', objective: 'Set the frame', targetSec: 30 },
-  { id: 'black-hole', part: 1, title: 'The insight black hole', layer: 'narrative', objective: 'See where feedback goes today', targetSec: 75 },
+  { id: 'black-hole', part: 1, title: 'Where feedback gets lost', layer: 'narrative', objective: 'See where feedback goes today', targetSec: 75 },
   { id: 'why', part: 2, title: 'Why this option', layer: 'narrative', objective: 'Mirror Invoca back onto itself', targetSec: 35 },
   { id: 'jtbd', part: 3, title: 'Jobs to be done', layer: 'narrative', objective: 'Flip each card: who needs what', targetSec: 135 },
   { id: 'states', part: 4, title: 'Today and tomorrow', layer: 'narrative', objective: 'Find the leaks, then seal them', targetSec: 130 },

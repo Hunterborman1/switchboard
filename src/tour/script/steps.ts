@@ -35,7 +35,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'black-hole', chapter: 'black-hole', kind: 'scene', scene: 'black-hole', beats: 3, route: R.scene('black-hole'),
-    title: 'The insight black hole', body: 'Most of what customers tell CSMs never reaches the person who could act on it.', next: 'why',
+    title: 'Where feedback gets lost', body: 'Most of what customers tell CSMs never reaches the person who could act on it.', next: 'why',
   },
   {
     id: 'why', chapter: 'why', kind: 'scene', scene: 'why', beats: 3, route: R.scene('why'),

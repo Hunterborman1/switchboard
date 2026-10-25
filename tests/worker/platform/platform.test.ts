@@ -96,6 +96,13 @@ describe('reports over seeded history', () => {
     expect(run.runId).toBeTruthy();
     const byRun = await h.call(P(`/logs?runId=${encodeURIComponent(run.runId!)}&limit=200`));
     expect(byRun.json.data.total).toBe(t.json.data.logs.length);
+    // Routine web requests are hidden by default and come back with web=1 (or a trace/run filter).
+    const routine = (rows: { event: string; level: string }[]) => rows.filter((l) => l.event === 'http.request' && (l.level === 'info' || l.level === 'debug')).length;
+    const quiet = await h.call(P(`/logs?agentId=${SIGNAL_LOOP_AGENT_ID}&limit=200`));
+    expect(routine(quiet.json.data.rows)).toBe(0);
+    const withWeb = await h.call(P(`/logs?agentId=${SIGNAL_LOOP_AGENT_ID}&web=1&limit=200`));
+    expect(routine(withWeb.json.data.rows)).toBeGreaterThan(0);
+    expect(withWeb.json.data.total).toBeGreaterThan(quiet.json.data.total);
     expect((await h.call(P('/traces/doesnotexist'))).status).toBe(404);
     expect((await h.call(P('/traces/bad%20id!'))).status).toBe(400);
   });

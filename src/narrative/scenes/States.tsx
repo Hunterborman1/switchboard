@@ -11,7 +11,7 @@ import { DUR, EASE } from '../motion';
 
 const W = 1120;
 const LANE_H = 80;
-const LANES_NOW = ['Customer', 'CSM', 'Notes and CRM', 'Product', 'Leadership'];
+const LANES_NOW = ['Customer', 'CSM', 'Notes and Slack', 'Product', 'Leadership'];
 const LANES_NEXT = ['Customer', 'CSM', 'Signal Loop', 'Product', 'Leadership'];
 const LABEL_W = 132;
 const BW = 156;
@@ -19,15 +19,22 @@ const BH = 40;
 const H = LANES_NOW.length * LANE_H + 64;
 const laneY = (i: number) => i * LANE_H + LANE_H / 2;
 
-type NodeDef = { id: string; lane: number; x: number; now: string; next: string };
+/** `who` names the actor on the phone layout, where there are no lanes (two nodes share a lane). */
+type NodeDef = { id: string; lane: number; x: number; now: string; next: string; whoNow: string; whoNext: string };
+/*
+ * x positions leave room for every handoff label to sit just right of its marker. The one
+ * same-lane handoff (capture → route) has its marker right after the first box, so its label
+ * reads exactly like the others.
+ */
 const NODES: NodeDef[] = [
-  { id: 'customer', lane: 0, x: 240, now: 'Says it on a call', next: 'Says it on a call' },
-  { id: 'csm', lane: 1, x: 410, now: 'Hears it', next: 'Stays on the call' },
-  { id: 'capture', lane: 2, x: 580, now: 'Types notes later', next: 'Captures the quote' },
-  { id: 'route', lane: 2, x: 790, now: 'Maybe posts in Slack', next: 'Sends it to the owner' },
-  { id: 'pm', lane: 3, x: 950, now: 'Maybe sees it', next: 'Ticket with the quote' },
-  { id: 'vp', lane: 4, x: 1040, now: 'Hears at renewal', next: 'Sees the pattern' },
+  { id: 'customer', lane: 0, x: 240, now: 'Says it on a call', next: 'Says it on a call', whoNow: 'Customer', whoNext: 'Customer' },
+  { id: 'csm', lane: 1, x: 390, now: 'Hears it', next: 'Stays on the call', whoNow: 'CSM', whoNext: 'CSM' },
+  { id: 'capture', lane: 2, x: 550, now: 'Types notes later', next: 'Captures the quote', whoNow: 'Notes and CRM', whoNext: 'Signal Loop: capture' },
+  { id: 'route', lane: 2, x: 900, now: 'Maybe posts in Slack', next: 'Sends it to the owner', whoNow: 'Slack', whoNext: 'Signal Loop: routing' },
+  { id: 'pm', lane: 3, x: 990, now: 'Maybe sees it', next: 'Ticket with the quote', whoNow: 'Product', whoNext: 'Product' },
+  { id: 'vp', lane: 4, x: 1040, now: 'Hears at renewal', next: 'Sees the pattern', whoNow: 'Leadership', whoNext: 'Leadership' },
 ];
+const [CUSTOMER, CSM_NODE, , , , VP] = NODES as [NodeDef, NodeDef, NodeDef, NodeDef, NodeDef, NodeDef];
 
 const LEAKS = [
   { now: 'Never written down', next: 'Recorded and transcribed' },
@@ -48,7 +55,7 @@ function seg(a: NodeDef, b: NodeDef) {
   const bl = b.x - BW / 2;
   if (a.lane === b.lane) {
     const ax = a.x + BW / 2;
-    return { d: `M ${ax} ${ay} H ${bl - 2}`, mx: (ax + bl) / 2, my: ay, same: true };
+    return { d: `M ${ax} ${ay} H ${bl - 2}`, mx: ax + 18, my: ay, same: true };
   }
   const r = 8;
   const ax = Math.min(a.x, bl - 24);
@@ -57,8 +64,8 @@ function seg(a: NodeDef, b: NodeDef) {
 
 const LOOP_Y = LANES_NOW.length * LANE_H + 30;
 const LOOP_X = LABEL_W + 18;
-const LOOP_D = `M 1040 ${laneY(4) + BH / 2} V ${LOOP_Y - 10} Q 1040 ${LOOP_Y} 1030 ${LOOP_Y} H ${LOOP_X + 10} Q ${LOOP_X} ${LOOP_Y} ${LOOP_X} ${LOOP_Y - 10} V ${laneY(0) + 10} Q ${LOOP_X} ${laneY(0)} ${LOOP_X + 10} ${laneY(0)} H ${240 - BW / 2 - 3}`;
-const LOOP_CSM = `M 360 ${LOOP_Y} V ${laneY(1) + BH / 2 + 3}`;
+const LOOP_D = `M ${VP.x} ${laneY(4) + BH / 2} V ${LOOP_Y - 10} Q ${VP.x} ${LOOP_Y} ${VP.x - 10} ${LOOP_Y} H ${LOOP_X + 10} Q ${LOOP_X} ${LOOP_Y} ${LOOP_X} ${LOOP_Y - 10} V ${laneY(0) + 10} Q ${LOOP_X} ${laneY(0)} ${LOOP_X + 10} ${laneY(0)} H ${CUSTOMER.x - BW / 2 - 3}`;
+const LOOP_CSM = `M ${CSM_NODE.x - 50} ${LOOP_Y} V ${laneY(1) + BH / 2 + 3}`;
 
 function Swimlane({ beat }: { beat: number }) {
   const calm = useCalm();
@@ -112,8 +119,9 @@ function Swimlane({ beat }: { beat: number }) {
         const b = NODES[i + 1]!;
         const s = seg(a, b);
         const leak = LEAKS[i]!;
-        const lx = s.same ? s.mx : s.mx + 14;
-        const ly = s.same ? s.my - 28 : s.my + 4;
+        // Every label sits just right of its marker; on the same-lane handoff it rides just above the line.
+        const lx = s.mx + 14;
+        const ly = s.same ? s.my - 7 : s.my + 4;
         return (
           <motion.g key={`leak-${i}`} initial={false} animate={{ opacity: leaks ? 1 : 0 }} transition={t(DUR.ui, leaks && !future && !calm ? 0.1 + i * 0.12 : 0)}>
             <circle cx={s.mx} cy={s.my} r={8} fill={future ? '#008463' : '#FFFFFF'} stroke={future ? '#008463' : '#B42318'} strokeWidth={1.5} />
@@ -122,14 +130,14 @@ function Swimlane({ beat }: { beat: number }) {
             ) : (
               <path d={`M ${s.mx - 3} ${s.my - 3} l 6 6 M ${s.mx + 3} ${s.my - 3} l -6 6`} stroke="#B42318" strokeWidth={1.6} strokeLinecap="round" />
             )}
-            <text x={lx} y={ly} textAnchor={s.same ? 'middle' : 'start'} className="sc-states__leak" data-future={future ? 'true' : undefined}>
+            <text x={lx} y={ly} className="sc-states__leak" data-future={future ? 'true' : undefined}>
               {future ? leak.next : leak.now}
             </text>
           </motion.g>
         );
       })}
       {/* the sixth leak: nobody tells the customer */}
-      <motion.text x={240 + BW / 2 + 16} y={laneY(0) + 4.5} className="sc-states__leak" initial={false} animate={{ opacity: leaks && !future ? 1 : 0 }} transition={t(DUR.ui, leaks && !future && !calm ? 0.7 : 0)}>
+      <motion.text x={CUSTOMER.x + BW / 2 + 16} y={laneY(0) + 4.5} className="sc-states__leak" initial={false} animate={{ opacity: leaks && !future ? 1 : 0 }} transition={t(DUR.ui, leaks && !future && !calm ? 0.7 : 0)}>
         Customer never hears back
       </motion.text>
       {/* the loop closes */}
@@ -162,7 +170,7 @@ export function States({ beat }: { beat: number }) {
         <ol className="sc-states__list" aria-hidden="true">
           {NODES.map((n, i) => (
             <li key={n.id} data-future={b >= 2}>
-              <b>{b >= 2 ? LANES_NEXT[n.lane] : LANES_NOW[n.lane]}</b>
+              <b>{b >= 2 ? n.whoNext : n.whoNow}</b>
               <span>{b >= 2 ? n.next : n.now}</span>
               {i < LEAKS.length && b >= 1 && (
                 <em>

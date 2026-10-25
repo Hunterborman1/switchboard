@@ -8,7 +8,7 @@ import type { MouseEvent, ReactNode } from 'react';
 import { Arrow, Beats, Button, Mark } from './components';
 
 export type SceneProps = {
-  /** Chapter title, e.g. "The insight black hole". */
+  /** Chapter title, e.g. "Where feedback gets lost". */
   label: string;
   /** Which part of the talk this belongs to, e.g. "The problem". */
   group?: string;

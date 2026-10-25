@@ -14,11 +14,11 @@ import { Callout, Drawer, Empty, ErrorState, PageHead, Panel, Seg, SourceChip } 
 const LEVELS = ['debug', 'info', 'warn', 'error'] as const;
 const LEVEL_LABEL: Record<string, string> = { debug: 'Debug', info: 'Info', warn: 'Warning', error: 'Error' };
 export const levelLabel = (l: string) => LEVEL_LABEL[l] ?? l;
-const FILTER_LABEL: Record<string, string> = { agentId: 'Agent', level: 'Level', component: 'Area', traceId: 'Trace', runId: 'Run', q: 'Search', source: 'Data' };
+const FILTER_LABEL: Record<string, string> = { agentId: 'Agent', level: 'Level', component: 'Area', traceId: 'Trace', runId: 'Run', q: 'Search', source: 'Data', web: 'Web requests' };
 const COMPONENTS = ['api', 'workflow', 'ai', 'delivery', 'budget', 'gumloop', 'telemetry', 'gate'];
 /** Plain names for the log components (the raw key stays in the URL and the detail panel). */
 export const AREA_LABEL: Record<string, string> = { api: 'API', workflow: 'Workflow', ai: 'AI call', delivery: 'Delivery', budget: 'Budget', gumloop: 'Gumloop', telemetry: 'Usage tracking', gate: 'Sign-in' };
-const FILTER_KEYS = ['agentId', 'level', 'component', 'traceId', 'runId', 'q', 'source'] as const;
+const FILTER_KEYS = ['agentId', 'level', 'component', 'traceId', 'runId', 'q', 'source', 'web'] as const;
 
 async function getJson<T>(path: string): Promise<{ data: T; dataAsOf: string }> {
   const hint = (() => {
@@ -90,7 +90,11 @@ export function Logs() {
   const total = pages[0]?.total ?? null;
   const next = pages[pages.length - 1]?.nextCursor ?? null;
   const names = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.profile.shortName]));
-  const active = FILTER_KEYS.filter((k) => params.get(k));
+  const active = FILTER_KEYS.filter((k) => params.get(k) && k !== 'web');
+  // Routine web requests (successful page and API calls) are hidden unless asked for; a trace,
+  // run or API-area filter always shows them (the same rule as the API: includesWebRequests).
+  const webForced = !!params.get('traceId') || !!params.get('runId') || params.get('component') === 'api';
+  const webOn = webForced || params.get('web') === '1';
 
   const yourLastRun = async () => {
     setLastRun({ state: 'loading' });
@@ -114,7 +118,12 @@ export function Logs() {
       <PageHead
         title="Logs and traces"
         sub="Every request, workflow step, AI call, delivery and budget check from every agent. Lines from the same run share a trace. Signal Loop’s lines are live; the rest is simulated history."
-        meta={<span>{total != null ? `${f.int(total)} matching lines` : 'Counting…'} · updated {f.ago(asOf)}</span>}
+        meta={
+          <span>
+            {total != null ? `${f.int(total)} matching lines` : 'Counting…'}
+            {webOn ? '' : ', routine web requests hidden'} · updated {f.ago(asOf)}
+          </span>
+        }
         actions={
           <button type="button" className="ao-btn primary" onClick={yourLastRun} {...tourAnchor('ops.logs.trace')} disabled={lastRun.state === 'loading'}>
             <IconTrace /> {lastRun.state === 'loading' ? 'Finding your run…' : 'Your last run'}
@@ -194,6 +203,10 @@ export function Logs() {
               ]}
             />
           </div>
+          <label className="ao-checkfield" title={webForced ? 'A trace, a run or the API area always includes its web requests.' : 'Successful page and API requests. Failed requests always show.'}>
+            <input type="checkbox" checked={webOn} disabled={webForced} onChange={(e) => set('web', e.target.checked ? '1' : null)} data-testid="logs-include-web" />
+            <span>Include web requests</span>
+          </label>
           <button type="submit" className="ao-btn">
             Search
           </button>

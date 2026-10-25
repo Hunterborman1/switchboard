@@ -27,7 +27,6 @@ import {
   IconChannels,
   IconGauge,
   IconLoop,
-  IconOps,
   IconReview,
   IconRoute,
   IconRuns,
@@ -93,7 +92,7 @@ function Footer({ collapsed }: { collapsed: boolean }) {
       {collapsed ? (
         <Hint label="Agent Ops: logs, traces, usage and cost for every agent" placement="right">
           <Link to={AGENT_OPS_HREF} className="sl-footer-item is-icon" {...tourAnchor('nav.agentops')} aria-label="Open Agent Ops">
-            <IconOps size={16} />
+            <ProductMark product="agent-ops" size={20} />
           </Link>
         </Hint>
       ) : (

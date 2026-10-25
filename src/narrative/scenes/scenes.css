@@ -65,7 +65,7 @@
   .sc-cold__becomes dl > div + div { border-top: 1px solid var(--n-border); }
 }
 
-/* ---------------------------------------------------------------- 1 black hole */
+/* ---------------------------------------------------------------- 1 where feedback gets lost (id black-hole) */
 .sc-bh__flow { display: grid; gap: var(--n-s-5); padding: var(--n-s-5); border: 1px solid var(--n-border); border-radius: var(--n-r-md); }
 .sc-bh__sources { display: flex; align-items: center; gap: var(--n-s-3); flex-wrap: wrap; }
 .sc-bh__sources ul { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--n-s-2); flex-wrap: wrap; }
@@ -286,6 +286,9 @@
 /* ---------------------------------------------------------------- 16 scorecard */
 .sc-score__panels { display: grid; grid-template-columns: 1fr 1fr; gap: var(--n-s-4); }
 .sc-score__panel { display: grid; gap: var(--n-s-4); align-content: start; }
+.sc-score__empty { display: grid; gap: var(--n-s-3); max-width: 720px; }
+.sc-score__empty .n-body { margin: 0; }
+.sc-score__empty .sc-score__actions { margin-top: var(--n-s-1); }
 .sc-score__h { margin: 0; font-size: var(--n-text-md); font-weight: 600; color: var(--n-text); }
 .sc-score__stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--n-s-5); }
 .sc-score .n-stat__value--text { font-size: var(--n-text-xl); color: var(--n-text-2); }

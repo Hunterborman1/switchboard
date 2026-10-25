@@ -6,6 +6,7 @@ import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNo
 import { motion, AnimatePresence } from 'motion/react';
 import { useCalm, useCountUp } from './hooks';
 import { DUR, EASE, reveal, revealReduced, stagger } from './motion';
+import { ProductMark } from '../uis/ProductSwitcher';
 
 const cx = (...c: Array<string | false | null | undefined>) => c.filter(Boolean).join(' ');
 
@@ -13,12 +14,7 @@ const cx = (...c: Array<string | false | null | undefined>) => c.filter(Boolean)
 
 /** The Signal Loop mark: a flat accent tile with four waveform bars. */
 export function LoopGlyph({ size = 24 }: { size?: number; live?: boolean }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect width="24" height="24" rx="6" fill="#008463" />
-      <path d="M7 10.5v3M10.33 8v8M13.67 6.5v11M17 9.5v5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
+  return <ProductMark product="signal-loop" size={size} />;
 }
 
 export function Mark({ sub, href, size = 24 }: { sub?: string; href?: string; size?: number }) {

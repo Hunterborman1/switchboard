@@ -27,7 +27,7 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 > This is a thirteen-minute QBR. Twenty seconds in the middle of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.
 > Invoca turns calls into signals for its customers. I built the same loop for Invoca's own customer calls, and then I built the platform I'd use to operate it.
 
-## Part 1 · The insight black hole (1:15)
+## Part 1 · Where feedback gets lost (1:15)
 
 **Click:** → to step 2 (the three handoffs fill in, one after another), → to step 3 (the total and the assumption label).
 

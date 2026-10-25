@@ -13,6 +13,7 @@ import { ConsoleShell, type ConsoleNavGroup } from '../uis/ConsoleShell';
 import { TimezoneProvider, useTimezone } from '../uis/TimezoneContext';
 import type { ConsoleTimezone } from '../uis/format';
 import { TourPillSlot } from '../tour/hud/pillSlot';
+import { ProductMark, ProductSwitcher } from '../uis/ProductSwitcher';
 import type { PlatformMeta } from '../worker/platform/types';
 import { useApi } from './lib/api';
 import { day, dayYear } from './lib/format';
@@ -59,43 +60,15 @@ const CRUMB: Record<string, { label: string; group?: string; groupTo?: string }>
   runbook: { label: 'Runbook', group: 'Agent registry', groupTo: '/ops/agents' },
 };
 
-function Mark() {
-  return (
-    <span className="ao-brand-mark" aria-hidden="true">
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round">
-        <circle cx="4" cy="4" r="1.6" />
-        <circle cx="12" cy="4" r="1.6" />
-        <circle cx="4" cy="12" r="1.6" />
-        <circle cx="12" cy="12" r="1.6" fill="#fff" />
-        <path d="M5.6 4h4.8M4 5.6v4.8M5.6 12h4.8M12 5.6v4.8" />
-      </svg>
-    </span>
-  );
-}
-
-/** Product name + switcher. Signal Loop and Agent Ops share this shell; the switcher moves between them. */
+/** Product name + switcher: the same component as Signal Loop's sidebar, so the two shells match. */
 function Brand() {
-  return (
-    <>
-      <Link to="/ops" className="ao-brand" aria-label="Agent Ops home">
-        <Mark />
-        <span className="ao-brand-name">Agent Ops</span>
-        <span className="ao-brand-tag">Demo</span>
-      </Link>
-      <nav className="ao-switch" aria-label="Product">
-        <Link to="/app">Signal Loop</Link>
-        <Link to="/ops" aria-current="true">
-          Agent Ops
-        </Link>
-      </nav>
-    </>
-  );
+  return <ProductSwitcher current="agent-ops" caption="Prepared for Invoca" hrefs={{ 'signal-loop': '/app', 'agent-ops': '/ops' }} />;
 }
 
 function BrandCollapsed() {
   return (
     <Link to="/ops" className="ao-brand-collapsed" aria-label="Agent Ops home" title="Agent Ops">
-      <Mark />
+      <ProductMark product="agent-ops" size={24} />
     </Link>
   );
 }
@@ -104,7 +77,13 @@ function Footer({ collapsed }: { collapsed: boolean }) {
   return (
     <div className="ao-footer">
       <TourPillSlot placement="rail" compact={collapsed} />
-      {collapsed ? null : <p className="ao-footer-note">Every agent reports here. Signal Loop is one of them.</p>}
+      {collapsed ? (
+        <Link to="/app" className="ao-brand-collapsed ao-footer-switch" aria-label="Open Signal Loop" title="Signal Loop">
+          <ProductMark product="signal-loop" size={20} />
+        </Link>
+      ) : (
+        <p className="ao-footer-note">Every agent reports here. Signal Loop is one of them.</p>
+      )}
     </div>
   );
 }
@@ -238,7 +217,12 @@ function ShellInner({ children }: { children?: ReactNode }) {
           storageKey="ao-rail-collapsed"
           brand={<Brand />}
           brandCollapsed={<BrandCollapsed />}
-          mobileBrand={<span style={{ fontWeight: 600 }}>Agent Ops</span>}
+          mobileBrand={
+            <span className="ao-mobile-brand">
+              <ProductMark product="agent-ops" size={20} />
+              Agent Ops
+            </span>
+          }
           groups={GROUPS}
           footer={<Footer collapsed={false} />}
           footerCollapsed={<Footer collapsed />}

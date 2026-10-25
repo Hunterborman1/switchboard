@@ -7,6 +7,7 @@ import { tourApi } from '../../tour/api';
 import { SceneHead } from '../components';
 import { useCalm } from '../hooks';
 import { DUR, EASE } from '../motion';
+import { usdPrecise } from '../../shared/format';
 
 // Months 0–3 are the rollout scene's own phases (discovery, shadow, champions, team), so
 // nothing here promises "every call" before shadow mode and champions have earned it.
@@ -44,8 +45,8 @@ export function Horizon({ beat }: { beat: number }) {
   const calm = useCalm();
   const perCall = usePerCallCost();
   const miles = MILES.map((m) =>
-    m.title === EVERY_CALL && perCall != null
-      ? { ...m, body: `Read calls straight from the recorder and CRM. At about $${perCall.toFixed(4)} of AI per call (measured on this build), reading every call beats a sample.` }
+    m.title === EVERY_CALL && perCall != null && perCall > 0
+      ? { ...m, body: `Read calls straight from the recorder and CRM. At about ${usdPrecise(perCall)} of AI per call (measured on this build), reading every call beats a sample.` }
       : m,
   );
   return (

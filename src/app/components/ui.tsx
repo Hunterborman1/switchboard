@@ -144,6 +144,7 @@ export const useToast = () => useContext(ToastCtx);
 
 function shortUsd(usd: number): string {
   if (Number.isInteger(usd)) return `$${usd.toLocaleString('en-US')}`;
+  if (Math.abs(usd) < 0.01) return 'under 1¢';
   return `$${usd.toFixed(2)}`;
 }
 

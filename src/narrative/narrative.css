@@ -115,6 +115,12 @@
 }
 /* The keyed stage inside a persistent scene: only this cross-fades between scenes. */
 .n-scene__stage { grid-area: 1 / 1; display: grid; align-content: start; min-width: 0; }
+/* Desktop: a scene shorter than the space between the bars sits in the middle of it (a little
+   above true centre), not stuck to the top. The minimum top padding still applies, the stage
+   still grows downward, and the bars never move. Phones keep the top-aligned flow. */
+@media (min-width: 761px) and (min-height: 600px) {
+  .n-scene__body { align-content: safe center; padding-bottom: calc(var(--n-s-6) + 4vh); }
+}
 .n-scene__skeleton { display: grid; justify-items: center; gap: 12px; padding-top: 18vh; color: var(--n-text-3); font-size: var(--n-text-sm); }
 
 /* Bottom bar: progress line, keyboard hints, Back / Next. */
