@@ -502,3 +502,9 @@
   .footerBtns { flex: 1; }
   .footerBtns button { flex: 1; min-height: 44px; }
 }
+
+/* A duplicate re-upload in the library reads as distinct from the recommended original. */
+.dupTag {
+  font-weight: var(--fw-medium);
+  color: var(--cn-warning-txt);
+}

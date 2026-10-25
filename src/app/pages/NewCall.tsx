@@ -320,7 +320,7 @@ export default function NewCallPage() {
         </div>
 
         <aside className={styles.side}>
-          <Panel title="What happens next" sub="Ten durable steps. Every one writes a record the Run view animates from.">
+          <Panel title="What happens next" sub="Ten steps on a fast path, with a durable Workflow to resume from the last completed step if one fails. Every step writes a record the Run view animates from.">
             <ol className={styles.steps}>
               {STEP_KEYS.map((k, i) => (
                 <li key={k} className={styles.step}>

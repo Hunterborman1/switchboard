@@ -12,7 +12,7 @@ import type { RunDetail } from '../../shared/contracts';
 import { useTour } from '../../tour/engine/TourProvider';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type AgentImpact, type LogEntry, type Span } from '../../shared/platform-contracts';
 
-type OpsFacts = { logLines: number; spans: number; hours: number | null; ok: boolean };
+type OpsFacts = { logLines: number; spans: number; traces: number; hours: number | null; ok: boolean };
 
 async function pget<T>(path: string): Promise<T> {
   const r = await fetch(`${PLATFORM_API_BASE}${path}`, { credentials: 'same-origin', headers: { accept: 'application/json' } });
@@ -21,6 +21,11 @@ async function pget<T>(path: string): Promise<T> {
   return b && typeof b === 'object' && 'data' in (b as object) ? (b as { data: T }).data : (b as T);
 }
 
+/**
+ * The Agent Ops line counts exactly what the trace pages show: for each of the viewer's runs,
+ * its trace's spans and its correlated log lines (the trace endpoint returns both). With one
+ * run this matches that run's trace page; with several it is their sum, and says so.
+ */
 async function loadOps(runIds: string[]): Promise<OpsFacts> {
   let logLines = 0;
   let spans = 0;
@@ -33,13 +38,14 @@ async function loadOps(runIds: string[]): Promise<OpsFacts> {
   } catch {
     /* platform not reachable */
   }
+  // One trace per run: the trace its run-scoped log lines carry (the same one ch8 opens).
   const traces = new Set<string>();
   await Promise.all(
     runIds.slice(0, 8).map(async (id) => {
       try {
         const l = await pget<{ rows: LogEntry[] }>(`/logs?runId=${encodeURIComponent(id)}`);
-        logLines += l.rows.length;
-        l.rows.forEach((r) => traces.add(r.traceId));
+        const t = l.rows.find((r) => r.runId === id)?.traceId ?? l.rows[0]?.traceId;
+        if (t) traces.add(t);
         ok = true;
       } catch {
         /* ignore */
@@ -47,16 +53,17 @@ async function loadOps(runIds: string[]): Promise<OpsFacts> {
     }),
   );
   await Promise.all(
-    [...traces].slice(0, 8).map(async (t) => {
+    [...traces].map(async (t) => {
       try {
-        const s = await pget<{ spans: Span[] }>(`/traces/${encodeURIComponent(t)}`);
+        const s = await pget<{ spans: Span[]; logs: LogEntry[] }>(`/traces/${encodeURIComponent(t)}`);
         spans += s.spans.length;
+        logLines += s.logs.length;
       } catch {
         /* ignore */
       }
     }),
   );
-  return { logLines, spans, hours, ok };
+  return { logLines, spans, traces: traces.size, hours, ok };
 }
 
 type Tile = { v?: number; s?: string; text?: string; l: string };
@@ -80,6 +87,9 @@ export function ScorecardScene() {
   const [sb, setSb] = useState<Scoreboard | null>(null);
   const [ops, setOps] = useState<OpsFacts | null>(null);
   const [fetchedRun, setFetchedRun] = useState<RunDetail | null>(null);
+  // Every run in the workspace, so grounded quotes and redactions add up the same way as
+  // insights and routed counts (all runs), never one run against a sum of three.
+  const [allRuns, setAllRuns] = useState<RunDetail[] | null>(null);
   const c = tour.ctx.counters;
   const run = tour.ctx.run ?? fetchedRun;
 
@@ -103,6 +113,9 @@ export function ScorecardScene() {
       setSb(s);
       const ids = [...new Set([...(tour.ctx.runId ? [tour.ctx.runId] : []), ...s.runIds])];
       loadOps(ids).then((o) => alive && setOps(o));
+      Promise.all(s.runIds.slice(0, 12).map((id) => tourApi.run(id).catch(() => null))).then((rs) => {
+        if (alive) setAllRuns(rs.filter((r): r is RunDetail => r != null));
+      });
     });
     return () => {
       alive = false;
@@ -126,13 +139,14 @@ export function ScorecardScene() {
     ...(c.shipped > 0 ? [{ v: c.shipped, l: c.shipped === 1 ? 'ticket shipped' : 'tickets shipped' }] : []),
     { v: tour.ctx.explored.length, l: 'scenarios explored', s: ' / 6' },
   ];
-  const ev = run ? run.insights.flatMap((i) => i.evidence) : [];
+  const pool = allRuns && allRuns.length ? allRuns : run ? [run] : [];
+  const ev = pool.flatMap((r) => r.insights.flatMap((i) => i.evidence));
   const grounded = ev.filter((e) => e.method !== 'failed').length;
-  const redacted = run ? run.redactions.reduce((a, r) => a + r.count, 0) : 0;
+  const redacted = pool.reduce((a, r) => a + r.redactions.reduce((b, x) => b + x.count, 0), 0);
   const sysAll: (Tile | null)[] = [
     { v: sb?.insights ?? 0, l: sb?.insights === 1 ? 'insight extracted' : 'insights extracted' },
     sb && sb.dropped > 0
-      ? { v: sb.dropped, l: sb.dropped === 1 ? 'made-up quote rejected' : 'made-up quotes rejected' }
+      ? { v: sb.dropped, l: sb.dropped === 1 ? 'quote not found in the transcript, dropped' : 'quotes not found in the transcript, dropped' }
       : ev.length > 0
         ? { v: grounded, s: ` / ${ev.length}`, l: 'quotes grounded in the transcript' }
         : null,
@@ -196,7 +210,9 @@ export function ScorecardScene() {
         <p className="n-body">
           {ops && ops.ok ? (
             <>
-              Your session generated <b>{ops.logLines.toLocaleString()}</b> log lines across <b>{ops.spans.toLocaleString()}</b> spans
+              {ops.traces > 1 ? <>Your {ops.traces} runs produced </> : <>Your run produced </>}
+              <b>{ops.logLines.toLocaleString()}</b> correlated log lines and <b>{ops.spans.toLocaleString()}</b> spans
+              {ops.traces > 1 ? ' across their traces' : ' in its trace'}
               {ops.hours != null ? (
                 <>
                   . Signal Loop has returned about <b>{Math.round(ops.hours).toLocaleString()} hours</b> this period (baselines are labelled assumptions).

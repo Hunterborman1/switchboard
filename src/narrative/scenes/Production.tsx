@@ -13,7 +13,7 @@ const ROWS = [
   { concern: 'State', poc: 'D1', prod: 'Neon Postgres' },
   { concern: 'Similarity', poc: 'Workers AI embeddings + Vectorize', prod: 'pgvector on Neon' },
   { concern: 'Analytics at volume', poc: 'D1 rollups', prod: 'ClickHouse + dbt marts' },
-  { concern: 'Ingestion', poc: 'Upload + file library', prod: 'dlt: Gong · Zoom · Salesforce · Zendesk' },
+  { concern: 'Ingestion', poc: 'Upload + file library', prod: 'dlt from the team’s recorder and CRM (e.g. Gong, Zoom, Salesforce, Zendesk)' },
   { concern: 'Stateful workers', poc: '—', prod: 'Render · streaming speech-to-text' },
 ];
 
@@ -30,7 +30,7 @@ export function Production({ beat }: { beat: number }) {
             </Display>
           </Reveal.Item>
           <Reveal.Item>
-            <Lede>{moved ? 'Each piece maps one-to-one. The contracts, prompts, grounding and evals move unchanged; only the hosting changes.' : 'The POC runs entirely on Cloudflare: one Worker, a durable Workflow per call, D1, Vectorize and Workers AI embeddings.'}</Lede>
+            <Lede>{moved ? 'Each piece maps one-to-one. The contracts, prompts, grounding and evals move unchanged; only the hosting changes.' : 'The POC runs entirely on Cloudflare: one Worker, a fast path per call with a durable Workflow fallback, D1, Vectorize and Workers AI embeddings.'}</Lede>
           </Reveal.Item>
         </Reveal>
       </div>

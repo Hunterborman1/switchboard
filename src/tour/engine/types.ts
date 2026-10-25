@@ -6,6 +6,7 @@ import type { AnchorId } from '../anchors';
 
 export const TOUR_PATHS = ['main', 'clean', 'messy', 'security', 'negative', 'privacy'] as const;
 export type TourPath = (typeof TOUR_PATHS)[number];
+export type FloatCorner = 'bottom-left' | 'bottom-right' | 'top-right' | 'top-left';
 
 export const PATH_LABELS: Record<TourPath, string> = {
   main: 'Main story',
@@ -79,11 +80,15 @@ export type OpsData = {
   live: UsageReport['live'] | null;
   traceId: string | null;
   logCount: number | null;
+  /** One sentence explaining the trace's error spans (e.g. retried deliveries), or null when there are none. */
+  traceErrors?: string | null;
 };
 
 export type TourCtx = {
   path: TourPath;
   fileId: string | null;
+  /** Format of the picked file (vtt, txt, md, eml, chat): the intro copy depends on it, not just the path. */
+  fileFormat?: string | null;
   runId: string | null;
   themeId: string | null;
   explored: TourPath[];
@@ -139,6 +144,8 @@ export type Step = {
   /** Extra anchors that get a soft ring (e.g. the recommended file inside the picker). */
   highlight?: AnchorId[];
   placement?: Placement;
+  /** When no side has room and the callout floats: the corner to try first (default: least overlap, bottom-left first). */
+  floatCorner?: FloatCorner;
   title: Copy;
   /** ≤ 20 words: the WHY. */
   body: Copy;

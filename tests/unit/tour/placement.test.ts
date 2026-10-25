@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { floatPosition, planPlacement } from '../../../src/tour/engine/placement';
+import { floatPosition, MIN_W, planPlacement, SIDE_MIN_W } from '../../../src/tour/engine/placement';
 
 const VW = 1440;
 const VH = 900;
@@ -43,8 +43,27 @@ describe('tour callout placement', () => {
 
   it('docks beside a large dialog when the gutter is wide enough', () => {
     const dialog = { x: 328, y: 112, w: 1056, h: 680 };
-    const p = planPlacement(dialog, 'right', 300, VW, VH, 0);
+    // Dialog gutters may use the narrower card (TourOverlay passes MIN_W for dialog targets).
+    const p = planPlacement(dialog, 'right', 300, VW, VH, 0, MIN_W);
     expect(p?.side).toBe('left');
     expect(p!.width).toBeLessThanOrEqual(328);
+  });
+
+  it('rejects a side gap narrower than the card (ch4.jira: 298 px between list and preview)', () => {
+    // Preview panel at x=604 with the rail at 271: 317 px of room on the left, card would be 298 px.
+    const preview = { x: 604, y: 56, w: 820, h: 790 };
+    expect(planPlacement(preview, 'left', 220, VW, VH, RAIL)).toBeNull();
+    // With room for the minimum card it docks beside.
+    const roomy = { x: RAIL + 16 + SIDE_MIN_W + 18, y: 56, w: 600, h: 790 };
+    const p = planPlacement(roomy, 'left', 220, VW, VH, RAIL);
+    expect(p?.side).toBe('left');
+    expect(p!.width).toBeGreaterThanOrEqual(SIDE_MIN_W);
+  });
+
+  it('honours the preferred float corner (ch4.sankey keeps off the bottom-left node)', () => {
+    const panel = { x: 296, y: 140, w: 1128, h: 620 };
+    const pos = floatPosition(panel, 380, 220, VW, VH, RAIL, 'top-left');
+    expect(pos.left).toBe(RAIL + 16);
+    expect(pos.top).toBeLessThan(140);
   });
 });

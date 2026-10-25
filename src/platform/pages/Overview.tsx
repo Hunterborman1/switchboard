@@ -126,7 +126,7 @@ export function Overview() {
               value: <><span className="ao-est">~</span>{f.compactMoney(t.valueUsd)}</>,
               sub: (
                 <span className="ao-kpi-sub">
-                  {t.roiMultiple == null ? null : <span>~{f.multiple(t.roiMultiple)} metered AI spend · excl. build & seats ·</span>}
+                  {t.roiMultiple == null ? null : <span>~{f.multiple(t.roiMultiple)} metered AI spend · excl. build & seats</span>}
                   <button type="button" className="ao-link" style={{ fontSize: 'inherit' }} onClick={() => setAssumptionsOpen(true)}>hours × ${d.assumptions.loadedHourlyUsd}/h · assumptions</button>
                 </span>
               ),

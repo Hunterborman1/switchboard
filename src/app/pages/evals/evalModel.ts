@@ -1,5 +1,6 @@
 import type { EvalRun, InsightType } from '../../../shared/contracts';
 import { INSIGHT_TYPES } from '../../../shared/contracts';
+import { pctText, ptsText, rateOf } from '../../../shared/format';
 
 export type Metric = EvalRun['metrics'][number];
 
@@ -86,9 +87,12 @@ export function f1(run: EvalRun): number | null {
 
 export type GateCheck = { id: string; label: string; detail: string; ok: boolean; info?: boolean };
 
-const pctOf = (v: number | null | undefined) => (v == null ? '—' : `${(v * 100).toFixed(1)}%`);
+/** Every percent on the Evals page goes through shared/format (exact fraction when recorded). */
+const pctOf = (v: number | null | undefined) => pctText(v, 1);
 const frac = (m: Metric | null) => (m?.numerator != null && m.denominator != null ? ` (${m.numerator}/${m.denominator})` : '');
-const pts = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v * 100).toFixed(1)} pts`;
+const pts = (v: number) => ptsText(v, 1);
+/** A metric's exact rate (numerator/denominator when recorded). */
+const rate = (m: Metric | null | undefined) => rateOf(m);
 
 /**
  * The promotion gate, read from the candidate run's own recorded rules (the same rules
@@ -114,12 +118,12 @@ export function gateChecks(candidate: EvalRun, current: EvalRun): GateCheck[] {
   const signed = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v * 100).toFixed(0)}%`;
   const checks: GateCheck[] = [
     { id: 'schema', label: 'Every golden file runs to completion', detail: `${failures?.numerator ?? 0} of ${candidate.files} runs failed`, ok: ok(failures) },
-    { id: 'precision', label: `Precision ≥ ${P?.threshold != null ? (P.threshold * 100).toFixed(0) : 85}% (all types)`, detail: `${pctOf(P?.value)}${frac(P)}`, ok: ok(P) },
-    { id: 'recall', label: `Recall ≥ ${R?.threshold != null ? (R.threshold * 100).toFixed(0) : 80}% (all types)`, detail: `${pctOf(R?.value)}${frac(R)}`, ok: ok(R) },
-    { id: 'l5', label: `Recall on level-5 chaos files ≥ ${L5?.threshold != null ? (L5.threshold * 100).toFixed(0) : 70}%`, detail: `${pctOf(L5?.value)}${frac(L5)}`, ok: ok(L5) },
-    { id: 'grounding', label: 'Grounding rate holds', detail: `${pctOf(g?.value)}${frac(g)} · threshold ${g ? thresholdLabel(g) : '—'}`, ok: ok(g) },
-    { id: 'negative', label: 'No invented work on nothing-actionable files', detail: `false-positive rate ${pctOf(fp?.value)}${frac(fp)}`, ok: ok(fp) },
-    { id: 'safety', label: 'Injection flagged · zero PHI reached the model', detail: `injection ${pctOf(inj?.value)} · PHI leakage ${pctOf(phi?.value)}`, ok: ok(inj) && ok(phi) },
+    { id: 'precision', label: `Precision ≥ ${P?.threshold != null ? (P.threshold * 100).toFixed(0) : 85}% (all types)`, detail: `${pctOf(rate(P))}${frac(P)}`, ok: ok(P) },
+    { id: 'recall', label: `Recall ≥ ${R?.threshold != null ? (R.threshold * 100).toFixed(0) : 80}% (all types)`, detail: `${pctOf(rate(R))}${frac(R)}`, ok: ok(R) },
+    { id: 'l5', label: `Recall on level-5 chaos files ≥ ${L5?.threshold != null ? (L5.threshold * 100).toFixed(0) : 70}%`, detail: `${pctOf(rate(L5))}${frac(L5)}`, ok: ok(L5) },
+    { id: 'grounding', label: 'Grounding rate holds', detail: `${pctOf(rate(g))}${frac(g)} · threshold ${g ? thresholdLabel(g) : '—'}`, ok: ok(g) },
+    { id: 'negative', label: 'No invented work on nothing-actionable files', detail: `false-positive rate ${pctOf(rate(fp))}${frac(fp)}`, ok: ok(fp) },
+    { id: 'safety', label: 'Injection flagged · zero PHI reached the model', detail: `injection ${pctOf(rate(inj))} · PHI leakage ${pctOf(rate(phi))}`, ok: ok(inj) && ok(phi) },
   ];
   if (regs.length) {
     checks.push({
@@ -149,10 +153,14 @@ export function gateVerdict(candidate: EvalRun, current: EvalRun): string {
   const R = metric(candidate, 'recall');
   const R0 = metric(current, 'recall');
   const parts: string[] = [];
-  if (R?.value != null && R0?.value != null && R.value > R0.value) parts.push(`${cand} finds slightly more (recall ${pctOf(R.value)}, ${pts(R.value - R0.value)})`);
-  const precisionFell = P?.value != null && P0?.value != null && P.value < P0.value;
+  const r = rate(R);
+  const r0 = rate(R0);
+  const p = rate(P);
+  const p0 = rate(P0);
+  if (r != null && r0 != null && r > r0) parts.push(`${cand} finds slightly more (recall ${pctOf(r)}, ${pts(r - r0)})`);
+  const precisionFell = p != null && p0 != null && p < p0;
   const tail = precisionFell
-    ? `precision falls to ${pctOf(P!.value)} (${pts(P!.value! - P0!.value!)}): about ${Math.round((1 - P!.value!) * 10)} in 10 of its insights would be noise`
+    ? `precision falls to ${pctOf(p)} (${pts(p! - p0!)}): about ${Math.round((1 - p!) * 10)} in 10 of its insights would be noise`
     : `it misses ${candidate.blockedReasons.length} gate rule${candidate.blockedReasons.length === 1 ? '' : 's'}`;
   const slower = candidate.p95Ms > current.p95Ms;
   const costlier = candidate.costUsd > current.costUsd;

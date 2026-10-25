@@ -10,9 +10,10 @@ import type { AgentDetail as Detail } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { Bars, BarList } from '../ui/charts';
-import { IconAlert, IconArrowUpRight, IconBook, IconCheck, IconLock, IconLogs, IconPulse, IconX } from '../ui/icons';
+import { IconAlert, IconArrowUpRight, IconCheck, IconLock, IconLogs, IconPulse, IconX } from '../ui/icons';
 import { AgentStatus, Avatar, Callout, CLASSIFICATION, Empty, ErrorState, PageHead, PageSkeleton, Panel, Pill, ReviewPill, Score, SourceChip } from '../ui/kit';
 import { AlertList, SloCards } from './Reliability';
+import { RunbookLink } from './RunbookLink';
 import { useTimezone } from '../../uis/TimezoneContext';
 
 const KIND_LABEL: Record<string, string> = { deploy: 'Deploy', prompt: 'Prompt', model: 'Model', threshold: 'Threshold', rule: 'Rule', incident: 'Incident', review: 'Review', access: 'Access' };
@@ -154,9 +155,7 @@ export function AgentDetail() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
-            <a className="ao-btn sm" href={p.runbookUrl} target="_blank" rel="noreferrer noopener">
-              <IconBook /> Runbook
-            </a>
+            <RunbookLink url={p.runbookUrl} />
             <Link className="ao-btn sm" to="/ops/standard/reviews">
               Review calendar
             </Link>
@@ -188,7 +187,9 @@ export function AgentDetail() {
               </dd>
               <dt>Reviewed</dt>
               <dd>
-                {f.dayYear(p.securityReview.date)} by {p.securityReview.reviewer}
+                {p.securityReview.outcome === 'pending' || p.securityReview.outcome === 'not_started'
+                  ? p.securityReview.reviewer
+                  : `${f.dayYear(p.securityReview.date)} by ${p.securityReview.reviewer}`}
               </dd>
               <dt>Scope</dt>
               <dd>{p.securityReview.scope}</dd>

@@ -9,11 +9,19 @@ import { AgentStatus, Callout, ErrorState, PageHead, PageSkeleton, Panel, Review
 function Tabs() {
   return (
     <nav className="ao-tabs" aria-label="Standard & reviews sections">
+      {/* Phones get short labels so all three tabs fit without clipping. */}
       <NavLink to="/ops/standard" end>
-        Standard matrix
+        <span className="ao-tab-long">Standard matrix</span>
+        <span className="ao-tab-short">Matrix</span>
       </NavLink>
-      <NavLink to="/ops/standard/reviews">Review calendar</NavLink>
-      <NavLink to="/ops/standard/checklist">New agent checklist</NavLink>
+      <NavLink to="/ops/standard/reviews">
+        <span className="ao-tab-long">Review calendar</span>
+        <span className="ao-tab-short">Reviews</span>
+      </NavLink>
+      <NavLink to="/ops/standard/checklist">
+        <span className="ao-tab-long">New agent checklist</span>
+        <span className="ao-tab-short">New agent</span>
+      </NavLink>
     </nav>
   );
 }

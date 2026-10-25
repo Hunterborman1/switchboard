@@ -8,7 +8,7 @@ import type { Channel, InsightType, StepKey } from './contracts';
 export type SignalEvent =
   | { name: 'picker.opened' }
   | { name: 'picker.closed' }
-  | { name: 'file.selected'; fileId: string; tourPath: string | null }
+  | { name: 'file.selected'; fileId: string; tourPath: string | null; format?: string }
   | { name: 'run.started'; runId: string; fileId: string | null; mode: 'live' | 'replay' }
   | { name: 'run.step'; runId: string; step: StepKey; status: string }
   | { name: 'run.finished'; runId: string; status: string }

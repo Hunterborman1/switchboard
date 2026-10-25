@@ -15,6 +15,7 @@ import { GateChip, SeverityTag, TypeTag } from '../../components/ui';
 import { IconArrowUpRight, IconChannels, IconMail, IconQuote, IconShieldAlert, IconTheme, IconTicket, IconHash, IconInbox } from '../../components/icons';
 import { AREA_LABEL, CHANNEL_LABEL, money, ms } from '../../lib/labels';
 import { useModelLabels } from '../../lib/models';
+import { INSTANT_STEP_HELP } from '../../../shared/format';
 import type { DisplayStep } from './useReveal';
 import styles from './RunParts.module.css';
 
@@ -420,7 +421,9 @@ export function TracePanel({ runId, steps, totalCost, totalMs }: { runId: string
                   <td className={styles.num}>{s.tokensIn != null && s.display !== 'pending' ? s.tokensIn.toLocaleString() : '—'}</td>
                   <td className={styles.num}>{s.tokensOut != null && s.display !== 'pending' ? s.tokensOut.toLocaleString() : '—'}</td>
                   <td className={styles.num}>{s.costUsd != null && s.display !== 'pending' ? money(s.costUsd, { precise: true }) : '—'}</td>
-                  <td className={styles.num}>{s.display === 'pending' || s.display === 'running' ? '—' : ms(s.durationMs)}</td>
+                  <td className={styles.num} title={s.display !== 'pending' && s.display !== 'running' && s.durationMs != null && s.durationMs < 1 ? (s.key === 'deliver' ? 'Delivery goes to in-app Slack and Jira simulators here, so it takes under a millisecond. Real webhooks would not.' : INSTANT_STEP_HELP) : undefined}>
+                    {s.display === 'pending' || s.display === 'running' ? '—' : ms(s.durationMs)}
+                  </td>
                 </tr>
               ))}
             </tbody>

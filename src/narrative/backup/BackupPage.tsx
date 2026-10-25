@@ -188,7 +188,7 @@ const SEC: { t: string; items: string[]; tone?: 'accent' | 'indigo' }[] = [
   { t: 'Prompt injection', tone: 'accent', items: ['Transcript text is wrapped as data between delimiters.', 'The model can only return a fixed schema and has no tools, so an instruction has nothing to act on.', 'Suspected injections are flagged by the screen step and written to the audit log.'] },
   { t: 'Access', items: ['Password gate plus HMAC-signed links that expire 7 days after issue, checked in constant time.', 'Cookie scoped to /repo/invoca: HttpOnly, Secure, SameSite=Lax, Max-Age capped at link expiry.', 'Revoke one link by its ID, or all of them by rotating the signing secret.'] },
   { t: 'Isolation', items: ['Every viewer gets their own workspace. Reads are seed ∪ yours; writes only ever go to yours.', 'One panelist’s rule change or approval never shows up for another.'] },
-  { t: 'Providers and keys', tone: 'indigo', items: ['Model calls route only to providers with zero data retention, and require schema support.', 'Keys are server-only secrets; nothing sensitive is ever bundled into the client.', 'Per-session rate limits and a per-run token cap on top of the spend cap.'] },
+  { t: 'Providers and keys', tone: 'indigo', items: ['Model calls route only to providers that don’t collect or train on data (a routing filter, not a contract), and require schema support. Contractual zero retention and a DPA are production items.', 'Keys are server-only secrets; nothing sensitive is ever bundled into the client.', 'Per-session rate limits and a per-run token cap on top of the spend cap.'] },
 ];
 
 function Security() {
@@ -267,7 +267,7 @@ const FAILS = [
   { t: 'Budget or live failure', d: 'The run replays a recorded real execution at real speed, labelled on screen. The walkthrough works for all 7 days regardless.' },
   { t: 'Partial failure', d: 'If Jira succeeds and Slack fails, the delivery reads as failed, with attempts and receipts per destination. Partial is not success.' },
   { t: 'Duplicates', d: 'Every upload is hashed (SHA-256). A re-upload is idempotent: same hash, same run, no double insights.' },
-  { t: 'Durability', d: 'Each of the ten steps is a durable Workflow step. A crash resumes from the last completed step, not from scratch.' },
+  { t: 'Durability', d: 'The ten steps run on a fast path and save as they go. If a step fails or the run takes too long, a durable Workflow resumes from the last completed step, not from scratch.' },
 ];
 
 function Failure() {
@@ -353,7 +353,7 @@ const METRICS = [
   { m: 'Time to owner', d: 'Customer says it → named owner has it', base: 'days to never', target: '< 1 business day', how: 'Delivery receipts minus call timestamp' },
   { m: 'Precision of routed items', d: 'Routed items the owner agrees are real and correctly typed', base: 'n/a', target: '≥ 90%', how: '“This is wrong” clicks + review outcomes' },
   { m: 'PM decisions citing evidence', d: 'Roadmap items that link to at least one grounded quote', base: 'unknown', target: '≥ 50% in two quarters', how: 'Jira/Linear links back to insights' },
-  { m: 'CSM minutes saved', d: 'Baseline admin minutes per call minus measured review minutes', base: '~10 min/call (assumed)', target: '≥ 70% removed', how: 'Agent Ops work units: baseline − human minutes' },
+  { m: 'CSM minutes saved', d: 'Baseline admin minutes per call minus measured review minutes', base: '18 min/call (registered assumption)', target: '≥ 70% removed', how: 'Agent Ops work units: baseline − human minutes' },
   { m: 'Weekly active reviewers', d: 'People who approve, edit or reject at least once a week', base: '0', target: 'every champion, then every CSM', how: 'Agent Ops usage events' },
 ];
 
@@ -486,7 +486,7 @@ const LIMITS = [
   { t: 'Mock destinations', d: 'Slack, Jira and Linear are faithful mocks with receipts and retries, not real integrations.' },
   { t: 'Two models only', d: 'One fast tier, one independent judge and fallback. Fine for a POC; in production I’d re-run the speed and quality test quarterly.' },
   { t: 'Themes need history', d: 'Clustering looks good because ~220 backfill transcripts seed it. On day one with real data, themes are thin for a few weeks.' },
-  { t: 'Small eval set', d: '48 golden files is enough to catch regressions by slice, not enough for tight confidence intervals. It should grow from reviewer edits.' },
+  { t: 'Small eval set', d: '48 golden files is enough to catch large regressions like v5, not to separate two good prompts, and there is no held-out split yet. It should grow from reviewer edits.' },
 ];
 
 function Differently() {

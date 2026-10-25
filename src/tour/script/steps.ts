@@ -9,7 +9,7 @@ import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import {
   budgetCopy, extractCopy, gateCopy, groundCopy, messyCopy, opsKpiCopy, opsLiveCopy, opsLogsCopy,
   opsRegistryCopy, promoteCopy, redactCopy, runSettled, screenCopy, stepDone, traceCopy, usd,
-  rejectedCopy, candidateCopy, candidateTitle, themeCopy, introCopy, editCopy,
+  rejectedCopy, candidateCopy, candidateTitle, themeCopy, introCopy, editCopy, introFor, sankeyCopy, opsTraceCopy,
 } from './copy';
 
 const runRoute = (ctx: TourCtx) => (ctx.runId ? R.run(ctx.runId) : null);
@@ -24,14 +24,8 @@ const themeRoute = (ctx: TourCtx) => {
 const screenMatters = (ctx: TourCtx) => has(ctx, 'security') || has(ctx, 'negative') || !!ctx.run?.screen?.injection_suspected || ctx.run?.screen?.actionable === false;
 const anchorPresent = (id: string) => typeof document !== 'undefined' && !!document.querySelector(`[data-tour="${id}"]`);
 
-const PATH_INTRO: Record<TourPath, { title: string; body: string }> = {
-  main: { title: 'Run the pipeline', body: 'A real QBR: forty minutes of conversation with product signals buried in it. Press Run.' },
-  clean: { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones. Press Run.' },
-  messy: { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest. Press Run.' },
-  security: { title: 'This one is hostile', body: 'Somebody planted an instruction in the transcript. Watch what the system does with it. Press Run.' },
-  negative: { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing. Press Run.' },
-  privacy: { title: 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model. Press Run.' },
-};
+/** "Injection attempt" → "injection attempt", but "PHI-heavy call" stays "PHI-heavy call". */
+const lowerFirst = (s: string) => (/^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s);
 
 export const STEPS: Step[] = [
   // ============================================================ narrative · the problem
@@ -61,7 +55,7 @@ export const STEPS: Step[] = [
     id: 'ch1.intro', chapter: 'ch1', kind: 'product', route: R.newCall, target: 'new.upload', placement: 'bottom',
     title: 'Bring in today’s call',
     body: 'A CSM shouldn’t retype a call into three tools. Drop the file in; the system does the data entry.',
-    more: 'In production this is automatic: dlt pulls recordings and notes from Gong, Zoom, Salesforce and Zendesk. Here you pick from a synthetic library shaped like a call-recorder export.',
+    more: 'In production this is automatic: dlt pulls recordings and notes from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples). Here you pick from a synthetic library shaped like a call-recorder export.',
     waitFor: { event: 'picker.opened', hint: 'Click Upload' },
     next: 'ch1.pick',
     notes: 'Let them click. If presenting, click Upload myself and say: this is the only manual step, and in production it goes away.',
@@ -87,9 +81,9 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch1.run', chapter: 'ch1', kind: 'product', route: R.newCall, target: 'new.run', placement: 'top',
-    title: (ctx) => PATH_INTRO[ctx.path].title,
-    body: (ctx) => PATH_INTRO[ctx.path].body,
-    more: 'Each run is a Cloudflare Workflow with ten steps, each saved as it runs. Every step writes a row: status, timing, hashes, model, tokens, cost. The UI animates from those rows.',
+    title: (ctx) => introFor(ctx).title,
+    body: (ctx) => introFor(ctx).body,
+    more: 'Each run executes ten steps on a fast path, each saved as it runs: status, timing, hashes, model, tokens, cost. If a step fails or runs long, a durable Cloudflare Workflow resumes from the last completed step. The UI animates from those rows.',
     waitFor: { event: 'run.started', hint: 'Click Run pipeline' },
     next: 'ch2.intro',
     checkpoint: () => ({ value: 0, label: 'fields typed by the CSM', sub: '1 call in · the system does the data entry' }),
@@ -101,7 +95,7 @@ export const STEPS: Step[] = [
     id: 'ch2.intro', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.stepper', placement: 'bottom', pace: 'slow',
     title: 'Ten steps, each saved as it runs',
     body: introCopy,
-    more: 'Each step is retried on failure and resumes from its saved result. If live AI is unavailable or over budget, the run replays a recorded real execution at real speed, and says so on screen.',
+    more: 'Steps run on a fast path and save as they go. If one fails or runs long, a durable Workflow resumes from the last saved step. If live AI is unavailable or over budget, the run replays a recorded real execution at real speed, and says so on screen.',
     ready: (ctx) => !!ctx.run, readyLabel: 'Starting the run…',
     waitFor: 'next', next: 'ch2.redact',
   },
@@ -146,19 +140,19 @@ export const STEPS: Step[] = [
         { label: 'Continue', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' },
       ];
     },
-    notes: 'Data-driven: on Brightline every quote usually grounds. Say the number out loud, then offer the rejected-quote example from another run.',
+    notes: 'Data-driven: say the grounded count out loud. On the promoted prompt every eval quote grounded (275 of 275), so grounding is the seatbelt. “See a rejected quote” only appears when a real run with a dropped quote exists.',
   },
   {
     id: 'ch2.rejected', chapter: 'ch2', kind: 'product', route: (ctx) => (ctx.peek ? R.run(ctx.peek.run.id) : null), target: 'run.dropped', placement: 'left', anchorTimeoutMs: 5000,
     title: (ctx) => rejectedCopy(ctx).title, body: (ctx) => rejectedCopy(ctx).body,
-    more: 'This is a different, real run. The model returned a plausible sentence; code looked for it in the transcript and couldn’t find it, so it never reached a reviewer.',
+    more: 'This is a different, real run. A quote came back that code couldn’t find in that run’s text, so its insight was dropped and counted. It never reached a reviewer as fact.',
     waitFor: 'next', next: (ctx) => (has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate'),
     actions: (ctx) => [{ label: 'Back to my run', to: has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate', variant: 'primary' }],
   },
   {
     id: 'ch2.messy', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.insights', placement: 'left',
     title: 'Honest under noise', body: messyCopy,
-    more: 'Final confidence = model confidence × grounding score × type prior × account context. Fuzzy-grounded quotes score lower, so they land in review.',
+    more: 'Final confidence = model confidence × grounding score × type prior × account context. The model quotes the garbled text verbatim, so quotes usually ground exactly; noise shows up as lower confidence and more review.',
     waitFor: 'next', next: 'ch2.gate',
   },
   {
@@ -190,8 +184,8 @@ export const STEPS: Step[] = [
   {
     id: 'ch3.intro', chapter: 'ch3', kind: 'product', route: R.review, target: 'review.queue', placement: 'right',
     title: 'A person decides',
-    body: 'Below 0.80, every sev-1 bug, every churn risk. The paused workflow waits here for a human.',
-    more: 'The Workflow is suspended on step.waitForEvent("review"). Approve, edit or reject resumes it. Nothing is routed until someone decides.',
+    body: 'Below 0.80, every sev-1 bug, every churn risk. The run is parked here awaiting review.',
+    more: 'Nothing on it is routed until someone approves, edits or rejects it. That action routes the insight and writes an audit row.',
     waitFor: 'next', next: 'ch3.why',
   },
   {
@@ -201,7 +195,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch3.approve', chapter: 'ch3', kind: 'product', route: R.review, target: 'review.approve', highlight: ['review.item'], placement: 'top',
-    title: 'Approve one', body: 'Press A, or click Approve. That resumes the workflow and routes it.',
+    title: 'Approve one', body: 'Press A, or click Approve. That routes it, with an audit row.',
     waitFor: { event: 'review.action', where: (e) => e.name === 'review.action' && e.action === 'approve', hint: 'Press A or click Approve' },
     next: 'ch3.edit',
   },
@@ -218,7 +212,7 @@ export const STEPS: Step[] = [
     title: 'Try another file?',
     body: (ctx) => {
       // Name what's left, best stories first, instead of a generic "another file".
-      const left = (['security', 'privacy', 'messy', 'negative', 'clean'] as TourPath[]).filter((p) => !ctx.explored.includes(p)).map((p) => PATH_LABELS[p].toLowerCase());
+      const left = (['security', 'privacy', 'messy', 'negative', 'clean'] as TourPath[]).filter((p) => !ctx.explored.includes(p)).map((p) => lowerFirst(PATH_LABELS[p]));
       const next = left.length ? ` Still to try: ${left.slice(0, 3).join(', ')}.` : '';
       return `Scenarios explored: ${ctx.explored.length} of 6. Each file takes a different path through the same system.${next}`;
     },
@@ -245,8 +239,10 @@ export const STEPS: Step[] = [
     next: 'ch4.sankey',
   },
   {
-    id: 'ch4.sankey', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.sankey', placement: 'bottom',
-    title: 'The flows re-route', body: 'Same insights, new owner. No prompt changed, no redeploy. The edit is in your workspace only.',
+    // The panel is taller than the room around it: float top-left, over the panel heading, so the
+    // card never covers the Pricing objection node (bottom-left) the beat is about.
+    id: 'ch4.sankey', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.sankey', placement: 'bottom', floatCorner: 'top-left',
+    title: (ctx) => sankeyCopy(ctx).title, body: (ctx) => sankeyCopy(ctx).body,
     waitFor: 'next', next: 'ch4.jira',
   },
   {
@@ -308,8 +304,8 @@ export const STEPS: Step[] = [
   // ============================================================ ch7 · prove it
   {
     id: 'ch7.metrics', chapter: 'ch7', kind: 'product', route: R.evals, target: 'evals.metrics', placement: 'bottom',
-    title: 'Measured, not vibes', body: 'Precision and recall per insight type, against hand-labelled golden files.',
-    more: 'An independent judge from a different model family checks summaries; quote grounding and routing are scored by code.',
+    title: 'Measured, not vibes', body: 'Precision and recall per insight type, against hand-labelled golden files. The gate checks them pooled; per type they are reported against that line.',
+    more: 'Matching is by code: same type and overlapping quote spans. Only ambiguous leftovers go to a judge from a different model family. Grounding and routing are scored by code.',
     waitFor: 'next', next: 'ch7.levels',
   },
   {
@@ -331,7 +327,7 @@ export const STEPS: Step[] = [
   {
     id: 'ch7.gate', chapter: 'ch7', kind: 'product', route: R.evals, target: 'evals.gate', placement: 'left',
     title: (ctx) => promoteCopy(ctx).title, body: (ctx) => promoteCopy(ctx).body,
-    more: 'Promotion needs every slice above threshold: per type, per mess level, the negative-control false-positive rate and injection resistance. One regression blocks it.',
+    more: 'Promotion needs overall precision and recall, level-5 recall, grounding and every safety check (negatives, injection, PHI) to pass, with no regression over 2 points. Per-type slices and cost are reported; gating them is next.',
     waitFor: 'next', next: 'ch7.budget',
   },
   {
@@ -344,9 +340,14 @@ export const STEPS: Step[] = [
 
   // ============================================================ ch8 · operate it (Agent Ops)
   {
-    id: 'ch8.enter', chapter: 'ch8', kind: 'product', target: 'nav.agentops', placement: 'right',
-    title: 'Build it, then operate it', body: 'Signal Loop is one agent. Open the platform it reports into.',
-    more: 'Agent Ops is the internal platform for executives and the AI team. Every agent reports logs, spans, usage and work units through one SDK. Signal Loop’s data is live; the other agents are labelled simulated.',
+    // Phones: the Agent Ops link lives in the closed nav drawer, so spotlight the Menu button.
+    id: 'ch8.enter', chapter: 'ch8', kind: 'product', target: ['nav.agentops', 'nav.menu'], placement: 'right', interact: 'all',
+    title: 'Build it, then operate it',
+    body: () =>
+      typeof window !== 'undefined' && window.matchMedia?.('(max-width: 760px)').matches
+        ? 'Signal Loop is one agent. Open the Menu, then Agent Ops: the platform it reports into.'
+        : 'Signal Loop is one agent. Open the platform it reports into.',
+    more: 'Agent Ops is the internal platform for executives and the AI team. Every agent reports logs, spans, usage and work units through one SDK. This session’s telemetry is live. Signal Loop’s six-week history replays 218 real pipeline runs over synthetic calls, with simulated users; the RFP agent is fully simulated.',
     waitFor: { predicate: (ctx) => ctx.pathname.startsWith('/ops'), hint: 'Open Agent Ops' },
     next: 'ch8.kpis',
   },
@@ -369,7 +370,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch8.usage', chapter: 'ch8', kind: 'product', route: R.opsUsage, target: 'ops.usage.live', placement: 'bottom',
-    title: 'That’s you', body: opsLiveCopy,
+    title: 'That’s you, live', body: opsLiveCopy,
     waitFor: 'next', next: 'ch8.logs',
   },
   {
@@ -379,7 +380,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch8.trace', chapter: 'ch8', kind: 'product', route: (ctx) => (ctx.ops?.traceId ? R.opsTrace(ctx.ops.traceId) : null), target: 'ops.trace.waterfall', placement: 'bottom', anchorTimeoutMs: 3500,
-    title: 'Where the time went', body: 'Every span of your run: the steps, each model call, retries and deliveries.',
+    title: 'Where the time went', body: opsTraceCopy,
     waitFor: 'next', next: 'ch8.slos',
   },
   {

@@ -11,7 +11,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   'cold-open': {
     time: '0:30',
     say: [
-      'This is a forty-one minute QBR. Somewhere in it is a roadmap decision, and today it probably never reaches the person who makes it.',
+      'This is a thirteen-minute slice of a QBR. Somewhere in it is a roadmap decision, and today it probably never reaches the person who makes it.',
       'Invoca turns calls into signals for its customers. I built the same loop for Invoca’s own customer calls, and then I built the platform I’d use to operate it.',
     ],
     click: ['→ once to resolve the waveform into the headline.'],
@@ -55,7 +55,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   ch1: {
     time: '1:30',
     say: [
-      'Now the real system. This is the only manual step, and in production it goes away: dlt pulls from the call recorder.',
+      'Now the real system. This is the only manual step, and in production it goes away: dlt pulls from whichever recorder and CRM the CS team uses.',
       'The library looks like a recorder export. Mess levels aren’t labelled on purpose. Brightline is the main path; any file works and each one tells a different story.',
     ],
     click: ['Click Upload / “Bring in a call”.', 'Pick the highlighted Brightline QBR (or let a panelist pick).', 'Open, then Run pipeline.'],
@@ -63,10 +63,10 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   ch2: {
     time: '2:15',
     say: [
-      'Ten steps, each saved as it runs. What you’re watching is the real execution (if the callout says replay, it’s a recorded real run at real speed). The UI animates from those rows.',
+      'Ten steps on a fast path, each saved as it runs; if a step fails or runs long, a durable Workflow resumes from the last saved step. What you’re watching is the real execution (if the callout says replay, it’s a recorded real run at real speed).',
       'Redaction first: only redacted text reaches a model.',
       'Then one beat for screen and extract: a cheap check says it’s worth reading, then the main pass returns typed insights, each with a verbatim quote. No quote, no insight.',
-      'Grounding is the moment. Read the real number off the callout: on Brightline it is usually every quote matched (14 of 14 on the recorded run), one of them across an interruption, because code checks the words, not the model\u2019s word. Anything that doesn\u2019t match is dropped and counted. Across all 48 recordings exactly one quote failed; click See a rejected quote to show it.',
+      'Grounding is the moment. Read the real number off the callout: fourteen of fourteen, word for word, on the recorded Brightline run. If the model had stitched Dana\u2019s interrupted sentence into one tidy quote, code wouldn\u2019t find it and the insight would be dropped. On the promoted prompt every eval quote grounded, 275 of 275: grounding is the seatbelt. Only offer See a rejected quote if the button is on screen, and describe it as what it is.',
       'The gate decides who sees it next. Anything high stakes goes to a person.',
     ],
     click: ['→ through each step as it completes; stop on the dropped quote.'],
@@ -74,7 +74,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   ch3: {
     time: '2:00',
     say: [
-      'The workflow is paused, waiting for a human. Every item says why it’s here.',
+      'The run is parked awaiting review: nothing on it routes until a person decides. Every item says why it’s here.',
       'Approve one with A. Edit one with E. The edit is saved as labelled data with a before/after diff, which is how the next prompt gets better.',
       'If there’s time, try another file: the injection one or the PHI-heavy call.',
     ],
@@ -110,8 +110,8 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '1:35',
     say: [
       'Measured, not vibes: precision and recall per type, against hand-labelled golden files.',
-      'Sliced by mess level, because the messiest files are where systems quietly break. The current prompt holds 90% recall even on level 5.',
-      'v5 is a rewritten prompt, and it looks fine on recall. Try to promote it: blocked. Precision fell about 29 points, from 88.6% to 59.7%: it invented insights customers never raised. It is also more expensive and slower at p95, and the gate lists both. One regression is enough to block it; this one had three.',
+      'Sliced by mess level, because the messiest files are where systems quietly break. The current prompt holds 90% recall even on level 5. The gate checks precision and recall pooled; per type they are reported against that line, and four types sit under it.',
+      'v5 is a rewritten prompt, and it looks fine on recall. Try to promote it: blocked on precision, 88.7% to 59.7%, under the 85% bar and a 29-point regression. It over-labelled real sentences as feedback: 38 extra praise items, 20 extra churn risks. Every quote was real, which is exactly why grounding alone isn’t enough. It is also more expensive and slower at p95, which the screen shows; next I’d make cost and latency gate checks too.',
       'And the cost: a hard cap on live AI. Past it, it replays recorded runs. Never an outage.',
     ],
     click: ['Click Promote on the candidate.', 'Then the budget gauge on Health.'],
@@ -121,8 +121,8 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     say: [
       'Building the agent is half the job. Operating it is the other half. Signal Loop is one agent in Agent Ops.',
       'This is the exec view: hours returned first, then the value of that time against metered AI spend (build time not included), and adoption. Two agents today; the registry is built for fifty.',
-      'Every agent has a named owner, purpose and review date, and is held to the same nine-check standard (it’s under How this works on the agent page). Signal Loop passes all nine.',
-      'That’s you on the live panel: this session is in the data. And these are the logs from the run you just did, same trace ID end to end.',
+      'Every agent has a named owner, purpose and review date, and is held to the same nine-check standard (it’s under How this works on the agent page). Signal Loop meets all nine in the build; the security review and business-owner sign-off are illustrative records until Invoca’s Security team does the real one.',
+      'That’s you on the live panel: this session’s telemetry is live. The six-week history behind it is 218 real pipeline runs over synthetic calls, with simulated users. And these are the logs from the run you just did, same trace ID end to end.',
       'SLOs with error budgets; alerts with an owner and a runbook.',
     ],
     click: ['Click the Agent Ops link.', 'Walk overview → registry → agent page → usage → logs → trace → reliability.'],
@@ -131,7 +131,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '2:30',
     say: [
       'Build it, then operate it. Discovery and the time study first, then shadow mode, then champions, then the team.',
-      'I measure adoption from usage events, not surveys: weekly active reviewers, capture rate, time to owner.',
+      'I measure adoption from usage events, not surveys: weekly active reviewers, capture rate, time to owner. Cost spikes and SLO breaches alert the owner; drift is caught by re-running the eval suite on a schedule and by watching the reviewer-edit rate.',
       'Hours returned go to execs monthly, with the assumptions labelled. It’s additive: it takes the data entry, not the judgement.',
       'After launch: a review cadence, the standard, and builder enablement (templates and office hours) so other people’s agents get there too.',
     ],
@@ -140,7 +140,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   horizon: {
     time: '1:30',
     say: [
-      'Over 12–18 months: capture in the call, specialist agents checking each other, models cheap enough to process every call (read today’s measured cost per call off the card), drafted PRDs and replies, and plugging into Invoca’s own Signal AI.',
+      'Over 12–18 months, after the rollout: shadow, champions and the team first; every call by default from month 3 (read today’s average cost per call off the card); in-call capture; specialist agents checking each other; drafted PRDs and replies; and plugging into Invoca’s own Signal AI.',
       'What doesn’t change: grounding in code, gates, routing as data, human judgement.',
     ],
     click: ['→ once.'],
@@ -148,7 +148,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   production: {
     time: '0:45',
     say: [
-      'The POC runs entirely on Cloudflare. The production design keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion and Render for long-running workers. Strict TypeScript throughout.',
+      'The POC runs entirely on Cloudflare. The production design keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for long-running workers. Strict TypeScript throughout.',
     ],
     click: ['→ once to slide the pieces across.'],
   },
@@ -171,27 +171,27 @@ export const STEP_NOTES: Record<string, string> = {
   'ch2.privacy': 'Have them toggle before/after. Tokens keep meaning, drop identity.',
   'ch2.screen': 'Security and negative paths only: the planted instruction is inert data (schema-only output, no tools, audit row), or screen says nothing is actionable.',
   'ch2.extract': 'Main path folds screen in here: cheap check first, then typed insights. No quote, no insight. Negative path: zero insights is the correct answer.',
-  'ch2.ground': 'Stop here. Say the grounded count out loud, then offer See a rejected quote: the one quote out of 48 recordings that the customer never said.',
+  'ch2.ground': 'Stop here. Say the grounded count out loud. On the promoted prompt every eval quote grounded (275 of 275): grounding is the seatbelt. Offer See a rejected quote only if it is on screen.',
   'ch2.messy': 'Noise lowers confidence, so more goes to a person, not into a backlog.',
   'ch2.gate': '0.80 auto, 0.55 review, below held. Sev-1 bugs and churn risk always reviewed.',
   'ch2.trace': 'Read the cost and time out loud. Nothing is a black box.',
   'ch2.clean': 'Clean notes are the baseline. Offer the messy one if there’s time.',
-  'ch3.approve': 'Press A. That resumes the paused workflow.',
+  'ch3.approve': 'Press A. That routes it, with an audit row.',
   'ch3.edit': 'Press E, change a field, Save edit & route. The correction becomes an eval case.',
   'ch3.fork': 'Offer one more file if we’re ahead of time; otherwise Continue.',
   'ch4.rule': 'Route pricing objections over $250k ARR to the VP. No prompt changed.',
-  'ch4.sankey': 'Point at the flow moving. Workspace-only change.',
-  'ch5.intro': 'Anecdote vs pattern. Read the theme name off the callout; it is the highlighted card. Open it.',
+  'ch4.sankey': 'If they changed the rule: point at the flow moving, workspace-only. If not: this is where today’s rules send them.',
+  'ch5.intro': 'Anecdote vs pattern. Read the theme name and account count off the callout; it is the highlighted card. Open it.',
   'ch6.ship': 'Play the PM; move it to Shipped. Watch who finds out.',
   'ch7.promote': 'Let them click Promote. Pause for the block.',
-  'ch7.gate': 'Precision fell ~29 points, and it costs more and runs slower. Averages hide regressions; every slice must hold.',
+  'ch7.gate': 'Blocked on precision: under the 85% bar and a 29-point regression. Cost and p95 are worse too, shown but not gated yet.',
   'ch7.budget': 'Hard cap, then replay. Never an outage.',
   'ch8.enter': 'Build it, then operate it. Click into Agent Ops.',
   'ch8.kpis': 'Exec view: lead with hours returned. Value is against metered AI spend, build excluded. Baselines are labelled assumptions.',
   'ch8.registry': 'Named owner, purpose, review date for every agent.',
-  'ch8.review': 'Owned past launch, and nine for nine on the agent standard (How this works lists the checks).',
-  'ch8.usage': 'That’s you. Adoption measured, not surveyed.',
+  'ch8.review': 'Owned past launch, nine for nine in the build. Security review and business-owner sign-off are illustrative until Invoca Security does them.',
+  'ch8.usage': 'That’s you, live. Adoption is measured from usage events; the history is simulated users.',
   'ch8.logs': 'The run you just did, in the logs. One trace ID end to end.',
-  'ch8.trace': 'Where the time went: steps, model calls, retries, deliveries.',
+  'ch8.trace': 'Where the time went: steps, model calls, retries, deliveries. Red spans are failed attempts; the callout says whether they were retried.',
   'ch8.slos': 'Error budgets and alerts with owners and runbooks.',
 };

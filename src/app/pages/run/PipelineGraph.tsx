@@ -10,6 +10,7 @@ import { motion } from 'motion/react';
 import { STEP_LABELS, type StepKey } from '../../../shared/contracts';
 import { tourAnchor } from '../../../tour/anchors';
 import { ms, STEP_HELP } from '../../lib/labels';
+import { INSTANT_STEP_HELP } from '../../../shared/format';
 import type { DisplayStep } from './useReveal';
 import styles from './PipelineGraph.module.css';
 
@@ -87,7 +88,7 @@ export function PipelineGraph({
                 </span>
               </button>
               <span className={styles.label}>{STEP_LABELS[s.key]}</span>
-              <span className={styles.meta}>
+              <span className={styles.meta} title={flowing && st !== 'skipped' && s.durationMs != null && s.durationMs < 1 ? INSTANT_STEP_HELP : undefined}>
                 {st === 'running' ? 'running…' : flowing ? (st === 'skipped' ? 'skipped' : ms(s.durationMs)) : ' '}
               </span>
               {s.display !== 'pending' && s.summary && flowing ? <span className={styles.vsummary}>{s.summary}</span> : <span className={styles.vsummary}>{st === 'running' ? 'Working…' : STEP_HELP[s.key]}</span>}

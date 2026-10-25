@@ -65,6 +65,7 @@ export const ANCHORS = {
   'health.budget': 'Budget gauge on Health',
   // signal loop → platform
   'nav.agentops': 'Link from Signal Loop into Agent Ops (header or sidebar)',
+  'nav.menu': 'Mobile Menu button that opens the nav drawer (phones only)',
   // ch8 · operate it (Agent Ops platform, /ops)
   'ops.overview.kpis': 'Agent Ops overview KPI strip (hours returned, value, AI cost, ROI, active users)',
   'ops.overview.chart': 'Hours returned per week, stacked by agent',

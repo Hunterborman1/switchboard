@@ -141,7 +141,7 @@ export function ColdOpen({ beat }: { beat: number }) {
           <Reveal key="pre" className="sc-cold__pre" delay={0.4}>
             <Reveal.Item>
               <p className="n-kicker" style={{ fontSize: 'var(--n-display-sm)' }}>
-                Forty-one minutes. Somewhere in here is a roadmap decision.
+                Thirteen minutes of a QBR. Somewhere in here is a roadmap decision.
               </p>
             </Reveal.Item>
           </Reveal>

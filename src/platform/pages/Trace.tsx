@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { MetricStrip } from '../ui/Kpis';
 import type { Span } from '../../shared/platform-contracts';
 import { relabelModelsDeep, rewriteModelIds } from '../../shared/modelLabels';
+import { explainSpanErrors } from '../../shared/format';
 import { tourAnchor } from '../../tour/anchors';
 import { useTimezone } from '../../uis/TimezoneContext';
 import type { RegistryRow, TraceView } from '../../worker/platform/types';
@@ -82,6 +83,7 @@ export function Trace() {
   const tokens = ai.reduce((s, x) => s + Number(x.attrs.tokensIn ?? 0) + Number(x.attrs.tokensOut ?? 0), 0);
   const cost = ai.reduce((s, x) => s + Number(x.attrs.costUsd ?? 0), 0);
   const errors = d.spans.filter((s) => s.status === 'error').length;
+  const errorNote = explainSpanErrors(d.spans);
   const fallbacks = ai.filter((s) => s.attrs.fallback === true || s.status === 'error').length;
   const runId = (d.spans.find((s) => s.attrs.runId)?.attrs.runId as string | undefined) ?? d.logs.find((l) => l.runId)?.runId ?? null;
   const selected = built.rows.find((r) => r.span.spanId === sel)?.span ?? null;
@@ -124,7 +126,7 @@ export function Trace() {
           { label: 'AI calls', value: ai.length, sub: fallbacks ? `${fallbacks} failed over to fallback` : 'no fallbacks' },
           { label: 'Tokens', value: f.int(tokens) },
           { label: 'AI cost', value: f.money(cost, { precise: true }) },
-          { label: 'Errors', value: errors, accent: errors ? 'var(--cn-danger-txt)' : undefined },
+          { label: 'Errors', value: errors, accent: errors ? 'var(--cn-danger-txt)' : undefined, sub: errorNote ?? 'none' },
         ]}
       />
       <Panel title="Span waterfall" sub="Bars are positioned on one time axis from the first span. Striped bars ended in an error." attrs={tourAnchor('ops.trace.waterfall')} flush>
@@ -146,7 +148,7 @@ export function Trace() {
                 <span className="ao-wf-ticks">
                   {tk.map((t) => (
                     <span key={t} style={{ left: `${(t / built.total) * 100}%` }}>
-                      {f.ms(t)}
+                      {f.offset(t)}
                     </span>
                   ))}
                 </span>
@@ -164,7 +166,7 @@ export function Trace() {
                     className="ao-wf-row"
                     aria-pressed={sel === r.span.spanId}
                     onClick={() => setSel(sel === r.span.spanId ? null : r.span.spanId)}
-                    aria-label={`${rewriteModelIds(r.span.name)}, ${f.ms(r.span.durationMs)}, starts at ${f.ms(r.startMs)}${r.span.status === 'error' ? ', error' : ''}`}
+                    aria-label={`${rewriteModelIds(r.span.name)}, ${f.ms(r.span.durationMs)}, starts at ${f.offset(r.startMs)}${r.span.status === 'error' ? ', error' : ''}`}
                     data-kind={k.key}
                   >
                     <span className="ao-wf-name" style={{ paddingLeft: r.depth * 14 }}>
@@ -240,7 +242,7 @@ export function Trace() {
             <tbody>
               {d.logs.map((l) => (
                 <tr key={l.id} className={`lvl-${l.level}${sel && l.spanId === sel ? ' is-selected' : ''}`}>
-                  <td className="ao-mono" style={{ whiteSpace: 'nowrap' }}>{built.rows.length ? f.ms(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
+                  <td className="ao-mono" style={{ whiteSpace: 'nowrap' }}>{built.rows.length ? f.offset(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
                   <td>
                     <span className={`ao-lv ${l.level}`}>{l.level}</span>
                   </td>

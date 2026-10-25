@@ -21,7 +21,7 @@ export function Registry() {
       header: 'Agent',
       sort: (r) => r.name,
       render: (r) => (
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', minWidth: 230 }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', minWidth: 190 }}>
           <AgentDot color={r.profile.color} />
           <div className="cell-title">
             <Link className="row-link" to={`/ops/agents/${r.id}`}>
@@ -34,16 +34,16 @@ export function Registry() {
         </div>
       ),
     },
-    { key: 'dept', mobileHide: true, header: 'Department · built with', sort: (r) => r.department, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap' }}><b style={{ fontWeight: 400 }}>{r.department}</b><small>{r.builtWith === 'Code' ? 'Code (Workers + AI SDK)' : r.builtWith}</small></div> },
+    { key: 'dept', mobileHide: true, wideHide: true, header: 'Department · built with', sort: (r) => r.department, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap' }}><b style={{ fontWeight: 400 }}>{r.department}</b><small>{r.builtWith === 'Code' ? 'Code (Workers + AI SDK)' : r.builtWith}</small></div> },
     { key: 'owner', mobileHide: true, header: 'Owner · business owner', sort: (r) => r.ownerName, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap' }}><b style={{ fontWeight: 400 }}>{r.ownerName}</b><small>{r.businessOwner.replace(/ \(.*/, '')}</small></div> },
     { key: 'status', header: 'Status', sort: (r) => r.status, render: (r) => <AgentStatus value={r.status} /> },
     { key: 'review', header: 'Review', sort: (r) => r.nextReview, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap', justifyItems: 'start' }}><ReviewPill value={r.reviewStatus} /><small>next {f.day(r.nextReview)} · every {r.reviewCadenceDays}d</small></div> },
     { key: 'std', header: 'Standard', sort: (r) => r.standardScore.passed, render: (r) => <Score passed={r.standardScore.passed} total={r.standardScore.total} /> },
-    { key: 'runs', mobileHide: true, header: '30d runs', num: true, sort: (r) => r.runs30d, render: (r) => f.int(r.runs30d) },
-    { key: 'users', mobileHide: true, header: 'Users', num: true, sort: (r) => r.users30d, render: (r) => f.int(r.users30d) },
+    { key: 'runs', mobileHide: true, wideHide: true, header: '30d runs', num: true, sort: (r) => r.runs30d, render: (r) => f.int(r.runs30d) },
+    { key: 'users', mobileHide: true, wideHide: true, header: 'Users', num: true, sort: (r) => r.users30d, render: (r) => f.int(r.users30d) },
     { key: 'hours', mobileHide: true, header: '30d hours', num: true, sort: (r) => r.hours30d, render: (r) => f.hours(r.hours30d) },
-    { key: 'cost', mobileHide: true, header: '30d cost', num: true, sort: (r) => r.cost30d, render: (r) => f.money(r.cost30d) },
-    { key: 'trend', mobileHide: true, header: 'Hours / wk', render: (r) => <Spark values={r.weeklyHours} color={r.profile.color} label={`${r.name} weekly hours`} width={80} /> },
+    { key: 'cost', mobileHide: true, wideHide: true, header: '30d cost', num: true, sort: (r) => r.cost30d, render: (r) => f.money(r.cost30d) },
+    { key: 'trend', mobileHide: true, wideHide: true, header: 'Hours / wk', render: (r) => <Spark values={r.weeklyHours} color={r.profile.color} label={`${r.name} weekly hours`} width={80} /> },
     {
       key: 'open',
       mobileHide: true,

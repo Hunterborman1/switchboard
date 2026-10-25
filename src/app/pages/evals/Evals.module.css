@@ -126,6 +126,37 @@
   }
 }
 
+.barUnder {
+  background: var(--cn-warning, #d99a1e);
+}
+
+/* Reference target (the pooled gate level): dashed and muted, so it never reads as a per-type gate. */
+.barTarget {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 0;
+  margin-left: -1px;
+  border-left: 2px dashed var(--text-subtle);
+  opacity: 0.8;
+}
+
+.legendU {
+  background: var(--cn-warning, #d99a1e);
+}
+
+.legendTarget {
+  width: 0 !important;
+  height: 12px !important;
+  border-left: 2px dashed var(--text-subtle);
+  border-radius: 0 !important;
+}
+
+.textUnder,
+.textUnder * {
+  color: var(--cn-warning-txt, #8a5a00) !important;
+}
+
 .barThreshold {
   position: absolute;
   top: -4px;

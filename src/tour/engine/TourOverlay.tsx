@@ -17,7 +17,7 @@ import { TourCallout } from './Callout';
 import { Spotlight } from './Spotlight';
 import { resolveTarget, useTour } from './TourProvider';
 import { findAnchor, useAnchor, useRect, type Box } from './useAnchor';
-import { floatPosition, GAP, HEADER, MARGIN, MAX_W, PILL_CLEAR, planPlacement, sideOf } from './placement';
+import { floatPosition, GAP, HEADER, MARGIN, MAX_W, MIN_W, PILL_CLEAR, planPlacement, SIDE_MIN_W, sideOf } from './placement';
 
 function useHighlights(ids: AnchorId[] | undefined): Box[] {
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -136,7 +136,9 @@ function OverlayInner() {
   const vh = window.innerHeight;
   const safeLeft = contentLeft(anchor.el);
   const pref = sideOf(step.placement);
-  const plan = liveBox && !isSheet ? planPlacement(liveBox, pref, cardH, vw, vh, safeLeft) : null;
+  // Beside a dialog the gutter is all the room there is, so the narrower card is allowed there only.
+  const minSideW = anchor.el?.closest('[role="dialog"]') ? MIN_W : SIDE_MIN_W;
+  const plan = liveBox && !isSheet ? planPlacement(liveBox, pref, cardH, vw, vh, safeLeft, minSideW) : null;
   const anchored = !!anchor.el && !isSheet && !!plan;
   const floating = !!anchor.el && !isSheet && !plan && !!liveBox;
 
@@ -161,7 +163,8 @@ function OverlayInner() {
       const offscreen = r.top < HEADER - 8 || r.bottom > h - 24;
       const left = contentLeft(el);
       const box = { x: r.left - 8, y: r.top - 8, w: r.width + 16, h: r.height + 16 };
-      const noRoom = window.innerWidth > 720 && !planPlacement(box, pref, cardHRef.current, window.innerWidth, h, left);
+      const narrowOk = el.closest('[role="dialog"]') ? MIN_W : SIDE_MIN_W;
+      const noRoom = window.innerWidth > 720 && !planPlacement(box, pref, cardHRef.current, window.innerWidth, h, left, narrowOk);
       const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
       if ((offscreen || noRoom) && (fitsUnder || r.height > h - HEADER - 40)) {
         const prev = el.style.scrollMarginTop;
@@ -211,7 +214,7 @@ function OverlayInner() {
   // On phones the callout is a sheet; if the target sits in the lower half, the sheet goes to the top.
   const sheetTop = mode === 'sheet' && !!liveBox && liveBox.y + liveBox.h / 2 > vh * 0.5;
   const floatW = Math.min(MAX_W, vw - safeLeft - MARGIN * 2);
-  const floatPos = mode === 'float' ? floatPosition(liveBox, floatW, Math.min(cardH, vh - HEADER - MARGIN * 2), vw, vh, safeLeft) : null;
+  const floatPos = mode === 'float' ? floatPosition(liveBox, floatW, Math.min(cardH, vh - HEADER - MARGIN * 2), vw, vh, safeLeft, step.floatCorner) : null;
   const style = useMemo<CSSProperties | undefined>(() => {
     if (mode === 'anchored') return { ...floatingStyles, width: plan?.width };
     if (mode === 'float' && floatPos) return { left: floatPos.left, top: floatPos.top, width: floatW, maxHeight: vh - floatPos.top - MARGIN };

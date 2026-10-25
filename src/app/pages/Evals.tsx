@@ -12,6 +12,7 @@ import { StatusChip } from '../../uis/StatusChip';
 import { useEvals } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { money, ms } from '../lib/labels';
+import { pctText, rateOf } from '../../shared/format';
 import { MODEL_ROLE_LABEL, useModelLabels } from '../lib/models';
 import { LevelHeatmap, MetricCard, TypeBars } from './evals/EvalParts';
 import { PromotionGate } from './evals/PromotionGate';
@@ -19,14 +20,16 @@ import { LOWER_IS_BETTER, f1, metric, metricLabel, pooled } from './evals/evalMo
 import styles from './evals/Evals.module.css';
 
 function pctOrDash(v: number | null | undefined, d = 1) {
-  return v == null ? '—' : `${(v * 100).toFixed(d)}%`;
+  return pctText(v, d);
 }
 
 function CandidateCompare({ candidate, current }: { candidate: EvalRun; current: EvalRun }) {
   const rows = candidate.metrics
     .map((m) => {
       const base = metric(current, m.key);
-      const delta = m.value != null && base?.value != null ? (m.value - base.value) * 100 : null;
+      const mv = rateOf(m);
+      const bv = rateOf(base);
+      const delta = mv != null && bv != null ? (mv - bv) * 100 : null;
       const better = delta == null ? null : LOWER_IS_BETTER.has(m.key) ? delta < 0 : delta > 0;
       return { m, base, delta, better };
     })
@@ -208,7 +211,7 @@ export default function EvalsPage() {
       </div>
 
       <div className={styles.mainGrid}>
-        <Panel title="Precision and recall per insight type" sub="Every bar shows its count; the tick is the threshold the type must clear." anchor={tourAnchor('evals.metrics')}>
+        <Panel title="Precision and recall per insight type" sub="Reported per type, with counts. The dashed tick is the pooled gate level, a target here: the gate itself checks all types pooled." anchor={tourAnchor('evals.metrics')}>
           <TypeBars run={latest} />
         </Panel>
         <div className="sl-stack-lg">

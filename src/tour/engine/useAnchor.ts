@@ -5,9 +5,10 @@ export type AnchorState = { el: HTMLElement | null; status: 'none' | 'waiting' |
 
 const sel = (id: string) => `[data-tour="${CSS.escape(id)}"]`;
 
+/** Has a size and is not parked off-screen sideways (a closed nav drawer). Below the fold still counts: it can be scrolled to. */
 function visible(el: HTMLElement): boolean {
   const r = el.getBoundingClientRect();
-  return r.width > 0 && r.height > 0;
+  return r.width > 0 && r.height > 0 && r.right > 0 && r.left < window.innerWidth;
 }
 
 export function findAnchor(id: AnchorId): HTMLElement | null {

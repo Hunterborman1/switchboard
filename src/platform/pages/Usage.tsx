@@ -38,6 +38,9 @@ function shiftHeat(cells: UsageReportX['heatmap'], tz: string) {
   });
 }
 
+/** One path style everywhere: strip the deployment prefix so "/repo/invoca/app/new" and "/app/new" read the same. */
+const cleanPath = (p: string | null | undefined): string | null => (p ? p.replace(/^\/repo\/invoca(?=\/|$)/, '') || '/' : null);
+
 export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boolean }) {
   const { timezone } = useTimezone();
   const l = data.live;
@@ -94,7 +97,8 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
                         {s.isYou ? <span className="ao-you">That’s you</span> : null}
                       </span>
                       <span className="m">
-                        {s.events} events · on {s.lastPath ?? '—'}
+                        {s.events} event{s.events === 1 ? '' : 's'}
+                        {cleanPath(s.lastPath) ? ` · on ${cleanPath(s.lastPath)}` : ''}
                       </span>
                     </span>
                     <time dateTime={s.lastAt}>{f.ago(s.lastAt)}</time>
@@ -123,7 +127,7 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
                           {f.kind(e.kind)} {you ? <span className="ao-you">You</span> : null}
                         </span>
                         <span className="m">
-                          {e.path ?? (typeof e.props.step === 'string' ? e.props.step : '')} {e.actorId === 'owner' ? '· owner' : `· ${e.actorId}`}
+                          {cleanPath(e.path) ?? (typeof e.props.step === 'string' ? e.props.step : '')} {e.actorId === 'owner' ? '· owner' : `· ${e.actorId}`}
                         </span>
                       </span>
                       <time dateTime={e.at} title={f.time(e.at, timezone, true)}>

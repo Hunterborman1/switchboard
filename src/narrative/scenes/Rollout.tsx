@@ -151,7 +151,7 @@ export function Rollout({ beat }: { beat: number }) {
           {[
             { k: 'Review cadence', v: 'Every agent reviewed on a calendar: owner, evals, cost, incidents, still needed? Overdue shows up on the exec view.' },
             { k: 'The agent standard', v: 'Nine checks: owner, purpose, data review, evals with a gate, logs and traces, spend cap, human review, rollback, cadence.' },
-            { k: 'Maintenance', v: 'Model and prompt changes go through the eval gate. Drift, cost spikes and SLO breaches page the owner.' },
+            { k: 'Maintenance', v: 'Model and prompt changes go through the eval gate. Cost spikes and SLO breaches alert the owner; drift is caught by scheduled eval re-runs and the reviewer-edit rate.' },
             { k: 'Builder enablement', v: 'Templates for Claude and Gumloop builds, the standard as a checklist, weekly office hours, a shared eval harness.' },
           ].map((x) => (
             <Reveal.Item key={x.k} className="n-card sc-ro__op">

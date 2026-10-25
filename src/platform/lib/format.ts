@@ -1,5 +1,6 @@
 /** Number and time formatting for Agent Ops. Null renders as "—"; estimates carry a "~". */
 import type { ConsoleTimezone } from '../../uis/format';
+import { pctText } from '../../shared/format';
 
 export const DASH = '—';
 
@@ -32,7 +33,7 @@ export function hours(v: number | null | undefined, est = true): string {
 }
 export function pct(v: number | null | undefined, digits = 0): string {
   if (v == null || !Number.isFinite(v)) return DASH;
-  return `${(v * 100).toFixed(digits)}%`;
+  return pctText(v, digits);
 }
 export function signedPct(v: number | null | undefined): string {
   if (v == null || !Number.isFinite(v)) return DASH;
@@ -44,12 +45,20 @@ export function multiple(v: number | null | undefined): string {
   if (v >= 1000) return '1,000×+';
   return `${v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(1)}×`;
 }
+/** A duration. Code-only work that finishes inside a millisecond reads "<1 ms", never "0 ms". */
 export function ms(v: number | null | undefined): string {
   if (v == null || !Number.isFinite(v)) return DASH;
+  if (v < 1) return '<1 ms';
   if (v < 1000) return `${Math.round(v)} ms`;
   if (v < 60_000) return `${(v / 1000).toFixed(v < 10_000 ? 2 : 1)} s`;
   const m = Math.floor(v / 60_000);
   return `${m}m ${Math.round((v % 60_000) / 1000)}s`;
+}
+
+/** An offset on a time axis ("0 ms" is the origin, not a duration). */
+export function offset(v: number | null | undefined): string {
+  if (v === 0) return '0 ms';
+  return ms(v);
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

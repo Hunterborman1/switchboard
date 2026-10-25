@@ -189,6 +189,10 @@
 .t-hud--product, .t-hud--pill { top: auto; bottom: 14px; }
 /* The spotlight is under the pill: step out of the way so the target stays clickable (Esc still opens the menu). */
 .t-hud--faded { opacity: 0.2; pointer-events: none; }
+/* A product dialog is open (the file picker): step aside entirely so its footer buttons stay clear. Esc still opens the menu. */
+.t-hud--away { opacity: 0; pointer-events: none; }
+/* Phones: sits over the space its slot reserves in the sticky top bar (Hud.tsx sets top/right). */
+.t-hud--pill.t-hud--docked { left: auto; bottom: auto; box-shadow: none; }
 .t-hud--pill {
   width: auto;
   height: 40px;

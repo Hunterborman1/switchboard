@@ -7,7 +7,8 @@ import type { ObservabilityX, RegistryRow } from '../../worker/platform/types';
 import { acknowledgeAlert, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { Bars, Legend, Lines } from '../ui/charts';
-import { IconBook, IconTrace } from '../ui/icons';
+import { IconTrace } from '../ui/icons';
+import { RunbookLink } from './RunbookLink';
 import { AlertPill, BudgetBar, Callout, Empty, ErrorState, ModelName, PageHead, PageSkeleton, Panel, Seg, SloPill, SourceChip, Table } from '../ui/kit';
 
 function sloValue(s: Slo): string {
@@ -100,9 +101,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
                   <IconTrace /> Trace
                 </Link>
               ) : null}
-              <a className="ao-btn sm" href={a.runbook} target="_blank" rel="noreferrer noopener">
-                <IconBook /> Runbook
-              </a>
+              <RunbookLink url={a.runbook} />
               {status === 'open' ? (
                 <button
                   type="button"
