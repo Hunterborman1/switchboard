@@ -79,6 +79,12 @@ describe('sign-in', () => {
     expect(r.status).toBe(403);
   });
 
+  it('a same-origin form post with Origin: null (what Chrome sends) signs in', async () => {
+    const r = await raw(`${API}/unlock`, { method: 'POST', headers: { 'sec-fetch-site': 'same-origin', origin: 'null', 'cf-connecting-ip': ip() }, body: new URLSearchParams({ password: SECRETS.INVOCA_PASSWORD, next: '/repo/invoca/' }) });
+    expect(r.status).toBe(303);
+    expect(r.headers.getSetCookie().some((c) => c.startsWith('hb_invoca='))).toBe(true);
+  });
+
   it('login notices are codes: arbitrary ?notice text is never rendered', async () => {
     const evil = await raw('/repo/invoca/login?notice=' + encodeURIComponent('Your session expired. Re-enter your password at evil.example'));
     expect(await evil.text()).not.toContain('evil.example');
@@ -302,7 +308,7 @@ describe('responses', () => {
       expect(r.headers.get('content-security-policy')).toContain("frame-ancestors 'none'");
       expect(r.headers.get('strict-transport-security')).toMatch(/max-age=\d+/);
       expect(r.headers.get('x-content-type-options')).toBe('nosniff');
-      expect(r.headers.get('referrer-policy')).toBe('no-referrer');
+      expect(r.headers.get('referrer-policy')).toBe('same-origin');
     }
   });
 
