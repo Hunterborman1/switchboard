@@ -32,6 +32,9 @@ const DB = 'invoca-agent-ops';
 const args = process.argv.slice(2);
 const target = args.includes('--remote') ? '--remote' : args.includes('--local') ? '--local' : null;
 const apply = args.includes('--apply');
+/** --also viewer:abc123,viewer:def456 marks known test actors the heuristics would keep. */
+const alsoIdx = args.indexOf('--also');
+const also = new Set(alsoIdx >= 0 ? args[alsoIdx + 1]!.split(',') : []);
 const persistIdx = args.indexOf('--persist-to');
 const persist = persistIdx >= 0 ? ['--persist-to', args[persistIdx + 1]!] : [];
 if (!target) {
@@ -87,6 +90,7 @@ const verdicts: Verdict[] = actors.map((a) => {
   const ws = wsRows.filter((w) => w.workspace_id.startsWith(prefix));
   const vias = new Set(ws.flatMap((w) => (w.vias ?? '').split(',').filter(Boolean)));
   const workspaces = ws.map((w) => w.workspace_id);
+  if (also.has(a.actor_id)) return { actor: a.actor_id, workspaces, test: true, why: 'named with --also' };
   if (!ws.length) return { actor: a.actor_id, workspaces, test: false, why: 'no request logs to attribute' };
   if ([...vias].some((v) => v !== 'password')) return { actor: a.actor_id, workspaces, test: false, why: `auth via ${[...vias].join('/')}` };
   if (!Number(a.session_starts)) return { actor: a.actor_id, workspaces, test: true, why: 'API only, no browser session' };
