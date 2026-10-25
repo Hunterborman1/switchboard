@@ -8,7 +8,7 @@ import { AgentStatus, Callout, ErrorState, PageHead, PageSkeleton, Panel, Review
 
 function Tabs() {
   return (
-    <nav className="ao-tabs" aria-label="Standard & reviews sections">
+    <nav className="ao-tabs" aria-label="Standard and reviews sections">
       {/* Phones get short labels so all three tabs fit without clipping. */}
       <NavLink to="/ops/standard" end>
         <span className="ao-tab-long">Standard matrix</span>
@@ -32,9 +32,8 @@ export function Standard() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Govern"
-        title="Agent standard & reviews"
-        sub="One standard every agent is reviewed against, whoever built it and in whatever tool. Nine checks, each with evidence; two of them (review cadence and live logging) are measured, not self-reported."
+        title="Agent standard and reviews"
+        sub="One standard every agent is reviewed against, whoever built it and in whatever tool. Nine checks, each with evidence. Two of them, the review schedule and live logging, are measured from data rather than self-reported."
       />
       <Tabs />
       {tab === 'matrix' ? <Matrix /> : tab === 'reviews' ? <Reviews /> : <Checklist />}
@@ -44,14 +43,14 @@ export function Standard() {
 
 const SHORT: Record<string, string> = {
   owner: 'Owners',
-  purpose: 'Purpose & metric',
+  purpose: 'Purpose and metric',
   data_review: 'Security review',
-  evals: 'Evals & gate',
-  logging: 'Logs & traces',
+  evals: 'Tested before release',
+  logging: 'Logs and traces',
   cost_cap: 'Spend cap',
   human_review: 'Human review',
-  rollback: 'Rollback & runbook',
-  review_cadence: 'Review cadence',
+  rollback: 'Rollback plan',
+  review_cadence: 'Review schedule',
 };
 
 function Matrix() {
@@ -65,7 +64,7 @@ function Matrix() {
   const gaps = matrix.flatMap((m) => m.checks.filter((c) => !c.passed).map((c) => ({ agent: m.name, agentId: m.agentId, ...c })));
   return (
     <>
-      <Panel title="Agents × checks" sub="Select a cell for its evidence. A gap is a reason to act, not a reason to hide the agent." flush>
+      <Panel title="Every agent against every check" sub="Select a cell to see its evidence. A gap is a reason to act, not a reason to hide the agent." flush>
         <div className="ao-table-wrap">
           <table className="ao-table ao-matrix">
             <caption className="ao-sr">Agent standard matrix</caption>
@@ -88,12 +87,12 @@ function Matrix() {
                 const passed = m.checks.filter((c) => c.passed).length;
                 return (
                   <tr key={m.agentId} data-agent={m.agentId}>
-                    <th scope="row" style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 'var(--fs-body)', color: 'var(--cn-off-black)', background: 'transparent', position: 'static', borderBottom: '1px solid var(--cn-border-row)' }}>
+                    <th scope="row" style={{ fontWeight: 400, fontSize: 14, color: 'var(--ao-text)', background: 'transparent', position: 'static', paddingTop: 10, paddingBottom: 10 }}>
                       <div className="cell-title" style={{ minWidth: 180, maxWidth: 240, whiteSpace: 'normal' }}>
                         <Link className="row-link" to={`/ops/agents/${m.agentId}#standard`}>
                           {m.name}
                         </Link>
-                        <small style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                        <small style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                           <AgentStatus value={m.status} /> {m.owner}
                         </small>
                       </div>
@@ -125,8 +124,8 @@ function Matrix() {
           </table>
         </div>
         {selRow && selCheck ? (
-          <div className="ao-panel-foot" style={{ justifyContent: 'flex-start', color: 'var(--cn-off-black)' }} aria-live="polite">
-            <span className={`ao-mcell ${selCheck.passed ? 'pass' : 'fail'}`} style={{ width: 24, height: 24 }} aria-hidden="true">
+          <div className="ao-panel-foot" style={{ justifyContent: 'flex-start', color: 'var(--ao-text)', flexWrap: 'nowrap', alignItems: 'flex-start' }} aria-live="polite">
+            <span className={`ao-mcell ${selCheck.passed ? 'pass' : 'fail'}`} style={{ width: 22, height: 22, flex: 'none', cursor: 'default', boxShadow: 'none' }} aria-hidden="true">
               {selCheck.passed ? <IconCheck size={12} /> : <IconX size={12} />}
             </span>
             <span>
@@ -138,7 +137,7 @@ function Matrix() {
           </div>
         ) : (
           <div className="ao-panel-foot">
-            <span>Select any cell to read its evidence.</span>
+            <span>Select any cell to see its evidence.</span>
           </div>
         )}
       </Panel>
@@ -157,13 +156,13 @@ function Matrix() {
                     </b>
                     <small>{g.evidence}</small>
                   </span>
-                  <span className="go">Agent →</span>
+                  <span className="go" aria-hidden="true">→</span>
                 </Link>
               </li>
             ))}
           </ul>
         ) : (
-          <div style={{ padding: 18 }}>
+          <div style={{ padding: 20 }}>
             <Callout tone="live">Every agent passes every check.</Callout>
           </div>
         )}
@@ -184,10 +183,10 @@ function Reviews() {
   const months: { label: string; at: number }[] = [];
   const d0 = new Date(from);
   for (let m = new Date(Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() + 1, 1)); m.getTime() < to; m = new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth() + 1, 1))) months.push({ label: f.day(m.toISOString()).replace(/ 1$/, ''), at: m.getTime() });
-  const color = (s: ReviewRow['reviewStatus']) => (s === 'overdue' ? 'var(--cn-danger)' : s === 'due_soon' ? '#B45309' : 'var(--cn-success)');
+  const color = (s: ReviewRow['reviewStatus']) => (s === 'overdue' ? 'var(--ao-danger)' : s === 'due_soon' ? 'var(--ao-warning-mark)' : 'var(--ao-success)');
   return (
     <>
-      <Panel title="Review calendar" sub="Sixty days either side of today. Green dot: last review held. Ring: next review, coloured by status. The bar is the cadence window.">
+      <Panel title="Review calendar" sub="Sixty days either side of today. Filled dot: the last review. Ring: the next one, coloured by status. The bar spans the time between them.">
         <div className="ao-cal">
           <div className="ao-cal-row">
             <span />
@@ -197,7 +196,7 @@ function Reviews() {
                   {m.label}
                 </span>
               ))}
-              <span style={{ left: x(today), color: 'var(--ao-navy)', fontWeight: 500, transform: 'translateX(-50%)' }}>Today</span>
+              <span style={{ left: x(today), color: 'var(--ao-text)', fontWeight: 500, transform: 'translateX(-50%)' }}>Today</span>
             </div>
           </div>
           {rows.map((row) => {
@@ -206,20 +205,20 @@ function Reviews() {
             return (
               <div className="ao-cal-row" key={row.agentId}>
                 <div className="cell-title" style={{ display: 'grid', gap: 2 }}>
-                  <Link className="row-link ao-link" style={{ color: 'var(--cn-off-black)', fontWeight: 500 }} to={`/ops/agents/${row.agentId}`}>
+                  <Link className="row-link ao-link" style={{ color: 'var(--ao-text)', fontWeight: 500 }} to={`/ops/agents/${row.agentId}`}>
                     {row.name}
                   </Link>
-                  <small className="ao-muted" style={{ fontSize: 'var(--fs-caption)' }}>
+                  <small className="ao-muted" style={{ fontSize: 13 }}>
                     {row.owner} · every {row.cadenceDays} days
                   </small>
                 </div>
                 <div className="ao-cal-lane" role="img" aria-label={`${row.name}: last review ${row.lastReview}, next review ${row.nextReview}, ${row.reviewStatus.replace('_', ' ')}`}>
-                  <span className="win" style={{ left: x(last), width: `calc(${x(next)} - ${x(last)})`, background: 'color-mix(in srgb, var(--ao-indigo) 16%, transparent)' }} />
+                  <span className="win" style={{ left: x(last), width: `calc(${x(next)} - ${x(last)})`, background: 'var(--ao-accent-subtle)' }} />
                   <span className="today" style={{ left: x(today) }} />
-                  <span className="pt" style={{ left: x(last), background: 'var(--cn-success)' }} title={`Last review ${row.lastReview}`}>
+                  <span className="pt" style={{ left: x(last), background: 'var(--ao-success)' }} title={`Last review ${f.dayYear(row.lastReview)}`}>
                     <IconCheck size={11} color="#fff" />
                   </span>
-                  <span className="pt" style={{ left: x(next), background: '#fff', borderColor: color(row.reviewStatus), borderWidth: 3 }} title={`Next review ${row.nextReview}`} />
+                  <span className="pt" style={{ left: x(next), background: '#fff', borderColor: color(row.reviewStatus), borderWidth: 3 }} title={`Next review ${f.dayYear(row.nextReview)}`} />
                 </div>
               </div>
             );
@@ -238,36 +237,36 @@ function Reviews() {
             { key: 'owner', mobileHide: true, header: 'Owner', sort: (x) => x.owner, render: (x) => x.owner },
             { key: 'status', mobileHide: true, header: 'Agent status', render: (x) => <AgentStatus value={x.status} /> },
             { key: 'last', mobileHide: true, header: 'Last review', sort: (x) => x.lastReview, render: (x) => f.dayYear(x.lastReview) },
-            { key: 'cad', mobileHide: true, header: 'Cadence', num: true, sort: (x) => x.cadenceDays, render: (x) => `${x.cadenceDays} days` },
-            { key: 'next', header: 'Next review', sort: (x) => x.nextReview, render: (x) => <span>{f.dayYear(x.nextReview)} <span className="ao-muted">({x.daysUntil >= 0 ? `in ${x.daysUntil}d` : `${-x.daysUntil}d ago`})</span></span> },
-            { key: 'rs', header: 'Review', sort: (x) => x.daysUntil, render: (x) => <ReviewPill value={x.reviewStatus} /> },
+            { key: 'cad', mobileHide: true, header: 'Every', num: true, sort: (x) => x.cadenceDays, render: (x) => `${x.cadenceDays} days` },
+            { key: 'next', header: 'Next review', sort: (x) => x.nextReview, render: (x) => <span>{f.dayYear(x.nextReview)} <span className="ao-muted">({x.daysUntil >= 0 ? `in ${x.daysUntil} day${x.daysUntil === 1 ? '' : 's'}` : `${-x.daysUntil} days ago`})</span></span> },
+            { key: 'rs', header: 'Status', sort: (x) => x.daysUntil, render: (x) => <ReviewPill value={x.reviewStatus} /> },
           ]}
         />
       </Panel>
-      <Callout tone="indigo" title="What a review covers.">
-        The owner and business owner walk through the agent’s numbers on this platform (adoption, hours, cost, SLOs, alerts since the last review), re-check the nine standard items, and record decisions in the changelog: keep, change, expand or retire.
+      <Callout title="What a review covers.">
+        The owner and business owner walk through the agent’s numbers here (use, hours saved, cost, service targets and alerts since the last review), re-check the nine standard items, and record a decision in the change history: keep, change, expand or retire.
       </Callout>
     </>
   );
 }
 
 const STEPS: { title: string; body: string; who: string }[] = [
-  { title: 'Name an owner and a business owner', body: 'The owner builds and runs it; the business owner is accountable for whether it is worth running. No owner, no production.', who: 'Requester + AI Operations' },
+  { title: 'Name an owner and a business owner', body: 'The owner builds and runs it; the business owner is accountable for whether it is worth running. No owner, no production.', who: 'Requester and AI Operations' },
   { title: 'Write the purpose, the unit of work and the success metric', body: 'One paragraph. What is a “unit” (a questionnaire drafted, a call processed)? How long does it take the manual way today? That baseline is an assumption until a 2-week time study replaces it.', who: 'Business owner' },
-  { title: 'Pass the security & data review', body: 'List every data source and destination, the classification, the provider’s retention terms, and what never goes to a model. Restricted data needs approval before any pilot user touches it.', who: 'Security & GRC' },
-  { title: 'Build an eval set and a promotion gate', body: 'Twenty to fifty real examples with expected outputs, scored on every prompt, model or flow change. A change that drops quality does not ship.', who: 'Owner' },
-  { title: 'Report to Agent Ops through the SDK', body: 'Structured logs and spans for every run, usage events and a work unit per task (minutes saved, review minutes, cost, outcome). Gumloop and Databricks agents forward theirs by webhook.', who: 'Owner + AI Operations' },
+  { title: 'Pass the security and data review', body: 'List every data source and destination, the classification, the provider’s retention terms, and what never goes to a model. Restricted data needs approval before any pilot user touches it.', who: 'Security & GRC' },
+  { title: 'Build a test set and a release check', body: 'Twenty to fifty real examples with expected outputs, scored on every prompt, model or flow change. A change that lowers quality does not ship.', who: 'Owner' },
+  { title: 'Report to Agent Ops', body: 'Logs and timed steps for every run, usage, and a record per task (minutes saved, review minutes, cost, outcome). Gumloop and Databricks agents send theirs by webhook.', who: 'Owner and AI Operations' },
   { title: 'Set a spend cap and a per-run budget', body: 'A monthly cap at the provider or workspace, and a per-run ceiling in code, so one runaway input cannot spend the month.', who: 'Owner' },
   { title: 'Keep a person on high-stakes output', body: 'Decide which outputs need review before they reach a customer, a contract or a system of record, and make that the default path.', who: 'Business owner' },
   { title: 'Document rollback and a runbook', body: 'How to switch it off, how to restore the previous version, who gets paged, and what users see when it is down.', who: 'Owner' },
-  { title: 'Book the first review and a cadence', body: 'A production-readiness review after the pilot, then every 30–90 days depending on risk. Overdue reviews fail the standard automatically.', who: 'AI Operations' },
+  { title: 'Book the first review and a schedule', body: 'A readiness review after the pilot, then every 30 to 90 days depending on risk. An overdue review fails the standard automatically.', who: 'AI Operations' },
 ];
 
 function Checklist() {
   return (
     <>
-      <Callout tone="indigo" title="Before an agent goes to production.">
-        Practical and short: each step maps to one of the nine standard checks, so passing the checklist is passing the review. Pilots can start once steps 1–3 are done.
+      <Callout title="Before an agent goes to production.">
+        Each step maps to one of the nine standard checks, so passing the checklist is passing the review. A pilot can start once steps 1 to 3 are done.
       </Callout>
       <ol className="ao-steps">
         {STEPS.map((s) => (
@@ -281,18 +280,18 @@ function Checklist() {
         ))}
       </ol>
       <Panel title="Rollout after launch" sub="How a new agent earns trust and adoption.">
-        <ol style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 8, fontSize: 'var(--fs-body-sm)', color: 'var(--cn-ink-2)', lineHeight: 1.55 }}>
+        <ol style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 8, fontSize: 14, color: 'var(--ao-text-2)', lineHeight: 1.55 }}>
           <li>
-            <b style={{ fontWeight: 500, color: 'var(--cn-off-black)' }}>Shadow (1–2 weeks):</b> runs on real work, nothing is delivered; compare with what people did by hand.
+            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Shadow (1 to 2 weeks):</b> runs on real work but delivers nothing; compare with what people did by hand.
           </li>
           <li>
-            <b style={{ fontWeight: 500, color: 'var(--cn-off-black)' }}>Champions (3–6 weeks):</b> 2–3 volunteers, weekly calibration on misses and noise, publish accuracy.
+            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Champions (3 to 6 weeks):</b> two or three volunteers, a weekly look at misses and noise, accuracy shared openly.
           </li>
           <li>
-            <b style={{ fontWeight: 500, color: 'var(--cn-off-black)' }}>Team:</b> automatic above the confidence gate, review queue for the rest; adoption and hours tracked here.
+            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Team:</b> confident outputs go out automatically, the rest go to a review queue; use and hours saved are tracked here.
           </li>
           <li>
-            <b style={{ fontWeight: 500, color: 'var(--cn-off-black)' }}>Iterate or retire:</b> every review decides keep, change, expand or retire, recorded in the changelog.
+            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Improve or retire:</b> every review decides to keep, change, expand or retire the agent, recorded in its change history.
           </li>
         </ol>
       </Panel>

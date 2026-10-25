@@ -1,22 +1,24 @@
 /**
- * Agent Ops shell: the UIS ConsoleShell (collapsible rail, mobile drawer) on the Invoca
- * HB tokens, re-themed deep-blue under `.ao-app` so the platform reads as a different place
- * from any one agent. A slim top bar carries the breadcrumb, the persistent "Simulated org
- * data" marker and the timezone toggle on every page.
+ * Agent Ops shell: the shared light ConsoleShell (same sidebar as Signal Loop, per
+ * docs/DESIGN.md "Shells"), with a product switcher at the top, sentence-case section labels,
+ * and a slim top bar carrying the section title, an "About this data" panel and a compact
+ * time-zone select on every page.
  */
 import '../theme/invoca.css';
 import '../uis/uis.css';
 import './platform.css';
-import { createContext, useContext, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { ConsoleShell, type ConsoleNavGroup } from '../uis/ConsoleShell';
-import { TimezoneProvider } from '../uis/TimezoneContext';
-import { TimezoneToggle } from '../uis/TimezoneToggle';
+import { TimezoneProvider, useTimezone } from '../uis/TimezoneContext';
+import type { ConsoleTimezone } from '../uis/format';
 import { TourPillSlot } from '../tour/hud/pillSlot';
 import type { PlatformMeta } from '../worker/platform/types';
 import { useApi } from './lib/api';
 import { day, dayYear } from './lib/format';
-import { IconAgent, IconArrowUpRight, IconCost, IconLogs, IconOverview, IconPulse, IconRegistry, IconShield, IconUsers } from './ui/icons';
+import { IconInfoSmall } from './ui/InfoTip';
+import { Drawer } from './ui/kit';
+import { IconCost, IconLogs, IconOverview, IconPulse, IconRegistry, IconShield, IconUsers } from './ui/icons';
 
 const Nested = createContext(false);
 
@@ -32,47 +34,68 @@ const GROUPS: ConsoleNavGroup[] = [
   {
     label: 'Observe',
     items: [
-      { to: '/ops/logs', label: 'Logs & traces', icon: <IconLogs /> },
+      { to: '/ops/logs', label: 'Logs and traces', icon: <IconLogs /> },
       { to: '/ops/reliability', label: 'Reliability', icon: <IconPulse /> },
       { to: '/ops/cost', label: 'Cost', icon: <IconCost /> },
     ],
   },
   {
     label: 'Govern',
-    items: [{ to: '/ops/standard', label: 'Standard & reviews', icon: <IconShield /> }],
+    items: [{ to: '/ops/standard', label: 'Standard and reviews', icon: <IconShield /> }],
   },
 ];
 
-const CRUMB: Record<string, string> = {
-  '': 'Overview',
-  agents: 'Agent registry',
-  usage: 'Usage',
-  logs: 'Logs & traces',
-  traces: 'Trace',
-  reliability: 'Reliability',
-  cost: 'Cost',
-  standard: 'Standard & reviews',
-  summary: 'Executive summary',
+/** Section title per first path segment, with the nav group it sits under. */
+const CRUMB: Record<string, { label: string; group?: string; groupTo?: string }> = {
+  '': { label: 'Overview', group: 'Platform' },
+  agents: { label: 'Agent registry', group: 'Platform' },
+  usage: { label: 'Usage', group: 'Platform' },
+  logs: { label: 'Logs and traces', group: 'Observe' },
+  traces: { label: 'Trace', group: 'Logs and traces', groupTo: '/ops/logs' },
+  reliability: { label: 'Reliability', group: 'Observe' },
+  cost: { label: 'Cost', group: 'Observe' },
+  standard: { label: 'Standard and reviews', group: 'Govern' },
+  summary: { label: 'Executive summary', group: 'Overview', groupTo: '/ops' },
+  runbook: { label: 'Runbook', group: 'Agent registry', groupTo: '/ops/agents' },
 };
 
-function Brand({ collapsed }: { collapsed?: boolean }) {
+function Mark() {
   return (
-    <Link to="/ops" className="ao-brand" aria-label="Agent Ops home">
-      <span className="ao-brand-mark" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round">
-          <circle cx="4" cy="4" r="1.6" />
-          <circle cx="12" cy="4" r="1.6" />
-          <circle cx="4" cy="12" r="1.6" />
-          <circle cx="12" cy="12" r="1.6" fill="#D1FFD1" stroke="#D1FFD1" />
-          <path d="M5.6 4h4.8M4 5.6v4.8M5.6 12h4.8M12 5.6v4.8" strokeOpacity=".7" />
-        </svg>
-      </span>
-      {collapsed ? null : (
-        <span className="ao-brand-text">
-          <b>Agent Ops</b>
-          <small>AI operations · demo</small>
-        </span>
-      )}
+    <span className="ao-brand-mark" aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round">
+        <circle cx="4" cy="4" r="1.6" />
+        <circle cx="12" cy="4" r="1.6" />
+        <circle cx="4" cy="12" r="1.6" />
+        <circle cx="12" cy="12" r="1.6" fill="#fff" />
+        <path d="M5.6 4h4.8M4 5.6v4.8M5.6 12h4.8M12 5.6v4.8" />
+      </svg>
+    </span>
+  );
+}
+
+/** Product name + switcher. Signal Loop and Agent Ops share this shell; the switcher moves between them. */
+function Brand() {
+  return (
+    <>
+      <Link to="/ops" className="ao-brand" aria-label="Agent Ops home">
+        <Mark />
+        <span className="ao-brand-name">Agent Ops</span>
+        <span className="ao-brand-tag">Demo</span>
+      </Link>
+      <nav className="ao-switch" aria-label="Product">
+        <Link to="/app">Signal Loop</Link>
+        <Link to="/ops" aria-current="true">
+          Agent Ops
+        </Link>
+      </nav>
+    </>
+  );
+}
+
+function BrandCollapsed() {
+  return (
+    <Link to="/ops" className="ao-brand-collapsed" aria-label="Agent Ops home" title="Agent Ops">
+      <Mark />
     </Link>
   );
 }
@@ -81,42 +104,105 @@ function Footer({ collapsed }: { collapsed: boolean }) {
   return (
     <div className="ao-footer">
       <TourPillSlot placement="rail" compact={collapsed} />
-      <Link to="/app" className={`ao-agent-link${collapsed ? ' is-collapsed' : ''}`} aria-label={collapsed ? 'Open Signal Loop, the agent' : undefined} title={collapsed ? 'Open Signal Loop' : undefined}>
-        <IconAgent size={16} />
-        {collapsed ? null : (
-          <>
-            <span style={{ flex: 1 }}>
-              Open Signal Loop
-              <small>The agent itself</small>
-            </span>
-            <IconArrowUpRight size={14} />
-          </>
-        )}
-      </Link>
-      {collapsed ? null : <p className="ao-footer-note">Agent Ops is the platform every agent reports into. Signal Loop is one agent in it.</p>}
+      {collapsed ? null : <p className="ao-footer-note">Every agent reports here. Signal Loop is one of them.</p>}
     </div>
+  );
+}
+
+function TimezoneSelect() {
+  const { timezone, setTimezone } = useTimezone();
+  return (
+    <label className="ao-tz">
+      <span>Time zone</span>
+      <select className="ao-select" aria-label="Time zone" value={timezone} onChange={(e) => setTimezone(e.target.value as ConsoleTimezone)}>
+        <option value="UTC">UTC</option>
+        <option value="America/Los_Angeles">Pacific (PT)</option>
+      </select>
+    </label>
+  );
+}
+
+/** One calm explanation of where the numbers come from, available from every page. */
+export function AboutDataDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const meta = useApi<PlatformMeta>('/meta');
+  const m = meta.data;
+  return (
+    <Drawer open={open} onClose={onClose} title="About this data" sub="Where the numbers in Agent Ops come from.">
+      <dl className="ao-deflist">
+        <div>
+          <dt>Six weeks of simulated history</dt>
+          <dd>
+            Org-wide usage, runs and costs{m ? ` from ${day(m.simulatedFrom)} to ${dayYear(m.simulatedTo)}` : ''} are simulated so the platform has a realistic history to show. Every simulated item is
+            labelled “Simulated” where it appears on its own.
+          </dd>
+        </div>
+        <div>
+          <dt>Live activity from this demo</dt>
+          <dd>Signal Loop is a real agent. Its runs, AI calls, deliveries and the people using this demo right now report here live and are labelled “Live”.</dd>
+        </div>
+        <div>
+          <dt>Hours saved and value are estimates</dt>
+          <dd>
+            Hours saved compares each task with how long it takes by hand (a registered baseline, to be confirmed by a two-week time study), minus the time a person spent reviewing. Value is hours saved
+            multiplied by a loaded hourly cost. Both baselines and the hourly cost are editable under Assumptions on the overview.
+          </dd>
+        </div>
+        <div>
+          <dt>AI cost is metered, not billed</dt>
+          <dd>AI cost adds up the token usage each AI call reports. It is not an invoice and leaves out build time and seat licences.</dd>
+        </div>
+      </dl>
+      <p>
+        <Link to="/ops?assumptions=1" className="ao-link" onClick={onClose}>
+          Review the assumptions
+        </Link>
+      </p>
+    </Drawer>
   );
 }
 
 function TopBar() {
   const { pathname } = useLocation();
-  const meta = useApi<PlatformMeta>('/meta');
+  const [about, setAbout] = useState(false);
   const seg = pathname.replace(/^.*\/ops\/?/, '').split('/')[0] ?? '';
-  const label = CRUMB[seg] ?? 'Agent Ops';
-  const m = meta.data;
+  const c = CRUMB[seg] ?? { label: 'Agent Ops' };
+  const deep = pathname.split('/').filter(Boolean).length > 2 && seg && seg !== 'traces' && seg !== 'summary' && seg !== 'runbook';
   return (
     <div className="ao-topbar ao-noprint">
-      {/* The rail already names the product, so the trail starts at the section (no "Agent Ops" root). */}
       <nav className="ao-crumbs" aria-label="Breadcrumb">
-        {pathname.split('/').filter(Boolean).length > 2 && seg && seg !== 'traces' ? <Link to={`/ops/${seg}`}>{label}</Link> : <span aria-current="page">{label}</span>}
+        {deep ? (
+          <>
+            <Link to={`/ops/${seg}`} className="ao-crumb-title">
+              {c.label}
+            </Link>
+          </>
+        ) : (
+          <>
+            {c.group ? (
+              <>
+                {c.groupTo ? (
+                  <Link to={c.groupTo} className="ao-crumb-parent">
+                    {c.group}
+                  </Link>
+                ) : (
+                  <span className="ao-crumb-parent">{c.group}</span>
+                )}
+                <span className="sep" aria-hidden="true">
+                  /
+                </span>
+              </>
+            ) : null}
+            <span aria-current="page">{c.label}</span>
+          </>
+        )}
       </nav>
       <div className="ao-topbar-end">
-        <span className="ao-simmark" title="Everything except Signal Loop’s live telemetry and real demo viewers is simulated, and labelled where it appears.">
-          <i aria-hidden="true" />
-          Simulated org data · 6 weeks{m ? ` (${day(m.simulatedFrom)} – ${dayYear(m.simulatedTo)})` : ''}
-        </span>
-        <TimezoneToggle />
+        <button type="button" className="ao-btn ghost sm" onClick={() => setAbout(true)} data-testid="about-data" aria-label="About this data">
+          <IconInfoSmall /> <span className="ao-about-label">About this data</span>
+        </button>
+        <TimezoneSelect />
       </div>
+      <AboutDataDrawer open={about} onClose={() => setAbout(false)} />
     </div>
   );
 }
@@ -127,9 +213,9 @@ function ShellInner({ children }: { children?: ReactNode }) {
     window.scrollTo({ top: 0 });
   }, [pathname]);
   useEffect(() => {
-    // The host page's body carries the narrative's dark background; the platform owns its own.
+    // The host page's body may carry another background; the platform owns its own.
     const prevBg = document.body.style.background;
-    document.body.style.background = '#F9F9F6';
+    document.body.style.background = '#FFFFFF';
     return () => {
       document.body.style.background = prevBg;
     };
@@ -137,7 +223,7 @@ function ShellInner({ children }: { children?: ReactNode }) {
   useEffect(() => {
     const prev = document.title;
     const seg = pathname.replace(/^.*\/ops\/?/, '').split('/')[0] ?? '';
-    document.title = `${CRUMB[seg] ?? 'Agent Ops'} · Agent Ops`;
+    document.title = `${CRUMB[seg]?.label ?? 'Agent Ops'} · Agent Ops`;
     return () => {
       document.title = prev;
     };
@@ -151,8 +237,8 @@ function ShellInner({ children }: { children?: ReactNode }) {
         <ConsoleShell
           storageKey="ao-rail-collapsed"
           brand={<Brand />}
-          brandCollapsed={<Brand collapsed />}
-          mobileBrand={<span style={{ fontWeight: 500 }}>Agent Ops</span>}
+          brandCollapsed={<BrandCollapsed />}
+          mobileBrand={<span style={{ fontWeight: 600 }}>Agent Ops</span>}
           groups={GROUPS}
           footer={<Footer collapsed={false} />}
           footerCollapsed={<Footer collapsed />}
@@ -177,4 +263,3 @@ export function PlatformShell({ children }: { children?: ReactNode }) {
     </Nested.Provider>
   );
 }
-

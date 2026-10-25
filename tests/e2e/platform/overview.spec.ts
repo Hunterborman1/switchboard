@@ -7,9 +7,11 @@ test('overview: KPIs, weekly chart, needs attention, impact table', async ({ pag
   await open(page, '/ops');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('What our AI agents return');
   const kpis = anchor(page, 'ops.overview.kpis');
-  for (const label of ['Hours returned', 'Value', 'AI cost', 'In production', 'Weekly active', 'excl. build & seats']) await expect(kpis).toContainText(label);
+  for (const label of ['Hours saved', 'Estimated value', 'AI cost', 'Agents in production', 'Weekly active users']) await expect(kpis).toContainText(label);
   await expect(page.getByText('Estimates, not billing data.').first()).toBeVisible();
-  await expect(page.locator('.ao-simmark')).toContainText('Simulated org data · 6 weeks');
+  await page.getByTestId('about-data').click();
+  await expect(page.getByRole('dialog', { name: 'About this data' })).toContainText('Six weeks of simulated history');
+  await page.keyboard.press('Escape');
   await expect(anchor(page, 'ops.overview.chart').locator('.recharts-bar-rectangle').first()).toBeVisible();
   const att = anchor(page, 'ops.overview.attention');
   await expect(att).toContainText('eval suite with promotion gate');

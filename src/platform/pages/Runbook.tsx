@@ -109,7 +109,7 @@ function BlockView({ b }: { b: Block }) {
     const items = b.lines.map((l) => l.replace(/^\s*(?:- |\d+\. )/, ''));
     const Tag = b.kind;
     return (
-      <Tag style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6, lineHeight: 1.55, fontSize: 'var(--fs-body-sm)' }}>
+      <Tag style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6, lineHeight: 1.55, fontSize: 14, color: 'var(--ao-text-2)' }}>
         {items.map((it, i) => (
           <li key={i}>{inline(it)}</li>
         ))}
@@ -144,7 +144,7 @@ function BlockView({ b }: { b: Block }) {
       </div>
     );
   }
-  return <p style={{ margin: 0, lineHeight: 1.55, fontSize: 'var(--fs-body-sm)' }}>{inline(b.lines.join(' '))}</p>;
+  return <p style={{ margin: 0, lineHeight: 1.55, fontSize: 14, color: 'var(--ao-text-2)' }}>{inline(b.lines.join(' '))}</p>;
 }
 
 export function Runbook() {

@@ -1,4 +1,7 @@
-/** Number and time formatting for Agent Ops. Null renders as "—"; estimates carry a "~". */
+/**
+ * Number and time formatting for Agent Ops. Null renders as "—". Estimates are named as
+ * estimates in their labels ("Estimated value"), not marked with a "~" in the number.
+ */
 import type { ConsoleTimezone } from '../../uis/format';
 import { pctText } from '../../shared/format';
 
@@ -14,22 +17,24 @@ export function num(v: number | null | undefined, digits = 1): string {
 }
 export function money(v: number | null | undefined, opts: { est?: boolean; precise?: boolean } = {}): string {
   if (v == null || !Number.isFinite(v)) return DASH;
+  if (v === 0) return '$0';
   const abs = Math.abs(v);
   let s: string;
-  if (opts.precise || abs < 1) s = `$${v.toFixed(abs < 0.01 && abs > 0 ? 4 : abs < 1 ? 3 : 2)}`;
+  if (opts.precise) s = `$${v.toFixed(abs < 0.01 && abs > 0 ? 4 : abs < 1 ? 3 : 2)}`;
+  else if (abs < 0.01 && abs > 0) s = `$${v.toFixed(4)}`;
+  else if (abs < 1) s = `$${v.toFixed(2)}`;
   else if (abs < 100) s = `$${v.toFixed(2)}`;
   else s = `$${Math.round(v).toLocaleString('en-US')}`;
-  return opts.est ? `~${s}` : s;
+  return s;
 }
 export function compactMoney(v: number | null | undefined, est = false): string {
   if (v == null || !Number.isFinite(v)) return DASH;
-  const s = Math.abs(v) >= 10_000 ? `$${(v / 1000).toFixed(1)}k` : money(v);
-  return est ? `~${s}` : s;
+  void est;
+  return Math.abs(v) >= 10_000 ? `$${(v / 1000).toFixed(1)}k` : money(v);
 }
-export function hours(v: number | null | undefined, est = true): string {
+export function hours(v: number | null | undefined): string {
   if (v == null || !Number.isFinite(v)) return DASH;
-  const s = Math.abs(v) >= 100 ? int(v) : num(v, 1);
-  return est ? `~${s}` : s;
+  return `${Math.abs(v) >= 100 ? int(v) : num(v, 1)} h`;
 }
 export function pct(v: number | null | undefined, digits = 0): string {
   if (v == null || !Number.isFinite(v)) return DASH;
@@ -40,6 +45,14 @@ export function signedPct(v: number | null | undefined): string {
   const p = Math.round(v * 100);
   return `${p > 0 ? '+' : p < 0 ? '−' : '±'}${Math.abs(p)}%`;
 }
+/** Agent colours on the flat chart palette (DESIGN.md): older seeded values map onto it. */
+const SERIES_REMAP: Record<string, string> = { '#00A87F': '#008463', '#5E74E3': '#2F5DB8' };
+const SERIES = ['#008463', '#2F5DB8', '#C2780C', '#7A4FB5', '#3E8E9E', '#B5475A'];
+export function seriesColor(c: string | null | undefined, index = 0): string {
+  if (!c) return SERIES[index % SERIES.length]!;
+  return SERIES_REMAP[c.toUpperCase()] ?? c;
+}
+
 export function multiple(v: number | null | undefined): string {
   if (v == null || !Number.isFinite(v)) return DASH;
   if (v >= 1000) return '1,000×+';
@@ -89,6 +102,12 @@ export function time(v: string | null | undefined, tz: ConsoleTimezone, withSeco
   if (!v) return DASH;
   const p = parts(v, tz);
   return `${p.md} ${withSeconds ? p.hms : p.hm} ${tzLabel(tz)}`;
+}
+/** "Oct 24, 14:03:12" in the chosen zone: a readable log timestamp. */
+export function stamp(v: string | null | undefined, tz: ConsoleTimezone): string {
+  if (!v) return DASH;
+  const p = parts(v, tz);
+  return `${p.md}, ${p.hms}`;
 }
 export function clock(v: string | null | undefined, tz: ConsoleTimezone): string {
   if (!v) return DASH;

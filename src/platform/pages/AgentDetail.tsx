@@ -58,10 +58,7 @@ export function AgentDetail() {
       <PageHead
         eyebrow={
           <>
-            <Link to="/ops/agents" className="ao-link">
-              Registry
-            </Link>{' '}
-            · {a.department} · built with {a.builtWith === 'Code' ? 'code (Workers + AI SDK)' : a.builtWith}
+            <Link to="/ops/agents">Agent registry</Link> / {a.department} · built with {a.builtWith === 'Code' ? 'code' : a.builtWith}
           </>
         }
         title={a.name}
@@ -69,9 +66,9 @@ export function AgentDetail() {
         meta={
           <>
             <AgentStatus value={a.status} />
-            <SourceChip source={live ? 'mixed' : 'simulated'} label={live ? 'Real agent · live telemetry + history' : 'Simulated agent'} />
-            <span className="ao-mono">{a.id}</span>
+            <SourceChip source={live ? 'live' : 'simulated'} label={live ? 'Real agent, live data' : 'Simulated agent'} />
             <span>{a.version}</span>
+            <span className="ao-mono">{a.id}</span>
           </>
         }
         actions={
@@ -95,20 +92,20 @@ export function AgentDetail() {
         minItemWidth={150}
         label={`${a.name} impact`}
         items={[
-          { label: 'Work units', value: f.int(im.workUnits), sub: `${a.unitLabel}s, all time in period` },
-          { label: 'Hours returned', value: <><span className="ao-est">~</span>{f.num(im.hoursReturned, 1)}</>, unit: 'h', sub: `${a.baselineMinutesPerUnit} min manual baseline per unit` },
-          { label: 'Value', value: f.money(im.valueUsd, { est: true }), sub: 'hours × loaded hourly cost' },
-          { label: 'AI cost', value: f.money(im.aiCostUsd), sub: im.workUnits ? `${f.money(im.aiCostUsd / im.workUnits, { precise: true })} per unit` : '—' },
-          { label: 'Accepted', value: f.pct(im.acceptanceRate), sub: '(accepted + automatic) ÷ all' },
-          { label: 'People', value: f.int(im.activeUsers), sub: live ? 'simulated users + live viewers' : 'simulated users' },
+          { label: 'Tasks', value: f.int(im.workUnits), sub: `One task is one ${a.unitLabel}` },
+          { label: 'Hours saved', value: f.num(im.hoursReturned, 1), unit: 'h', sub: `${a.baselineMinutesPerUnit} min per task by hand`, help: 'Minutes each task takes by hand, minus the minutes a person spent reviewing, for every task that was kept.' },
+          { label: 'Estimated value', value: f.money(im.valueUsd), sub: 'Hours saved × hourly cost' },
+          { label: 'AI cost', value: f.money(im.aiCostUsd), sub: im.workUnits ? `${f.money(im.aiCostUsd / im.workUnits, { precise: true })} per task` : '—' },
+          { label: 'Accepted', value: f.pct(im.acceptanceRate), sub: 'Kept or delivered automatically', help: 'Share of tasks whose output was accepted by a reviewer or delivered automatically.' },
+          { label: 'People', value: f.int(im.activeUsers), sub: live ? 'Simulated users and live viewers' : 'Simulated users' },
         ]}
       />
 
       <div className="ao-grid g-main">
-        <Panel title="Ownership & review" sub="Every production agent has a named owner, a business owner and a review cadence. Overdue reviews fail the standard." attrs={tourAnchor('ops.agent.review')}>
+        <Panel title="Ownership and review" sub="Every production agent has a named owner, a business owner and a review schedule. An overdue review fails the standard." attrs={tourAnchor('ops.agent.review')}>
           <div className="ao-owner">
             <div>
-              <span className="k">Owner (builds & runs it)</span>
+              <span className="k">Owner (builds and runs it)</span>
               <span className="ao-person">
                 <Avatar name={a.ownerName} />
                 <span>
@@ -121,7 +118,7 @@ export function AgentDetail() {
             <div>
               <span className="k">Business owner (accountable)</span>
               <span className="ao-person">
-                <Avatar name={a.businessOwner} color="#4A5FA8" />
+                <Avatar name={a.businessOwner} />
                 <span>
                   <b>{a.businessOwner.replace(/ \(.*/, '')}</b>
                   <br />
@@ -130,21 +127,21 @@ export function AgentDetail() {
               </span>
             </div>
             <div>
-              <span className="k">Review cadence</span>
+              <span className="k">Review schedule</span>
               <b>Every {a.reviewCadenceDays} days</b>
               <span>
                 <ReviewPill value={reviewStatus} />
               </span>
             </div>
-            <div>
+            <div style={{ gridColumn: '1 / -1' }}>
               <span className="k">Success metric</span>
-              <small style={{ color: 'var(--cn-off-black)', fontSize: 'var(--fs-body-sm)', lineHeight: 1.5 }}>{p.successMetric}</small>
+              <small style={{ color: 'var(--ao-text)', fontSize: 13, lineHeight: 1.5 }}>{p.successMetric}</small>
             </div>
           </div>
           <div style={{ marginTop: 18 }}>
             <div className="ao-cadence" role="img" aria-label={`Last review ${a.lastReview}, next review ${a.nextReview}; ${Math.round(pos * 100)}% of the cycle elapsed`}>
               <span className="track" />
-              <span className="fill" style={{ width: `${pos * 100}%`, background: reviewStatus === 'overdue' ? 'var(--cn-danger)' : reviewStatus === 'due_soon' ? '#B45309' : 'var(--ao-indigo)' }} />
+              <span className="fill" style={{ width: `${pos * 100}%`, background: reviewStatus === 'overdue' ? 'var(--ao-danger)' : reviewStatus === 'due_soon' ? 'var(--ao-warning-mark)' : 'var(--ao-accent)' }} />
               <span className="lab" style={{ left: 0, transform: 'none' }}>
                 Last review {f.day(a.lastReview)}
               </span>
@@ -162,12 +159,12 @@ export function AgentDetail() {
           </div>
         </Panel>
 
-        <Panel title="Data access & security review" sub="What the agent can read and write, and the review that let it.">
+        <Panel title="Data access and security review" sub="What the agent can read and write, and the review that approved it.">
           <div style={{ display: 'grid', gap: 14 }}>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              <IconLock /> <span style={{ fontSize: 'var(--fs-body-sm)' }}>Classification</span> <Pill vocab={CLASSIFICATION} value={a.dataClassification} />
+              <IconLock /> <span style={{ fontSize: 13, color: 'var(--ao-text-2)' }}>Data classification</span> <Pill vocab={CLASSIFICATION} value={a.dataClassification} />
             </div>
-            <ul style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 6, fontSize: 'var(--fs-body-sm)', color: 'var(--cn-ink-2)', lineHeight: 1.5 }}>
+            <ul style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 6, fontSize: 13, color: 'var(--ao-text-2)', lineHeight: 1.5 }}>
               {a.dataAccess.map((d) => (
                 <li key={d}>{d}</li>
               ))}
@@ -203,7 +200,7 @@ export function AgentDetail() {
               <dd>{p.integrations.map(neutralIntegration).join(' · ')}</dd>
               <dt>Budget</dt>
               <dd>
-                {f.money(p.monthlyBudgetUsd)}/month cap · {f.money(p.perRunCapUsd)} per run
+                {f.money(p.monthlyBudgetUsd)} a month, {f.money(p.perRunCapUsd)} per run
               </dd>
             </dl>
           </div>
@@ -217,7 +214,7 @@ export function AgentDetail() {
             Agent standard <Score passed={passed} total={a.standard.length} />
           </>
         }
-        sub="The nine checks every agent is reviewed against before and after production. Review cadence and live logging are evaluated from data, not self-reported."
+        sub="The nine checks every agent is reviewed against before and after it goes live. Review schedule and live logging are checked from data, not self-reported."
         attrs={tourAnchor('ops.agent.standard')}
         actions={
           <Link className="ao-btn sm" to="/ops/standard">
@@ -243,38 +240,39 @@ export function AgentDetail() {
       </Panel>
 
       <div className="ao-grid g-main">
-        <Panel title="Usage" source={live ? 'mixed' : 'simulated'} sub={`Work units per day (${a.unitLabel}). Hover for users and sessions.`}>
+        <Panel title="Tasks per day" source={live ? 'mixed' : 'simulated'} sub={`One task is one ${a.unitLabel}. Hover a day for people and sessions.`}>
           <Bars
             data={usage.map((u) => ({ ...u, label: f.day(u.day) }))}
             x="label"
             y="workUnits"
-            color={p.color}
+            color={f.seriesColor(p.color)}
             height={200}
             yFormat={(v) => String(v)}
             tipTitle={(r) => String(r.label)}
             tipRows={(r) => [
-              { label: 'Work units', value: f.int(Number(r.workUnits)) },
+              { label: 'Tasks', value: f.int(Number(r.workUnits)) },
               { label: 'People', value: f.int(Number(r.users)) },
               { label: 'Sessions', value: f.int(Number(r.sessions)) },
             ]}
-            ariaLabel={`${a.name} work units per day`}
+            ariaLabel={`${a.name} tasks per day`}
           />
         </Panel>
-        <Panel title="Outcomes & top users" source={live ? 'mixed' : 'simulated'}>
-          <BarList rows={outcomeRows} format={(v) => f.int(v)} color={p.color} />
-          <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, margin: '18px 0 8px' }}>Top users</h3>
+        <Panel title="Outcomes and top users" source={live ? 'mixed' : 'simulated'}>
+          <h3 className="ao-subhead">What happened to each task</h3>
+          <BarList rows={outcomeRows} format={(v) => f.int(v)} color={f.seriesColor(p.color)} />
+          <h3 className="ao-subhead" style={{ marginTop: 20 }}>Top users</h3>
           {topUsers.length ? (
             <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
               {topUsers.map((u, i) => (
                 <li key={u.actorId} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span className="ao-muted ao-num" style={{ width: 14 }}>
+                  <span className="ao-muted ao-num" style={{ width: 14, fontSize: 13 }}>
                     {i + 1}
                   </span>
-                  <Avatar name={u.name} color={i === 0 ? p.color : undefined} />
+                  <Avatar name={u.name} />
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <b style={{ fontWeight: 500 }}>{u.name}</b>
                     <br />
-                    <small className="ao-muted">{u.role}</small>
+                    <small className="ao-muted" style={{ fontSize: 13 }}>{u.role}</small>
                   </span>
                   <span className="ao-num">{f.int(u.workUnits)}</span>
                 </li>
@@ -286,21 +284,21 @@ export function AgentDetail() {
         </Panel>
       </div>
 
-      <Panel title="Service levels" source={live ? 'mixed' : 'simulated'} sub="28-day window ending at the latest data." actions={<Link className="ao-btn sm" to={`/ops/reliability?agentId=${a.id}`}>Charts & models</Link>}>
+      <Panel title="Service targets" source={live ? 'mixed' : 'simulated'} sub="Measured over the last 28 days." actions={<Link className="ao-btn sm" to={`/ops/reliability?agentId=${a.id}`}>Charts and models</Link>}>
         <SloCards slos={slos} />
       </Panel>
 
-      <Panel title="Alerts" sub="Rules evaluated at read time over recent windows, plus past incidents." flush>
+      <Panel title="Alerts" sub="Rules that are firing now, plus past incidents." flush>
         <AlertList alerts={alerts} />
       </Panel>
 
-      <Panel title="Changelog" sub="Deploys, prompt and model versions with their eval, threshold and rule changes, reviews, access changes and incidents." source={live ? 'mixed' : 'simulated'}>
+      <Panel title="Change history" sub="Releases, prompt and model changes with their test results, threshold and rule changes, reviews, access changes and incidents." source={live ? 'mixed' : 'simulated'}>
         {changelog.length ? (
           <ol className="ao-log">
             {changelog.map((c) => (
               <li key={c.id}>
                 <span className={`nd ${c.kind}`} aria-hidden="true">
-                  {c.kind === 'incident' ? <IconAlert size={13} /> : c.kind === 'review' ? <IconCheck size={13} /> : <span style={{ width: 6, height: 6, borderRadius: 3, background: 'currentColor' }} />}
+                  {c.kind === 'incident' ? <IconAlert size={12} /> : c.kind === 'review' ? <IconCheck size={12} /> : <span style={{ width: 6, height: 6, borderRadius: 3, background: 'currentColor' }} />}
                 </span>
                 <div>
                   <div className="hd">
@@ -324,13 +322,13 @@ export function AgentDetail() {
 
       {live ? (
         <Callout tone="live" title="This is the real agent.">
-          Signal Loop runs in this demo. Its runs, AI calls, deliveries and the people using it right now report here live through the Agent Ops SDK; the six weeks before today are simulated history.{' '}
+          Signal Loop runs in this demo. Its runs, AI calls, deliveries and the people using it right now report here live; the six weeks before today are simulated history.{' '}
           <Link to="/app" className="ao-link">
             Open Signal Loop →
           </Link>
         </Callout>
       ) : (
-        <Callout title="Simulated agent.">This record, its users and its telemetry are simulated to show how a Gumloop-built agent sits in the same registry under the same standard.</Callout>
+        <Callout title="Simulated agent.">This record, its users and its activity are simulated, to show how an agent built in Gumloop sits in the same registry under the same standard.</Callout>
       )}
     </div>
   );

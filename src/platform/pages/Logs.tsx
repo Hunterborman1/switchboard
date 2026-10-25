@@ -12,7 +12,12 @@ import { IconTrace, IconX } from '../ui/icons';
 import { Callout, Drawer, Empty, ErrorState, PageHead, Panel, Seg, SourceChip } from '../ui/kit';
 
 const LEVELS = ['debug', 'info', 'warn', 'error'] as const;
+const LEVEL_LABEL: Record<string, string> = { debug: 'Debug', info: 'Info', warn: 'Warning', error: 'Error' };
+export const levelLabel = (l: string) => LEVEL_LABEL[l] ?? l;
+const FILTER_LABEL: Record<string, string> = { agentId: 'Agent', level: 'Level', component: 'Area', traceId: 'Trace', runId: 'Run', q: 'Search', source: 'Data' };
 const COMPONENTS = ['api', 'workflow', 'ai', 'delivery', 'budget', 'gumloop', 'telemetry', 'gate'];
+/** Plain names for the log components (the raw key stays in the URL and the detail panel). */
+export const AREA_LABEL: Record<string, string> = { api: 'API', workflow: 'Workflow', ai: 'AI call', delivery: 'Delivery', budget: 'Budget', gumloop: 'Gumloop', telemetry: 'Usage tracking', gate: 'Sign-in' };
 const FILTER_KEYS = ['agentId', 'level', 'component', 'traceId', 'runId', 'q', 'source'] as const;
 
 async function getJson<T>(path: string): Promise<{ data: T; dataAsOf: string }> {
@@ -107,27 +112,26 @@ export function Logs() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Observe"
-        title="Logs & traces"
-        sub="Structured logs from every agent: one line per request, workflow step, AI call, delivery and budget check, joined by trace id. Signal Loop’s rows are live; the rest is simulated history."
-        meta={<span>{total != null ? `${f.int(total)} matching rows` : 'Counting…'} · data as of {f.ago(asOf)}</span>}
+        title="Logs and traces"
+        sub="Every request, workflow step, AI call, delivery and budget check from every agent. Lines from the same run share a trace. Signal Loop’s lines are live; the rest is simulated history."
+        meta={<span>{total != null ? `${f.int(total)} matching lines` : 'Counting…'} · updated {f.ago(asOf)}</span>}
         actions={
-          <button type="button" className="ao-btn indigo" onClick={yourLastRun} {...tourAnchor('ops.logs.trace')} disabled={lastRun.state === 'loading'}>
+          <button type="button" className="ao-btn primary" onClick={yourLastRun} {...tourAnchor('ops.logs.trace')} disabled={lastRun.state === 'loading'}>
             <IconTrace /> {lastRun.state === 'loading' ? 'Finding your run…' : 'Your last run'}
           </button>
         }
       />
 
       {lastRun.state === 'none' ? (
-        <Callout tone="indigo" title="No live Signal Loop run yet.">
-          Run a call in <Link to="/app/new" className="ao-link">Signal Loop</Link> (or follow the walkthrough), then press “Your last run” again: its trace appears here with every step, AI call and delivery.
+        <Callout title="No live Signal Loop run yet.">
+          Run a call in <Link to="/app/new" className="ao-link">Signal Loop</Link> (or follow the walkthrough), then press “Your last run” again. Its trace appears here with every step, AI call and delivery.
         </Callout>
       ) : null}
       {lastRun.state === 'found' && lastRun.run ? (
         <Callout tone="live" title={lastRun.run.isYours ? 'Your latest Signal Loop run.' : 'Latest live Signal Loop run (none from your workspace yet).'}>
           Run <span className="ao-mono">{lastRun.run.runId ?? '—'}</span> at {f.time(lastRun.run.at, timezone)}.{' '}
           <Link to={`/ops/traces/${lastRun.run.traceId}`} className="ao-link">
-            Open the trace waterfall →
+            Open the trace →
           </Link>
         </Callout>
       ) : null}
@@ -143,7 +147,7 @@ export function Logs() {
         >
           <label className="ao-field grow">
             <span>Search message, event, trace or run id</span>
-            <input className="ao-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. fallback, delivery.retry, run_sl_0042" />
+            <input className="ao-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="For example: fallback, delivery.retry, run_sl_0042" />
           </label>
           <label className="ao-field">
             <span>Agent</span>
@@ -157,12 +161,12 @@ export function Logs() {
             </select>
           </label>
           <label className="ao-field">
-            <span>Component</span>
+            <span>Area</span>
             <select className="ao-select" value={params.get('component') ?? ''} onChange={(e) => set('component', e.target.value || null)}>
-              <option value="">Any</option>
+              <option value="">Any area</option>
               {COMPONENTS.map((c) => (
                 <option key={c} value={c}>
-                  {c}
+                  {AREA_LABEL[c] ?? c}
                 </option>
               ))}
             </select>
@@ -171,8 +175,8 @@ export function Logs() {
             <span>Level</span>
             <div className="ao-chiprow" role="group" aria-label="Levels">
               {LEVELS.map((l) => (
-                <button key={l} type="button" aria-pressed={!levels.length || levels.includes(l)} onClick={() => toggleLevel(l)}>
-                  <span className={`ao-lv ${l}`}>{l}</span>
+                <button key={l} type="button" aria-pressed={!levels.length || levels.includes(l)} onClick={() => toggleLevel(l)} aria-label={l}>
+                  <span className={`ao-lv ${l}`}>{levelLabel(l)}</span>
                 </button>
               ))}
             </div>
@@ -195,49 +199,49 @@ export function Logs() {
           </button>
         </form>
         {active.length ? (
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '10px 18px', borderBottom: '1px solid var(--cn-border-row)', alignItems: 'center' }}>
-            <span className="ao-muted" style={{ fontSize: 'var(--fs-caption)' }}>
-              Filters:
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '10px 20px', borderBottom: '1px solid var(--ao-border)', alignItems: 'center' }}>
+            <span className="ao-muted" style={{ fontSize: 13 }}>
+              Filtered by
             </span>
             {active.map((k) => (
-              <button key={k} type="button" className="ao-tag" onClick={() => set(k, null)} aria-label={`Remove filter ${k}`}>
-                {k}: <span className="ao-mono">{k === 'agentId' ? names[params.get(k)!] ?? params.get(k) : params.get(k)}</span> <IconX size={10} />
+              <button key={k} type="button" className="ao-tag" onClick={() => set(k, null)} aria-label={`Remove filter ${FILTER_LABEL[k] ?? k}`}>
+                {FILTER_LABEL[k] ?? k}:{' '}
+                {k === 'traceId' || k === 'runId' ? <span className="ao-mono">{params.get(k)}</span> : <span>{k === 'agentId' ? names[params.get(k)!] ?? params.get(k) : k === 'component' ? AREA_LABEL[params.get(k)!] ?? params.get(k) : k === 'level' ? params.get(k)!.split(',').map(levelLabel).join(', ') : params.get(k)}</span>}{' '}
+                <IconX size={10} />
               </button>
             ))}
             <button type="button" className="ao-btn ghost sm" onClick={() => setParams(new URLSearchParams())}>
               Clear all
             </button>
             {params.get('traceId') ? (
-              <Link to={`/ops/traces/${params.get('traceId')}`} className="ao-btn sm indigo" style={{ marginLeft: 'auto' }}>
-                <IconTrace /> Open trace waterfall
+              <Link to={`/ops/traces/${params.get('traceId')}`} className="ao-btn sm primary" style={{ marginLeft: 'auto' }}>
+                <IconTrace /> Open trace
               </Link>
             ) : null}
           </div>
         ) : null}
 
         {error ? (
-          <div style={{ padding: 18 }}>
+          <div style={{ padding: 20 }}>
             <ErrorState message={error} onRetry={() => load(null)} />
           </div>
         ) : rows.length === 0 && !loading ? (
           <Empty title="No log lines match">Loosen a filter, or run something in Signal Loop to create live rows.</Empty>
         ) : (
           <div className="ao-table-wrap" style={{ maxHeight: 640, overflowY: 'auto' }}>
-            <table className="ao-table ao-logtable compact">
+            <table className="ao-table ao-logtable compact ao-fit">
               <caption className="ao-sr">Log lines, newest first</caption>
               <thead>
                 <tr>
                   <th scope="col">Time ({f.tzLabel(timezone)})</th>
                   <th scope="col">Level</th>
                   <th scope="col" className="ao-hide-sm">Agent</th>
-                  <th scope="col" className="ao-hide-sm">Component</th>
-                  <th scope="col" className="ao-hide-sm">Event</th>
+                  <th scope="col" className="ao-hide-sm ao-hide-md">Event</th>
                   <th scope="col">Message</th>
                   <th scope="col" className="ao-hide-sm">Trace</th>
-                  <th scope="col" className="num ao-hide-sm">
-                    Duration
+                  <th scope="col" className="num ao-hide-sm ao-hide-md">
+                    Took
                   </th>
-                  <th scope="col" className="ao-hide-sm">Data</th>
                 </tr>
               </thead>
               <tbody>
@@ -253,18 +257,25 @@ export function Logs() {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
                     }}
-                    aria-label={`${l.level} ${l.event}: ${rewriteModelIds(l.message)}`}
+                    aria-label={`${levelLabel(l.level)} ${l.event}: ${rewriteModelIds(l.message)}`}
                   >
-                    <td className="ao-mono" style={{ whiteSpace: 'nowrap' }} title={f.time(l.at, timezone, true)}>
-                      <span className="ao-hide-sm">{f.time(l.at, timezone, true).replace(/ (UTC|PT)$/, '').replace(/ \d\d:\d\d:\d\d$/, '')} </span>
+                    <td className="when" title={f.time(l.at, timezone, true)}>
+                      <span className="ao-hide-sm">{f.day(l.at)}, </span>
                       {f.clock(l.at, timezone)}
                     </td>
                     <td>
-                      <span className={`ao-lv ${l.level}`}>{l.level}</span>
+                      <span className={`ao-lv ${l.level}`}>{levelLabel(l.level)}</span>
                     </td>
-                    <td className="ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>{names[l.agentId] ?? l.agentId}</td>
-                    <td className="ao-hide-sm">{l.component}</td>
-                    <td className="ao-mono ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>
+                    <td className="ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>
+                      <span style={{ display: 'grid' }}>
+                        <span>{names[l.agentId] ?? l.agentId}</span>
+                        <small className="ao-muted" style={{ fontSize: 12 }}>
+                          {AREA_LABEL[l.component] ?? l.component}
+                          {l.source === 'live' ? ' · live' : ''}
+                        </small>
+                      </span>
+                    </td>
+                    <td className="ao-mono ao-hide-sm ao-hide-md" style={{ whiteSpace: 'nowrap', color: 'var(--ao-text-2)' }}>
                       {l.event}
                     </td>
                     <td className="msg">
@@ -275,10 +286,7 @@ export function Logs() {
                         {l.traceId.slice(0, 8)}…
                       </Link>
                     </td>
-                    <td className="num ao-mono ao-hide-sm">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
-                    <td className="ao-hide-sm">
-                      <SourceChip source={l.source} />
-                    </td>
+                    <td className="num ao-hide-sm ao-hide-md" style={{ whiteSpace: 'nowrap', color: 'var(--ao-text-2)' }}>{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -288,7 +296,7 @@ export function Logs() {
         <div className="ao-panel-foot">
           <span>
             Showing {f.int(rows.length)}
-            {total != null ? ` of ${f.int(total)}` : ''} · newest first
+            {total != null ? ` of ${f.int(total)}` : ''}, newest first
           </span>
           {next ? (
             <button type="button" className="ao-btn sm" onClick={() => load(next)} disabled={loading}>
@@ -313,7 +321,7 @@ export function Logs() {
                   All logs for this run
                 </button>
               ) : null}
-              <Link to={`/ops/traces/${open.traceId}`} className="ao-btn indigo">
+              <Link to={`/ops/traces/${open.traceId}`} className="ao-btn primary">
                 <IconTrace /> Open trace
               </Link>
             </>
@@ -323,15 +331,15 @@ export function Logs() {
         {open ? (
           <>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span className={`ao-lv ${open.level}`}>{open.level}</span>
+              <span className={`ao-lv ${open.level}`}>{levelLabel(open.level)}</span>
               <SourceChip source={open.source} />
-              <span className="ao-tag">{open.component}</span>
+              <span className="ao-tag">{AREA_LABEL[open.component] ?? open.component}</span>
             </div>
-            <p style={{ margin: 0, fontSize: 'var(--fs-body-lg)', lineHeight: 1.5 }}>{rewriteModelIds(open.message)}</p>
+            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5, color: 'var(--ao-text)' }}>{rewriteModelIds(open.message)}</p>
             <dl className="ao-kv">
               <dt>Trace id</dt>
               <dd className="ao-mono">{open.traceId}</dd>
-              <dt>Span id</dt>
+              <dt>Step id</dt>
               <dd className="ao-mono">{open.spanId ?? '—'}</dd>
               <dt>Run id</dt>
               <dd className="ao-mono">{open.runId ?? '—'}</dd>
@@ -341,7 +349,7 @@ export function Logs() {
               <dd>{open.durationMs != null ? f.ms(open.durationMs) : '—'}</dd>
             </dl>
             <div>
-              <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Fields</h3>
+              <h3 style={{ fontSize: 13, fontWeight: 500, color: 'var(--ao-text-2)' }}>Details</h3>
               <pre className="ao-json">{JSON.stringify(relabelModelsDeep(open.fields), null, 2)}</pre>
             </div>
           </>
