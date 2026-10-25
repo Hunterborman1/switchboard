@@ -15,7 +15,7 @@ function secret(name: string): string {
   }
   throw new Error(`${name} not found in .dev.vars or .env`);
 }
-const password = () => secret('INVOCA_PASSWORD');
+export const password = () => secret('INVOCA_PASSWORD');
 
 /** The Worker's signed workspace cookie value (src/worker/gate.ts signWorkspace). */
 export function signedWorkspace(ws: string): string {

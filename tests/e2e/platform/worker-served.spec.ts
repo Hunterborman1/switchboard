@@ -6,7 +6,7 @@
  */
 import { existsSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
-import { signIn } from './helpers';
+import { password, signIn } from './helpers';
 
 const WORKER = 'http://127.0.0.1:8812';
 const built = existsSync(new URL('../../../dist/index.html', import.meta.url));
@@ -55,4 +55,12 @@ test('the sign-in page renders under the CSP (inline styles, self-hosted fonts)'
   await page.goto('/repo/invoca/login');
   await expect(page.getByRole('button', { name: 'Enter' })).toBeVisible();
   expect(problems).toEqual([]);
+});
+
+test('signing in through the real form works (Origin: null under the referrer policy)', async ({ page }) => {
+  await page.goto('/repo/invoca/login');
+  await page.getByLabel(/password/i).fill(password());
+  await page.getByRole('button', { name: 'Enter' }).click();
+  await expect(page).not.toHaveURL(/\/login/);
+  await rendered(page);
 });

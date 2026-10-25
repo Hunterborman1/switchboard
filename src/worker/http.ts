@@ -25,7 +25,8 @@ export const CSP = [
 
 export const SECURITY_HEADERS: Record<string, string> = {
   'x-robots-tag': 'noindex, nofollow, noarchive, nosnippet',
-  'referrer-policy': 'no-referrer',
+  // same-origin, not no-referrer: no-referrer makes Chrome send Origin: null on form posts.
+  'referrer-policy': 'same-origin',
   'x-content-type-options': 'nosniff',
   'x-frame-options': 'DENY',
   'permissions-policy': 'camera=(), microphone=(), geolocation=()',
@@ -76,7 +77,8 @@ export function clientIp(req: Request): string {
 /** The request comes from a page on this origin (or from a non-browser client with no headers). */
 export function sameOrigin(req: Request, url: URL): boolean {
   const site = req.headers.get('sec-fetch-site');
-  if (site && site !== 'same-origin') return false;
+  if (site === 'same-origin') return true; // browser-set, cannot be forged by a page
+  if (site) return false;
   const origin = req.headers.get('origin');
   if (origin) {
     try {
