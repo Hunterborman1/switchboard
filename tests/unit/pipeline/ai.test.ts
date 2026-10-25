@@ -80,6 +80,33 @@ describe('createLlm (AI SDK + OpenRouter provider)', () => {
     expect(r.meta.errors[0]).toMatch(/timeout/);
   });
 
+  it('a timed-out call is ledgered at its estimated worst-case cost, not zero', async () => {
+    const { llm, rows, req } = client((b) => (b.model.startsWith('deepseek/') ? { status: 200, delayMs: 2000 } : { status: 200 }), { primaryTimeoutMs: 100 });
+    await llm.structured(req);
+    const timedOut = rows.find((x) => x.attempt === 1)!;
+    expect(timedOut.ok).toBe(false);
+    expect(timedOut.error).toMatch(/timeout.*cost estimated/);
+    expect(timedOut.tokensOut).toBe(req.maxTokens);
+    expect(timedOut.costUsd).toBeGreaterThan(0);
+  });
+
+  it('an external abort stops the call, ledgers its estimate, and never starts another attempt', async () => {
+    const stop = new AbortController();
+    const { f, bodies } = fakeFetch(() => ({ status: 200, delayMs: 2000 }));
+    const rows: LlmCallRow[] = [];
+    const llm = createLlm({ apiKey: 'k', primary: 'deepseek/deepseek-v4.1-flash', secondary: 'anthropic/claude-haiku-5.5', fetch: f, onCall: (r) => void rows.push(r), signal: stop.signal });
+    const req = { purpose: 'screen' as const, system: 'sys', prompt: 'user text', schema: ScreenOutput, jsonSchema: SCREEN_JSON_SCHEMA as unknown as Record<string, unknown>, schemaName: 'screen', maxTokens: 300, runId: 'run_1' };
+    const p = llm.structured(req);
+    setTimeout(() => stop.abort(), 50);
+    await expect(p).rejects.toBeInstanceOf(LlmFailure);
+    expect(bodies).toHaveLength(1); // no retry, no secondary
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.error).toMatch(/aborted/);
+    expect(rows[0]!.costUsd).toBeGreaterThan(0);
+    await expect(llm.structured(req)).rejects.toBeInstanceOf(LlmFailure);
+    expect(bodies).toHaveLength(1);
+  });
+
   it('non-JSON output counts as invalid and is retried', async () => {
     const { llm, req } = client((_b, n) => (n === 1 ? { status: 200, content: 'not json at all' } : { status: 200 }));
     const r = await llm.structured(req);

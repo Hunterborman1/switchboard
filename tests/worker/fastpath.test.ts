@@ -47,6 +47,14 @@ describe('fast path', () => {
       expect(named).toBe(true);
       const calls = await h.env.DB.prepare("SELECT COUNT(*) AS n FROM ai_calls WHERE run_id = ? AND purpose = 'theme_name'").bind(d.run.id).first<{ n: number }>();
       expect(calls!.n).toBeGreaterThanOrEqual(1);
+      // The reservation covered theme naming too: it is settled only after that call.
+      let settledRow: { settled: number; est_usd: number } | null = null;
+      for (let i = 0; i < 40 && !settledRow?.settled; i++) {
+        settledRow = await h.env.DB.prepare('SELECT settled, est_usd FROM budget_reservations WHERE run_id = ?').bind(d.run.id).first<{ settled: number; est_usd: number }>();
+        if (!settledRow?.settled) await new Promise((res) => setTimeout(res, 200));
+      }
+      expect(settledRow!.settled).toBe(1);
+      expect(settledRow!.est_usd).toBeGreaterThan(0);
     }
   });
 
@@ -69,4 +77,24 @@ describe('fast path', () => {
     expect(ins!.n).toBe(ins!.u);
     expect(d.insights.length).toBeGreaterThan(0);
   }, 120_000);
+
+  it('a Workflow that gives up marks the run failed and settles its reservation', async () => {
+    const ws = newWs();
+    const runId = `run_wf_exhausted_${Date.now()}`;
+    const db = h.env.DB;
+    await db.batch([
+      // Its raw bytes are missing, so the Workflow's load step fails without retry.
+      db.prepare("INSERT INTO runs (id, workspace_id, filename, status, mode, sha256, created_at, prompt_version) VALUES (?, ?, 'gone.txt', 'running', 'live', 'sha_missing_bytes', ?, 'v4')").bind(runId, ws, new Date().toISOString()),
+      db.prepare('INSERT INTO budget_reservations (run_id, est_usd, created_ms, settled) VALUES (?, 0.01, ?, 0)').bind(runId, Date.now()),
+    ]);
+    const env = (await h.worker.getEnv()) as { PIPELINE: Workflow };
+    await env.PIPELINE.create({ id: runId, params: { runId, workspaceId: ws } });
+    let row: { status: string; error: string | null; settled: number } | null = null;
+    for (let i = 0; i < 120 && row?.status !== 'failed'; i++) {
+      row = await db.prepare('SELECT r.status, r.error, b.settled FROM runs r JOIN budget_reservations b ON b.run_id = r.id WHERE r.id = ?').bind(runId).first();
+      if (row?.status !== 'failed') await new Promise((res) => setTimeout(res, 250));
+    }
+    expect(row).toMatchObject({ status: 'failed', settled: 1 });
+    expect(row!.error).toMatch(/gave up/);
+  }, 60_000);
 });

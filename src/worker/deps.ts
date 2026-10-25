@@ -5,10 +5,10 @@
  * replay fallback).
  */
 import type { Delivery, FileFormat, Insight, Notification, RunStep, ScreenOutput } from '../shared/contracts.ts';
-import type { DlqRow, LlmCallRow, LlmClient, NewTheme, PipelineDeps, PipelineStore, RedactedDoc, ThemeCandidate } from '../pipeline/types.ts';
+import type { DlqRow, LlmCallRow, LlmClient, LlmRequest, NewTheme, PipelineDeps, PipelineStore, RedactedDoc, ThemeCandidate } from '../pipeline/types.ts';
 import { cosine, hashEmbed } from '../pipeline/theme.ts';
 import { createLlm } from './ai.ts';
-import { aiCallStatement } from './budget.ts';
+import { aiCallStatement, isOutOfCredit, setLive } from './budget.ts';
 import { deliveryStatement, insightStatement, j, notificationStatement, nowIso, SEED, stepStatement, updateRunStatement } from './db.ts';
 import type { Env } from './env.ts';
 import { aiCallTelemetry, type TraceCtx } from './telemetry.ts';
@@ -124,22 +124,46 @@ export async function upsertThemeVectors(env: Env, themes: Pick<NewTheme, 'id' |
   }
 }
 
-export function runLlm(env: Env, o: { workspaceId: string; trace: TraceCtx; queue: WriteQueue }): LlmClient {
+/**
+ * The spend ledger for one executor (fast path or Workflow). It tracks in-flight model calls
+ * and their ai_calls inserts, which are written directly (never through the run's liveness-
+ * guarded WriteQueue): money spent on a run that a replay later supersedes is still spent.
+ * `drain()` waits for every call and insert so far; executors drain before they end.
+ */
+export class Ledger {
+  private pending: Promise<unknown>[] = [];
+  track(p: Promise<unknown>): void {
+    this.pending.push(p.catch((err) => console.warn(JSON.stringify({ level: 'warn', event: 'ledger.pending_failed', msg: String(err).slice(0, 200) }))));
+  }
+  async drain(): Promise<void> {
+    while (this.pending.length) await Promise.all(this.pending.splice(0));
+  }
+}
+
+export function runLlm(env: Env, o: { workspaceId: string; trace: TraceCtx; ledger: Ledger; signal?: AbortSignal }): LlmClient {
   const aiTel = aiCallTelemetry(o.trace);
-  return createLlm({
+  const inner = createLlm({
     apiKey: env.OPENROUTER_API_KEY ?? '',
     primary: env.MODEL_PRIMARY,
     secondary: env.MODEL_SECONDARY,
     ...(env.OPENROUTER_BASE_URL ? { baseURL: env.OPENROUTER_BASE_URL } : {}),
+    ...(o.signal ? { signal: o.signal } : {}),
     onCall: (row: LlmCallRow) => {
       aiTel(row);
-      // The budget ledger row rides the run's write queue (committed before the run settles).
-      o.queue.push(aiCallStatement(env.DB, row, o.workspaceId, 'runtime'));
+      o.ledger.track(aiCallStatement(env.DB, row, o.workspaceId, 'runtime').run());
+      if (isOutOfCredit(row)) o.ledger.track(setLive(env, false, 'budget_reached'));
     },
   });
+  return {
+    structured<T>(req: LlmRequest<T>) {
+      const p = inner.structured(req);
+      o.ledger.track(p);
+      return p;
+    },
+  };
 }
 
-export function workerDeps(env: Env, o: { runId: string; workspaceId: string; trace: TraceCtx; queue: WriteQueue }): PipelineDeps & { store: ReturnType<typeof d1Store> } {
+export function workerDeps(env: Env, o: { runId: string; workspaceId: string; trace: TraceCtx; queue: WriteQueue; ledger: Ledger; signal?: AbortSignal }): PipelineDeps & { store: ReturnType<typeof d1Store> } {
   const store = d1Store(env, o.runId, o.workspaceId, o.queue);
   return {
     llm: runLlm(env, o),

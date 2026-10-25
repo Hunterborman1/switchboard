@@ -4,8 +4,9 @@
  *   node scripts/deploy.ts --no-secrets
  */
 import { spawnSync } from 'node:child_process';
-import { loadEnv } from './env.ts';
+import { ensureOwnerToken, loadEnv } from './env.ts';
 
+ensureOwnerToken();
 const env = loadEnv();
 const win = process.platform === 'win32';
 
@@ -27,7 +28,8 @@ if (!process.argv.includes('--no-secrets')) {
   const secrets: Record<string, string | undefined> = {
     INVOCA_PASSWORD: env.INVOCA_PASSWORD,
     LINK_SIGNING_SECRET: env.LINK_SIGNING_SECRET,
-    SITE_PASSWORD: env.SITE_PASSWORD,
+    // SITE_PASSWORD is deliberately NOT pushed: nothing on the shared host grants access here.
+    OWNER_TOKEN: env.OWNER_TOKEN,
     OPENROUTER_API_KEY: env.OPENROUTER_RUNTIME_KEY,
   };
   const bulk = Object.fromEntries(Object.entries(secrets).filter(([, v]) => v));

@@ -28,6 +28,7 @@ function sessionHint(): string {
 async function request<T>(path: string, init?: RequestInit): Promise<Envelope<T>> {
   const headers = new Headers(init?.headers);
   headers.set('accept', 'application/json');
+  headers.set('x-signal-loop', '1'); // required by the Worker on state-changing requests
   const hint = sessionHint();
   if (hint) headers.set('x-ao-sessions', hint);
   if (init?.body) headers.set('content-type', 'application/json');

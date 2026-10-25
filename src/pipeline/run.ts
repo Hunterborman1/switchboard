@@ -174,7 +174,9 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
         meta = err.meta;
         fallback = true;
         await deps.store.recordDlq({ runId: input.runId, step: 'screen', error: err.message, payload: { errors: err.meta.errors } });
-        out = { actionable: true, language: 'en', injection_suspected: false, injection_excerpt: null, call_kind: 'other', reason: 'Screen unavailable; extracting anyway' };
+        // Fail safe, not open: extraction still runs, but nothing from this file is routed
+        // without a person (see screenUnavailable below and scoreInsight's forced review).
+        out = { actionable: true, language: 'en', injection_suspected: false, injection_excerpt: null, call_kind: 'other', reason: 'Screen unavailable; extracting, with every insight held for human review' };
       }
       const flagged = out.injection_suspected || !!heuristic;
       const screenOut: ScreenOutput = { ...out, injection_suspected: flagged, injection_excerpt: out.injection_excerpt ?? heuristic };
@@ -185,14 +187,16 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
           ? `Actionable · ${screenOut.language} · ${screenOut.call_kind.replace('_', '-')}`
           : `Nothing actionable: ${screenOut.reason}`;
       return {
-        out: screenOut,
+        // The flag rides the step output so a Workflow resuming after this step still has it.
+        out: { ...screenOut, screenUnavailable: fallback },
         llm: meta,
         status: flagged || fallback ? 'warned' : 'passed',
         summary,
         detail: { actionable: screenOut.actionable, language: screenOut.language, injectionSuspected: flagged, injectionExcerpt: screenOut.injection_excerpt, heuristicHit: !!heuristic, modelFlag: out.injection_suspected, callKind: screenOut.call_kind, reason: screenOut.reason, fallback, fellBack: meta?.fellBack ?? false },
       };
     });
-    result.screen = screen;
+    const { screenUnavailable, ...screenOut } = screen as ScreenOutput & { screenUnavailable?: boolean };
+    result.screen = screenOut;
     result.injectionFlagged = screen.injection_suspected;
     result.actionable = screen.actionable;
 
@@ -254,7 +258,10 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
     const scored = await exec('score', async () => {
       const createdAt = iso(now());
       const insights: Insight[] = grounded.map(({ ins, evidence }) => {
-        const s = scoreInsight({ type: ins.type, severity: ins.severity, confidenceModel: ins.confidence, evidence, account: input.account, injectionFlagged: screen.injection_suspected, now: t0 });
+        const s = scoreInsight({
+          type: ins.type, severity: ins.severity, confidenceModel: ins.confidence, evidence, account: input.account, injectionFlagged: screen.injection_suspected, now: t0,
+          ...(screenUnavailable ? { forceReview: ['the safety screen was unavailable for this file: a person reviews everything'] } : {}),
+        });
         return {
           id: ids('ins'), workspaceId: input.workspaceId, runId: input.runId, accountId: input.account?.id ?? null, csmId: input.account?.csmId ?? null,
           type: ins.type, summary: ins.summary, productArea: ins.product_area, severity: ins.severity, sentiment: ins.sentiment, rationale: ins.rationale,

@@ -18,7 +18,7 @@ describe('session & workspace', () => {
     const r = await h.call('/session', { ws: null });
     expect(r.status).toBe(200);
     const cookie = r.headers.get('set-cookie') ?? '';
-    expect(cookie).toMatch(/sl_ws=ws_[a-f0-9]{16}; Path=\/repo\/invoca; HttpOnly; Secure; SameSite=Lax/);
+    expect(cookie).toMatch(/sl_ws=ws_[a-f0-9]{16}\.[A-Za-z0-9_-]{22}; Path=\/repo\/invoca; HttpOnly; Secure; SameSite=Lax/);
     expect(r.headers.get('x-trace-id')).toMatch(/^[a-f0-9]{32}$/);
     expect(r.json.data.isOwner).toBe(false);
     expect(r.json.data.budget.limitUsd).toBe(15);
@@ -31,8 +31,12 @@ describe('session & workspace', () => {
     const ok = await h.call('/session', { ws });
     expect(ok.json.data.workspaceId).toBe(ws);
     expect(ok.headers.get('set-cookie')).toBeNull();
-    const bad = await h.call('/session', { ws: 'seed' });
+    const bad = await h.call('/session', { rawWs: 'seed' });
     expect(bad.json.data.workspaceId).not.toBe('seed');
+    // A legacy unsigned id (the pre-signing cookie format) is not trusted: a fresh signed one.
+    const legacy = await h.call('/session', { rawWs: ws });
+    expect(legacy.json.data.workspaceId).not.toBe(ws);
+    expect(legacy.headers.get('set-cookie')).toMatch(/sl_ws=ws_[a-f0-9]{16}\./);
   });
 
   it('owner cookie marks the session as owner', async () => {
@@ -264,7 +268,15 @@ describe('model fallback and failure handling', () => {
     expect(r.json.data.mode).toBe('live');
     const d = await waitForRun(h, r.json.data.runId, ws, (x) => x.run.mode === 'replay', 30_000);
     expect(d.run.modeReason).toBe('live_failed');
-  }, 40_000);
+    // The superseded live attempt's model calls still land in the spend ledger (they were paid
+    // for), even though the replay took the run over before they returned.
+    let n = 0;
+    for (let i = 0; i < 60 && n === 0; i++) {
+      n = (await h.env.DB.prepare("SELECT COUNT(*) AS n FROM ai_calls WHERE run_id = ? AND key_scope = 'runtime'").bind(r.json.data.runId).first<{ n: number }>())!.n;
+      if (!n) await new Promise((res) => setTimeout(res, 250));
+    }
+    expect(n).toBeGreaterThan(0);
+  }, 60_000);
 });
 
 describe('budget', () => {
@@ -328,7 +340,7 @@ describe('workspace isolation & reset', () => {
     expect((await h.call('/routing/rules', { ws: b })).json.data.find((x: any) => x.id === rule.id).destination).not.toBe('#vp-only');
     expect((await h.call(`/routing/rules/other`, { method: 'PUT', ws: a, json: rule })).status).toBe(400);
     // Reset.
-    expect((await h.call('/workspace/reset', { method: 'POST', ws: a })).status).toBe(200);
+    expect((await h.call('/workspace/reset', { method: 'POST', ws: a, json: {} })).status).toBe(200);
     expect((await h.call(`/runs/${runId}`, { ws: a })).status).toBe(404);
     expect((await h.call('/routing/rules', { ws: a })).json.data.find((x: any) => x.id === rule.id).destination).not.toBe('#vp-only');
   });
@@ -378,12 +390,20 @@ describe('routing preview, settings, evals, telemetry', () => {
     expect((await h.call('/telemetry', { method: 'POST', ws, body: 'not json', headers: { 'content-type': 'application/json' } })).status).toBe(400);
   });
 
-  it('health reports budget, ledger and recent calls', async () => {
-    const r = await h.call('/health', { ws: newWs() });
+  it('health reports budget, ledger and recent calls (only the seed and this viewer\'s own calls)', async () => {
+    const mine = newWs();
+    const other = newWs();
+    const at = new Date().toISOString();
+    const ins = (id: string, ws: string) => h.env.DB.prepare("INSERT INTO ai_calls (id, run_id, workspace_id, purpose, model, tokens_in, tokens_out, cost_usd, ms, ok, key_scope, created_at) VALUES (?, NULL, ?, 'extract', 'x', 0, 0, 0, 1, 1, 'runtime', ?)").bind(id, ws, at).run();
+    await ins('aic_health_mine', mine);
+    await ins('aic_health_other', other);
+    const r = await h.call('/health', { ws: mine });
     expect(r.status).toBe(200);
     expect(r.json.data.budget.limitUsd).toBe(15);
     expect(r.json.data.ledger.length).toBeGreaterThan(0);
-    expect(r.json.data.recent.length).toBeGreaterThan(0);
+    const ids = r.json.data.recent.map((x: any) => x.id);
+    expect(ids).toContain('aic_health_mine');
+    expect(ids).not.toContain('aic_health_other');
     expect(r.json.data.ledger[0]).toHaveProperty('p95Ms');
   });
 

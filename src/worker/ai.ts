@@ -16,7 +16,7 @@
  */
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, jsonSchema, NoObjectGeneratedError, Output, type ModelMessage } from 'ai';
-import { estimateCost } from '../shared/scoring.ts';
+import { estimateCost, estimateTokens } from '../shared/scoring.ts';
 import { LlmFailure, type LlmCallRow, type LlmClient, type LlmMeta, type LlmRequest } from '../pipeline/types.ts';
 
 export type LlmConfig = {
@@ -30,6 +30,11 @@ export type LlmConfig = {
   /** Extra headers (OpenRouter app attribution). */
   appName?: string;
   fetch?: typeof fetch;
+  /**
+   * Aborts every in-flight and future call of this client (e.g. a fast path that handed its run
+   * to the Workflow). An aborted call is ledgered at its estimated cost; later calls never start.
+   */
+  signal?: AbortSignal;
 };
 
 type CallResult = { ok: true; raw: unknown; text: string; tokensIn: number; tokensOut: number; costUsd: number; ms: number } | { ok: false; error: string; text: string | null; tokensIn: number; tokensOut: number; costUsd: number; ms: number; kind: 'http' | 'timeout' | 'parse' };
@@ -65,7 +70,7 @@ export function createLlm(cfg: LlmConfig): LlmClient {
         maxOutputTokens: req.maxTokens,
         ...(anthropic ? {} : { temperature: 0 }),
         maxRetries: 0,
-        abortSignal: AbortSignal.timeout(timeoutMs),
+        abortSignal: cfg.signal ? AbortSignal.any([cfg.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs),
       });
       const usage = (res.providerMetadata?.openrouter as { usage?: { cost?: number } } | undefined)?.usage;
       const tokensIn = res.usage.inputTokens ?? 0;
@@ -79,9 +84,19 @@ export function createLlm(cfg: LlmConfig): LlmClient {
         return { ok: false, kind: 'parse', error: `output was not valid JSON: ${err.message.slice(0, 160)}`, text: err.text ?? null, tokensIn, tokensOut, costUsd: estimateCost(modelId, tokensIn, tokensOut), ms };
       }
       const msg = err instanceof Error ? err.message : String(err);
-      const timeout = /abort|timeout|timed out/i.test(msg) || (err as { name?: string })?.name === 'TimeoutError';
+      const aborted = !!cfg.signal?.aborted;
+      const timeout = aborted || /abort|timeout|timed out/i.test(msg) || (err as { name?: string })?.name === 'TimeoutError';
       const status = (err as { statusCode?: number }).statusCode;
-      return { ok: false, kind: timeout ? 'timeout' : 'http', error: timeout ? `timeout after ${timeoutMs}ms` : `${status ? `HTTP ${status}: ` : ''}${msg.slice(0, 200)}`, text: null, tokensIn: 0, tokensOut: 0, costUsd: 0, ms };
+      if (timeout) {
+        // The provider may still finish (and bill) a request we stopped waiting for: ledger the
+        // worst case for this call (its input plus max output) rather than nothing.
+        const inChars = system.length + messages.reduce((n, m) => n + (typeof m.content === 'string' ? m.content.length : JSON.stringify(m.content).length), 0);
+        const tokensIn = estimateTokens(inChars);
+        const tokensOut = req.maxTokens;
+        const why = aborted ? 'aborted (run handed off)' : `timeout after ${timeoutMs}ms`;
+        return { ok: false, kind: 'timeout', error: `${why}; cost estimated`, text: null, tokensIn, tokensOut, costUsd: estimateCost(modelId, tokensIn, tokensOut), ms };
+      }
+      return { ok: false, kind: 'http', error: `${status ? `HTTP ${status}: ` : ''}${msg.slice(0, 200)}`, text: null, tokensIn: 0, tokensOut: 0, costUsd: 0, ms };
     }
   }
 
@@ -109,8 +124,12 @@ export function createLlm(cfg: LlmConfig): LlmClient {
         return parsed.success ? { ok: true, data: parsed.data } : { ok: false, error: zodIssues(parsed.error) };
       };
       const base: ModelMessage[] = [{ role: 'user', content: req.prompt }];
+      const stopIfAborted = () => {
+        if (cfg.signal?.aborted) throw new LlmFailure(`${req.purpose} aborted: the run was handed off`, { ...meta, errors: [...meta.errors, 'aborted'] });
+      };
 
       // 1. primary
+      stopIfAborted();
       const r1 = await call(cfg.primary, req.system, base, req as LlmRequest<unknown>, cfg.primaryTimeoutMs ?? 12_000);
       let v1: ReturnType<typeof validate> | null = null;
       if (r1.ok) {
@@ -134,6 +153,7 @@ export function createLlm(cfg: LlmConfig): LlmClient {
           { role: 'assistant', content: prior.slice(0, 6000) || '(empty)' },
           { role: 'user', content: `Your previous output failed validation: ${why}\nReturn corrected JSON only, matching the schema exactly.` },
         ];
+        stopIfAborted();
         const r2 = await call(cfg.primary, req.system, retryMsgs, req as LlmRequest<unknown>, cfg.primaryTimeoutMs ?? 12_000);
         if (r2.ok) {
           const v2 = validate(r2.raw);
@@ -147,6 +167,7 @@ export function createLlm(cfg: LlmConfig): LlmClient {
       }
 
       // 3. secondary model
+      stopIfAborted();
       meta.fellBack = true;
       const r3 = await call(cfg.secondary, req.system, base, req as LlmRequest<unknown>, cfg.secondaryTimeoutMs ?? 20_000);
       if (r3.ok) {

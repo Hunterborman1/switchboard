@@ -1,7 +1,7 @@
 # Signal Loop: build plan (v2)
 
 Invoca take-home, final round for AI Operations Lead. **Option 3: the "Feedback Loop" Architect.**
-Live at `https://repos.hunterborman.com/repo/invoca`, behind the password `[redacted]` or a signed link that expires after 7 days.
+Live at `https://repos.hunterborman.com/repo/invoca`, behind a password (provided separately) or a signed link that expires after 7 days.
 
 Status: **plan v2, awaiting review.** Nothing is built, provisioned or deployed yet. The OpenRouter management key is saved in `.env`, which git ignores.
 
@@ -111,14 +111,14 @@ I'm building it rather than using a library. Shepherd and Intro.js are AGPL, and
 | 3 | **Jobs to be Done** | Narrative (interactive) | Four persona cards (CSM, PM, VP Product, Sales/Competitive/Support). Click one to flip it and see its job, struggle and success measure. Includes the emotional job: be the advocate, not the stenographer. | 2:30 |
 | 4 | **Current → future state** | Narrative | An animated swimlane shows leaks at each handoff, then **morphs** into the future state as the leaks seal and the loop closes. | 2:30 |
 | 5 | **Ch1 · A call comes in** | Product | Objective: "Bring in today's call." Click **Upload** to open a file picker over the synthetic library (§5). `C-1042 · Brightline Home Services · QBR` is highlighted. **Branching starts here** (below). | 1:30 |
-| 6 | **Ch2 · Watch it think** | Product | The live Run view. Steps light up from real `run_steps` rows. PII redaction blurs in. Evidence spans highlight in the transcript as they're grounded. **One quote fails grounding and is dropped**; the spotlight stops on it. | 3:00 |
+| 6 | **Ch2 · Watch it think** | Product | The live Run view. Steps light up from real `run_steps` rows. PII redaction blurs in. Evidence spans highlight in the transcript as they're grounded. The spotlight stops on Ground with the real count (14 of 14, word for word, on the recorded run). Grounding is the seatbelt: a "See a rejected quote" beat appears only when a real run has a dropped quote. | 3:00 |
 | 7 | **Ch3 · Human in the loop** | Product | Review queue. Objective: approve one item and edit one with keyboard `A` / `E`. The SeverityChip shows *why* each item is there. The edit is saved as labelled data. | 2:00 |
 | 8 | **Ch4 · Right owner, right channel** | Product | Routing. See the Jira ticket and Slack message previews. **Choice:** change a rule (e.g. send `pricing_objection` on accounts over $250k ARR to the VP) and watch the Sankey re-flow. | 1:30 |
 | 9 | **Ch5 · Patterns, not anecdotes** | Product | The insight joins a theme: "Offline conversions lag in Google Ads", with 7 accounts, $1.4M ARR, a trend line and representative quotes. | 1:15 |
 | 10 | **Ch6 · Close the loop** | Product | The PM moves the Jira item to *Shipped*. The CSM's inbox gets a notice ("Your feedback from Brightline shipped") with a draft note to the customer. | 1:00 |
-| 11 | **Ch7 · Prove it** | Product | Evals: precision and recall per type and per mess level, then the cost and latency ledger. **Choice:** "Promote prompt v5?" leads to **PROMOTION BLOCKED** (recall dropped on level-5 files). | 1:30 |
+| 11 | **Ch7 · Prove it** | Product | Evals: precision and recall per type and per mess level, then the cost and latency ledger. **Choice:** "Promote prompt v5?" leads to **PROMOTION BLOCKED** on precision (88.7% → 59.7%: under the 85% bar and a 28.9-point regression). Cost and p95 are worse too; they are shown, not gated. | 1:30 |
 | 12 | **Earning trust: rollout** | Narrative | Phased timeline (§8): shadow → champions → team → expand. Trust mechanics. "Additive, not replacement." | 2:15 |
-| 13 | **The next 12–18 months** | Narrative | A horizon line: in-call real-time capture, multi-agent specialists (extractor, critic, router), cheaper and faster models making it affordable to scan every call, drafted PRDs, and feeding Invoca's own Signal AI. | 1:30 |
+| 13 | **The next 12–18 months** | Narrative | A horizon line that starts after the rollout: every call by default from month 3 (after shadow and champions; today's average cost per call makes it affordable), in-call capture from month 6, multi-agent specialists (extractor, critic, router), drafted PRDs, and feeding Invoca's own Signal AI. | 1:30 |
 | 14 | **POC → production** | Narrative | The Cloudflare pieces slide into Neon / Vercel / AI SDK / Trigger.dev / ClickHouse / dbt / dlt / Render. | 0:30 |
 | 15 | **Scorecard + free explore** | Both | The recap card, then the full system unlocks. | 0:30 |
 
@@ -130,7 +130,7 @@ I'm building it rather than using a library. Shepherd and Intro.js are AGPL, and
 |---|---|---|
 | ★ `C-1042` Brightline QBR (level 3, recommended) | **Main** | The full story: 4 insights, 1 grounding drop, 1 item sent to review |
 | A level-1 clean notes file | **Clean** | A fast, clean run. The narrator says "Easy. Real calls aren't like this." and offers to try a messy one (the main path), or carry on. |
-| A level-4 or level-5 messy file | **Messy** | Speech-to-text repair, quotes grounded through fuzzy matching, more items routed to review, confidence lower. Shows the system staying honest under noise. |
+| A level-4 or level-5 messy file | **Messy** | Raw speech-to-text, a Slack export or a forwarded email thread (the intro names which). The model quotes the garbled text verbatim, so quotes usually ground exactly; noise shows up as lower confidence and more items routed to review. Shows the system staying honest under noise. |
 | `Injection attempt` | **Security** | The screening step flags it, the injected instruction is shown as inert data, the output schema is unaffected, and an audit row is written. |
 | `Friendly check-in` (nothing actionable) | **Negative control** | Zero insights. A calm "Nothing actionable" empty state. The point: it doesn't invent work. |
 | `PHI-heavy` healthcare call | **Privacy** | A redaction reveal: before/after toggle, with tokens like `[PATIENT_1]` and `[DOB_1]`. Only redacted text ever reached the model. |
@@ -233,7 +233,7 @@ Every step writes a `run_steps` row with status, timing, input and output hashes
 9. **Route:** an **editable rules table** (type × area × severity × ARR band → owner and channel). Routing is never decided by the prompt. If nothing matches, it goes to triage.
 10. **Deliver + close the loop:** write to the mock Slack, Jira and Linear destinations and the weekly digest, with receipts and retries. When a status changes, the CSM is notified.
 
-The review queue uses `step.waitForEvent('review')`. Approve, edit or reject resumes the Workflow.
+*As built:* review is a state change, not a suspended Workflow. A run with items to review is parked as `awaiting_review`; nothing on it routes until someone approves, edits or rejects, and that action routes the insight and writes an audit row (`src/worker/review.ts`).
 Edits are stored as labelled data with an audit diff, with before and after, as an audit log.
 
 ### Models (two at most, chosen for speed)
@@ -303,7 +303,7 @@ Structured output goes through `generateText({ output: Output.object })` and is 
 | Layer | Tool | What's covered |
 |---|---|---|
 | Unit | Vitest | redact, ground (exact and fuzzy match, rejecting near misses), scoring and gating, routing rules, clustering, the corruption pass (deterministic for a given seed), file parsers (vtt, txt, md, eml, chat), signed-link tokens, password gate, budget ledger maths |
-| Worker integration | `@cloudflare/vitest-pool-workers` (local D1, R2, Workflows) | Full pipeline with a mocked model, review `waitForEvent` resume, idempotent re-upload, DLQ path, budget kill switch → replay fallback, every API route's auth |
+| Worker integration | `@cloudflare/vitest-pool-workers` (local D1, R2, Workflows) | Full pipeline with a mocked model, review actions routing parked insights, idempotent re-upload, DLQ path, budget kill switch → replay fallback, every API route's auth |
 | **All-data run** | `npm run verify:data` (build key, real models) | **Every one of the 48 files runs through the real pipeline**: no failures, grounding passes, golden labels are met within thresholds. Results are written to a report you can read. |
 | Evals | Vitest + custom scorers + Haiku judge | Precision and recall per type and per level, routing accuracy, negative-control false positives, injection resistance, p50/p95 latency, cost per call, promotion gate |
 | End-to-end | Playwright | **Every walkthrough branch** (all 6 file paths through to the scorecard), chapter jumps, deep links, refresh mid-tour, free-explore on every page, keyboard-only run, reduced motion, budget-exhausted mode, mobile at 390px, presenter-view sync |
@@ -339,7 +339,7 @@ Structured output goes through `generateText({ output: Output.object })` and is 
 
 ## 9. Access
 A dedicated gate in this Worker, separate from the shared host password.
-- **Password:** `[redacted]`, stored as the secret `INVOCA_PASSWORD`. The login page uses the narrative design.
+- **Password:** provided separately, stored as the secret `INVOCA_PASSWORD`. The login page uses the narrative design.
 - **Cookie:** `hb_invoca`, an HMAC token.
   - Scoped to `Path=/repo/invoca`.
   - Flags: HttpOnly, Secure, SameSite=Lax.
@@ -422,7 +422,7 @@ docs/          PLAN.md, ARCHITECTURE.md, speaker-notes.md, RUNBOOK.md, data-revi
 ---
 
 ## 12. Decisions still open
-1. **GitHub:** create a private repo `Hunterborman1/switchboard` and push to it? (Recommendation: yes.)
+1. **GitHub:** create a private repo for this project and push to it? (Recommendation: yes.)
 2. **repos.hunterborman.com landing page:** list it there? (Recommendation: no, keep it unlisted.)
 3. **The name "Signal Loop":** keep it?
 4. **Presentation direction:** I recommend the editorial dark narrative layer (§2). The alternative is light, paper-style editorial on Invoca's sand tones.

@@ -108,6 +108,14 @@ describe('runPipeline', () => {
     expect(r.steps.find((s) => s.key === 'screen')!.status).toBe('warned');
     expect(store.state.dlq.map((x) => x.step)).toEqual(['screen']);
     expect(r.insights.length).toBeGreaterThan(0);
+    // Fail safe: without a screen verdict nothing is auto-routed or delivered.
+    const kept = r.insights.filter((i) => i.gate !== 'dropped');
+    expect(kept.length).toBeGreaterThan(0);
+    expect(kept.every((i) => i.gate === 'review' && i.status === 'pending_review')).toBe(true);
+    expect(kept.every((i) => i.gateReasons.some((g) => /safety screen was unavailable/.test(g)))).toBe(true);
+    expect(r.deliveries).toHaveLength(0);
+    expect(r.status).toBe('awaiting_review');
+    expect(r.screen).not.toHaveProperty('screenUnavailable');
   });
 
   it('an extraction outage fails the run (a partial failure reads as a failure) and writes a DLQ row', async () => {

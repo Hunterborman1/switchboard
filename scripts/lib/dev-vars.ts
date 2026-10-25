@@ -12,7 +12,7 @@ const env = loadEnv();
 const vars: Record<string, string | undefined> = {
   INVOCA_PASSWORD: env.INVOCA_PASSWORD,
   LINK_SIGNING_SECRET: env.LINK_SIGNING_SECRET,
-  SITE_PASSWORD: env.SITE_PASSWORD,
+  OWNER_TOKEN: env.OWNER_TOKEN,
   OPENROUTER_API_KEY: env.OPENROUTER_BUILD_KEY,
   VECTOR_MODE: 'd1',
 };

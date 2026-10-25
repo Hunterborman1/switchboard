@@ -57,9 +57,12 @@ export async function getAssumptions(ctx: Ctx): Promise<AssumptionsView> {
   return { loadedHourlyUsd: own?.loaded_hourly_usd ?? seed?.loaded_hourly_usd ?? DEFAULT_LOADED_HOURLY_USD, sourceNote: ASSUMPTION_NOTE, workspace: own ? ws! : 'seed', isOverride: !!own };
 }
 
+/** Viewer-owned writes need a real viewer workspace: never 'seed', never a loose id. */
+const VIEWER_WS = /^ws_[a-f0-9]{16}$/;
+
 export async function putAssumptions(ctx: Ctx, loadedHourlyUsd: number | null): Promise<AssumptionsView> {
   const ws = ctx.viewer.workspace;
-  if (!ws) throw new Error('no workspace');
+  if (!ws || !VIEWER_WS.test(ws)) throw new Error('no viewer workspace');
   if (loadedHourlyUsd == null) await ctx.db.prepare('DELETE FROM assumptions WHERE workspace = ?').bind(ws).run();
   else
     await ctx.db
@@ -247,7 +250,7 @@ async function alertsFor(ctx: Ctx, agents: AgentRow[], cal: Calendar, slosByAgen
 }
 
 export async function acknowledgeAlert(ctx: Ctx, alertId: string, note: string | null): Promise<void> {
-  if (!ctx.viewer.workspace) throw new Error('no workspace');
+  if (!ctx.viewer.workspace || !VIEWER_WS.test(ctx.viewer.workspace)) throw new Error('no viewer workspace');
   await ctx.db.prepare('INSERT OR REPLACE INTO alert_acks (alert_id, workspace, at, note) VALUES (?, ?, ?, ?)').bind(alertId.slice(0, 120), ctx.viewer.workspace, ctx.now.toISOString(), note?.slice(0, 280) ?? null).run();
 }
 
@@ -586,8 +589,10 @@ export async function logs(ctx: Ctx, f: LogFilter): Promise<LogsPage> {
   if (f.source === 'live' || f.source === 'simulated') add('source = ?', f.source);
   if (f.q) {
     const like = `%${f.q.replace(/[%_]/g, '').slice(0, 80)}%`;
-    where.push('(message LIKE ? OR event LIKE ? OR trace_id LIKE ? OR run_id LIKE ?)');
-    binds.push(like, like, like, like);
+    // Message text is searchable only where it is shown in full: simulated history, the seed,
+    // and the viewer's own workspace (other viewers' live messages are redacted in the API).
+    where.push("((message LIKE ? AND (source = 'simulated' OR workspace_id IS NULL OR workspace_id IN ('seed', ?))) OR event LIKE ? OR trace_id LIKE ? OR run_id LIKE ?)");
+    binds.push(like, ctx.viewer.workspace ?? 'seed', like, like, like);
   }
   const base = where.length ? `WHERE ${where.join(' AND ')}` : '';
   const limit = Math.min(Math.max(f.limit ?? 100, 1), 200);

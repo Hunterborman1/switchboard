@@ -34,7 +34,7 @@
             "key": "owner",
             "label": "Named owner and business owner",
             "passed": true,
-            "evidence": "Owner Hunter Borman (AI Operations); business owner Elena Vasquez (VP, Product)."
+            "evidence": "Owner Hunter Borman (AI Operations); business owner Elena Vasquez (VP, Product). The business-owner sign-off is an illustrative record in the synthetic world until Invoca's VP Product signs the success metric."
           },
           {
             "key": "purpose",
@@ -46,13 +46,13 @@
             "key": "data_review",
             "label": "Security & data review passed",
             "passed": true,
-            "evidence": "Reviewed 2026-09-10 by Sofia Marino: redaction before model, provider data collection denied, no raw transcript leaves the Worker."
+            "evidence": "Illustrative record, pending: the formal review is to be completed by Invoca Security. Built-in controls checked by the owner: redaction before any model call, providers that collect or train on data are excluded (a routing filter, not a contractual ZDR), no raw transcript leaves the Worker."
           },
           {
             "key": "evals",
             "label": "Eval suite with promotion gate",
             "passed": true,
-            "evidence": "48 golden files across 5 mess levels; precision/recall per type; promotion gate blocked prompt v5 on level-5 recall."
+            "evidence": "48 golden files across 5 mess levels; precision and recall per type; the promotion gate blocked prompt v5 on precision (59.7%, under the 85% bar; -28.9 pts vs v4)."
           },
           {
             "key": "logging",
@@ -76,7 +76,7 @@
             "key": "rollback",
             "label": "Rollback path and runbook",
             "passed": true,
-            "evidence": "Prompt versions pinned per insight; previous Worker version one command away; runbook linked."
+            "evidence": "Prompt versions pinned per insight; previous Worker version one command away (wrangler rollback); replay-mode kill switch; runbook in docs/RUNBOOK.md."
           },
           {
             "key": "review_cadence",
@@ -92,7 +92,7 @@
         "shortName": "Signal Loop",
         "color": "#00A87F",
         "successMetric": "Share of CSM-raised product feedback that reaches a named owner within one business day. Target 90% (today's baseline is an assumption: ~40%).",
-        "runbookUrl": "https://github.com/Hunterborman1/switchboard/blob/main/docs/RUNBOOK.md",
+        "runbookUrl": "docs/RUNBOOK.md",
         "monthlyBudgetUsd": 15,
         "perRunCapUsd": 0.05,
         "humanMinutesPerUnit": 1.5,
@@ -113,9 +113,9 @@
         },
         "securityReview": {
           "date": "2026-09-10",
-          "reviewer": "Sofia Marino (Security & GRC)",
-          "outcome": "approved",
-          "scope": "Transcript handling, redaction, model provider data policy, access gate",
+          "reviewer": "Illustrative record · to be completed by Invoca Security",
+          "outcome": "pending",
+          "scope": "Transcript handling, redaction, model provider data policy, access gate. Owner self-check done; the formal review, DPA and contractual zero-retention terms are Invoca Security's to complete.",
           "conditions": []
         },
         "retiredAt": null,
@@ -422,7 +422,7 @@
       "actual": "61% (primary provider returning 503)",
       "status": "resolved",
       "owner": "Hunter Borman",
-      "runbook": "https://github.com/Hunterborman1/switchboard/blob/main/docs/RUNBOOK.md#model-fallback",
+      "runbook": "docs/RUNBOOK.md#model-fallback",
       "traceId": null,
       "resolvedAt": "2026-10-13T18:31:00.000Z"
     },

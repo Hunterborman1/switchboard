@@ -2,50 +2,48 @@
  * invoca-signal-loop: one Worker behind repos.hunterborman.com/repo/invoca.
  *
  *   /repo/invoca/login          sign-in page (public)
- *   /repo/invoca/api/unlock     POST password → hb_invoca cookie → 303 next
- *   /repo/invoca/api/logout     clears cookies
+ *   /repo/invoca/api/unlock     POST password → hb_invoca cookie → 303 next (rate limited per IP)
+ *   /repo/invoca/api/logout     POST clears cookies
  *   /repo/invoca/?k=…           signed link → hb_invoca_link cookie → 302 with k stripped
+ *   /repo/invoca/?owner=…       OWNER_TOKEN → hb_invoca_owner cookie → 302 with owner stripped
  *   /repo/invoca/api/*          gated JSON API (src/worker/api)
  *   /repo/invoca/*              gated SPA assets (dist/), prefix stripped
+ *
+ * Every other app under repos.hunterborman.com/repo/* shares this origin, so state-changing
+ * API calls must also carry `x-signal-loop: 1` and a JSON body (see `writeGuard`): neither a
+ * cross-site page nor a plain HTML form on a sibling app can produce that.
  */
-import { checkAccess, clearCookies, linkCookie, passwordCookie, PREFIX, safeEqual, safeNext, verifyLink, type Access } from './gate';
+import { checkAccess, clearCookies, isOwnerToken, linkCookie, ownerCookie, passwordCookie, PREFIX, safeEqual, safeNext, verifyLink, type Access } from './gate';
+import { clientIp, html, json, NOTICES, noticeFor, redirect, sameOrigin, secure, writeGuard, type NoticeCode } from './http';
 import { loginPage } from './login';
 import { api } from './api';
 import type { Env } from './env';
 
 export { PipelineWorkflow } from './workflow';
 
-const SECURITY_HEADERS: Record<string, string> = {
-  'x-robots-tag': 'noindex, nofollow, noarchive, nosnippet',
-  'referrer-policy': 'no-referrer',
-  'x-content-type-options': 'nosniff',
-  'x-frame-options': 'DENY',
-  'permissions-policy': 'camera=(), microphone=(), geolocation=()',
-};
+const IMMUTABLE = 'public, max-age=31536000, immutable';
 
-function secure(res: Response, cache = 'no-store'): Response {
-  const out = new Response(res.body, res);
-  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
-  if (cache && !out.headers.has('cache-control')) out.headers.set('cache-control', cache);
-  return out;
+function withCache(res: Response, policy: string): Response {
+  res.headers.set('cache-control', policy);
+  return res;
 }
 
-function html(body: string, status = 200): Response {
-  return secure(new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8' } }));
+function loginUrl(next: string, notice?: NoticeCode): string {
+  return `${PREFIX}/login?next=${encodeURIComponent(safeNext(next))}${notice ? `&notice=${notice}` : ''}`;
 }
 
-function redirect(to: string, status: 302 | 303, cookies: string[] = []): Response {
-  const headers = new Headers({ location: to });
-  for (const c of cookies) headers.append('set-cookie', c);
-  return secure(new Response(null, { status, headers }));
-}
-
+/** Throws when D1 cannot answer: verifyLink then fails closed ('unavailable'). */
 async function isRevoked(env: Env, jti: string): Promise<boolean> {
+  const row = await env.DB.prepare('SELECT 1 FROM revoked_links WHERE jti = ?').bind(jti).first();
+  return !!row;
+}
+
+/** Per-IP limit on password and owner-token attempts. Fails closed (no limiter → no attempt). */
+async function attemptAllowed(env: Env, req: Request): Promise<boolean> {
   try {
-    const row = await env.DB.prepare('SELECT 1 FROM revoked_links WHERE jti = ?').bind(jti).first();
-    return !!row;
+    return (await env.RL_UNLOCK.limit({ key: `unlock:${clientIp(req)}` })).success;
   } catch {
-    return false; // table missing before first migration: nothing is revoked
+    return false;
   }
 }
 
@@ -58,22 +56,24 @@ export default {
 
     // ---- public: sign-in
     if (path === `${PREFIX}/login`) {
-      const notice = url.searchParams.get('e') === '1' ? 'That password is not right. Check the invite and try again.' : url.searchParams.get('notice');
-      return html(loginPage({ next: safeNext(url.searchParams.get('next')), notice }), url.searchParams.get('e') === '1' ? 401 : 200);
+      const bad = url.searchParams.get('e') === '1';
+      const code = url.searchParams.get('notice') ?? '';
+      const notice = bad ? 'That password is not right. Check the invite and try again.' : noticeFor(code);
+      return html(loginPage({ next: safeNext(url.searchParams.get('next')), notice }), bad ? 401 : 200);
     }
     if (path === `${PREFIX}/api/unlock`) {
       if (req.method !== 'POST') return redirect(`${PREFIX}/login`, 303);
+      if (!sameOrigin(req, url)) return json(403, 'cross_origin', 'Sign in from the Signal Loop sign-in page');
       const type = req.headers.get('content-type') ?? '';
-      if (!/^(application\/x-www-form-urlencoded|multipart\/form-data)/i.test(type)) {
-        return secure(Response.json({ error: { code: 'bad_request', message: 'Send the sign-in form as form data' } }, { status: 400 }));
-      }
+      if (!/^(application\/x-www-form-urlencoded|multipart\/form-data)/i.test(type)) return json(400, 'bad_request', 'Send the sign-in form as form data');
       let form: FormData;
       try {
         form = await req.formData();
       } catch {
-        return secure(Response.json({ error: { code: 'bad_request', message: 'Malformed form body' } }, { status: 400 }));
+        return json(400, 'bad_request', 'Malformed form body');
       }
       const next = safeNext(form.get('next'));
+      if (!(await attemptAllowed(env, req))) return html(loginPage({ next, notice: NOTICES.rate_limited! }), 429);
       const given = String(form.get('password') ?? '');
       if (!env.INVOCA_PASSWORD || !(await safeEqual(given, env.INVOCA_PASSWORD))) {
         // 303 back to the sign-in page, so the address bar never shows /api/unlock.
@@ -81,12 +81,31 @@ export default {
       }
       return redirect(next, 303, [await passwordCookie(env.INVOCA_PASSWORD)]);
     }
-    if (path === `${PREFIX}/api/logout`) return redirect(`${PREFIX}/login`, 303, clearCookies());
+    if (path === `${PREFIX}/api/logout`) {
+      if (req.method !== 'POST') return json(405, 'method_not_allowed', 'Sign out with POST');
+      if (!sameOrigin(req, url)) return json(403, 'cross_origin', 'Cross-origin requests cannot sign you out');
+      return redirect(`${PREFIX}/login?notice=signed_out`, 303, clearCookies());
+    }
 
-    // Public brand assets the sign-in page needs before any cookie exists.
+    // Public brand assets the sign-in page needs before any cookie exists. A missing file is a
+    // 404, never the SPA shell.
     if (path.startsWith(`${PREFIX}/public/`)) {
-      const res = await env.ASSETS.fetch(new Request(new URL(path.slice(PREFIX.length), url.origin), req));
-      return secure(res, res.ok ? 'public, max-age=3600' : 'no-store');
+      const res = await env.ASSETS.fetch(new Request(new URL(path.slice(PREFIX.length), url.origin), { method: req.method === 'HEAD' ? 'HEAD' : 'GET', headers: req.headers }));
+      if (res.status === 304) return withCache(secure(res), 'public, max-age=3600');
+      if (!res.ok || (res.headers.get('content-type') ?? '').includes('text/html')) {
+        return secure(new Response('Not found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } }));
+      }
+      return secure(res, 'public, max-age=3600');
+    }
+
+    // ---- owner token (?owner=…): same shape as a signed link, for the owner only
+    const ownerParam = url.searchParams.get('owner');
+    if (ownerParam !== null && !path.startsWith(`${PREFIX}/api/`)) {
+      url.searchParams.delete('owner');
+      const clean = safeNext(`${url.pathname}${url.search}`);
+      if (!(await attemptAllowed(env, req))) return redirect(loginUrl(clean, 'rate_limited'), 302);
+      if (!(await isOwnerToken(ownerParam, env.OWNER_TOKEN))) return redirect(loginUrl(clean, 'invalid'), 302);
+      return redirect(clean, 302, [await ownerCookie(env.OWNER_TOKEN!)]);
     }
 
     // ---- signed link
@@ -95,24 +114,22 @@ export default {
       const check = await verifyLink(env.LINK_SIGNING_SECRET ?? '', k, Date.now(), (jti) => isRevoked(env, jti));
       url.searchParams.delete('k');
       const clean = `${url.pathname}${url.search}`;
-      if (!check.ok) {
-        const notice = check.reason === 'expired' ? 'This link has expired. Sign in with the password instead.' : 'This link is not valid. Sign in with the password instead.';
-        return redirect(`${PREFIX}/login?next=${encodeURIComponent(safeNext(clean))}&notice=${encodeURIComponent(notice)}`, 302);
-      }
+      if (!check.ok) return redirect(loginUrl(clean, check.reason === 'expired' ? 'expired' : check.reason === 'unavailable' ? 'unavailable' : 'invalid'), 302);
       return redirect(safeNext(clean), 302, [linkCookie(k, check.payload.exp)]);
     }
 
     // ---- gate
     const access: Access = await checkAccess(req.headers.get('cookie') ?? '', env, (jti) => isRevoked(env, jti));
     if (!access.ok) {
-      if (path.startsWith(`${PREFIX}/api/`)) {
-        return secure(Response.json({ error: { code: 'unauthorized', message: 'Sign in required' } }, { status: 401 }));
-      }
-      return redirect(`${PREFIX}/login?next=${encodeURIComponent(`${path}${url.search}`)}`, 302);
+      if (path.startsWith(`${PREFIX}/api/`)) return json(401, 'unauthorized', 'Sign in required');
+      const notice = access.reason === 'unavailable' ? 'unavailable' : access.reason === 'expired' ? 'expired' : access.reason ? 'invalid' : undefined;
+      return redirect(loginUrl(`${path}${url.search}`, notice), 302);
     }
 
     // ---- API
     if (path.startsWith(`${PREFIX}/api/`)) {
+      const blocked = writeGuard(req, url);
+      if (blocked) return blocked;
       const res = await api.fetch(req, { ...env, ACCESS: access }, ctx);
       return secure(res);
     }
@@ -120,15 +137,20 @@ export default {
     // ---- SPA assets (prefix stripped). Hashed assets cache long; HTML never caches.
     path = path.slice(PREFIX.length) || '/';
     const assetReq = new Request(new URL(path, url.origin), { method: req.method === 'HEAD' ? 'HEAD' : 'GET', headers: req.headers });
+    const isAsset = path.startsWith('/assets/');
     let res = await env.ASSETS.fetch(assetReq);
-    if (res.status >= 300 && res.status < 400) res = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
+    // 304 (If-None-Match revalidation) is a cache hit, not a redirect: pass it straight through.
+    // Only real redirects (the asset server's /index.html ↔ / canonicalisation) fall back to the
+    // SPA shell.
+    if (res.status === 304) return withCache(secure(res), isAsset ? IMMUTABLE : 'no-store');
+    if ([301, 302, 307, 308].includes(res.status)) res = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
     // A missing hashed asset (an old chunk after a redeploy) must 404, not fall through to the
     // SPA shell: a 200 text/html for a module import is what turns deploy skew into a crash.
     // The client's vite:preloadError handler then reloads onto the new build.
-    if (path.startsWith('/assets/') && (res.status === 404 || (res.headers.get('content-type') ?? '').includes('text/html'))) {
+    if (isAsset && (res.status === 404 || (res.headers.get('content-type') ?? '').includes('text/html'))) {
       return secure(new Response('Not found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } }));
     }
-    const immutable = path.startsWith('/assets/') && res.ok;
-    return secure(res, immutable ? 'public, max-age=31536000, immutable' : 'no-store');
+    // Forced (set, not "set if absent"): the asset server sends its own revalidating policy.
+    return withCache(secure(res), isAsset && res.ok ? IMMUTABLE : 'no-store');
   },
 } satisfies ExportedHandler<Env>;

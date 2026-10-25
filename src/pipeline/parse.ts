@@ -368,7 +368,8 @@ function parseEml(text: string, warnings: string[]): { turns: Omit<RawTurn, 'id'
 // ------------------------------------------------------------------ chat
 
 const CHAT_PATTERNS: RegExp[] = [
-  new RegExp(String.raw`^\s*\[\s*(\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AaPp][Mm])?)\s*\]\s*@?([\w.\- ]{1,40}?)\s*:\s+(.*)$`), // [10:42 AM] dana.w: text
+  // [10:42 AM] dana.w: text · Slack export: [10/12/2026 9:10 AM] tom.lindqvist: text, thread replies "↳ […]"
+  new RegExp(String.raw`^\s*(?:↳\s*)?\[\s*(?:\d{1,4}[/.-]\d{1,2}[/.-]\d{2,4},?\s+)?(\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AaPp][Mm])?)\s*\]\s*@?([\w.\- ]{1,40}?)\s*:\s+(.*)$`),
   new RegExp(String.raw`^\s*@?([\w.\-]{1,30}(?: [\w.\-]{1,20})?)\s+\[\s*(\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AaPp][Mm])?)\s*\]\s*:?\s+(.*)$`), // dana.w [10:42 AM]: text
   new RegExp(String.raw`^\s*(\d{1,2}:\d{2}\s*(?:[AaPp][Mm])?)\s+@?([\w.\-]{1,30})\s*:\s+(.*)$`), // 10:42 dana: text
   /^\s*\*\*@?([\w.\- ]{1,30})\*\*\s*:?\s+(.*)$/, // **dana**: text
@@ -398,6 +399,12 @@ function parseChat(text: string): Omit<RawTurn, 'id' | 'role'>[] {
     }
     if (hit) {
       out.push({ speaker: hit.speaker.trim(), ts: hit.ts, text: hit.text });
+      continue;
+    }
+    // Export section markers ("--- #acct-northwind (internal) ---") start a context turn of
+    // their own instead of being glued onto the previous message.
+    if (/^\s*-{2,}.*-{2,}\s*$/.test(line)) {
+      out.push({ speaker: 'unknown', ts: null, text: line.trim().replace(/^-+\s*|\s*-+$/g, '') });
       continue;
     }
     const prev = out[out.length - 1];

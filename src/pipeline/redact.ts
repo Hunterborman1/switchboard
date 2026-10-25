@@ -230,6 +230,12 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
   const speakerNames = namesFromSpeakers([...new Set(turns.map((t) => t.speaker))], safe);
   for (const n of [...speakerNames, ...(opts.knownNames ?? [])]) register('person', n);
   for (const t of turns) for (const s of detectPatterns(`${t.speaker}\n${t.text}`, safe)) register(s.kind, s.value);
+  // A handle label ("diego.alvarez", "diego_alvarez") and the known full name are one person.
+  for (const [k, e] of [...entities.entries()]) {
+    if (!k.startsWith('name:') || !/[._]/.test(k)) continue;
+    const other = entities.get(`name:${k.slice(5).replace(/[._]+/g, ' ')}`);
+    if (other && other !== e) entities.set(k, other);
+  }
   // Aliases: first and last names of every multi-word name map to the same entity.
   for (const e of [...entities.values()]) {
     if (e.kind !== 'person' && e.kind !== 'patient') continue;
@@ -244,6 +250,23 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
   const nameKeys = [...entities.entries()].filter(([k]) => k.startsWith('name:')).map(([k, e]) => ({ text: k.slice(5), e }));
   nameKeys.sort((a, b) => b.text.length - a.text.length);
   const nameRe = nameKeys.length ? new RegExp(`(?<![\\w@.])(?:${nameKeys.map((n) => escapeRe(n.text).replace(/\s+/g, '\\s+')).join('|')})(?![\\w@])`, 'gi') : null;
+  // Chat handles: "diego.alvarez", "@diego.alvarez", "diego_alvarez", "dana.w". A handle is
+  // masked whole when any part is a known name (or a listed first name), never half.
+  const handleRe = /(?<![\w.@/-])@?[A-Za-z][A-Za-z0-9]*(?:[._][A-Za-z0-9]+)+(?![\w@-])/g;
+  const handleEntity = (raw: string): Entity | null => {
+    const bare = raw.replace(/^@/, '').toLowerCase();
+    const parts = bare.split(/[._]/);
+    if (parts.some((p) => safe.has(p) || NOT_A_NAME.has(p))) return null;
+    const known = entities.get(`name:${bare}`) ?? parts.filter((p) => p.length >= 3).map((p) => entities.get(`name:${p}`)).find((e) => e && (e.kind === 'person' || e.kind === 'patient'));
+    let e = known ?? null;
+    if (!e) {
+      const listed = parts.some((p) => p.length >= 3 && FIRST_NAMES.has(p[0]!.toUpperCase() + p.slice(1)));
+      if (!listed) return null;
+      e = register('person', raw.replace(/^@/, ''));
+    }
+    if (!entities.has(`name:${bare}`)) entities.set(`name:${bare}`, e);
+    return e;
+  };
   // The surname is a lookahead so "Later Kevin Brooks" still finds "Kevin Brooks".
   const firstNameRe = /\b([A-Z][a-z]+)\b(?=(\s+[A-Z][a-z'’]+(?:-[A-Z][a-z]+)?\b)?)/g;
 
@@ -252,6 +275,11 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
     for (const p of detectPatterns(s, safe)) {
       const e = entities.get(keyOf(p.kind, p.value)) ?? register(p.kind, p.value);
       spans.push({ ...p, e });
+    }
+    for (const m of s.matchAll(handleRe)) {
+      if (/@/.test(s.slice(m.index! + m[0].length, m.index! + m[0].length + 1))) continue; // an email's local part
+      const e = handleEntity(m[0]);
+      if (e) spans.push({ start: m.index!, end: m.index! + m[0].length, kind: e.kind, value: m[0], e });
     }
     if (nameRe) {
       for (const m of s.matchAll(nameRe)) {

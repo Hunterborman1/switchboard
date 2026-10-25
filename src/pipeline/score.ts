@@ -38,6 +38,8 @@ export type ScoreInput = {
   injectionFlagged: boolean;
   now: number;
   thresholds?: Thresholds;
+  /** Extra reasons that send the insight to review whatever its confidence (e.g. screen failed). */
+  forceReview?: string[];
 };
 
 export type ScoreResult = {
@@ -85,6 +87,7 @@ export function scoreInsight(input: ScoreInput): ScoreResult {
   if (input.type === 'churn_risk') forceReview.push('churn risk is always reviewed');
   if (input.type === 'bug' && (input.severity === 'critical' || input.severity === 'high')) forceReview.push(`${input.severity} bug is always reviewed`);
   if (input.injectionFlagged) forceReview.push('prompt injection suspected in this file: a person reviews everything');
+  forceReview.push(...(input.forceReview ?? []));
   if (forceReview.length) {
     gate = 'review';
     reasons.push(...forceReview);

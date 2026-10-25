@@ -71,6 +71,25 @@ describe('names', () => {
     const d = red(['How is Charlotte? Jordan said hi.'], { safeTerms: ['Charlotte'] });
     expect(d.text).toBe('How is Charlotte? [PERSON_1] said hi.');
   });
+  it('chat handles are masked whole (first.last, @first.last, first_last, first.l), never half', () => {
+    const turns: RawTurn[] = [
+      { id: 't1', speaker: 'diego.alvarez', role: 'invoca', ts: null, text: 'cc @chris.donovan and chris_donovan; ping dana.w too. Diego Alvarez owns it. see export.csv on v4.1' },
+      { id: 't2', speaker: 'chris.donovan', role: 'invoca', ts: null, text: 'thanks diego.alvarez, mail chris.donovan@invoca.com' },
+    ];
+    const d = redactDocument(turns, { knownNames: ['Diego Alvarez', 'Chris Donovan'] });
+    expect(d.text).not.toMatch(/alvarez|donovan|diego|chris/i);
+    expect(d.text).not.toMatch(/\]\.[a-z]|\][_.][a-z]|[a-z][._]\[/i);
+    expect(d.text).not.toContain('dana.w');
+    expect(d.text).toContain('export.csv');
+    expect(d.text).toContain('v4.1');
+    // One person, one token: the handle, the @handle, the underscore form and the full name.
+    const t1 = d.turns[0]!;
+    const tokens = t1.text.match(/\[PERSON_\d+\]/g)!;
+    expect(new Set(tokens).size).toBe(3); // chris (×2 forms), dana, diego (full name)
+    expect(tokens).toContain(t1.speaker); // "Diego Alvarez" is the speaker diego.alvarez
+    expect(d.turns[1]!.text).toMatch(/thanks \[PERSON_\d+\], mail \[EMAIL_\d+\]/);
+  });
+
   it('generic labels are not names', () => {
     expect(namesFromSpeakers(['Speaker 1', 'CSM', 'Customer', 'unknown', 'Dana (Acme)', 'dana@x.com', 'Notes'])).toEqual(['Dana']);
   });

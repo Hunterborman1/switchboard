@@ -4,16 +4,16 @@
  * ticket → see the CSM notification; plus a replay run, themes, evals, health.
  *   node scripts/lib/e2e-local.ts [baseUrl]
  */
-import { passwordToken } from '../../src/worker/gate.ts';
+import { passwordToken, signWorkspace } from '../../src/worker/gate.ts';
 import { loadEnv } from '../env.ts';
 
 const env = loadEnv();
 const base = `${process.argv[2] ?? 'http://127.0.0.1:8797'}/repo/invoca/api`;
 const ws = `ws_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
-const cookie = `hb_invoca=${await passwordToken(env.INVOCA_PASSWORD!)}; sl_ws=${ws}`;
+const cookie = `hb_invoca=${await passwordToken(env.INVOCA_PASSWORD!)}; sl_ws=${await signWorkspace(ws, env.LINK_SIGNING_SECRET)}`;
 
 async function call(path: string, init: { method?: string; json?: unknown } = {}): Promise<{ status: number; body: any }> {
-  const res = await fetch(`${base}${path}`, { method: init.method ?? 'GET', headers: { cookie, ...(init.json !== undefined ? { 'content-type': 'application/json' } : {}) }, body: init.json === undefined ? undefined : JSON.stringify(init.json) });
+  const res = await fetch(`${base}${path}`, { method: init.method ?? 'GET', headers: { cookie, 'x-signal-loop': '1', ...(init.json !== undefined ? { 'content-type': 'application/json' } : {}) }, body: init.json === undefined ? undefined : JSON.stringify(init.json) });
   return { status: res.status, body: await res.json().catch(() => null) };
 }
 function check(cond: unknown, msg: string): void {
@@ -76,5 +76,5 @@ const dup = await call('/runs', { method: 'POST', json: { fileId: 'file_c1042_du
 check(dup.body.data.duplicate === true && dup.body.data.runId === d.run.id, 'duplicate upload returns the existing run');
 const health = await call('/health');
 check(health.body.data.budget.spentUsd > 0, `health: spent $${health.body.data.budget.spentUsd} of $${health.body.data.budget.limitUsd}; ${health.body.data.ledger.length} days in ledger`);
-await call('/workspace/reset', { method: 'POST' });
+await call('/workspace/reset', { method: 'POST', json: {} });
 console.log('e2e ok');

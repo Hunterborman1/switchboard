@@ -29,11 +29,21 @@ export const ACCOUNT_CONTEXT = {
 /** Cosine similarity needed to join an existing theme (bge-base-en-v1.5 space). */
 export const THEME_JOIN_THRESHOLD = 0.82;
 
-/** Minutes a CSM spends today writing up and routing one call (registered Agent Ops baseline; assumption). */
-export const MINUTES_SAVED_PER_CALL = 9;
+/**
+ * Minutes a CSM spends today writing up and routing one call: the ONE registered baseline for
+ * Signal Loop (an assumption until the 2-week time study replaces it). Must equal
+ * baselineMinutesPerUnit in data/platform/agents.json (tests/unit/shared/baseline.test.ts), so
+ * live runs and the six-week history credit hours the same way.
+ */
+export const MINUTES_SAVED_PER_CALL = 18;
 
-/** Budget: estimated worst-case cost of one live run (screen + extract + retry + fallback + theme name). */
+/**
+ * Budget: a typical run's cost, used for "can the remainder cover one more run" (the live flag).
+ * Each run's reservation is sized from its own input instead (estimateRunCostUsd).
+ */
 export const RUN_COST_ESTIMATE_USD = 0.02;
+/** At most this many live runs may hold an unsettled reservation at once (all viewers). */
+export const MAX_UNSETTLED_RESERVATIONS = 8;
 /** A reservation older than this is ignored (the run died without settling). */
 export const RESERVATION_TTL_MS = 10 * 60_000;
 /** Live runs that have not finished within this window fall back to replay (featured files). */
@@ -48,6 +58,40 @@ export const MODEL_PRICES: Record<string, { in: number; out: number }> = {
 export function estimateCost(model: string, tokensIn: number, tokensOut: number): number {
   const p = MODEL_PRICES[model] ?? { in: 0.5, out: 1.5 };
   return (tokensIn * p.in + tokensOut * p.out) / 1_000_000;
+}
+
+/** Conservative token count for text (≈3 characters per token; real English is closer to 4). */
+export function estimateTokens(chars: number): number {
+  return Math.ceil(Math.max(0, chars) / 3);
+}
+
+/** Per-call shape of a live run: max output tokens and extra input beyond the transcript. */
+const RUN_CALLS = [
+  { purpose: 'screen', maxOut: 400, extraIn: 1_500 },
+  { purpose: 'extract', maxOut: 2_500, extraIn: 3_500 },
+  // Theme naming sees cluster summaries, not the transcript (bounded by maxOut of extract).
+  { purpose: 'theme_name', maxOut: 600, extraIn: 1_500, noTranscript: true },
+] as const;
+/** The schema retry resends the input plus up to 6000 chars of the prior output. */
+const RETRY_EXTRA_IN = estimateTokens(6_000) + 100;
+
+/**
+ * Worst-case cost of one live run, sized from its input: every call (screen, extract, theme
+ * naming) at its max output, three attempts each (primary, schema retry, secondary), priced at
+ * the dearer of the configured models, plus 20% margin. This is what a run reserves.
+ */
+export function estimateRunCostUsd(contentChars: number, models: string[]): number {
+  const prices = models.map((m) => MODEL_PRICES[m] ?? { in: 0.5, out: 1.5 });
+  const pin = Math.max(...prices.map((p) => p.in), 0);
+  const pout = Math.max(...prices.map((p) => p.out), 0);
+  const transcript = estimateTokens(contentChars);
+  let usd = 0;
+  for (const c of RUN_CALLS) {
+    const input = c.extraIn + ('noTranscript' in c && c.noTranscript ? 0 : transcript);
+    const attempts = [input, input + RETRY_EXTRA_IN, input];
+    for (const tin of attempts) usd += (tin * pin + c.maxOut * pout) / 1_000_000;
+  }
+  return Math.round(usd * 1.2 * 1e6) / 1e6;
 }
 
 /** Promotion gate: a candidate prompt is promoted only when every check passes. */
