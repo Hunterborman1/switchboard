@@ -57,7 +57,7 @@ test('executive summary reads as templated sentences and is printable', async ({
   await page.getByRole('link', { name: 'Executive summary' }).click();
   await expect(page).toHaveURL(/\/ops\/summary/);
   const p = page.getByTestId('exec-summary').locator('p');
-  await expect(p.first()).toContainText('production agents returned an estimated');
+  await expect(p.first()).toContainText('production agents saved an estimated');
   expect(await p.count()).toBeGreaterThanOrEqual(4);
   await expect(page.getByRole('button', { name: 'Print or save as PDF' })).toBeVisible();
 });

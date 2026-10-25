@@ -14,14 +14,14 @@ export type ModelRole = 'primary' | 'secondary';
 export type ConfiguredModels = { primary: string; secondary: string };
 
 export const MODEL_ROLE_LABEL: Record<ModelRole, string> = {
-  primary: 'Primary · fast tier',
-  secondary: 'Secondary · fallback & judge',
+  primary: 'Main model',
+  secondary: 'Backup model',
 };
 
 /** Short forms for inline copy ("Runs live on the real models · fast tier, fallback & judge"). */
 export const MODEL_ROLE_SHORT: Record<ModelRole, string> = {
-  primary: 'fast tier',
-  secondary: 'fallback & judge',
+  primary: 'main model',
+  secondary: 'backup model',
 };
 
 /** Other Agent Ops agents' models: labelled by order/role, not tier. */
@@ -72,7 +72,7 @@ export function modelRole(id: string | null | undefined, configured?: Configured
 }
 
 /**
- * Display label for a model id: "Primary · fast tier", "Secondary · fallback & judge",
+ * Display label for a model id: "Main model", "Backup model",
  * "Primary model"/"Secondary model" for other agents, else "Other model".
  * Null or empty input returns null so callers can show their own "code, no model" copy.
  */
