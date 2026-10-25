@@ -16,6 +16,21 @@ import '../tour/tour.css';
 import './web.css';
 
 import { router } from './router';
+import { reloadOnce } from './RouteError';
+
+// Deploy skew: a lazy chunk from the previous build is gone (the Worker 404s it). Reload once
+// per session onto the new build instead of surfacing an error.
+window.addEventListener('vite:preloadError', (event) => {
+  if (reloadOnce()) event.preventDefault();
+});
+// Clear the one-shot guard once this build has stayed up for a while, so a later deploy can reload again.
+window.setTimeout(() => {
+  try {
+    sessionStorage.removeItem('sl-chunk-reload');
+  } catch {
+    /* storage unavailable */
+  }
+}, 30_000);
 
 const forcedCalm = new URLSearchParams(window.location.search).get('motion') === 'reduced';
 

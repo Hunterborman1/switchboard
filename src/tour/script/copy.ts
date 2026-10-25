@@ -2,10 +2,10 @@
  * Data-driven narration. Every function reads the viewer's real RunDetail / eval / platform
  * data and degrades to honest generic copy when the data isn't there yet.
  */
-import type { RunDetail, StepKey, Evidence } from '../../shared/contracts';
+import type { RunDetail, StepKey, Evidence, Theme } from '../../shared/contracts';
 import type { TourCtx } from '../engine/types';
 
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+export const plural =(n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 export const usd = (n: number, digits?: number) => {
   const d = digits ?? (n < 0.1 ? 4 : n < 10 ? 2 : 0);
   return `$${n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })}`;
@@ -23,6 +23,21 @@ export const runSettled = (run: RunDetail | null) => !!run && ['completed', 'fai
 
 function allEvidence(run: RunDetail): Evidence[] {
   return run.insights.flatMap((i) => i.evidence);
+}
+
+/** ch2.intro: "real execution" is only true live; a replay says what it is. */
+export function introCopy(ctx: TourCtx): string {
+  if (ctx.run?.run.mode === 'replay') {
+    return 'This is a recorded real execution, replayed at real speed and labelled as a replay. Each step writes a row as it runs.';
+  }
+  return 'What you’re watching is the real execution, not an animation. Each step writes a row as it runs.';
+}
+
+/** ch3.edit: once the edit form is open, say what saving needs. */
+export function editCopy(): string {
+  const formOpen = typeof document !== 'undefined' && !!document.querySelector('[data-tour="review.editform"]');
+  if (formOpen) return 'Change the type, area or severity, then Save edit & route. The fix is saved as labelled data with a before/after diff.';
+  return 'Press E or click Edit. Your fix is saved as labelled data, with a before/after audit diff.';
 }
 
 export function redactCopy(ctx: TourCtx): string {
@@ -57,9 +72,12 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
   if (ctx.path === 'negative' || n === 0) {
     return { title: 'Nothing actionable, and that’s the right answer', body: 'Zero insights. A calm empty state. It doesn’t invent work to look busy.' };
   }
+  // On the main path the screen beat is folded in here: half a line on the cheap check, then the result.
+  const screened = ctx.path !== 'security' && !!ctx.run?.screen;
+  const found = n != null ? `${plural(n, 'candidate insight')}, each with a verbatim quote and a turn ID.` : 'every candidate carries a verbatim quote and a turn ID.';
   return {
     title: 'Structured, quoted, typed',
-    body: n != null ? `${plural(n, 'candidate insight')}, each with a verbatim quote and a turn ID. No quote, no insight.` : 'Every candidate carries a verbatim quote and a turn ID. No quote, no insight.',
+    body: screened ? `A cheap screen said it’s worth reading. Then the main pass: ${found} No quote, no insight.` : `${found.charAt(0).toUpperCase()}${found.slice(1)} No quote, no insight.`,
   };
 }
 
@@ -126,13 +144,39 @@ export function messyCopy(ctx: TourCtx): string {
 }
 
 const pct = (v: number | null | undefined) => (v == null ? '—' : `${(v * 100).toFixed(1)}%`);
+const secs = (ms: number) => `${(ms / 1000).toFixed(1)} s`;
+
+/** Cost and p95 of the candidate against the current prompt, read from the two eval runs. */
+export function evalTradeoff(ctx: TourCtx): { cost: string; speed: string; cheaper: boolean; faster: boolean } | null {
+  const c = ctx.evals?.candidate;
+  const l = ctx.evals?.latest;
+  if (!c || !l || c.id === l.id) return null;
+  const cheaper = c.costUsd < l.costUsd;
+  const faster = c.p95Ms < l.p95Ms;
+  return {
+    cheaper,
+    faster,
+    cost: `${cheaper ? 'cheaper' : 'more expensive'} to run (${usd(c.costUsd, 3)} vs ${usd(l.costUsd, 3)} for the eval set)`,
+    speed: `${faster ? 'faster' : 'slower'} at p95 (${secs(c.p95Ms)} vs ${secs(l.p95Ms)})`,
+  };
+}
+
+/** ch7.candidate title: only promise a saving when the eval data shows one. */
+export function candidateTitle(ctx: TourCtx): string {
+  const t = evalTradeoff(ctx);
+  if (t?.cheaper && t.faster) return 'A cheaper, faster prompt?';
+  if (t?.cheaper) return 'A cheaper prompt?';
+  return 'A new prompt version?';
+}
 
 export function candidateCopy(ctx: TourCtx): string {
   const c = ctx.evals?.candidate;
   const l = ctx.evals?.latest;
-  if (!c) return 'A cheaper candidate prompt is ready. Should it ship?';
-  const cheaper = l && c.costUsd < l.costUsd ? ` It’s cheaper to run (${usd(c.costUsd)} vs ${usd(l.costUsd)} for the eval set).` : '';
-  return `${c.promptVersion} is the candidate.${cheaper} Should it ship?`;
+  if (!c) return 'A candidate prompt is ready, scored on the same golden files. Should it ship?';
+  const vs = l && l.id !== c.id ? ` as ${l.promptVersion}` : '';
+  const t = evalTradeoff(ctx);
+  if (!t) return `${c.promptVersion} is the candidate, scored on the same golden files${vs}. Should it ship?`;
+  return `${c.promptVersion} is the candidate, scored on the same golden files${vs}. It’s ${t.cost} and ${t.speed}. Should it ship?`;
 }
 
 export function promoteCopy(ctx: TourCtx): { title: string; body: string } {
@@ -147,24 +191,37 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string } {
   const key = reg ? reg.key.replace('regression.', '') : failed[0]?.key;
   const now = cand?.metrics.find((m) => m.key === key);
   const before = latest?.metrics.find((m) => m.key === key);
+  // Name what else regressed, from the same eval runs, so the copy never claims a saving the screen contradicts.
+  const t = evalTradeoff(ctx);
+  const worse = t ? [!t.cheaper ? 'costs more' : '', !t.faster ? 'runs slower' : ''].filter(Boolean) : [];
+  const also = worse.length ? ` It also ${worse.join(' and ')}.` : t?.cheaper ? ' Whatever it saves.' : '';
   if (now && now.value != null) {
     const label = now.label.replace(/\s*\(.*\)\s*$/, '');
-    const drop = before?.value != null ? Math.round((before.value - now.value) * 100) : reg?.value != null ? Math.round(-reg.value * 100) : null;
+    const drop = before?.value != null ? Math.round((before.value - now.value) * 1000) / 10 : reg?.value != null ? Math.round(-reg.value * 1000) / 10 : null;
     const why = key?.startsWith('precision') ? 'It flagged things customers never raised.' : key?.startsWith('recall') ? 'It missed real insights.' : 'One slice regressed.';
     return {
-      title: 'PROMOTION BLOCKED',
-      body: drop != null ? `${label} fell ${drop} points (${pct(before?.value)} → ${pct(now.value)}). ${why} One regression blocks promotion.` : `${label} is ${pct(now.value)}, under its threshold. ${why}`,
+      title: 'Promotion blocked',
+      body: drop != null ? `${label} fell ${drop} points (${pct(before?.value)} → ${pct(now.value)}). ${why}${also} One regression is enough to block it.` : `${label} is ${pct(now.value)}, under its threshold. ${why}${also}`,
     };
   }
   const reason = cand?.blockedReasons[0];
-  return { title: 'PROMOTION BLOCKED', body: reason ? `${reason}. One regression blocks promotion.` : 'A slice regressed against the current prompt, so the gate held. One regression blocks promotion.' };
+  return { title: 'Promotion blocked', body: reason ? `${reason}.${also} One regression is enough to block it.` : 'A slice regressed against the current prompt, so the gate held. One regression is enough to block it.' };
+}
+
+/**
+ * The theme card ch5 spotlights. Mirrors isC1042Theme in src/app/pages/Themes.tsx, which
+ * places the `theme.c1042` anchor: the copy and the spotlight must name the same theme.
+ */
+export function isSpotlitTheme(t: Pick<Theme, 'id' | 'name'>): boolean {
+  return t.id === 'thm_offline_conv' || /offline conversions/i.test(t.name);
 }
 
 export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
   const t = ctx.theme;
-  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the theme.', arr: 'Summed across distinct accounts. That’s the number that moves a roadmap.' };
+  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the highlighted theme.', arr: 'Summed across distinct accounts. That’s the number that moves a roadmap.' };
+  const yours = ctx.run?.insights.some((i) => i.themeId === t.id) ? ' Your call’s insight just joined it.' : '';
   return {
-    intro: `“${t.name}”: ${plural(t.insightCount, 'insight')} from ${plural(t.accountCount, 'account')}. Open it.`,
+    intro: `“${t.name}”: ${plural(t.insightCount, 'insight')} from ${plural(t.accountCount, 'account')}.${yours} Open it.`,
     arr: `${compactUsd(t.arrUsd)} of ARR across ${plural(t.accountCount, 'account')}, counted once each. That’s what moves a roadmap.`,
   };
 }
@@ -172,42 +229,30 @@ export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
 export function budgetCopy(ctx: TourCtx): string {
   const b = ctx.budget;
   if (!b) return 'A hard $15 cap on live AI for viewers. Past it, runs replay recorded executions, so nothing breaks.';
-  return `${usd(b.spentUsd, 2)} of ${usd(b.limitUsd, 2)} used across ${b.liveRuns} live runs. Past the cap it replays: never an outage.`;
+  return `${usd(b.spentUsd, 2)} of ${usd(b.limitUsd, 2)} used across ${plural(b.liveRuns, 'live run')}. Past the cap it replays: never an outage.`;
 }
 
 // ---------------------------------------------------------------- platform (ch8)
 
 export function opsKpiCopy(ctx: TourCtx): string {
   const t = ctx.ops?.overview?.totals;
-  if (!t) return 'Hours returned, value against AI cost, ROI and active users, per agent. Two agents today; built for fifty.';
-  const roi = t.roiMultiple != null ? `, ${t.roiMultiple.toFixed(0)}× return` : '';
-  return `${Math.round(t.hoursReturned).toLocaleString()} hours returned across ${t.agentsInProduction === 1 ? '1 agent' : `${t.agentsInProduction} agents`}: ${compactUsd(t.valueUsd)} of time for ${compactUsd(t.aiCostUsd)} of AI${roi}.`;
-}
-
-export function opsAttentionCopy(ctx: TourCtx): string {
-  const a = ctx.ops?.overview?.attention;
-  if (!a) return 'Overdue reviews, SLO breaches and standard gaps. Operating an agent means working this list.';
-  if (a.length === 0) return 'Nothing needs attention right now. When something does, it lands here with an owner.';
-  return `${plural(a.length, 'item')} need${a.length === 1 ? 's' : ''} attention: ${a[0]?.message ?? ''}`.slice(0, 140);
+  if (!t) return 'Hours returned, value of that time and AI cost, per agent. Two agents today; built for fifty.';
+  // Lead with hours; the value ratio is against metered AI spend only, so say so instead of quoting a multiple.
+  return `${Math.round(t.hoursReturned).toLocaleString()} hours returned across ${plural(t.agentsInProduction, 'agent')}: about ${compactUsd(t.valueUsd)} of time, against ${compactUsd(t.aiCostUsd)} of metered AI spend (build time not included).`;
 }
 
 export function opsRegistryCopy(ctx: TourCtx): string {
   const ag = ctx.ops?.agent;
-  if (!ag) return 'Every production agent has a named owner, a purpose and a review date. Signal Loop included.';
-  return `Owner ${ag.ownerName}, business owner ${ag.businessOwner}. Reviewed every ${ag.reviewCadenceDays} days; next on ${ag.nextReview.slice(0, 10)}.`;
-}
-
-export function opsStandardCopy(ctx: TourCtx): string {
-  const st = ctx.ops?.agent?.standard;
-  if (!st || st.length === 0) return 'Nine checks I’d hold every builder’s agent to, mine included, before it touches production.';
-  const passed = st.filter((c) => c.passed).length;
-  return `The standard I’d hold every builder’s agent to. Signal Loop passes ${passed}/${st.length}, with evidence linked for each.`;
+  if (!ag) return 'Every production agent has a named owner, a purpose and a review date, and is held to the same nine-check standard.';
+  const st = ag.standard ?? [];
+  const std = st.length ? ` Passes ${st.filter((c) => c.passed).length}/${st.length} checks of the agent standard.` : '';
+  return `Owner ${ag.ownerName}, business owner ${ag.businessOwner}. Reviewed every ${ag.reviewCadenceDays} days; next on ${ag.nextReview.slice(0, 10)}.${std}`;
 }
 
 export function opsLiveCopy(ctx: TourCtx): string {
   const l = ctx.ops?.live;
   if (!l) return 'That’s you. This session is in the data: adoption is measured, not surveyed.';
-  return `That’s you: ${plural(l.activeNow, 'viewer')} active now, ${l.tourStarts} walkthroughs started today. Adoption is measured, not surveyed.`;
+  return `That’s you: ${plural(l.activeNow, 'viewer')} active now, ${plural(l.tourStarts, 'walkthrough')} started today. Adoption is measured, not surveyed.`;
 }
 
 export function opsLogsCopy(ctx: TourCtx): string {

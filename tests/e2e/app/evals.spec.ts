@@ -18,7 +18,7 @@ test.describe('Evals', () => {
     await page.locator('[data-tour="evals.promote"] button').click();
     const gate = page.locator('[data-tour="evals.gate"]');
     await expect(gate).toBeVisible({ timeout: 10_000 });
-    await expect(gate).toContainText(/PROMOTION BLOCKED|PROMOTED/);
+    await expect(gate).toContainText(/Promotion blocked|Promoted/i);
     const ev = await events();
     const attempt = ev.find((e) => e.name === 'eval.promote_attempted') as { promoted?: boolean } | undefined;
     expect(attempt).toBeTruthy();

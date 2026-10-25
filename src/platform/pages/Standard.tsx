@@ -24,7 +24,7 @@ export function Standard() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Govern"
+        eyebrow="Govern"
         title="Agent standard & reviews"
         sub="One standard every agent is reviewed against, whoever built it and in whatever tool. Nine checks, each with evidence; two of them (review cadence and live logging) are measured, not self-reported."
       />
@@ -220,6 +220,7 @@ function Reviews() {
       </Panel>
       <Panel title="Scheduled reviews" flush>
         <Table
+          className="ao-cards"
           caption="Scheduled reviews"
           rows={rows}
           rowKey={(x) => x.agentId}

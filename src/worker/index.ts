@@ -58,15 +58,26 @@ export default {
 
     // ---- public: sign-in
     if (path === `${PREFIX}/login`) {
-      return html(loginPage({ next: safeNext(url.searchParams.get('next')), notice: url.searchParams.get('notice') }));
+      const notice = url.searchParams.get('e') === '1' ? 'That password is not right. Check the invite and try again.' : url.searchParams.get('notice');
+      return html(loginPage({ next: safeNext(url.searchParams.get('next')), notice }), url.searchParams.get('e') === '1' ? 401 : 200);
     }
     if (path === `${PREFIX}/api/unlock`) {
       if (req.method !== 'POST') return redirect(`${PREFIX}/login`, 303);
-      const form = await req.formData();
+      const type = req.headers.get('content-type') ?? '';
+      if (!/^(application\/x-www-form-urlencoded|multipart\/form-data)/i.test(type)) {
+        return secure(Response.json({ error: { code: 'bad_request', message: 'Send the sign-in form as form data' } }, { status: 400 }));
+      }
+      let form: FormData;
+      try {
+        form = await req.formData();
+      } catch {
+        return secure(Response.json({ error: { code: 'bad_request', message: 'Malformed form body' } }, { status: 400 }));
+      }
       const next = safeNext(form.get('next'));
       const given = String(form.get('password') ?? '');
       if (!env.INVOCA_PASSWORD || !(await safeEqual(given, env.INVOCA_PASSWORD))) {
-        return html(loginPage({ next, notice: 'That password is not right. Check the invite and try again.' }), 401);
+        // 303 back to the sign-in page, so the address bar never shows /api/unlock.
+        return redirect(`${PREFIX}/login?e=1&next=${encodeURIComponent(next)}`, 303);
       }
       return redirect(next, 303, [await passwordCookie(env.INVOCA_PASSWORD)]);
     }
@@ -111,6 +122,12 @@ export default {
     const assetReq = new Request(new URL(path, url.origin), { method: req.method === 'HEAD' ? 'HEAD' : 'GET', headers: req.headers });
     let res = await env.ASSETS.fetch(assetReq);
     if (res.status >= 300 && res.status < 400) res = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
+    // A missing hashed asset (an old chunk after a redeploy) must 404, not fall through to the
+    // SPA shell: a 200 text/html for a module import is what turns deploy skew into a crash.
+    // The client's vite:preloadError handler then reloads onto the new build.
+    if (path.startsWith('/assets/') && (res.status === 404 || (res.headers.get('content-type') ?? '').includes('text/html'))) {
+      return secure(new Response('Not found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } }));
+    }
     const immutable = path.startsWith('/assets/') && res.ok;
     return secure(res, immutable ? 'public, max-age=31536000, immutable' : 'no-store');
   },

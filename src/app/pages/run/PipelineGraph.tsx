@@ -72,7 +72,7 @@ export function PipelineGraph({
           const flowing = s.display !== 'pending' && s.display !== 'running';
           const st = s.display;
           return (
-            <li key={s.key} className={`${styles.cell} ${styles[`s_${st}`] ?? ''}`} data-step={s.key} data-status={st}>
+            <li key={s.key} className={`${styles.cell} ${styles[`s_${st}`] ?? ''}`} data-step={s.key} data-status={st} data-tour={s.key === 'ground' ? 'run.ground' : undefined}>
               <button
                 type="button"
                 className={`${styles.node} ${selected === s.key ? styles.nodeSelected : ''}`}

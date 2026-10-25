@@ -24,6 +24,15 @@ import { track } from '../telemetry';
 import { EvidenceContext } from './EvidenceContext';
 import { ErrorState, GateChip, SeverityTag, TypeTag } from './ui';
 import styles from './InsightDrawer.module.css';
+import type { Gate, InsightStatus } from '../../shared/contracts';
+
+/** The gate each status merely restates (so only one chip is shown). */
+const STATUS_DUPLICATES_GATE: Partial<Record<InsightStatus, Gate>> = {
+  pending_review: 'review',
+  held: 'held',
+  dropped_ungrounded: 'dropped',
+  routed: 'auto_route',
+};
 
 function fmt(v: unknown): string {
   if (v == null || v === '') return '—';
@@ -155,9 +164,14 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
               <div className="sl-row">
                 <TypeTag type={ins.type} />
                 <SeverityTag severity={ins.severity} />
-                <StatusChip tone={STATUS_TONE[ins.status]} size="sm">
-                  {STATUS_LABEL[ins.status]}
-                </StatusChip>
+                {/* One status, not two: the gate chip (with its "why" popover) already says
+                    pending review / held / dropped / auto-routed; the status chip only adds
+                    something once a human has acted (routed after review, rejected). */}
+                {STATUS_DUPLICATES_GATE[ins.status] === ins.gate ? null : (
+                  <StatusChip tone={STATUS_TONE[ins.status]} size="sm">
+                    {STATUS_LABEL[ins.status]}
+                  </StatusChip>
+                )}
                 <GateChip insight={ins} />
               </div>
               <h2 id="insight-drawer-title" className={styles.title}>
@@ -170,7 +184,7 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
 
               <section className={styles.section}>
                 <h3 className={styles.h3}>Provenance</h3>
-                <ProvenanceFlow nodes={nodes} />
+                <ProvenanceFlow nodes={nodes} layout="vertical" />
               </section>
 
               <section className={styles.section}>

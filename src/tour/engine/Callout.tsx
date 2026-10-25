@@ -6,7 +6,7 @@ import { chapterById, PRODUCT_CHAPTERS } from '../script/chapters';
 import { resolveCopy, useTour } from './TourProvider';
 
 type Props = {
-  mode: 'anchored' | 'center' | 'sheet' | 'dock';
+  mode: 'anchored' | 'center' | 'sheet' | 'float';
   missing: boolean;
   floatingRef?: Ref<HTMLDivElement>;
   style?: CSSProperties;
@@ -89,11 +89,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
         </div>
         <h2 id="t-callout-title" className="t-callout__title">{title}</h2>
         <p id="t-callout-body" className="t-callout__body">{body}</p>
-        {missing && (
-          <p className="t-callout__missing">
-            {step.target ? 'That part of the screen isn’t showing right now. You can carry on; nothing is lost.' : ''}
-          </p>
-        )}
+        {missing && <p className="t-callout__missing">Carry on when you’re ready.</p>}
         {moreText && (
           <div className="t-callout__more">
             <button className="t-more-btn" onClick={() => setMore((v) => !v)} aria-expanded={more}>
@@ -110,11 +106,11 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
         )}
         <div className="t-callout__foot">
           {tour.canGoBack ? (
-            <Button variant="quiet" size="sm" onClick={tour.back} aria-label="Back (←)">
+            <Button variant="quiet" size="sm" className="t-callout__back" onClick={tour.back} aria-label="Back (←)">
               <Arrow dir="left" /> Back
             </Button>
           ) : (
-            <span />
+            <span aria-hidden="true" />
           )}
           <div className="t-callout__actions">
             {actions && actions.length > 0 ? (

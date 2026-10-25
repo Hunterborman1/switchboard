@@ -12,10 +12,10 @@ import { StatusChip } from '../../uis/StatusChip';
 import { useEvals } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { money, ms } from '../lib/labels';
-import { useModelLabels } from '../lib/models';
+import { MODEL_ROLE_LABEL, useModelLabels } from '../lib/models';
 import { LevelHeatmap, MetricCard, TypeBars } from './evals/EvalParts';
 import { PromotionGate } from './evals/PromotionGate';
-import { LOWER_IS_BETTER, f1, metric, pooled } from './evals/evalModel';
+import { LOWER_IS_BETTER, f1, metric, metricLabel, pooled } from './evals/evalModel';
 import styles from './evals/Evals.module.css';
 
 function pctOrDash(v: number | null | undefined, d = 1) {
@@ -30,6 +30,8 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
       const better = delta == null ? null : LOWER_IS_BETTER.has(m.key) ? delta < 0 : delta > 0;
       return { m, base, delta, better };
     })
+    // Count-only metrics (no denominator) and the gate's own regression rows don't belong in a rate diff.
+    .filter((r) => r.m.denominator != null && !r.m.key.startsWith('regression.'))
     .filter((r) => r.delta != null && Math.abs(r.delta) >= 0.05)
     .sort((a, b) => Number(a.better) - Number(b.better) || Math.abs(b.delta!) - Math.abs(a.delta!));
   const regressions = rows.filter((r) => r.better === false).length;
@@ -71,7 +73,7 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
           <tbody>
             {rows.map(({ m, base, delta, better }) => (
               <tr key={m.key} className={better === false ? styles.rowRegress : ''}>
-                <th scope="row">{m.label}</th>
+                <th scope="row">{metricLabel(m)}</th>
                 <td>{base ? <RateWithDenominator rate={base.value} numerator={base.numerator} denominator={base.denominator} unit="" /> : '—'}</td>
                 <td>
                   <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit="" />
@@ -95,7 +97,7 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
 
 export default function EvalsPage() {
   const evals = useEvals();
-  const { label: modelLabel } = useModelLabels();
+  const { label: modelLabel, models } = useModelLabels();
 
   if (evals.loading) {
     return (
@@ -123,6 +125,9 @@ export default function EvalsPage() {
   const P = pooled(latest, 'precision');
   const R = pooled(latest, 'recall');
   const hist = [...history].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  // The judge is the secondary model. A run that never needed it records judgeModel null, so
+  // fall back to the candidate run's judge, then the configured secondary.
+  const judgeLabel = modelLabel(latest.judgeModel ?? candidate?.judgeModel ?? models?.secondary ?? null) ?? MODEL_ROLE_LABEL.secondary;
 
   const histCols: DataTableColumn<EvalRun>[] = [
     {
@@ -174,16 +179,18 @@ export default function EvalsPage() {
             <span className="sl-mono">{latest.promptVersion}</span> on {latest.files} golden files
           </p>
           <p className="sl-meta">
-            Model <span className="sl-strong">{modelLabel(latest.model)}</span> · judge <span className="sl-strong">{modelLabel(latest.judgeModel) ?? '—'}</span> (a different model family) · run <RelativeTime value={latest.createdAt} />
+            Model <span className="sl-strong">{modelLabel(latest.model)}</span> · judge <span className="sl-strong">{judgeLabel}</span> (a different model family, called only on ambiguous matches) · run <RelativeTime value={latest.createdAt} />
           </p>
         </div>
-        <div className={styles.trend}>
-          <span className="sl-eyebrow">Pooled recall by version</span>
-          <Sparkline values={hist.map((h) => Math.round((pooled(h, 'recall').value ?? 0) * 1000) / 10)} bucketLabels={hist.map((h) => h.promptVersion)} width={140} height={30} label="Pooled recall by prompt version" />
-          <span className="sl-caption sl-mono">
-            {hist[0]?.promptVersion} {pctOrDash(hist[0] ? pooled(hist[0], 'recall').value : null)} → {latest.promptVersion} {pctOrDash(R.value)}
-          </span>
-        </div>
+        {hist.length >= 2 ? (
+          <div className={styles.trend}>
+            <span className="sl-eyebrow">Pooled recall by version</span>
+            <Sparkline values={hist.map((h) => Math.round((pooled(h, 'recall').value ?? 0) * 1000) / 10)} bucketLabels={hist.map((h) => h.promptVersion)} width={140} height={30} label="Pooled recall by prompt version" />
+            <span className="sl-caption sl-mono">
+              {hist[0]?.promptVersion} {pctOrDash(hist[0] ? pooled(hist[0], 'recall').value : null)} → {latest.promptVersion} {pctOrDash(R.value)}
+            </span>
+          </div>
+        ) : null}
       </section>
 
       <div className={styles.kpis}>
@@ -214,10 +221,10 @@ export default function EvalsPage() {
       <Panel title="Safety and honesty" sub="The failure modes that matter more than accuracy: inventing quotes, inventing work, obeying injected instructions, leaking PHI.">
         <div className={styles.metricGrid}>
           <MetricCard m={metric(latest, 'grounding_rate')} title="Grounding" note="kept quotes found verbatim or fuzzy ≥ 0.90" />
-          <MetricCard m={metric(latest, 'hallucination_caught')} title="Hallucinations caught" note="planted fake quotes dropped by code" />
+          <MetricCard m={metric(latest, 'hallucinations_caught') ?? metric(latest, 'hallucination_caught')} title="Hallucinated quotes dropped" note="quotes that failed grounding, so the insight was dropped by code" />
           <MetricCard m={metric(latest, 'negative_fp_rate')} title="Negative false positives" note="insights invented on nothing-actionable calls" />
-          <MetricCard m={metric(latest, 'injection_resistance')} title="Injection resistance" note="output schema unchanged by embedded instructions" />
-          <MetricCard m={metric(latest, 'phi_leakage')} title="PHI leakage" note="PHI tokens that reached a model" />
+          <MetricCard m={metric(latest, 'injection_flagged') ?? metric(latest, 'injection_resistance')} title="Injection attempts flagged" note="output schema unchanged by embedded instructions" />
+          <MetricCard m={metric(latest, 'phi_leakage')} title="PHI leakage" note="PHI files where a token reached a model" />
           <MetricCard m={metric(latest, 'routing_accuracy')} title="Routing accuracy" note="routed to the expected owner" />
         </div>
       </Panel>

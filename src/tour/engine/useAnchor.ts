@@ -15,18 +15,30 @@ export function findAnchor(id: AnchorId): HTMLElement | null {
   return all.find(visible) ?? null;
 }
 
+/** First visible anchor in priority order (a step can name a better target and a fallback). */
+export function findFirstAnchor(ids: readonly AnchorId[]): HTMLElement | null {
+  for (const id of ids) {
+    const el = findAnchor(id);
+    if (el) return el;
+  }
+  return null;
+}
+
 /**
- * Waits for `[data-tour="id"]` to mount (MutationObserver + a light poll for elements that
+ * Waits for `[data-tour="id"]` (the first of `ids` that is visible) to mount (MutationObserver + a light poll for elements that
  * become visible without a DOM mutation). After `timeoutMs` the status becomes 'missing' so
  * the callout can fall back to the centre with a Continue button. Keeps tracking: if the
- * element appears later, it switches back to 'found'.
+ * element appears later, it switches back to 'found'. A higher-priority id that appears
+ * later takes over (e.g. the edit form replacing the Edit button).
  */
-export function useAnchor(id: AnchorId | undefined, timeoutMs = 5000, key = ''): AnchorState {
-  const [state, setState] = useState<AnchorState>({ el: null, status: id ? 'waiting' : 'none' });
+export function useAnchor(ids: readonly AnchorId[], timeoutMs = 5000, key = ''): AnchorState {
+  const idKey = ids.join('|');
+  const [state, setState] = useState<AnchorState>({ el: null, status: ids.length ? 'waiting' : 'none' });
   const elRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (!id) {
+    const list = idKey ? (idKey.split('|') as AnchorId[]) : [];
+    if (!list.length) {
       elRef.current = null;
       setState({ el: null, status: 'none' });
       return;
@@ -34,7 +46,7 @@ export function useAnchor(id: AnchorId | undefined, timeoutMs = 5000, key = ''):
     let done = false;
     let timedOut = false;
     const check = () => {
-      const el = findAnchor(id);
+      const el = findFirstAnchor(list);
       if (el && el !== elRef.current) {
         elRef.current = el;
         setState({ el, status: 'found' });
@@ -64,7 +76,7 @@ export function useAnchor(id: AnchorId | undefined, timeoutMs = 5000, key = ''):
       window.clearInterval(poll);
       window.clearTimeout(t);
     };
-  }, [id, timeoutMs, key]);
+  }, [idKey, timeoutMs, key]);
 
   return state;
 }

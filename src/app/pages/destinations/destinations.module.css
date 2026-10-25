@@ -130,7 +130,7 @@
   color: var(--cn-off-black);
   line-height: var(--lh-compact);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -148,4 +148,15 @@
 }
 .digestWrap {
   max-width: 820px;
+}
+
+/* The viewer's own delivery is pinned to the top of each list. */
+.mine {
+  align-self: flex-start;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--cn-green-deep, #006B51);
+  background: color-mix(in srgb, var(--cn-green) 10%, var(--cn-white));
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
 }

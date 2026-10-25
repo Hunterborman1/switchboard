@@ -1,8 +1,9 @@
 /**
  * Destination previews: what a routed insight looks like where its owner works. Generic
  * chat / tracker / issue / email shapes with neutral icons and names (no third-party logos).
- * Every field reads the delivery's own `payload`, defensively, so a payload missing a key
- * renders "—" rather than a broken card.
+ * Every field reads the delivery's own `payload` (the API fills account, ARR, renewal, area,
+ * confidence and CSM from the insight/account join). A field with no value is left out
+ * rather than printed as "—".
  */
 import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -25,9 +26,25 @@ function typeOf(p: Payload): InsightType | null {
   return t && t in TYPE_LABEL ? (t as InsightType) : null;
 }
 
-function areaLabel(p: Payload): string {
+function areaLabel(p: Payload): string | null {
   const a = str(p, 'productArea');
-  return a ? AREA_LABEL[a as keyof typeof AREA_LABEL] ?? a : '—';
+  return a ? AREA_LABEL[a as keyof typeof AREA_LABEL] ?? a : null;
+}
+
+/** Definition-list rows, minus any whose value is missing. */
+function Fields({ rows, className }: { rows: [string, ReactNode | null | undefined][]; className?: string }) {
+  const shown = rows.filter(([, v]) => v != null && v !== '' && v !== false);
+  if (!shown.length) return null;
+  return (
+    <dl className={className}>
+      {shown.map(([k, v]) => (
+        <div key={k}>
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 export function deliveryTitle(d: Delivery): string {
@@ -77,26 +94,15 @@ export function ChatPreview({ delivery, owner, onOpen }: { delivery: Delivery; o
           <div className={styles.attachment} style={{ borderLeftColor: type ? TYPE_COLOR[type] : undefined }}>
             <p className={styles.attTitle}>{deliveryTitle(delivery)}</p>
             {str(p, 'quote') ? <blockquote className="sl-quote" style={{ background: 'var(--cn-white)' }}>{str(p, 'quote')}</blockquote> : null}
-            <dl className={styles.fields}>
-              <div>
-                <dt>Account</dt>
-                <dd>{str(p, 'account') ?? '—'}</dd>
-              </div>
-              <div>
-                <dt>ARR · renewal</dt>
-                <dd>
-                  {money(arrUsd, { compact: true })} · {renewal ? renewalIn(renewal) : '—'}
-                </dd>
-              </div>
-              <div>
-                <dt>Area</dt>
-                <dd>{areaLabel(p)}</dd>
-              </div>
-              <div>
-                <dt>Confidence</dt>
-                <dd>{conf != null ? conf.toFixed(2) : '—'}{str(p, 'csm') ? ` · from ${str(p, 'csm')}` : ''}</dd>
-              </div>
-            </dl>
+            <Fields
+              className={styles.fields}
+              rows={[
+                ['Account', str(p, 'account')],
+                [arrUsd != null && renewal ? 'ARR · renewal' : arrUsd != null ? 'ARR' : 'Renewal', arrUsd != null || renewal ? [arrUsd != null ? money(arrUsd, { compact: true }) : null, renewal ? renewalIn(renewal) : null].filter(Boolean).join(' · ') : null],
+                ['Area', areaLabel(p)],
+                ['Confidence', conf != null ? `${conf.toFixed(2)}${str(p, 'csm') ? ` · from ${str(p, 'csm')}` : ''}` : null],
+              ]}
+            />
             <div className={styles.btnRow}>
               <Link to={`/app/insights/${delivery.insightId}`} className={`${styles.chatBtn} ${styles.chatBtnPrimary}`} onClick={onOpen}>
                 Open in Signal Loop
@@ -177,7 +183,8 @@ export function TicketPreview({
   const key = str(p, 'key') ?? delivery.receipt ?? delivery.id;
   const project = str(p, 'project') ?? delivery.destination;
   const labels = arr(p, 'labels');
-  const priority = str(p, 'priority') ?? '—';
+  const priority = str(p, 'priority');
+  const arrUsd = num(p, 'arrUsd');
   return (
     <article className={`${styles.frame} ${styles.ticketWrap}`} {...tourAnchor('dest.jira')} aria-label={`Tracker ticket preview ${key}`}>
       <div className={styles.chrome}>
@@ -242,14 +249,24 @@ export function TicketPreview({
               Signal Loop
             </span>
           </div>
-          <div className={styles.sideField}>
-            <div className={styles.sectionLabel}>Priority</div>
-            <span>{priority}</span>
-          </div>
-          <div className={styles.sideField}>
-            <div className={styles.sectionLabel}>Customer ARR</div>
-            <span className="sl-num">{money(num(p, 'arrUsd'))}</span>
-          </div>
+          {priority ? (
+            <div className={styles.sideField}>
+              <div className={styles.sectionLabel}>Priority</div>
+              <span>{priority}</span>
+            </div>
+          ) : null}
+          {str(p, 'account') ? (
+            <div className={styles.sideField}>
+              <div className={styles.sectionLabel}>Customer</div>
+              <span>{str(p, 'account')}</span>
+            </div>
+          ) : null}
+          {arrUsd != null ? (
+            <div className={styles.sideField}>
+              <div className={styles.sectionLabel}>Customer ARR</div>
+              <span className="sl-num">{money(arrUsd)}</span>
+            </div>
+          ) : null}
           <div className={styles.sideField}>
             <div className={styles.sectionLabel}>Created</div>
             <RelativeTime value={delivery.createdAt} showAbsoluteInline={false} />
@@ -372,7 +389,7 @@ export function DigestPreview({ deliveries, recipient, week, note }: { deliverie
               <li key={d.id} className={styles.mailItem}>
                 <span className="sl-row" style={{ gap: 6 }}>
                   {t ? <span className="sl-type"><i style={{ background: TYPE_COLOR[t] }} aria-hidden="true" />{TYPE_LABEL[t]}</span> : null}
-                  <span className="sl-caption">· {str(p, 'account') ?? '—'}</span>
+                  {str(p, 'account') ? <span className="sl-caption">· {str(p, 'account')}</span> : null}
                 </span>
                 <span className="sl-strong">{deliveryTitle(d)}</span>
                 {str(p, 'quote') ? <span className="sl-meta">“{str(p, 'quote')}”</span> : null}

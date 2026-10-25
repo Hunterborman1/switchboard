@@ -305,7 +305,7 @@ export function Table<T>({
               {...rowAttrs?.(r)}
             >
               {cols.map((c) => (
-                <td key={c.key} className={[c.num ? 'num' : '', c.mobileHide ? 'ao-hide-sm' : ''].join(' ').trim() || undefined}>
+                <td key={c.key} className={[c.num ? 'num' : '', c.mobileHide ? 'ao-hide-sm' : ''].join(' ').trim() || undefined} data-label={typeof c.header === 'string' ? c.header : undefined}>
                   {c.render(r)}
                 </td>
               ))}

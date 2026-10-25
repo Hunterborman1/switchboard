@@ -45,7 +45,7 @@ export function Cost() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Observe"
+        eyebrow="Observe"
         title="Cost"
         sub="AI spend per agent and per unit of work, against each agent’s budget cap, with Signal Loop’s real $15 demo cap read from live telemetry."
         meta={<span>{f.range(d.range.from, d.range.to)} · data as of {f.ago(c.dataAsOf)}</span>}

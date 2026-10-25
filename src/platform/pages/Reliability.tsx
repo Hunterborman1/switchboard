@@ -175,7 +175,7 @@ export function Reliability() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Observe"
+        eyebrow="Observe"
         title="Reliability"
         sub="SLOs with error budgets, request and latency trends with breach markers, model and component health, and the alert list. Acknowledging an alert is not resolving it."
         meta={<span>Data as of {f.ago(obs.dataAsOf)} · SLO window 28 days</span>}

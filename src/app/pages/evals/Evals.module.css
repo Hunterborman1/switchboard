@@ -305,7 +305,7 @@
 /* ---- candidate ---- */
 .candidateGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   gap: var(--sp-6);
   align-items: start;
 }
@@ -350,7 +350,7 @@
 
 .compare {
   width: 100%;
-  min-width: 520px;
+  min-width: 0;
   border-collapse: collapse;
   font-size: var(--fs-meta);
 }
@@ -449,6 +449,15 @@
   animation: pop var(--dur-base) var(--ease-out);
 }
 
+.check_info .checkIcon {
+  border-style: dashed;
+  border-color: var(--cn-ink-3);
+}
+
+.check_info .checkLabel {
+  color: var(--cn-ink-2);
+}
+
 @keyframes pop {
   from {
     transform: scale(0.6);
@@ -536,4 +545,14 @@
 
 .kpis > div > div {
   flex: 1 1 170px;
+}
+
+/* Metric names wrap; the numbers and the change chip never clip. */
+.compare th[scope='row'] {
+  white-space: normal;
+  min-width: 9em;
+}
+.compare td:last-child,
+.compare th:last-child {
+  text-align: right;
 }

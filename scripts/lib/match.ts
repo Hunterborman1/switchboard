@@ -129,6 +129,7 @@ export function computeEval(o: { id: string; promptVersion: string; model: strin
     const gold = fs.reduce((s, f) => s + f.match.goldenCount, 0);
     const hit = fs.reduce((s, f) => s + f.match.pairs.length, 0);
     add(`recall.level${level}`, `Recall · mess level ${level}`, hit, gold, level === 5 ? PROMOTION_GATE.recallL5 : null);
+    add(`precision.level${level}`, `Precision · mess level ${level}`, hit, fs.reduce((s, f) => s + f.match.predicted.length, 0), null);
   }
   const quotes = o.files.flatMap((f) => f.run.result.insights.flatMap((i) => i.evidence));
   const groundedQ = quotes.filter((e) => e.method !== 'failed').length;

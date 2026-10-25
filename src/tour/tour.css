@@ -26,14 +26,19 @@
   transform: translate(-50%, -50%);
   width: min(460px, calc(100vw - 32px));
 }
-.t-callout--dock {
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
+.t-callout--anchored .t-callout__card,
+.t-callout--float .t-callout__card { max-height: inherit; overflow: auto; overscroll-behavior: contain; }
+.t-callout--float { max-height: calc(100dvh - 32px); display: grid; }
+.t-callout--sheet {
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: auto;
+  max-height: calc(100dvh - 120px);
+  display: grid;
 }
-.t-callout--dock .t-callout__foot { flex-direction: column-reverse; align-items: stretch; }
-.t-callout--dock .t-callout__actions { justify-content: space-between; }
-.t-callout--anchored .t-callout__card { max-height: inherit; overflow: auto; overscroll-behavior: contain; }
+.t-callout--sheet .t-callout__card { overflow: auto; overscroll-behavior: contain; }
+.t-callout__card { max-height: inherit; overflow: auto; overscroll-behavior: contain; }
 .t-callout--sheet {
   left: 12px;
   right: 12px;
@@ -45,6 +50,11 @@
   padding: 18px 20px 14px;
   display: grid;
   gap: 8px;
+  /* Solid surface: product text must never show through the callout copy. */
+  background: var(--n-raised);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: rgb(242 245 228 / 0.16);
 }
 .t-callout__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
 .t-callout__eyebrow {
@@ -74,15 +84,8 @@
   text-wrap: balance;
 }
 .t-callout--center .t-callout__title { font-size: 2rem; }
-.t-callout__body { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--n-ink-2); text-wrap: pretty; }
-.t-callout__missing {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--n-amber);
-  font-family: var(--n-font-mono);
-  letter-spacing: 0.02em;
-}
-.t-callout__missing:empty { display: none; }
+.t-callout__body { margin: 0; font-size: 14.5px; line-height: 1.5; letter-spacing: 0; color: var(--n-ink-2); text-wrap: pretty; }
+.t-callout__missing { margin: 0; font-size: 13px; line-height: 1.45; color: var(--n-ink-3); }
 .t-callout__more { display: grid; gap: 6px; }
 .t-callout__moretext {
   margin: 0;
@@ -104,15 +107,18 @@
 }
 .t-more-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
 .t-callout__foot {
-  display: flex;
+  /* One row, always: Back on the left, the step's actions on the right. */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   margin-top: 8px;
   padding-top: 12px;
   border-top: 1px solid var(--n-line);
 }
-.t-callout__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.t-callout__actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; min-width: 0; }
+.t-callout__actions .n-btn { flex: none; white-space: nowrap; }
+.t-callout__back { flex: none; white-space: nowrap; }
 .t-callout__key { display: inline-flex; }
 @media (max-width: 720px) { .t-callout__key { display: none; } }
 
@@ -120,9 +126,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font: 500 12.5px/1.2 var(--n-font-body);
+  min-width: 0;
+  font: 500 12.5px/1.25 var(--n-font-body);
   color: var(--n-accent);
-  white-space: nowrap;
 }
 .t-wait__dot {
   width: 7px;
@@ -166,23 +172,51 @@
   top: 14px;
   right: 14px;
   z-index: var(--n-z-hud, 9020);
-  width: 292px;
+  width: 340px;
   padding: 10px 12px 12px;
   display: grid;
   gap: 8px;
   border-radius: 14px;
-  background: rgb(10 35 30 / 0.9);
+  background: rgb(10 35 30 / 0.94);
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
   border: 1px solid rgb(242 245 228 / 0.12);
   box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.6);
   color: var(--n-ink);
-  transition: top 400ms var(--n-ease), bottom 400ms var(--n-ease), opacity 280ms var(--n-ease);
+  transition: opacity 280ms var(--n-ease);
 }
-.t-hud--dodge { top: auto; bottom: 14px; }
-/* On the product the header carries live controls: sit bottom-right, hop to the top if the spotlight lands there. */
-.t-hud--product { top: auto; bottom: 14px; }
-.t-hud--product.t-hud--dodge { top: 14px; bottom: auto; }
+/* Product steps: one fixed corner (bottom-right). Never jumps; fades when the spotlight sits under it. */
+.t-hud--product, .t-hud--pill { top: auto; bottom: 14px; }
+/* The spotlight is under the pill: step out of the way so the target stays clickable (Esc still opens the menu). */
+.t-hud--faded { opacity: 0.2; pointer-events: none; }
+.t-hud--pill {
+  width: auto;
+  height: 40px;
+  padding: 0 6px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  border-color: rgb(142 229 142 / 0.3);
+}
+.t-hud__pillbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--n-ink);
+  font: inherit;
+  cursor: pointer;
+}
+.t-hud__pillbtn:hover { background: rgb(242 245 228 / 0.06); }
+.t-hud--pill .t-timer { padding: 0 4px; }
+/* While the tour runs on a product page: room at the bottom for the pill, and toasts stack above it. */
+html[data-sl-tour='product'] #main-content { padding-bottom: 96px; }
+html[data-sl-tour='product'] .sl-toasts { bottom: 72px; }
 .t-hud--collapsed { padding-bottom: 8px; }
 .t-hud__row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .t-hud__chapter {
@@ -233,8 +267,11 @@
 
 @media (max-width: 720px) {
   .t-hud { left: 8px; right: 8px; top: 8px; width: auto; padding: 8px 10px; gap: 6px; }
-  .t-hud--dodge, .t-hud--product.t-hud--dodge { top: 8px; bottom: auto; opacity: 0.35; }
+  /* Phones: the callout is a bottom sheet, so the pill lives top-right. */
   .t-hud--product { top: 8px; bottom: auto; }
+  .t-hud--pill { left: auto; top: 8px; bottom: auto; padding: 0 4px 0 2px; }
+  html[data-sl-tour='product'] #main-content { padding-bottom: 24px; }
+  html[data-sl-tour='product'] .sl-toasts { bottom: 16px; }
   .t-hud__objective { font-size: 12px; }
   .t-hud--scene { display: none; }
 }

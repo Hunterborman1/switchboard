@@ -51,11 +51,11 @@ export default function RunsPage() {
       sortable: true,
       sortValue: (r) => r.filename.toLowerCase(),
       render: (r) => (
-        <div style={{ minWidth: 200, maxWidth: 340 }}>
+        <div style={{ minWidth: 180, maxWidth: 280 }}>
           <Link to={`/app/runs/${r.id}`} className="sl-quietlink sl-cell-title sl-ellipsis" style={{ display: 'block' }} title={r.filename}>
             {r.filename}
           </Link>
-          <div className="sl-cell-sub">
+          <div className="sl-cell-sub sl-xl-only">
             <MonoId value={r.id} keep={6} />
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function RunsPage() {
       render: (r) => (
         <div style={{ whiteSpace: 'nowrap' }}>
           <div className="sl-cell-title">{r.accountId ? world.accountName(r.accountId) : 'Pasted text'}</div>
-          {r.callId ? <div className="sl-cell-sub sl-mono">{r.callId}</div> : null}
+          {r.callId ? <div className="sl-cell-sub sl-mono sl-xl-only">{r.callId}</div> : null}
         </div>
       ),
     },
@@ -96,13 +96,12 @@ export default function RunsPage() {
         ) : r.actionable === false ? (
           <span className="sl-meta" style={{ whiteSpace: 'nowrap' }}>Nothing actionable</span>
         ) : (
-          <span className="sl-num" style={{ whiteSpace: 'nowrap' }} title={`${r.insightCount} kept · ${r.droppedCount} dropped (ungrounded) · ${r.reviewCount} sent to review`}>
-            {r.insightCount} kept
-            <span className="sl-subtle">
-              {' '}
-              · {r.droppedCount} dropped · {r.reviewCount} review
-            </span>
-          </span>
+          <div style={{ whiteSpace: 'nowrap' }} title={`${r.insightCount} kept · ${r.droppedCount} dropped (ungrounded) · ${r.reviewCount} sent to review`}>
+            <div className="sl-num">{r.insightCount} kept</div>
+            <div className="sl-cell-sub">
+              {r.droppedCount} dropped · {r.reviewCount} review
+            </div>
+          </div>
         ),
     },
     {

@@ -1,24 +1,26 @@
 /* =========================================================================
    Agent Ops theme: HB Systems on the Invoca palette, with its own identity.
-   The product (Signal Loop) sits on Invoca's black-green; the platform sits on
-   Invoca deep-blue #102A56 with indigo #5E74E3 as the accent for charts and
-   highlights, so a viewer always knows they have stepped out of an agent and
-   into the platform. Every override is scoped under `.ao-app`.
+   The product (Signal Loop) sits on Invoca's black-green; the platform's only
+   differentiator is its deep-navy rail (#102A56) and inverse panels, so a viewer
+   knows they have stepped out of an agent and into the platform. Actions, links,
+   selection and highlights use Invoca green, exactly as in Signal Loop. (The
+   --ao-indigo* token names are kept so existing rules re-point in one place.)
+   Every override is scoped under `.ao-app`.
 
-   Contrast (measured): #102A56 with #ECF0FA text 13.6:1; indigo ink #3D51BE on
-   white 6.6:1 (text); #5E74E3 is a mark colour (3.9:1 on white, never body
-   text); #C9D2FF accent on #102A56 10.2:1.
+   Contrast (measured): #102A56 with #ECF0FA text 13.6:1; green ink #006B51 on
+   white 6.5:1 (text); #00A87F is a mark colour (never body text); sage
+   #D1FFD1 accent on #102A56 12.9:1.
    ========================================================================= */
 
 .ao-app {
   --ao-navy: #102A56;
   --ao-navy-2: #17366B;
-  --ao-indigo: #5E74E3;
-  --ao-indigo-ink: #3D51BE;
-  --ao-indigo-soft: #EEF1FD;
-  --ao-indigo-line: #CDD5F8;
+  --ao-indigo: #00A87F;
+  --ao-indigo-ink: #006B51;
+  --ao-indigo-soft: #E8F5EF;
+  --ao-indigo-line: #B9DFCF;
   --ao-on-navy: #ECF0FA;
-  --ao-accent-on-navy: #C9D2FF;
+  --ao-accent-on-navy: #D1FFD1;
   --ao-live: #0E8A5F;
   --ao-live-soft: #E3F4EC;
   --ao-sim: #6B6F86;
@@ -43,10 +45,10 @@
   --uis-sidebar-label: rgba(236, 240, 250, 0.52);
   --uis-sidebar-border: rgba(236, 240, 250, 0.14);
   --uis-sidebar-hover-bg: rgba(236, 240, 250, 0.08);
-  --uis-sidebar-active-bg: rgba(201, 210, 255, 0.14);
+  --uis-sidebar-active-bg: rgba(209, 255, 209, 0.12);
   --uis-sidebar-active-bar: var(--ao-accent-on-navy);
   --uis-sidebar-chip-bg: rgba(236, 240, 250, 0.1);
-  --uis-sidebar-env-bg: rgba(201, 210, 255, 0.16);
+  --uis-sidebar-env-bg: rgba(209, 255, 209, 0.14);
   --uis-sidebar-env-fg: var(--ao-accent-on-navy);
   --text-on-dark: var(--ao-on-navy);
   --focus-ring-on-dark: 2px solid var(--ao-accent-on-navy);
@@ -62,10 +64,11 @@
 .ao-app [data-testid='console-main'] { min-width: 0; }
 .ao-app .ao-brand { display: flex; align-items: center; gap: 10px; color: var(--ao-on-navy); text-decoration: none; min-width: 0; }
 .ao-app .ao-brand:hover { opacity: 1; }
-.ao-app .ao-brand-mark { width: 28px; height: 28px; flex: none; border-radius: 7px; background: linear-gradient(140deg, #5E74E3 0%, #3D51BE 100%); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); }
-.ao-app .ao-brand-text { display: grid; line-height: 1.15; min-width: 0; }
-.ao-app .ao-brand-text b { font-size: var(--fs-title); font-weight: var(--fw-medium); letter-spacing: 0.1px; color: #fff; }
-.ao-app .ao-brand-text small { font-size: var(--fs-micro); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ao-accent-on-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ao-app .ao-brand-mark { width: 28px; height: 28px; flex: none; border-radius: 7px; background: linear-gradient(140deg, #00A87F 0%, #008463 100%); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); }
+.ao-app .ao-brand-text { display: grid; gap: 2px; line-height: 1.15; min-width: 0; }
+.ao-app .ao-brand-text b { font-size: var(--fs-title); font-weight: var(--fw-medium); letter-spacing: -0.01em; color: #fff; }
+/* Short enough to fit the rail at every width; allowed to wrap rather than clip if it ever doesn't. */
+.ao-app .ao-brand-text small { font-size: var(--fs-micro); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ao-accent-on-navy); white-space: normal; overflow-wrap: anywhere; }
 .ao-app .ao-footer { display: grid; gap: 10px; }
 .ao-app .ao-footer a.ao-agent-link { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-md); background: rgba(0, 168, 127, 0.14); color: var(--ao-on-navy); text-decoration: none; font-size: var(--fs-body); border: 1px solid rgba(0, 168, 127, 0.35); }
 .ao-app .ao-footer a.ao-agent-link:hover { background: rgba(0, 168, 127, 0.22); opacity: 1; }
@@ -90,7 +93,7 @@
 .ao-app .ao-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--sp-4); flex-wrap: wrap; }
 .ao-app .ao-head-main { display: grid; gap: 6px; min-width: 0; flex: 1 1 420px; }
 .ao-app .ao-eyebrow { font-size: var(--fs-micro); font-weight: var(--fw-medium); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--ao-indigo-ink); }
-.ao-app .ao-head h1 { font-size: var(--fs-h2); font-weight: var(--fw-light); line-height: 1.15; letter-spacing: 0.1px; }
+.ao-app .ao-head h1 { font-size: var(--fs-h3); font-weight: var(--fw-medium); line-height: 1.2; letter-spacing: -0.01em; }
 .ao-app .ao-head-sub { margin: 0; color: var(--cn-ink-2); font-size: var(--fs-body-lg); line-height: var(--lh-copy); max-width: 78ch; }
 .ao-app .ao-head-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: var(--fs-caption); color: var(--cn-ink-3-txt); }
 .ao-app .ao-head-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; }
@@ -111,7 +114,7 @@
 .ao-app .ao-panel.flush > .ao-panel-body { padding: 0; }
 .ao-app .ao-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); padding: 14px 18px 0; flex-wrap: wrap; }
 .ao-app .ao-panel-title { display: grid; gap: 3px; min-width: 0; }
-.ao-app .ao-panel-title h2 { font-size: var(--fs-title); font-weight: var(--fw-medium); line-height: 1.3; letter-spacing: 0.1px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ao-app .ao-panel-title h2 { font-size: var(--fs-title); font-weight: var(--fw-medium); line-height: 1.3; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ao-app .ao-panel-title p { margin: 0; font-size: var(--fs-caption); color: var(--cn-ink-3-txt); line-height: 1.45; max-width: 72ch; }
 .ao-app .ao-panel-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ao-app .ao-panel-body { padding: 14px 18px 18px; min-width: 0; flex: 1; }
@@ -178,8 +181,8 @@
 .ao-app .ao-btn:hover { background: var(--cn-fill); opacity: 1; }
 .ao-app .ao-btn.primary { background: var(--cn-green); color: #fff; border-color: var(--cn-green); }
 .ao-app .ao-btn.primary:hover { background: var(--cn-green-deep); }
-.ao-app .ao-btn.indigo { background: var(--ao-indigo-ink); color: #fff; border-color: var(--ao-indigo-ink); }
-.ao-app .ao-btn.indigo:hover { background: #33449F; }
+.ao-app .ao-btn.indigo { background: var(--cn-green); color: #fff; border-color: var(--cn-green); }
+.ao-app .ao-btn.indigo:hover { background: var(--cn-green-deep); }
 .ao-app .ao-btn.ghost { border-color: transparent; background: transparent; color: var(--cn-ink-2); }
 .ao-app .ao-btn.ghost:hover { background: var(--cn-fill); }
 .ao-app .ao-btn.sm { min-height: var(--control-sm); padding: 0 9px; font-size: var(--fs-body-sm); }
@@ -202,7 +205,7 @@
 /* ---------------------------------------------------------------- callout */
 .ao-app .ao-callout { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: var(--radius-lg); border: 1px solid var(--cn-border); background: var(--cn-paper); font-size: var(--fs-body); line-height: 1.5; }
 .ao-app .ao-callout.warning { background: var(--cn-warning-soft); border-color: #F5CFA8; color: #5A2E07; }
-.ao-app .ao-callout.indigo { background: var(--ao-indigo-soft); border-color: var(--ao-indigo-line); color: #22306F; }
+.ao-app .ao-callout.indigo { background: var(--ao-indigo-soft); border-color: var(--ao-indigo-line); color: #0A3D2F; }
 .ao-app .ao-callout.live { background: var(--ao-live-soft); border-color: #B8E0CC; color: #0A4F37; }
 .ao-app .ao-callout b { font-weight: var(--fw-medium); }
 .ao-app .ao-callout .ao-callout-icon { flex: none; margin-top: 2px; }
@@ -270,7 +273,7 @@
 
 /* ---------------------------------------------------------------- live panel */
 .ao-app .ao-live { background: linear-gradient(160deg, #0F2650 0%, #102A56 55%, #1A3B74 100%); color: var(--ao-on-navy); border-radius: var(--radius-lg); border: 1px solid #0B1F42; overflow: hidden; position: relative; }
-.ao-app .ao-live::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(600px 220px at 85% -20%, rgba(94, 116, 227, 0.35), transparent 70%); }
+.ao-app .ao-live::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(600px 220px at 85% -20%, rgba(0, 168, 127, 0.28), transparent 70%); }
 .ao-app .ao-live > * { position: relative; z-index: 1; }
 .ao-app .ao-live-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; padding: 16px 20px 6px; }
 .ao-app .ao-live-head h2 { font-size: var(--fs-title-lg); font-weight: var(--fw-medium); color: #fff; display: flex; gap: 10px; align-items: center; }
@@ -293,7 +296,7 @@
 .ao-app .ao-you { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: var(--radius-pill); background: #34D399; color: #062A1D; font-size: var(--fs-micro); font-weight: var(--fw-bold); letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap; }
 .ao-app .ao-live-empty { padding: 14px; border-radius: var(--radius-md); border: 1px dashed rgba(236, 240, 250, 0.25); color: rgba(236, 240, 250, 0.75); font-size: var(--fs-body-sm); line-height: 1.5; }
 .ao-app .ao-live-empty a { color: var(--ao-accent-on-navy); }
-.ao-app .ao-kind { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: rgba(201, 210, 255, 0.14); color: var(--ao-accent-on-navy); flex: none; }
+.ao-app .ao-kind { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: rgba(209, 255, 209, 0.12); color: var(--ao-accent-on-navy); flex: none; }
 @media (max-width: 900px) { .ao-app .ao-live-body { grid-template-columns: minmax(0, 1fr); } .ao-app .ao-live-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* ---------------------------------------------------------------- SLO cards */
@@ -475,7 +478,7 @@
 
 /* executive summary (print) */
 .ao-app .ao-exec { min-width: 0; grid-template-columns: minmax(0, 1fr); max-width: 860px; margin: 0 auto; background: var(--cn-white); border: 1px solid var(--cn-border); border-radius: var(--radius-lg); padding: 40px 48px; display: grid; gap: 22px; }
-.ao-app .ao-exec h1 { font-size: var(--fs-h2); font-weight: var(--fw-light); }
+.ao-app .ao-exec h1 { font-size: var(--fs-h2); font-weight: var(--fw-light); letter-spacing: -0.01em; }
 .ao-app .ao-exec .lede p { font-size: 16px; line-height: 1.65; margin: 0 0 12px; color: var(--cn-off-black); }
 .ao-app .ao-exec-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--cn-border); border-radius: var(--radius-md); overflow: hidden; }
 .ao-app .ao-exec-kpis div { padding: 12px 14px; border-left: 1px solid var(--cn-border); display: grid; gap: 4px; }
@@ -540,3 +543,40 @@
   .ao-app .ao-att .go { display: none; }
   .ao-app .ao-att a { grid-template-columns: auto minmax(0, 1fr); }
 }
+
+/* Overview KPI strip: five tiles. Wide: one row of five. Mid widths: the lead tile (hours
+   returned) takes a full row and the rest sit 2 × 2, so no empty filler cells. */
+.ao-app .ao-kpis5 > [role='group'] { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+@media (max-width: 1280px) {
+  .ao-app .ao-kpis5 > [role='group'] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .ao-app .ao-kpis5 > [role='group'] > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .ao-app .ao-kpis5 > [role='group'] { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/* Card rows below 900px for wide registry-style tables (Table className="ao-cards"):
+   each row becomes a card, each cell a label/value line, so nothing scrolls sideways. */
+@media (max-width: 900px) {
+  .ao-app table.ao-cards, .ao-app table.ao-cards tbody, .ao-app table.ao-cards tr, .ao-app table.ao-cards td { display: block; width: 100%; }
+  .ao-app table.ao-cards thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .ao-app table.ao-cards tr { padding: 12px 14px; border-bottom: 1px solid var(--cn-border-row); }
+  .ao-app table.ao-cards tbody tr:last-child { border-bottom: 0; }
+  .ao-app table.ao-cards td { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); gap: 10px; align-items: center; padding: 4px 0; border: 0; text-align: left; }
+  .ao-app table.ao-cards td.num { text-align: left; }
+  .ao-app table.ao-cards td::before { content: attr(data-label); font-size: var(--fs-micro); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--cn-ink-3-txt); }
+  .ao-app table.ao-cards td:not([data-label])::before { content: none; }
+  .ao-app table.ao-cards td:not([data-label]) { grid-template-columns: minmax(0, 1fr); }
+  .ao-app table.ao-cards td:first-child { grid-template-columns: minmax(0, 1fr); padding-bottom: 8px; }
+  .ao-app table.ao-cards td:first-child::before { content: none; }
+  .ao-app table.ao-cards td > div { min-width: 0 !important; white-space: normal !important; }
+  .ao-app table.ao-cards td.ao-hide-sm { display: none; }
+  .ao-app table.ao-cards td > * { justify-self: start; }
+}
+/* Tabs scroll sideways with a fade on narrow screens rather than clipping a label. */
+@media (max-width: 760px) {
+  .ao-app .ao-tabs { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); scrollbar-width: none; }
+  .ao-app .ao-tabs a { padding: 9px 10px; }
+}
+/* The funnel sits in a half-width panel: four tiles only fit when that panel is wide. */
+@media (max-width: 1280px) and (min-width: 641px) { .ao-app .ao-funnel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { assignThemes, cosine, hashEmbed, themeText } from '../../../src/pipeline/theme.ts';
-import { bestQuote, deliverInsight, hitsTransientFailure, projectKey, renderPayload, routedNotification, shippedNotification } from '../../../src/pipeline/deliver.ts';
+import { bestQuote, deliverInsight, enrichDelivery, hitsTransientFailure, projectKey, renderPayload, routedNotification, shippedNotification } from '../../../src/pipeline/deliver.ts';
 import { canRunLive, remainingRuns, shouldFlipOff } from '../../../src/pipeline/budget.ts';
 import type { Insight } from '../../../src/shared/contracts.ts';
 import { account, world } from '../../helpers/fixtures.ts';
@@ -70,6 +70,24 @@ describe('deliver', () => {
     expect(deliverInsight(insight(), decision('triage', 'Triage queue'), ctx).receipt).toMatch(/^TRI-\d{4}$/);
     expect(renderPayload('triage', insight(), decision('triage', 'Triage queue'), ctx)).toMatchObject({ queue: 'Triage queue' });
     expect(projectKey('Signal AI team', 'signal_ai')).toBe('SAI');
+  });
+  it('every payload carries the flat preview fields from the insight/account join', () => {
+    const a = ctx.account!;
+    for (const ch of ['slack', 'jira', 'linear', 'email_digest'] as const) {
+      const p = deliverInsight(insight(), decision(ch, 'X'), ctx).payload;
+      expect(p).toMatchObject({ type: 'bug', productArea: 'integrations', account: a.name, accountId: a.id, arrUsd: a.arrUsd, renewalDate: a.renewalDate, csm: 'Marcus Bell', confidence: 0.9, quote: 'killing us' });
+    }
+    // No account: the account fields are absent (so previews hide those rows), never placeholders.
+    const none = deliverInsight(insight({ accountId: null }), decision('slack', '#x'), { ...ctx, account: null }).payload;
+    expect(none.account).toBeUndefined();
+    expect(none.arrUsd).toBeUndefined();
+  });
+  it('enrichDelivery fills old channel-shaped payloads at read time without overwriting', () => {
+    const old = { ...deliverInsight(insight(), decision('slack', '#x'), ctx), payload: { channel: '#x', text: 'Bug: y', blocks: [] } };
+    const out = enrichDelivery(old, insight(), ctx.account, ctx.csm);
+    expect(out.payload).toMatchObject({ channel: '#x', account: ctx.account!.name, arrUsd: ctx.account!.arrUsd, confidence: 0.9 });
+    expect(enrichDelivery(out, insight(), ctx.account, ctx.csm)).toBe(out);
+    expect(enrichDelivery(old, null, null, null)).toBe(old);
   });
   it('one deterministic transient failure is retried and still delivered', () => {
     let id = '';

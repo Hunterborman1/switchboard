@@ -7,7 +7,7 @@ import { RelativeTime } from '../../uis/RelativeTime';
 import { StatusChip } from '../../uis/StatusChip';
 import { CardSkeleton, Skeleton, SkeletonSurface } from '../../uis/Skeleton';
 import { api } from '../api/client';
-import { invalidate, useDeliveries } from '../api/hooks';
+import { invalidate, useDeliveries, useSession } from '../api/hooks';
 import { AppPageHeader, ErrorState, useToast } from '../components/ui';
 import { ChatPreview, DigestPreview, IssuePreview, TicketPreview, deliveryTitle, type TicketState } from '../components/destinations/Previews';
 import { IconHash, IconIssue, IconMail, IconTicket } from '../components/icons';
@@ -27,8 +27,15 @@ function isBrightline(d: Delivery): boolean {
   return /brightline/i.test(String(d.payload.account ?? ''));
 }
 
-function pickDefault(list: Delivery[]): Delivery | null {
-  return list.find(isBrightline) ?? list[0] ?? null;
+function pickDefault(list: Delivery[], ws: string | null): Delivery | null {
+  return (ws ? list.find((d) => d.workspaceId === ws) : undefined) ?? list.find(isBrightline) ?? list[0] ?? null;
+}
+
+/** The viewer's own deliveries first (newest first), then everything else in its order. */
+function ownFirst(list: Delivery[], ws: string | null): Delivery[] {
+  if (!ws) return list;
+  const mine = list.filter((d) => d.workspaceId === ws);
+  return mine.length ? [...mine, ...list.filter((d) => d.workspaceId !== ws)] : list;
 }
 
 function isoWeekLabel(iso: string | undefined): string {
@@ -43,6 +50,8 @@ function isoWeekLabel(iso: string | undefined): string {
 export default function DestinationsPage() {
   const { data, dataAsOf, error, loading, refresh } = useDeliveries(null);
   const world = useWorldIndex();
+  const session = useSession();
+  const ws = session.data?.workspaceId ?? null;
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const [stateOverride, setStateOverride] = useState<Record<string, TicketState>>({});
@@ -52,13 +61,14 @@ export default function DestinationsPage() {
   const byChannel = useMemo(() => {
     const m: Record<string, Delivery[]> = {};
     for (const d of all) (m[d.channel] ??= []).push(d);
+    for (const k of Object.keys(m)) m[k] = ownFirst(m[k]!, ws);
     return m;
-  }, [all]);
+  }, [all, ws]);
 
   const selectedFor = (channel: Channel): Delivery | null => {
     const list = byChannel[channel] ?? [];
     const id = params.get(channel);
-    return list.find((d) => d.id === id) ?? pickDefault(list);
+    return list.find((d) => d.id === id) ?? pickDefault(list, ws);
   };
 
   const select = (channel: Channel, d: Delivery) => {
@@ -176,9 +186,11 @@ export default function DestinationsPage() {
                   <ul className={styles.list} aria-label={`${CHANNEL_LABEL[s.channel]} deliveries`}>
                     {list.slice(0, 12).map((d) => {
                       const active = sel?.id === d.id;
+                      const mine = !!ws && d.workspaceId === ws;
                       return (
                         <li key={d.id}>
                           <button type="button" className={styles.item} aria-current={active ? 'true' : undefined} onClick={() => select(s.channel, d)}>
+                            {mine ? <span className={styles.mine}>From your run</span> : null}
                             <span className={styles.itemTitle}>{deliveryTitle(d)}</span>
                             <span className={styles.itemMeta}>
                               <span className="sl-ellipsis">{String(d.payload.account ?? d.destination)}</span>

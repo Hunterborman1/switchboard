@@ -76,6 +76,28 @@ test.describe('tour state, exits and access', () => {
     }
     await go(page, '/walkthrough/cold-open?tour=cold-open&beat=1');
     await expect(page.getByRole('heading', { name: /Every call is a/ })).toBeVisible();
+    // the black-hole field is a still frame, not an empty panel
+    await go(page, '/walkthrough/black-hole');
+    await expect(page.locator('.sc-bh__canvas')).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const cv = document.querySelector<HTMLCanvasElement>('.sc-bh__canvas');
+          const d = cv?.getContext('2d')?.getImageData(0, 0, cv.width, cv.height).data;
+          let n = 0;
+          if (d) for (let i = 3; i < d.length; i += 16) if (d[i]! > 0) n++;
+          return n;
+        }),
+      )
+      .toBeGreaterThan(500);
+  });
+
+  test('a deep-linked scene can still go back, by keyboard', async ({ page }) => {
+    await go(page, '/walkthrough/why');
+    await expect(page.getByTestId('scene-why')).toBeVisible();
+    await expect(page.getByTestId('scene-why').getByRole('button', { name: 'Back' })).toBeVisible();
+    await page.getByTestId('scene-why').getByRole('button', { name: 'Back' }).click();
+    await expectStep(page, 'black-hole');
   });
 
   test('a missing anchor never dead-ends', async ({ page }) => {

@@ -3,6 +3,9 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { MetricStrip } from '../ui/Kpis';
 import { tourAnchor } from '../../tour/anchors';
 import { rewriteModelIds } from '../../shared/modelLabels';
+
+/** Registry rows seeded before the neutral wording named the model gateway vendor; never show it. */
+const neutralIntegration = (s: string) => rewriteModelIds(s.replace(/open\s*router/gi, 'Model router'));
 import type { AgentDetail as Detail } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
@@ -196,7 +199,7 @@ export function AgentDetail() {
                 </>
               ) : null}
               <dt>Integrations</dt>
-              <dd>{p.integrations.join(' · ')}</dd>
+              <dd>{p.integrations.map(neutralIntegration).join(' · ')}</dd>
               <dt>Budget</dt>
               <dd>
                 {f.money(p.monthlyBudgetUsd)}/month cap · {f.money(p.perRunCapUsd)} per run

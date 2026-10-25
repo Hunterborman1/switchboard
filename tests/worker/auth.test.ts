@@ -63,9 +63,16 @@ describe('gate pages', () => {
     expect(login.headers.get('x-robots-tag')).toContain('noindex');
   });
 
-  it('unlock with the right password sets the cookie; wrong password is 401', async () => {
+  it('unlock with the right password sets the cookie; wrong password goes back to /login?e=1', async () => {
     const bad = await h.server.fetch(`${API}/unlock`, { method: 'POST', body: new URLSearchParams({ password: 'nope', next: '/repo/invoca/' }), redirect: 'manual' });
-    expect(bad.status).toBe(401);
+    expect(bad.status).toBe(303);
+    expect(bad.headers.get('location')).toBe('/repo/invoca/login?e=1&next=%2Frepo%2Finvoca%2F');
+    expect(bad.headers.get('set-cookie')).toBeNull();
+    const page = await h.server.fetch(`${ORIGIN}${bad.headers.get('location')}`);
+    expect(page.status).toBe(401);
+    expect(await page.text()).toContain('That password is not right');
+    const json = await h.server.fetch(`${API}/unlock`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: 'x' }), redirect: 'manual' });
+    expect(json.status).toBe(400);
     const good = await h.server.fetch(`${API}/unlock`, { method: 'POST', body: new URLSearchParams({ password: SECRETS.INVOCA_PASSWORD, next: '/repo/invoca/app' }), redirect: 'manual' });
     expect(good.status).toBe(303);
     expect(good.headers.get('location')).toBe('/repo/invoca/app');

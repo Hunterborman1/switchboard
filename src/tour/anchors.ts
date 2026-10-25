@@ -27,6 +27,7 @@ export const ANCHORS = {
   'run.screen': 'Screen result card (actionable / injection flag)',
   'run.insights': 'Extracted insight cards list',
   'run.dropped': 'The insight/quote that failed grounding',
+  'run.ground': 'The Ground step in the pipeline stepper (ch2.ground on runs where every quote grounds)',
   'run.gate': 'Confidence gauge / gate result',
   'run.trace': 'Trace panel: model, tokens, cost, ms per step',
   // ch3 · review
@@ -36,6 +37,7 @@ export const ANCHORS = {
   'review.evidence': 'Evidence in context',
   'review.approve': 'Approve button',
   'review.edit': 'Edit button',
+  'review.editform': 'The edit form that replaces the Edit button',
   // ch4 · routing
   'routing.rules': 'Rules table',
   'routing.rule.pricing': 'The pricing-objection rule row',
@@ -52,6 +54,7 @@ export const ANCHORS = {
   // ch6 · close the loop
   'ticket.state': 'Jira ticket state control (move to Shipped)',
   'loop.inbox': 'CSM notifications inbox',
+  'loop.shipped': 'The newest Shipped notification in the CSM inbox',
   'loop.note': 'Draft note to the customer',
   // ch7 · evals
   'evals.metrics': 'Precision/recall bars',

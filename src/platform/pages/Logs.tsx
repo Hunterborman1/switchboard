@@ -107,7 +107,7 @@ export function Logs() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Observe"
+        eyebrow="Observe"
         title="Logs & traces"
         sub="Structured logs from every agent: one line per request, workflow step, AI call, delivery and budget check, joined by trace id. Signal Loop’s rows are live; the rest is simulated history."
         meta={<span>{total != null ? `${f.int(total)} matching rows` : 'Counting…'} · data as of {f.ago(asOf)}</span>}

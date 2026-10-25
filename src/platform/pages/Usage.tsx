@@ -167,7 +167,7 @@ export function Usage() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Adoption"
+        eyebrow="Adoption"
         title="Usage"
         sub="Who uses which agent, when, and how often. The live panel is real; the six-week history is simulated and labelled."
         meta={<span>Data as of {f.ago(usage.dataAsOf)}</span>}

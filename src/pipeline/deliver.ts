@@ -53,8 +53,54 @@ export type DeliverContext = {
   ids: (prefix: string) => string;
 };
 
+/**
+ * Flat fields every destination preview reads (account, ARR, renewal, area, confidence, CSM),
+ * from the insight/account join. Merged into each channel payload at write time, and applied
+ * at read time to delivery rows written before these fields existed (enrichDelivery).
+ * Absent values are left out rather than written as placeholders, so a preview can hide them.
+ */
+export function previewFields(insight: Insight, account: Account | null, csm: Person | null): Record<string, unknown> {
+  const out: Record<string, unknown> = {
+    type: insight.type,
+    productArea: insight.productArea,
+    summary: insight.summary,
+    severity: insight.severity,
+    confidence: Math.round(insight.confidenceFinal * 100) / 100,
+  };
+  const quote = bestQuote(insight);
+  if (quote) out.quote = quote;
+  if (account) {
+    out.account = account.name;
+    out.accountId = account.id;
+    out.tier = account.tier;
+    out.arrUsd = account.arrUsd;
+    out.renewalDate = account.renewalDate;
+  }
+  if (csm) out.csm = csm.name;
+  return out;
+}
+
+/** Fills missing preview fields on a stored delivery (older rows carried only channel-shaped payloads). */
+export function enrichDelivery(d: Delivery, insight: Insight | null | undefined, account: Account | null, csm: Person | null): Delivery {
+  if (!insight) return d;
+  const fields = previewFields(insight, account, csm);
+  const payload = { ...(d.payload as Record<string, unknown>) };
+  let changed = false;
+  for (const [k, v] of Object.entries(fields)) {
+    if (payload[k] === undefined || payload[k] === null || payload[k] === '') {
+      payload[k] = v;
+      changed = true;
+    }
+  }
+  return changed ? { ...d, payload } : d;
+}
+
 /** Build the destination payload preview. */
 export function renderPayload(channel: Channel, insight: Insight, decision: RouteDecision, ctx: DeliverContext): Record<string, unknown> {
+  return { ...channelPayload(channel, insight, decision, ctx), ...previewFields(insight, ctx.account, ctx.csm) };
+}
+
+function channelPayload(channel: Channel, insight: Insight, decision: RouteDecision, ctx: DeliverContext): Record<string, unknown> {
   const quote = bestQuote(insight);
   const acct = ctx.account ? `${ctx.account.name} (${ctx.account.tier}, ${money(ctx.account.arrUsd)} ARR, renews ${ctx.account.renewalDate})` : 'No account';
   const title = `${TYPE_LABEL[insight.type]}: ${insight.summary}`;

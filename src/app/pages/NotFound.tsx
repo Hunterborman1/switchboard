@@ -10,6 +10,8 @@ export default function NotFoundPage() {
       <AppPageHeader title="Page not found" dataAsOf={null} />
       <EmptyState
         variant="no-data"
+        size="lg"
+        icon="404"
         title="There is nothing at this address"
         description="The link may come from an older version of the walkthrough. Every page is in the sidebar."
         action={
