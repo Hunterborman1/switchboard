@@ -3,13 +3,13 @@
  * reviewer approved an insight"); the tour engine waits on them to advance. Keeping this a
  * tiny typed CustomEvent channel means the product never imports the tour.
  */
-import type { Channel, InsightType, RunMode, StepKey } from './contracts';
+import type { Channel, InsightType, StepKey } from './contracts';
 
 export type SignalEvent =
   | { name: 'picker.opened' }
   | { name: 'picker.closed' }
   | { name: 'file.selected'; fileId: string; tourPath: string | null }
-  | { name: 'run.started'; runId: string; fileId: string | null; mode: RunMode }
+  | { name: 'run.started'; runId: string; fileId: string | null; mode: 'live' | 'replay' }
   | { name: 'run.step'; runId: string; step: StepKey; status: string }
   | { name: 'run.finished'; runId: string; status: string }
   | { name: 'evidence.focused'; insightId: string; method: string }
@@ -26,13 +26,15 @@ export type SignalEvent =
   | { name: 'route.changed'; path: string };
 
 const NAME = 'signal-loop';
+// globalThis rather than window: this module is type-checked in the Worker build too.
+const target = globalThis as unknown as EventTarget;
 
 export function emit(event: SignalEvent): void {
-  window.dispatchEvent(new CustomEvent<SignalEvent>(NAME, { detail: event }));
+  target.dispatchEvent(new CustomEvent<SignalEvent>(NAME, { detail: event }));
 }
 
 export function listen(handler: (event: SignalEvent) => void): () => void {
   const fn = (e: Event) => handler((e as CustomEvent<SignalEvent>).detail);
-  window.addEventListener(NAME, fn);
-  return () => window.removeEventListener(NAME, fn);
+  target.addEventListener(NAME, fn);
+  return () => target.removeEventListener(NAME, fn);
 }
