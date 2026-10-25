@@ -6,7 +6,7 @@
  * results, the dropped-quote card. Bottom: trace (waterfall + per-step model/tokens/cost).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { STEP_KEYS, STEP_LABELS, type Insight, type StepKey } from '../../shared/contracts';
 import { emit } from '../../shared/events';
@@ -18,12 +18,13 @@ import { StatusChip } from '../../uis/StatusChip';
 import { EmptyState } from '../../uis/EmptyState';
 import { Banner } from '../../uis/Banner';
 import { RelativeTime } from '../../uis/RelativeTime';
-import { ApiError } from '../api/client';
-import { useRun, useThemes } from '../api/hooks';
-import { AppPageHeader, ErrorState } from '../components/ui';
+import { api, ApiError } from '../api/client';
+import { invalidate, keys, useRun, useThemes } from '../api/hooks';
+import { AppPageHeader, ErrorState, useToast } from '../components/ui';
 import { Hint } from '../components/Hint';
 import { FileGlyph, IconReplay } from '../components/icons';
 import { money, ms, STEP_HELP } from '../lib/labels';
+import { stepsCostUsd } from '../../shared/format';
 import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { usePrefersReducedMotion, useTourState } from '../state';
@@ -50,6 +51,11 @@ export default function RunViewPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data, error, loading, dataAsOf, refresh } = useRun(id);
+  const [search] = useSearchParams();
+  /** Opened from New call as "your earlier run" (a duplicate): say so, and offer a fresh live run. */
+  const earlier = search.get('earlier') === '1';
+  const toast = useToast();
+  const [rerunning, setRerunning] = useState(false);
   const { pace } = useTourState();
   const reduced = usePrefersReducedMotion();
   const world = useWorldIndex();
@@ -144,6 +150,22 @@ export default function RunViewPage() {
     );
   }
 
+  const runAgainLive = async () => {
+    if (!run?.fileId) return;
+    setRerunning(true);
+    try {
+      const res = await api.createRun({ fileId: run.fileId, mode: 'auto', rerun: true });
+      emit({ name: 'run.started', runId: res.data.runId, fileId: run.fileId, mode: res.data.mode });
+      track('run_created', { runId: res.data.runId, fileId: run.fileId, source: 'library', mode: res.data.mode, rerun: true, duplicate: !!res.data.duplicate });
+      invalidate(keys.runs, keys.session);
+      navigate(`/app/runs/${res.data.runId}`);
+    } catch (err) {
+      toast({ tone: 'danger', title: 'Run not started', body: err instanceof ApiError ? err.message : 'The run could not be started.' });
+    } finally {
+      setRerunning(false);
+    }
+  };
+
   if (loading || !data || !run) return <RunSkeleton id={id} />;
 
   const screenStep = reveal.steps.find((s) => s.key === 'screen');
@@ -161,7 +183,7 @@ export default function RunViewPage() {
   const lastRevealed = reveal.revealed > 0 ? STEP_KEYS[reveal.revealed - 1]! : null;
   const detailKey = pickedStep ?? (reveal.activeIdx >= 0 ? STEP_KEYS[reveal.activeIdx]! : lastRevealed) ?? 'ingest';
   const detailStep = reveal.steps.find((s) => s.key === detailKey)!;
-  const shownCost = reveal.steps.filter((s) => s.display !== 'pending' && s.display !== 'running').reduce((a, s) => a + (s.costUsd ?? 0), 0);
+  const shownCost = stepsCostUsd(reveal.steps.filter((s) => s.display !== 'pending' && s.display !== 'running'));
   const failedStep = run.status === 'failed' ? data.steps.find((s) => s.status === 'failed') : undefined;
 
   const terminal: StepperTerminal | null = reveal.finished
@@ -213,7 +235,7 @@ export default function RunViewPage() {
             <Hint label={run.mode === 'live' ? 'This run called the real models (fast tier + independent fallback) through the gated, budgeted runtime key.' : MODE_REASON[run.modeReason ?? ''] ?? 'Replays a recorded live execution of the same file at real speed.'}>
               <span className={`${styles.mode} ${run.mode === 'live' ? styles.modeLive : styles.modeReplay}`} tabIndex={0}>
                 <span className={styles.modeDot} aria-hidden="true" />
-                {run.mode === 'live' ? 'Live' : 'Replay of a recorded live run'}
+                {earlier ? (run.mode === 'live' ? 'Earlier live run, replayed' : 'Earlier run (a replay)') : run.mode === 'live' ? 'Live' : 'Replay of a recorded live run'}
               </span>
             </Hint>
             <StatusChip
@@ -272,6 +294,21 @@ export default function RunViewPage() {
       {failedStep && reveal.finished ? (
         <Banner tone="danger" title={`Run failed at ${STEP_LABELS[failedStep.key]}`} action={<Link to="/app/health">Dead-letter queue</Link>}>
           {(failedStep.summary ? rewriteModels(failedStep.summary) : null) ?? 'A step failed after its retries. A partial failure reads as a failure: nothing from this run was routed.'}
+        </Banner>
+      ) : null}
+      {earlier ? (
+        <Banner
+          tone="info"
+          title="Your earlier run, replayed from its saved steps"
+          action={
+            run.fileId ? (
+              <Button variant="primary" size="sm" iconLeft="play" loading={rerunning} disabled={rerunning} onClick={() => void runAgainLive()}>
+                Run again live
+              </Button>
+            ) : undefined
+          }
+        >
+          You already ran this file, so this reopens that run (started <RelativeTime value={run.createdAt} />). Nothing new is executing; the steps, timings and costs are the ones recorded then.
         </Banner>
       ) : null}
       {duplicateOf ? (

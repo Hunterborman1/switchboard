@@ -26,7 +26,8 @@ export type { RunDetail };
 
 export type World = { accounts: Account[]; people: Person[] };
 export type LibraryFileDetail = { file: LibraryFile; content: string };
-export type CreateRunResult = { runId: string; mode: 'live' | 'replay' };
+/** Fixture mode omits the duplicate fields; the Worker always sends them. */
+export type CreateRunResult = { runId: string; mode: 'live' | 'replay'; modeReason?: string | null; duplicate?: boolean; duplicateScope?: 'workspace' | 'seed' | null; duplicateCreatedAt?: string | null };
 export type InsightDetail = {
   insight: Insight;
   run: Run | null;

@@ -8,7 +8,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { listen, type SignalEvent } from '../../shared/events';
-import { explainSpanErrors } from '../../shared/format';
+import { explainSpanErrors, themeNamingPending } from '../../shared/format';
 import type { Budget, RunDetail, Theme } from '../../shared/contracts';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type OverviewReport, type AgentRecord, type AgentImpact, type UsageReport, type LogEntry, type Span } from '../../shared/platform-contracts';
 import { STEPS, STEP_BY_ID, FIRST_STEP, MAIN_ORDER } from '../script/steps';
@@ -17,7 +17,7 @@ import { isSpotlitTheme } from '../script/copy';
 import type { AnchorId } from '../anchors';
 import { TourPaceContext, type TourPace } from '../pace';
 import { freshPersisted, isPath, readStored, writeStored } from './storage';
-import type { CheckpointData, EvalsData, OpsData, Persisted, PresenterMsg, Step, TourApi, TourCtx, TourPath, TourStatus } from './types';
+import { awaitingUser, type CheckpointData, type EvalsData, type OpsData, type Persisted, type PresenterMsg, type Step, type TourApi, type TourCtx, type TourPath, type TourStatus } from './types';
 
 export const PRESENTER_CHANNEL = 'signal-loop-presenter';
 
@@ -209,7 +209,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
       skip();
       return true;
     }
-    if (s.waitFor && s.waitFor !== 'next') return false;
+    if (awaitingUser(s, c)) return false;
     const acts = typeof s.actions === 'function' ? s.actions(c) : s.actions;
     if (acts?.length) return false; // a choice: pick one
     if (!isReadyFn(s, c)) return false;
@@ -273,6 +273,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
             }
             case 'run.started':
               c.runId = e.runId;
+              c.runReused = !!e.reused;
               if (e.fileId) c.fileId = e.fileId;
               break;
             case 'review.action':
@@ -337,7 +338,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
         const d = await tourApi.run(runId, ac.signal);
         if (stop) return;
         setRun(d);
-        if (['completed', 'failed', 'awaiting_review'].includes(d.run.status)) return;
+        if (['completed', 'failed', 'awaiting_review'].includes(d.run.status) && !themeNamingPending(d)) return;
       } catch {
         /* keep polling quietly; the step falls back if data never arrives */
       }
@@ -422,8 +423,9 @@ export function TourProvider({ children }: { children: ReactNode }) {
       platformGet<{ agent: AgentRecord; impact: AgentImpact }>(`/agents/${SIGNAL_LOOP_AGENT_ID}`).then((v) => (out.agent = { ...v.agent, impact: v.impact })),
       platformGet<UsageReport>(`/usage?agentId=${SIGNAL_LOOP_AGENT_ID}&source=live`).then((v) => (out.live = v.live)),
       rid
-        ? platformGet<{ rows: LogEntry[] }>(`/logs?runId=${encodeURIComponent(rid)}`).then((v) => {
-            out.logCount = v.rows.length;
+        ? platformGet<{ rows: LogEntry[]; total?: number | null }>(`/logs?runId=${encodeURIComponent(rid)}`).then((v) => {
+            // The run's full line count (the same set the trace page and the scorecard count), not one page.
+            out.logCount = v.total ?? v.rows.length;
             out.traceId = v.rows[0]?.traceId ?? null;
           })
         : platformGet<{ rows: LogEntry[] }>(`/logs?agentId=${SIGNAL_LOOP_AGENT_ID}`).then((v) => {

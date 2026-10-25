@@ -180,6 +180,29 @@ describe('full live run → review → delivery → ticket shipped → notificat
     expect(r.status).toBe(200);
     expect(r.json.data.duplicate).toBe(true);
     expect(r.json.data.runId).toBe(runId);
+    expect(r.json.data.duplicateScope).toBe('workspace');
+    expect(typeof r.json.data.duplicateCreatedAt).toBe('string');
+  });
+
+  it('rerun: true starts a genuinely new run of a file this workspace already ran', async () => {
+    const r = await h.call('/runs', { method: 'POST', ws, json: { fileId: 'file_c1042', rerun: true } });
+    expect(r.status).toBe(201);
+    expect(r.json.data.duplicate).toBe(false);
+    expect(r.json.data.runId).not.toBe(runId);
+    const d = await waitForRun(h, r.json.data.runId, ws);
+    expect(d.run.fileId).toBe('file_c1042');
+    // Without the flag, the newest of this workspace's runs is returned again.
+    const again = await h.call('/runs', { method: 'POST', ws, json: { fileId: 'file_c1042' } });
+    expect(again.json.data.duplicate).toBe(true);
+    expect(again.json.data.runId).toBe(r.json.data.runId);
+  });
+
+  it('dedupe is per workspace: another workspace runs the same file fresh', async () => {
+    const other = newWs();
+    const first = await h.call('/runs', { method: 'POST', ws: other, json: { fileId: 'file_c1042', rerun: true } });
+    expect(first.status).toBe(201);
+    expect(first.json.data.runId).not.toBe(runId);
+    await waitForRun(h, first.json.data.runId, other);
   });
 
   it('insights filter by type, status and search', async () => {

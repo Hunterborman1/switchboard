@@ -8,6 +8,7 @@
  */
 import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import { ApiError, api, type Fetched } from './client';
+import { themeNamingPending } from '../../shared/format';
 
 type Entry = {
   data?: unknown;
@@ -184,7 +185,9 @@ export const useInsightDetail = (id: string | null) => useQuery(id ? keys.insigh
 export function useRun(runId: string | null) {
   const state = useQuery(runId ? keys.run(runId) : null, () => api.run(runId!), { pollMs: false, staleMs: 400 });
   const status = state.data?.run.status;
-  const moving = !state.data || status === 'queued' || status === 'running';
+  // Also keep polling briefly after the run is final while deferred theme naming adds its cost,
+  // so the Run view and the walkthrough settle on the same total.
+  const moving = !state.data || status === 'queued' || status === 'running' || themeNamingPending(state.data);
   useEffect(() => {
     if (!runId || !moving || state.error) return;
     const id = window.setInterval(() => void state.refresh(), 600);

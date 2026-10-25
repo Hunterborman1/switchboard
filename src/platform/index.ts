@@ -30,6 +30,7 @@ export const platformRoutes: RouteObject[] = [
   { path: 'reliability', element: createElement(Reliability) },
   { path: 'cost', element: createElement(Cost) },
   { path: 'runbook', element: createElement(Runbook) },
+  { path: 'runbook/:doc', element: createElement(Runbook) },
   { path: 'standard', element: createElement(Standard) },
   { path: 'standard/reviews', element: createElement(Standard) },
   { path: 'standard/checklist', element: createElement(Standard) },

@@ -4,6 +4,7 @@ import { Arrow, Button, KeyHint } from '../../narrative/components';
 import { useCalm } from '../../narrative/hooks';
 import { chapterById, PRODUCT_CHAPTERS } from '../script/chapters';
 import { resolveCopy, useTour } from './TourProvider';
+import { awaitingUser } from './types';
 
 type Props = {
   mode: 'anchored' | 'center' | 'sheet' | 'float';
@@ -36,7 +37,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
   const body = resolveCopy(step.body, ctx);
   const moreText = step.more ? resolveCopy(step.more, ctx) : null;
   const actions = typeof step.actions === 'function' ? step.actions(ctx) : step.actions;
-  const waiting = step.waitFor && step.waitFor !== 'next';
+  const waiting = awaitingUser(step, ctx);
   const hint = waiting && typeof step.waitFor === 'object' ? step.waitFor.hint : undefined;
   const ready = tour.isReady;
   const readyLabel = step.readyLabel ? resolveCopy(step.readyLabel, ctx) : 'Working…';

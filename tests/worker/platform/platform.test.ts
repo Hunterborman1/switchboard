@@ -92,6 +92,10 @@ describe('reports over seeded history', () => {
     const t = await h.call(P(`/traces/${run.traceId}`));
     expect(t.json.data.spans.length).toBeGreaterThan(8);
     expect(t.json.data.logs.some((l: { event: string }) => l.event === 'ai.call')).toBe(true);
+    // One run, one log count: /logs?runId counts the same lines the trace page shows.
+    expect(run.runId).toBeTruthy();
+    const byRun = await h.call(P(`/logs?runId=${encodeURIComponent(run.runId!)}&limit=200`));
+    expect(byRun.json.data.total).toBe(t.json.data.logs.length);
     expect((await h.call(P('/traces/doesnotexist'))).status).toBe(404);
     expect((await h.call(P('/traces/bad%20id!'))).status).toBe(400);
   });

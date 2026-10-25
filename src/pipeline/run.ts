@@ -131,7 +131,7 @@ export async function runPipeline(input: PipelineInput, deps: PipelineDeps): Pro
     const red = await exec('redact', async () => {
       const contactNames = input.people.map((p) => p.name);
       const safeTerms = [...PRODUCT_TERMS, ...input.accounts.flatMap((a) => [a.name, a.name.split(' ')[0]!, a.hq.split(',')[0]!.trim()])];
-      const doc = redactDocument(parsed.turns, { knownNames: contactNames, safeTerms });
+      const doc = redactDocument(parsed.turns, { knownNames: contactNames, safeTerms, lowercaseFirstNames: parsed.format === 'chat' });
       await deps.store.saveTranscript(input.runId, doc, parsed.format);
       const phi = doc.redactions.filter((r) => ['patient', 'dob', 'mrn', 'ssn'].includes(r.kind)).reduce((s, r) => s + r.count, 0);
       return {

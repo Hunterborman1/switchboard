@@ -308,7 +308,7 @@
         "shortName": "RFP Responder",
         "color": "#5E74E3",
         "successMetric": "Hours from questionnaire received to first full draft. Target under one business day (baseline 3–4 days).",
-        "runbookUrl": "https://wiki.invoca.example/ai-ops/runbooks/rfp-responder",
+        "runbookUrl": "docs/runbooks/rfp-responder.md",
         "monthlyBudgetUsd": 150,
         "perRunCapUsd": 2.5,
         "humanMinutesPerUnit": 50,
@@ -436,7 +436,7 @@
       "actual": "9 days (Drive connector token expired)",
       "status": "open",
       "owner": "Malik Johnson",
-      "runbook": "https://wiki.invoca.example/ai-ops/runbooks/rfp-responder#library-sync",
+      "runbook": "docs/runbooks/rfp-responder.md#library-sync",
       "traceId": null,
       "resolvedAt": null
     }

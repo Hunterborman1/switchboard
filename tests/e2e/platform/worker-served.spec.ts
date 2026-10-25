@@ -16,6 +16,10 @@ test.use({ baseURL: WORKER });
 
 function watch(page: Page) {
   const problems: string[] = [];
+  // CSP violations that only surface as DOM events (e.g. an `eval` probe): no 'unsafe-eval' needed.
+  void page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (e) => console.error(`Content Security Policy violation: ${e.violatedDirective} ${e.blockedURI} ${e.sourceFile}`));
+  });
   page.on('console', (m) => {
     if (m.type() === 'error' && /Content Security Policy|Refused to/i.test(m.text())) problems.push(m.text());
   });

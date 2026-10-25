@@ -23,6 +23,11 @@ export type RedactOptions = {
   knownNames?: string[];
   /** Org/product names that must never be treated as people. */
   safeTerms?: string[];
+  /**
+   * Also match lower-case first names ("amanda wants…"). Only for chat exports, where people
+   * type names in lower case; ambiguous ones that are everyday words (frank, miles, rob…) are skipped.
+   */
+  lowercaseFirstNames?: boolean;
 };
 
 type Span = { start: number; end: number; kind: Kind; value: string };
@@ -30,16 +35,37 @@ type Span = { start: number; end: number; kind: Kind; value: string };
 // Common US first names, excluding ones that are also everyday words (Will, Mark, May, Bill, Grant, Joy…).
 const FIRST_NAMES = new Set(
   (
-    'Aaron Abby Adam Adrian Aisha Alan Albert Alejandro Alex Alexa Alexis Alice Alicia Alison Allison Alyssa Amanda Amber Amy Ana Andrea Andrew Andy Angela Anita Ann Anna Anne Anthony Antonio Arjun Ashley ' +
+    'Aaron Abby Adam Adrian Aisha Alan Albert Alejandro Alex Alexa Alexis Alice Alicia Alison Allison Alyssa Amanda Amber Amy Ana Andre Andrea Andres Andrew Andy Angela Anita Ann Anna Anne Anthony Antonio Arjun Ashley ' +
     'Barbara Becky Ben Benjamin Beth Betty Blake Bob Bobby Brad Bradley Brandon Brenda Brent Brian Brianna Britney Brittany Bruce Bryan Caleb Cameron Camila Carl Carla Carlos Carmen Carol Caroline Carrie Casey Catherine Chad Charles Charlie Charlotte Chelsea Cheryl Chris Christina Christine Christopher Cindy Claire Clara Cody Colin Connor Courtney Craig Crystal Cynthia ' +
     'Dale Dan Dana Daniel Danielle Danny Darius Darren Dave David Deb Debbie Deborah Denise Dennis Derek Devin Diana Diane Diego Dmitri Donald Donna Doug Douglas Dylan Eddie Eduardo Edward Elena Eli Elijah Elizabeth Ella Ellen Emily Emma Eric Erica Erik Erin Ethan Eva Evan Evelyn ' +
     'Fatima Felipe Frank Gabriel Gabriela Gary George Gina Glen Gloria Greg Gregory Hannah Harold Heather Helen Henry Holly Ian Isaac Isabel Isabella Jack Jacob Jake James Jamie Jane Janet Jared Jasmine Jason Javier Jeff Jeffrey Jen Jenna Jennifer Jenny Jeremy Jerry Jesse Jessica Jill Jim Jimmy Joan Joe Joel John Johnny Jon Jonathan Jordan Jorge Jose Joseph Josh Joshua Juan Judy Julia Julie Justin ' +
     'Kaitlyn Karen Kate Katherine Kathleen Kathy Katie Kayla Keith Kelly Ken Kenneth Kevin Kim Kimberly Kris Kristen Kyle Laura Lauren Leah Leo Leon Leslie Linda Lindsay Lisa Logan Lori Lucas Lucia Luis Luke Lydia Lynn ' +
-    'Madison Maria Mariana Marie Marisol Marcus Marilyn Mario Marissa Martha Martin Mary Matt Matthew Megan Melanie Melissa Meredith Michael Michelle Miguel Mike Miles Mohammed Molly Monica Morgan Nancy Natalie Nathan Neil Nicholas Nick Nicole Nina Noah Nora Olivia Omar Oscar ' +
+    'Madison Maria Mariana Marie Marisol Marcus Marilyn Mario Marissa Martha Martin Mary Matt Matthew Megan Melanie Melissa Meredith Michael Michelle Miguel Mike Miles Mohammed Molly Monica Morgan Nancy Natalie Nathan Neil Nicholas Nick Nicole Nina Noah Nora Olivia Omar Oscar Owen ' +
     'Pablo Pam Pamela Patricia Patrick Paul Paula Peter Phil Philip Priya Rachel Rahul Raj Ramon Randy Raymond Rebecca Renee Ricardo Richard Rick Rita Rob Robert Roberto Robin Rodrigo Ron Ronald Rosa Ryan ' +
     'Sam Samantha Samuel Sandra Sanjay Sara Sarah Scott Sean Sergio Shannon Sharon Shawn Sheila Shirley Sofia Sophia Stacy Stephanie Stephen Steve Steven Susan Tanya Tara Teresa Terry Theresa Thomas Tiffany Tim Timothy Tina Todd Tom Tony Tracy Travis Trevor Tyler Valerie Vanessa Veronica Victor Victoria Vikram Vince Vincent Walter Wayne Wendy Whitney William Xavier Yolanda Zach Zachary Zoe'
   ).split(' '),
 );
+
+/**
+ * Everyday words that are never a name on their own, whatever their case: function words, and
+ * the field labels of forms, surveys and notes ("Role:", "NPS:", "Comment:") that a parser can
+ * mistake for a speaker. Guards speaker-label names, name aliases and the lower-case matcher.
+ */
+export const STOPWORDS = new Set(
+  (
+    'a about above after again against all also am an and any are as at be because been before being below between both but by can could did do does doing down during each few for from further had has have having he her here hers herself him himself his how i if in into is it its itself just last let me more most my myself no nor not now of off on once only or other our ours out over own same she should so some such than that the their theirs them then there these they this those through to too under until up very was we were what when where which while who whom why will with would you your yours ' +
+    'yes ok okay thanks thank hi hey hello please sorry today tomorrow yesterday next first second third new old one two three half per via vs re fwd fyi cc bcc ' +
+    'role roles nps csat score scores rating ratings comment comments response responses respondent answer answers question questions feedback note notes summary subject title date time status priority owner action actions item items issue issues topic topics agenda update updates recap followup follow todo task tasks name names email phone address company account location region department team tier plan seats renewal source type area severity reason result results outcome outcomes value values total count'
+  ).split(' '),
+);
+/** Lower-case first names that are also everyday words; the lower-case matcher never takes these. */
+const AMBIGUOUS_LOWER = new Set(
+  'amber bob carol chad dan charlotte clara crystal dale frank glen gloria heather holly jack jasmine jordan josh ken kim leo lynn madison miles nick nina oscar pat peter rob robin rosa terry victoria ella sandy ginger rose faith hope eve dawn joy art bill grant sue chase gene ray max june april ash guy don jean ivy iris lily daisy sage angel august page drew hunter wade rich penny lee'.split(' '),
+);
+/** Name-shaped word: starts upper-case and has a lower-case letter ("Dana", "O'Brien", "McAllister", "Lee-Ann"). */
+const NAME_WORD = /^[A-Z][A-Za-z'’]*[a-z][A-Za-z'’]*(?:-[A-Z][A-Za-z'’]*)?$/;
+const NAME_PARTICLE = new Set(['de', 'del', 'della', 'da', 'di', 'van', 'von', 'der', 'den', 'la', 'le', 'du', 'bin', 'al']);
+const HANDLE = /^@?[A-Za-z][A-Za-z0-9]*(?:[._][A-Za-z0-9]+)+$/;
 
 const COMMON_CAPS = new Set(['I', 'The', 'And', 'But', 'So', 'Yes', 'No', 'Ok', 'Okay', 'Thanks', 'Thank', 'Hi', 'Hey', 'Hello', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Team', 'From', 'To', 'Re', 'We', 'You', 'He', 'She', 'They', 'It', 'This', 'That', 'Our', 'If', 'When', 'Then', 'Also', 'Just', 'Can', 'Will', 'Said', 'Says', 'Asked', 'Mentioned', 'Called', 'Is', 'Was', 'On', 'In', 'At', 'For', 'With', 'Not', 'Customer', 'Support', 'Sales', 'Notes', 'Action', 'Next', 'Signal', 'Call', 'Calls', 'Google', 'Invoca']);
 const GENERIC_LABEL = /^(speaker|spk|spkr|customer|client|csm|agent|rep|host|guest|unknown|participant|caller|interviewer|moderator|notes?|csm notes|me|us|them|team|everyone|all|support|sales|bot|system|operator|ivr)\b/i;
@@ -87,7 +113,10 @@ function phoneValid(s: string): boolean {
 const MONTHS = 'Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?';
 const DATE = String.raw`(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{2}-\d{2}|(?:${MONTHS})\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}|\d{1,2}\s+(?:${MONTHS})\s+\d{4})`;
 const STREET = 'Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Court|Ct|Way|Place|Pl|Terrace|Ter|Parkway|Pkwy|Circle|Cir|Highway|Hwy|Trail|Trl';
+const STREET_WORD = new RegExp(`^(?:${STREET})\\.?$`);
 const NAME = String.raw`[A-Z][a-z'’]+(?:-[A-Z][a-z]+)?`;
+/** Capitalised words that start a new clause after an address, never a city. */
+const CITY_STOP = 'And|But|So|Then|The|That|This|She|He|They|We|I|It|Which|Who|Also|Apt|Apartment|Suite|Ste|Unit';
 
 const RE = {
   email: /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g,
@@ -98,7 +127,13 @@ const RE = {
   ssnKeyword: /\b(?:SSN|social security(?: number)?|social)\s*(?:#|no\.?|number)?\s*[:\-]?\s*(\d{3}[ -]?\d{2}[ -]?\d{4})(?!\d)/gi,
   dob: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.?|date of birth|birth ?date|born(?: on)?|birthday(?: is)?)\s*(?:is|was|of)?\s*[:\-]?\s*(${DATE})`, 'gi'),
   mrn: /\b(?:MRN|medical record(?: number| no\.?| #)?|chart(?: number| #)|patient (?:id|ID|number|#)|member (?:id|ID|number|#))\s*(?:is|was)?\s*[:#]?\s*([A-Z]{0,4}[-]?\d[\dA-Z-]{3,14})\b/g,
-  address: new RegExp(String.raw`\b\d{1,6}\s+(?:[NSEW]\.?\s+)?(?:${NAME}\s+){0,3}(?:${STREET})\b\.?(?:,?\s+(?:Apt|Apartment|Suite|Ste|Unit|#)\.?\s*[\w-]+)?`, 'g'),
+  // A street address, plus the city / state / ZIP that follow it ("2218 Belmont Boulevard, Nashville,
+  // TN 37212"): below-state geography is an identifier under HIPAA Safe Harbor. A city on its own
+  // (an account's HQ) is business context and is left alone.
+  address: new RegExp(
+    String.raw`\b\d{1,6}\s+(?:[NSEW]\.?\s+)?(?:${NAME}\s+){0,3}(?:${STREET})\b\.?(?:,?\s+(?:Apt|Apartment|Suite|Ste|Unit|#)\.?\s*[\w-]+)?(?:,\s*(?!(?:${CITY_STOP})\b)${NAME}(?:\s+(?!(?:${CITY_STOP})\b)${NAME}){0,2}(?:,?\s+[A-Z]{2}\b)?(?:\s+\d{5}(?:-\d{4})?)?)?`,
+    'g',
+  ),
   patient: new RegExp(String.raw`\b(?:[Pp]atient|[Pp]t\.|[Mm]ember|[Tt]he patient's name is|[Pp]atient name)\s*(?:name)?\s*[:\-]?\s+(${NAME}(?:\s+${NAME})?)`, 'g'),
   honorific: new RegExp(String.raw`\b(?:Mr|Mrs|Ms|Mx|Miss|Dr|Prof)\.?\s+(${NAME}(?:\s+${NAME})?)`, 'g'),
   intro: new RegExp(String.raw`\b(?:my name is|my name's|name's|this is|I'm|I am|speaking with|spoke with|talked to|talking to|cc'?ing|cc|loop(?:ing)? in|ask|asked|per)\s+(${NAME}(?:\s+${NAME})?)\b`, 'g'),
@@ -154,6 +189,23 @@ export function detectPatterns(text: string, safe: Set<string> = new Set()): Spa
   return spans;
 }
 
+/**
+ * A speaker label is only a name when it is shaped like one: a chat handle ("diego.alvarez"), a
+ * listed first name in any case ("cody"), or name-shaped words with no everyday word among them.
+ * This keeps note headings and form fields ("Half-remembered from last call:", "Role:", "NPS:",
+ * "GM comparison:") from becoming people, and their words from becoming name aliases.
+ */
+function speakerLooksLikeName(words: string[]): boolean {
+  if (words.length === 1) {
+    const w = words[0]!;
+    if (HANDLE.test(w)) return !w.replace(/^@/, '').split(/[._]/).some((p) => STOPWORDS.has(p.toLowerCase()));
+    if (STOPWORDS.has(w.toLowerCase())) return false;
+    if (FIRST_NAMES.has(w[0]!.toUpperCase() + w.slice(1).toLowerCase())) return true;
+    return NAME_WORD.test(w);
+  }
+  return words.every((w, i) => (i > 0 && NAME_PARTICLE.has(w)) || (NAME_WORD.test(w) && !STOPWORDS.has(w.toLowerCase())));
+}
+
 /** Names from speaker labels: "Dana Whitfield (Brightline)" → "Dana Whitfield"; "dana.w" → "dana.w". */
 export function namesFromSpeakers(speakers: string[], safe: Set<string> = new Set()): string[] {
   const out = new Set<string>();
@@ -164,6 +216,7 @@ export function namesFromSpeakers(speakers: string[], safe: Set<string> = new Se
     if (safe.has(l.toLowerCase())) continue;
     const words = l.split(/\s+/);
     if (words.length > 4 || words.some((w) => safe.has(w.toLowerCase()))) continue;
+    if (!speakerLooksLikeName(words)) continue;
     out.add(l);
   }
   return [...out];
@@ -196,8 +249,11 @@ function mask(kind: Kind, value: string): string {
       return '••/••/••••';
     case 'mrn':
       return `${value.slice(0, 1)}${'•'.repeat(Math.max(3, value.length - 1))}`;
-    case 'address':
-      return `${'•'.repeat(3)} ${value.split(/\s+/).slice(-1)[0] ?? ''}`.trim();
+    case 'address': {
+      // The street type only ("••• Boulevard"), never the street name or the city.
+      const suffix = value.split(/[\s,]+/).find((w) => STREET_WORD.test(w));
+      return `${'•'.repeat(3)} ${suffix ?? ''}`.trim();
+    }
   }
 }
 
@@ -239,7 +295,7 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
   // Aliases: first and last names of every multi-word name map to the same entity.
   for (const e of [...entities.values()]) {
     if (e.kind !== 'person' && e.kind !== 'patient') continue;
-    const words = e.value.split(/[\s.]+/).filter((w) => w.length >= 3 && !safe.has(w.toLowerCase()) && !NOT_A_NAME.has(w.toLowerCase()));
+    const words = e.value.split(/[\s.]+/).filter((w) => w.length >= 3 && !safe.has(w.toLowerCase()) && !NOT_A_NAME.has(w.toLowerCase()) && !STOPWORDS.has(w.toLowerCase()) && !NAME_PARTICLE.has(w.toLowerCase()));
     if (words.length < 2) continue;
     for (const w of words) if (!entities.has(`name:${w.toLowerCase()}`)) entities.set(`name:${w.toLowerCase()}`, e);
   }
@@ -267,6 +323,8 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
     if (!entities.has(`name:${bare}`)) entities.set(`name:${bare}`, e);
     return e;
   };
+  // Chat exports: lower-case first names in message text ("amanda wants…").
+  const lowerFirstRe = opts.lowercaseFirstNames ? /(?<![\w@.#/-])([a-z]{3,})(?![\w@-])/g : null;
   // The surname is a lookahead so "Later Kevin Brooks" still finds "Kevin Brooks".
   const firstNameRe = /\b([A-Z][a-z]+)\b(?=(\s+[A-Z][a-z'’]+(?:-[A-Z][a-z]+)?\b)?)/g;
 
@@ -300,6 +358,16 @@ export function redactDocument(turns: RawTurn[], opts: RedactOptions = {}): Reda
         if (!entities.has(`name:${first.toLowerCase()}`)) entities.set(`name:${first.toLowerCase()}`, e);
       }
       spans.push({ start: m.index!, end: m.index! + value.length, kind: e.kind, value, e });
+    }
+    if (lowerFirstRe) {
+      for (const m of s.matchAll(lowerFirstRe)) {
+        const w = m[1]!;
+        if (AMBIGUOUS_LOWER.has(w) || STOPWORDS.has(w) || safe.has(w) || NOT_A_NAME.has(w)) continue;
+        if (!FIRST_NAMES.has(w[0]!.toUpperCase() + w.slice(1))) continue;
+        const e = entities.get(`name:${w}`) ?? register('person', w);
+        if (!entities.has(`name:${w}`)) entities.set(`name:${w}`, e);
+        spans.push({ start: m.index!, end: m.index! + w.length, kind: e.kind, value: w, e });
+      }
     }
     if (!spans.length) return s;
     spans.sort((a, b) => a.start - b.start || b.end - b.start - (a.end - a.start) || PRIORITY[b.kind] - PRIORITY[a.kind]);

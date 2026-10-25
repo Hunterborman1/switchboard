@@ -13,6 +13,9 @@
  * The platform has its own D1 database (binding PLATFORM_DB) — it never reads an agent's tables.
  */
 import { z } from 'zod';
+// No JIT: zod otherwise probes `new Function` on first parse, which a strict CSP (no
+// 'unsafe-eval') reports as a violation in the browser. Parsing works the same without it.
+z.config({ jitless: true });
 
 export const DataSource = z.enum(['live', 'simulated']);
 export type DataSource = z.infer<typeof DataSource>;

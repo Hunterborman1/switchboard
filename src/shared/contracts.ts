@@ -10,6 +10,9 @@
  * the viewer's own workspace only, so one panelist's walkthrough never changes another's.
  */
 import { z } from 'zod';
+// No JIT: zod otherwise probes `new Function` on first parse, which a strict CSP (no
+// 'unsafe-eval') reports as a violation in the browser. Parsing works the same without it.
+z.config({ jitless: true });
 
 // ---------------------------------------------------------------- vocabulary
 
@@ -426,12 +429,16 @@ export type Envelope<T> = { data: T; dataAsOf: string };
 export type ApiError = { error: { code: string; message: string } };
 
 export const CreateRun = z.union([
-  z.object({ fileId: z.string(), mode: z.enum(['auto', 'replay']).default('auto') }),
-  z.object({ text: z.string().min(40).max(60_000), filename: z.string().max(120).default('pasted-notes.txt'), mode: z.literal('auto').default('auto') }),
+  z.object({ fileId: z.string(), mode: z.enum(['auto', 'replay']).default('auto'), rerun: z.boolean().optional() }),
+  z.object({ text: z.string().min(40).max(60_000), filename: z.string().max(120).default('pasted-notes.txt'), mode: z.literal('auto').default('auto'), rerun: z.boolean().optional() }),
 ]);
 export type CreateRun = z.infer<typeof CreateRun>;
-/** POST /runs response. Additive: modeReason, duplicate (same sha256 already processed → existing run). */
-export type CreateRunResult = { runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean };
+/**
+ * POST /runs response. Additive: modeReason, duplicate (same sha256 already processed → existing run),
+ * duplicateScope ('workspace' = this viewer ran the same file before, so `rerun: true` can start a
+ * fresh live run; 'seed' = it matches seeded history or a different file, which a rerun does not bypass).
+ */
+export type CreateRunResult = { runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean; duplicateScope?: 'workspace' | 'seed' | null; duplicateCreatedAt?: string | null };
 
 /** GET /api/runs/:id — everything the Run view and walkthrough need in one poll. */
 export type RunDetail = {

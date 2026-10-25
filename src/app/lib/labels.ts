@@ -124,10 +124,20 @@ export function bytes(n: number): string {
   return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
 
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Short date. A date-only value ("2027-01-15": a renewal date, a day bucket) is a calendar
+ * date, not an instant, so it is formatted in UTC; formatting it in the viewer's zone would show
+ * Jan 14 anywhere west of UTC.
+ */
 export function dateShort(isoStr: string | null | undefined): string {
   if (!isoStr) return '—';
-  const d = new Date(isoStr);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+  const dateOnly = DATE_ONLY.test(isoStr);
+  const d = new Date(dateOnly ? `${isoStr}T00:00:00Z` : isoStr);
+  const timeZone = dateOnly ? 'UTC' : undefined;
+  const year = dateOnly ? d.getUTCFullYear() : d.getFullYear();
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: year !== new Date().getFullYear() ? 'numeric' : undefined, timeZone });
 }
 
 export function dateTime(isoStr: string | null | undefined): string {

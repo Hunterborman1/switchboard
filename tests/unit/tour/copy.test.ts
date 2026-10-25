@@ -73,4 +73,11 @@ describe('narration matches what is shown', () => {
     expect(introCopy(base({ run }))).toMatch(/recorded real execution, replayed at real speed/);
     expect(introCopy(base())).toMatch(/real execution, not an animation/);
   });
+
+  it('ch2.intro says earlier run, never "real execution", when an earlier run was reopened', () => {
+    const run = { run: { mode: 'live', status: 'completed' } } as unknown as RunDetail;
+    const copy = introCopy(base({ run, runReused: true }));
+    expect(copy).toMatch(/earlier run/);
+    expect(copy).not.toMatch(/real execution/);
+  });
 });

@@ -9,7 +9,7 @@ import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import {
   budgetCopy, extractCopy, gateCopy, groundCopy, messyCopy, opsKpiCopy, opsLiveCopy, opsLogsCopy,
   opsRegistryCopy, promoteCopy, redactCopy, runSettled, screenCopy, stepDone, traceCopy, usd,
-  rejectedCopy, candidateCopy, candidateTitle, themeCopy, introCopy, editCopy, introFor, sankeyCopy, opsTraceCopy,
+  rejectedCopy, candidateCopy, candidateTitle, themeCopy, introCopy, editCopy, introFor, sankeyCopy, opsTraceCopy, pricingRuleOverridden,
 } from './copy';
 
 const runRoute = (ctx: TourCtx) => (ctx.runId ? R.run(ctx.runId) : null);
@@ -234,8 +234,8 @@ export const STEPS: Step[] = [
   {
     id: 'ch4.rule', chapter: 'ch4', kind: 'product', route: R.routing, target: 'routing.rule.pricing', placement: 'bottom', interact: 'all',
     title: 'Your call: who hears about pricing?',
-    body: 'Send pricing objections on accounts over $250k ARR to the VP of Product.',
-    waitFor: { event: 'rule.changed', hint: 'Edit the pricing rule' },
+    body: (ctx) => (pricingRuleOverridden(ctx) ? 'You already changed this rule in your workspace. Change it again, or Continue to see where the flows go.' : 'Send pricing objections on accounts over $250k ARR to the VP of Product.'),
+    waitFor: { event: 'rule.changed', hint: 'Edit the pricing rule', satisfied: pricingRuleOverridden },
     next: 'ch4.sankey',
   },
   {

@@ -195,6 +195,7 @@ export default function RoutingPage() {
                       className={`${dirty ? styles.rowDirty : ''} ${justSaved === rule.id ? styles.rowSaved : ''} ${!d.enabled ? styles.rowDisabled : ''}`}
                       {...(pricing ? tourAnchor('routing.rule.pricing') : {})}
                       data-rule-id={rule.id}
+                      data-override={isOverride ? 'true' : undefined}
                     >
                       <td style={{ minWidth: 240 }}>
                         <div className={styles.ruleName}>
