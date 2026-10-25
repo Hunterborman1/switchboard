@@ -51,6 +51,11 @@ export function Hud() {
   const { step, ctx } = tour;
   const ref = useRef<HTMLDivElement>(null);
   const [faded, setFaded] = useState(false);
+  // A product dialog (the file picker) is open: the pill steps aside so it never covers its footer (Open).
+  const [away, setAway] = useState(false);
+  // Phones: the pill sits over a space reserved in the sticky top bar's slot, never over the lockup.
+  const slot = usePillSlot();
+  const [dock, setDock] = useState<{ top: number; right: number } | null>(null);
   const [collapsedPref, setCollapsed] = useState<boolean | null>(null);
   const [productOpen, setProductOpen] = useState(false);
   const ch = chapterById(step.chapter);
@@ -74,18 +79,56 @@ export function Hud() {
   useEffect(() => {
     if (!product) {
       setFaded(false);
+      setAway(false);
       return;
     }
-    const t = window.setInterval(() => {
+    const tick = () => {
+      const dlg = Array.from(document.querySelectorAll<HTMLElement>('[role="dialog"]')).some((d) => !d.closest('[data-tour-ui]') && d.getBoundingClientRect().width > 0);
+      setAway(dlg);
       const ring = document.querySelector('.t-spot__ring');
       const hud = ref.current;
       if (!ring || !hud) return setFaded(false);
       const a = ring.getBoundingClientRect();
       const hb = hud.getBoundingClientRect();
       setFaded(!(a.right < hb.left || a.left > hb.right || a.bottom < hb.top || a.top > hb.bottom));
-    }, 400);
+    };
+    tick();
+    const t = window.setInterval(tick, 400);
     return () => window.clearInterval(t);
   }, [product, step.id, productOpen]);
+
+  // Phones: reserve the pill's width in the mobile bar slot and sit exactly on top of it.
+  const barSlot = tour.status === 'active' && product && !productOpen && slot?.el.dataset.tourPillSlot === 'bar' ? slot.el : null;
+  useEffect(() => {
+    if (!barSlot) {
+      setDock(null);
+      return;
+    }
+    const place = () => {
+      const hud = ref.current;
+      if (!hud) return;
+      barSlot.style.display = 'inline-flex';
+      barSlot.style.width = `${Math.ceil(hud.offsetWidth)}px`;
+      barSlot.style.height = '40px';
+      const r = barSlot.getBoundingClientRect();
+      setDock((d) => {
+        const next = { top: Math.round(r.top + (r.height - 40) / 2), right: Math.round(window.innerWidth - r.right) };
+        return d && d.top === next.top && d.right === next.right ? d : next;
+      });
+    };
+    place();
+    const t = window.setInterval(place, 400);
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, { passive: true });
+    return () => {
+      window.clearInterval(t);
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place);
+      barSlot.style.display = '';
+      barSlot.style.width = '';
+      barSlot.style.height = '';
+    };
+  }, [barSlot]);
 
   if (tour.status !== 'active') return null;
   const objective = step.objective ? resolveCopy(step.objective, ctx) : ch.objective;
@@ -103,7 +146,15 @@ export function Hud() {
 
   if (product && !productOpen) {
     return createPortal(
-      <div ref={ref} className={`t-hud t-hud--pill sl-n-portal ${faded ? 't-hud--faded' : ''}`} data-tour-ui data-testid="tour-hud" role="region" aria-label="Walkthrough progress">
+      <div
+        ref={ref}
+        className={`t-hud t-hud--pill sl-n-portal ${faded ? 't-hud--faded' : ''} ${away ? 't-hud--away' : ''} ${dock ? 't-hud--docked' : ''}`}
+        style={dock ? { top: dock.top, right: dock.right } : undefined}
+        data-tour-ui
+        data-testid="tour-hud"
+        role="region"
+        aria-label="Walkthrough progress"
+      >
         <button className="t-hud__pillbtn" onClick={() => setProductOpen(true)} aria-expanded={false} title={`${ch.title} · ${objective}`}>
           <span className="t-pill__dot" aria-hidden="true" />
           <span className="t-hud__chapter">{short}</span>

@@ -44,10 +44,12 @@ describe('ch7 copy agrees with the eval data on screen', () => {
     }
   });
 
-  it('the gate names the precision drop and, when they regressed, cost and latency', () => {
+  it('the gate names only its real reasons (precision), and cost/latency as reported, not gated', () => {
     const { title, body } = promoteCopy(ctxEvals);
     expect(title).toBe('Promotion blocked');
-    expect(body).toMatch(/Precision fell 28\.9 points/);
+    expect(body).toMatch(/Blocked on precision: 88\.7% → 59\.7%, under the 85% bar and a 29-point regression/);
+    expect(body).not.toMatch(/invented|never raised|one regression/i);
+    expect(body).toMatch(/reported, not gated/);
     if (evals.candidate.costUsd >= evals.promoted.costUsd) expect(body).toMatch(/costs more/);
     if (evals.candidate.p95Ms >= evals.promoted.p95Ms) expect(body).toMatch(/runs slower/);
     expect(body).not.toMatch(/whatever it saves/i);

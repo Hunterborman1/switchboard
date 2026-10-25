@@ -4,6 +4,7 @@ import { RateWithDenominator } from '../../../uis/RateWithDenominator';
 import { StatusChip } from '../../../uis/StatusChip';
 import { Hint } from '../../components/Hint';
 import { TYPE_COLOR, TYPE_LABEL } from '../../lib/labels';
+import { metricPct } from '../../../shared/format';
 import { LEVELS, metric, passed, thresholdLabel, unitFor, type Metric } from './evalModel';
 import styles from './Evals.module.css';
 
@@ -23,19 +24,30 @@ export function PassChip({ m }: { m: Metric | null }) {
   );
 }
 
-/** One horizontal bar 0–100% with the threshold tick drawn on it. */
-function Bar({ m, series }: { m: Metric | null; series: 'precision' | 'recall' }) {
+/**
+ * One horizontal bar 0–100%. Per-type metrics carry no gate threshold of their own: the
+ * dashed tick is the pooled promotion-gate level, drawn as a reference target. A bar under it
+ * is tinted amber ("under target"), never red, because nothing per type is gated.
+ */
+function Bar({ m, series, target }: { m: Metric | null; series: 'precision' | 'recall'; target: number | null }) {
   const v = m?.value ?? null;
   const t = m?.threshold ?? null;
   const fail = passed(m) === false;
+  const under = !fail && t == null && target != null && v != null && v < target;
+  const word = series === 'precision' ? 'Precision' : 'Recall';
   return (
     <div className={styles.barRow}>
-      <span className={styles.barLabel}>{series === 'precision' ? 'Precision' : 'Recall'}</span>
-      <div className={styles.barTrack} role="img" aria-label={`${series} ${v == null ? 'not measured' : `${(v * 100).toFixed(1)}%`}, threshold ${t == null ? 'none' : `${(t * 100).toFixed(0)}%`}`}>
-        {v != null ? <span className={`${styles.barFill} ${series === 'recall' ? styles.barRecall : ''} ${fail ? styles.barFail : ''}`} style={{ width: `${(v * 100).toFixed(1)}%` }} /> : null}
-        {t != null ? <span className={styles.barThreshold} style={{ left: `${(t * 100).toFixed(1)}%` }} title={`threshold ${(t * 100).toFixed(0)}%`} /> : null}
+      <span className={styles.barLabel}>{word}</span>
+      <div
+        className={styles.barTrack}
+        role="img"
+        aria-label={`${word} ${v == null ? 'not measured' : metricPct(m)}${t != null ? `, gate threshold ${(t * 100).toFixed(0)}%` : target != null ? `, reference target ${(target * 100).toFixed(0)}% (not gated)${under ? ', under target' : ''}` : ''}`}
+      >
+        {v != null ? <span className={`${styles.barFill} ${series === 'recall' ? styles.barRecall : ''} ${fail ? styles.barFail : under ? styles.barUnder : ''}`} style={{ width: `${(v * 100).toFixed(1)}%` }} /> : null}
+        {t != null ? <span className={styles.barThreshold} style={{ left: `${(t * 100).toFixed(1)}%` }} title={`gate threshold ${(t * 100).toFixed(0)}%`} /> : null}
+        {t == null && target != null ? <span className={styles.barTarget} style={{ left: `${(target * 100).toFixed(1)}%` }} title={`reference: the pooled gate is ${(target * 100).toFixed(0)}%. Per-type values are reported, not gated.`} /> : null}
       </div>
-      <span className={`${styles.barValue} ${fail ? styles.textFail : ''}`}>
+      <span className={`${styles.barValue} ${fail ? styles.textFail : under ? styles.textUnder : ''}`}>
         {m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit="" variant="split" /> : '—'}
       </span>
     </div>
@@ -43,17 +55,27 @@ function Bar({ m, series }: { m: Metric | null; series: 'precision' | 'recall' }
 }
 
 export function TypeBars({ run }: { run: EvalRun }) {
+  // The gate applies to pooled precision and recall; per type, those levels are only a reference.
+  const pT = metric(run, 'precision')?.threshold ?? 0.85;
+  const rT = metric(run, 'recall')?.threshold ?? 0.8;
+  const under = INSIGHT_TYPES.filter((t) => {
+    const p = metric(run, `precision.${t}`);
+    return p?.value != null && p.threshold == null && p.value < pT;
+  });
   return (
     <div className={styles.typeBars}>
       <div className={styles.legend} aria-hidden="true">
         <span>
-          <i className={styles.legendP} /> Precision (≥ 85%)
+          <i className={styles.legendP} /> Precision
         </span>
         <span>
-          <i className={styles.legendR} /> Recall (≥ 80%)
+          <i className={styles.legendR} /> Recall
         </span>
         <span>
-          <i className={styles.legendT} /> Threshold
+          <i className={styles.legendU} /> Under target
+        </span>
+        <span>
+          <i className={styles.legendTarget} /> Pooled gate level ({(pT * 100).toFixed(0)}% / {(rT * 100).toFixed(0)}%), reference only
         </span>
       </div>
       {INSIGHT_TYPES.map((t) => {
@@ -65,11 +87,17 @@ export function TypeBars({ run }: { run: EvalRun }) {
               <i style={{ background: TYPE_COLOR[t] }} aria-hidden="true" />
               {TYPE_LABEL[t]}
             </span>
-            <Bar m={p} series="precision" />
-            <Bar m={r} series="recall" />
+            <Bar m={p} series="precision" target={pT} />
+            <Bar m={r} series="recall" target={rT} />
           </div>
         );
       })}
+      <p className="sl-caption" data-testid="type-gate-note">
+        The promotion gate checks pooled precision (≥ {(pT * 100).toFixed(0)}%) and recall (≥ {(rT * 100).toFixed(0)}%) across all types, not each type. Per-type numbers are reported against those levels as targets.
+        {under.length
+          ? ` Under target today: ${under.map((t) => TYPE_LABEL[t].toLowerCase()).join(', ')}. Churn risk is always human-reviewed; next is per-type auto-route thresholds and more labelled examples for these types.`
+          : ''}
+      </p>
     </div>
   );
 }
@@ -106,7 +134,7 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
                 const p = passed(m);
                 return (
                   <td key={l.n} className={p === false ? styles.cellFail : p ? styles.cellPass : ''}>
-                    <span className={styles.cellPct}>{m?.value == null ? '—' : `${(m.value * 100).toFixed(1)}%`}</span>
+                    <span className={styles.cellPct}>{m?.value == null ? '—' : metricPct(m)}</span>
                     <span className={styles.cellDen}>{m?.numerator != null ? `${m.numerator} / ${m.denominator}` : 'no data'}</span>
                     <span className={styles.cellBar} aria-hidden="true">
                       <span style={{ width: `${((m?.value ?? 0) * 100).toFixed(1)}%` }} />
@@ -148,7 +176,7 @@ export function MetricCard({ m, title, note }: { m: Metric | null; title: string
     <div className={`${styles.metricCard} ${passed(m) === false ? styles.metricFail : ''}`}>
       <span className="sl-eyebrow">{title}</span>
       <span className={styles.metricTop}>
-        <span className={styles.metricBig}>{m?.value == null ? '—' : `${(m.value * 100).toFixed(m.value === 0 || m.value === 1 ? 0 : 1)}%`}</span>
+        <span className={styles.metricBig}>{m?.value == null ? '—' : metricPct(m, m.value === 0 || m.value === 1 ? 0 : 1)}</span>
         <PassChip m={m} />
       </span>
       <span className="sl-meta">

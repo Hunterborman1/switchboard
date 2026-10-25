@@ -343,7 +343,7 @@ A dedicated gate in this Worker, separate from the shared host password.
 - **Cookie:** `hb_invoca`, an HMAC token.
   - Scoped to `Path=/repo/invoca`.
   - Flags: HttpOnly, Secure, SameSite=Lax.
-  - The shared `hb_auth` cookie also gets you in (owner bypass).
+- **Owner:** `?owner=<OWNER_TOKEN>` (a random secret only the owner holds) sets `hb_invoca_owner`, an HMAC under `OWNER_TOKEN`. *As built:* the shared-host `hb_auth` owner bypass was removed; nothing on the shared host grants access or owner here.
 - **Signed link:** `…/repo/invoca/?k=<payload>.<sig>`.
   - The payload is `{aud:"invoca", exp, jti}`, signed with HMAC-SHA256 using `LINK_SIGNING_SECRET`.
   - The signature is checked with a constant-time comparison.

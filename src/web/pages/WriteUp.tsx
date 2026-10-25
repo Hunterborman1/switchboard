@@ -24,7 +24,7 @@ const STACK: [string, string, string][] = [
   ['Raw evidence', 'R2', 'Object storage'],
   ['LLM', 'Vercel AI SDK', 'Same, direct provider keys (BYOK)'],
   ['Analytics at scale', 'D1 rollups', 'ClickHouse + dbt marts'],
-  ['Ingestion', 'Upload + library', 'dlt (Gong, Zoom, Salesforce, Zendesk)'],
+  ['Ingestion', 'Upload + library', 'dlt from the team’s recorder and CRM (e.g. Gong, Zoom, Salesforce, Zendesk)'],
   ['Long-running stateful work', '—', 'Render (e.g. streaming speech-to-text workers)'],
 ];
 
@@ -143,7 +143,7 @@ export function WriteUp() {
               <li><b>Deliver</b> to Slack, Jira, Linear and a weekly digest, with receipts and retries. When a ticket ships, the CSM is told, with a drafted customer note.</li>
             </ol>
             <p>
-              <b>Proving it.</b> Evals score precision and recall per insight type and per mess level against 48 hand-labelled golden files, from clean notes to raw speech-to-text and forwarded email threads, plus edge cases (injection, PHI-heavy, nothing actionable). A new prompt is promoted only if every slice holds: the cheaper v5 candidate was blocked because precision fell 29 points (88.6% to 59.7%).
+              <b>Proving it.</b> Evals score precision and recall per insight type and per mess level against 48 hand-labelled golden files, from clean notes to raw speech-to-text and forwarded email threads, plus edge cases (injection, PHI-heavy, nothing actionable). A new prompt is promoted only if the gate holds: overall precision and recall, level-5 recall, grounding and every safety check, with no regression over 2 points. The v5 candidate was blocked on precision (88.7% to 59.7%, under the 85% bar and a 29-point regression). Its quotes were real; it over-labelled real sentences as feedback. It was also more expensive and slower, which is reported, not yet gated.
             </p>
             <p>
               <b>Cost and failure.</b> Viewers share a hard $15 live-AI cap enforced by the provider and by an in-app ledger. At the cap, or if a live call fails, runs replay a recorded real execution, labelled on screen, so it never becomes an outage. Schema failures retry once with errors, then fall back to a second model, then land in a dead-letter queue on the Health page.
@@ -173,7 +173,7 @@ export function WriteUp() {
               <b>Additive, not replacement.</b> It takes over the data entry, not the judgement. CSMs keep the relationship and the final call.
             </p>
             <p>
-              <b>Operating it.</b> Signal Loop reports logs, traces, usage and units of work into Agent Ops. That’s where I’d measure weekly active reviewers, capture rate and time to owner, and report hours returned to executives: Σ(baseline minutes per unit − measured human review minutes), with baselines labelled as assumptions until the time study. It has a named owner, a review cadence, and passes the same nine-check agent standard I’d hold every builder’s agent to.
+              <b>Operating it.</b> Signal Loop reports logs, traces, usage and units of work into Agent Ops. That’s where I’d measure weekly active reviewers, capture rate and time to owner, and report hours returned to executives: Σ(baseline minutes per unit − measured human review minutes), with baselines labelled as assumptions until the time study. It has a named owner, a review cadence, and meets the same nine-check agent standard in the build that I’d hold every builder’s agent to; its security review and business-owner sign-off are illustrative until Invoca Security does the real one.
             </p>
             <div className="n-row">
               <Link to="/backup/metrics" className="n-link">Success metrics</Link>

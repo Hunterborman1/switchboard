@@ -1,5 +1,6 @@
 import type { Channel, Gate, InsightStatus, InsightType, ProductArea, Severity, StepKey } from '../../shared/contracts';
 import type { StatusTone } from '../../uis/StatusChip';
+import { durationText, pctText, usdPrecise } from '../../shared/format';
 
 export const TYPE_LABEL: Record<InsightType, string> = {
   feature_request: 'Feature request',
@@ -92,7 +93,7 @@ export const STEP_HELP: Record<StepKey, string> = {
   score: 'Final confidence = model × grounding × type prior; gate at 0.55 / 0.80.',
   theme: 'Embed and join the nearest theme, or start a candidate theme.',
   route: 'Editable rules table (type × area × severity × ARR) picks owner + channel.',
-  deliver: 'Write to Slack / Jira / Linear / digest with receipts and retries.',
+  deliver: 'Write to Slack / Jira / Linear / digest with receipts and retries. Here the destinations are in-app simulators, so delivery itself takes under a millisecond.',
 };
 
 export function money(usd: number | null | undefined, opts: { precise?: boolean; compact?: boolean } = {}): string {
@@ -102,27 +103,19 @@ export function money(usd: number | null | undefined, opts: { precise?: boolean;
     if (Math.abs(usd) >= 1_000) return `$${Math.round(usd / 1_000)}k`;
     return `$${usd.toFixed(0)}`;
   }
-  if (opts.precise || Math.abs(usd) < 1) {
-    if (usd === 0) return '$0.00';
-    if (Math.abs(usd) < 0.01) return `$${usd.toFixed(4)}`;
-    if (Math.abs(usd) < 1) return `$${usd.toFixed(3)}`;
-    return `$${usd.toFixed(2)}`;
-  }
+  if (opts.precise || Math.abs(usd) < 1) return usdPrecise(usd);
   return `$${usd.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 }
 
-export function ms(value: number | null | undefined): string {
-  if (value == null) return '—';
-  if (value < 1000) return `${Math.round(value)} ms`;
-  return `${(value / 1000).toFixed(value < 10_000 ? 2 : 1)} s`;
-}
+/** Durations ("<1 ms" for code-only steps, never "0 ms"). Same formatter as the walkthrough. */
+export const ms = durationText;
 
 export function int(value: number | null | undefined): string {
   return value == null ? '—' : value.toLocaleString('en-US');
 }
 
 export function pct(value: number | null | undefined, digits = 0): string {
-  return value == null ? '—' : `${(value * 100).toFixed(digits)}%`;
+  return pctText(value, digits);
 }
 
 export function bytes(n: number): string {

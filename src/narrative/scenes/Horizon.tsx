@@ -8,12 +8,15 @@ import { Display, Lede, Reveal } from '../components';
 import { useCalm } from '../hooks';
 import { EASE } from '../motion';
 
+// Months 0–3 are the rollout scene's own phases (discovery, shadow, champions, team), so
+// nothing here promises "every call" before shadow mode and champions have earned it.
+const EVERY_CALL = 'Every call, by default';
 const MILES = [
-  { when: '0–3 mo', title: 'Every call, by default', body: 'Ingest straight from the call recorder and CRM. No uploads, no opt-in friction.' },
-  { when: '3–6 mo', title: 'Real-time, in-call capture', body: 'Signals surface while the call is live, so the CSM can confirm one with the customer before hanging up.' },
-  { when: '6–9 mo', title: 'Specialist agents', body: 'An extractor, a critic that challenges each claim, and a router, each with its own evals.' },
-  // body is replaced with the measured per-call cost when the run ledger answers (usePerCallCost)
-  { when: '9–12 mo', title: 'Cheaper, faster models', body: 'Unit cost keeps falling, so scanning every call (not a sample) becomes the obvious economics.' },
+  { when: '0–3 mo', title: 'Earn trust first', body: 'Discovery and the time study, shadow mode where nothing routes, champions, then the team: the rollout you just saw.' },
+  // body is replaced with the measured average per-call cost when the run ledger answers (usePerCallCost)
+  { when: '3–6 mo', title: EVERY_CALL, body: 'After shadow and champions: ingest straight from the recorder and CRM. Unit cost is low enough that scanning every call, not a sample, is the obvious economics.' },
+  { when: '6–9 mo', title: 'In-call capture', body: 'Signals surface while the call is live, so the CSM can confirm one with the customer before hanging up.' },
+  { when: '9–12 mo', title: 'Specialist agents', body: 'An extractor, a critic that challenges each claim, and a router, each with its own evals.' },
   { when: '12–15 mo', title: 'Drafted PRDs and replies', body: 'A theme becomes a first-draft PRD with quotes, and a drafted reply for each account that raised it.' },
   { when: '15–18 mo', title: 'Part of Invoca’s own platform', body: 'Plug into Invoca’s Signal AI and conversation data, so the internal loop and the product share one engine.' },
 ];
@@ -41,8 +44,8 @@ export function Horizon({ beat }: { beat: number }) {
   const calm = useCalm();
   const perCall = usePerCallCost();
   const miles = MILES.map((m) =>
-    m.title === 'Cheaper, faster models' && perCall != null
-      ? { ...m, body: `About $${perCall.toFixed(4)} of AI per call today, measured on this build. As that keeps falling, scanning every call, not a sample, is the obvious economics.` }
+    m.title === EVERY_CALL && perCall != null
+      ? { ...m, body: `After shadow and champions: ingest straight from the recorder and CRM. At about $${perCall.toFixed(4)} of AI per call on average today (measured on this build), scanning every call, not a sample, is the obvious economics.` }
       : m,
   );
   return (

@@ -555,9 +555,20 @@
   .ao-app .ao-kpis5 > [role='group'] { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
-/* Card rows below 900px for wide registry-style tables (Table className="ao-cards"):
+/* Laptop widths: wide registry-style tables drop their secondary columns (Col.wideHide; the
+   agent page has them all) so the table fits without sideways scroll. */
+.ao-app .ao-tab-short { display: none; }
+@media (max-width: 1600px) {
+  .ao-app table.ao-cards .ao-hide-md { display: none; }
+}
+@media (max-width: 520px) {
+  .ao-app .ao-tab-long { display: none; }
+  .ao-app .ao-tab-short { display: inline; }
+}
+
+/* Card rows below 1100px for wide registry-style tables (Table className="ao-cards"):
    each row becomes a card, each cell a label/value line, so nothing scrolls sideways. */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .ao-app table.ao-cards, .ao-app table.ao-cards tbody, .ao-app table.ao-cards tr, .ao-app table.ao-cards td { display: block; width: 100%; }
   .ao-app table.ao-cards thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .ao-app table.ao-cards tr { padding: 12px 14px; border-bottom: 1px solid var(--cn-border-row); }

@@ -150,7 +150,7 @@ export function FilePicker({
   const openFile = useCallback(
     (f: LibraryFile | null) => {
       if (!f) return;
-      emit({ name: 'file.selected', fileId: f.id, tourPath: f.tourPath });
+      emit({ name: 'file.selected', fileId: f.id, tourPath: f.tourPath, format: f.format });
       onOpenFile(f);
       close('open');
     },
@@ -378,6 +378,7 @@ export function FilePicker({
                           <span className={styles.fileMeta}>
                             {query ? `${f.folder} · ` : ''}
                             {KIND_LABEL[f.format] ?? f.format}
+                            {f.edgeKind === 'duplicate' ? <b className={styles.dupTag}> · Re-upload (same call)</b> : null}
                             <span className={styles.metaMobile}> · {bytes(f.sizeBytes)} · {fmtModified(f.modifiedAt)}</span>
                           </span>
                           {suggested ? (
@@ -459,6 +460,7 @@ function Preview({ file, accountName }: { file: LibraryFile | null; accountName:
               </div>
               <div className={styles.previewMeta}>
                 {KIND_LABEL[file.format] ?? file.format} · {bytes(file.sizeBytes)}
+                {file.edgeKind === 'duplicate' ? ' · re-upload of the same call (a duplicate-detection test)' : ''}
               </div>
             </div>
           </div>

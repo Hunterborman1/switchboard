@@ -8,8 +8,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { listen, type SignalEvent } from '../../shared/events';
+import { explainSpanErrors } from '../../shared/format';
 import type { Budget, RunDetail, Theme } from '../../shared/contracts';
-import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type OverviewReport, type AgentRecord, type AgentImpact, type UsageReport, type LogEntry } from '../../shared/platform-contracts';
+import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type OverviewReport, type AgentRecord, type AgentImpact, type UsageReport, type LogEntry, type Span } from '../../shared/platform-contracts';
 import { STEPS, STEP_BY_ID, FIRST_STEP, MAIN_ORDER } from '../script/steps';
 import { tourApi } from '../api';
 import { isSpotlitTheme } from '../script/copy';
@@ -265,6 +266,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
             case 'file.selected': {
               const p: TourPath = isPath(e.tourPath) ? e.tourPath : 'main';
               c.fileId = e.fileId;
+              c.fileFormat = e.format ?? null;
               c.path = p;
               if (!c.explored.includes(p)) c.explored = [...c.explored, p];
               break;
@@ -427,7 +429,16 @@ export function TourProvider({ children }: { children: ReactNode }) {
         : platformGet<{ rows: LogEntry[] }>(`/logs?agentId=${SIGNAL_LOOP_AGENT_ID}`).then((v) => {
             out.traceId = v.rows.find((r) => r.runId)?.traceId ?? v.rows[0]?.traceId ?? null;
           }),
-    ]).then(() => setOps({ ...out }));
+    ])
+      // ch8.trace explains any red spans from the same trace the page shows.
+      .then(() =>
+        out.traceId
+          ? platformGet<{ spans: Span[] }>(`/traces/${encodeURIComponent(out.traceId)}`)
+              .then((t) => (out.traceErrors = explainSpanErrors(t.spans)))
+              .catch(() => undefined)
+          : undefined,
+      )
+      .then(() => setOps({ ...out }));
   }, [step.chapter, state.status, ops, state.ctx.runId]);
 
   // ------------------------------------------------------------------ onEnter
