@@ -1,0 +1,267 @@
+[
+  {
+    "id": "rule_churn_exec",
+    "workspaceId": "seed",
+    "priority": 10,
+    "name": "Churn risk on $250k+ accounts → CS leadership",
+    "match": {
+      "types": [
+        "churn_risk"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": [
+        "250k-1m",
+        ">1m"
+      ]
+    },
+    "ownerId": "ppl_renee",
+    "channel": "slack",
+    "destination": "#cs-leadership",
+    "enabled": true
+  },
+  {
+    "id": "rule_churn_digest",
+    "workspaceId": "seed",
+    "priority": 15,
+    "name": "Other churn risk → VP Product digest",
+    "match": {
+      "types": [
+        "churn_risk"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_elena",
+    "channel": "email_digest",
+    "destination": "VP Product weekly digest",
+    "enabled": true
+  },
+  {
+    "id": "rule_pricing",
+    "workspaceId": "seed",
+    "priority": 20,
+    "name": "Pricing objections → Pricing & Packaging",
+    "match": {
+      "types": [
+        "pricing_objection"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_kate",
+    "channel": "slack",
+    "destination": "#pricing-feedback",
+    "enabled": true
+  },
+  {
+    "id": "rule_competitor",
+    "workspaceId": "seed",
+    "priority": 30,
+    "name": "Competitor mentions → Competitive Intel",
+    "match": {
+      "types": [
+        "competitor_mention"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_jordan",
+    "channel": "slack",
+    "destination": "#compete",
+    "enabled": true
+  },
+  {
+    "id": "rule_bug_critical",
+    "workspaceId": "seed",
+    "priority": 40,
+    "name": "Critical bugs → Support escalations",
+    "match": {
+      "types": [
+        "bug"
+      ],
+      "areas": null,
+      "minSeverity": "critical",
+      "arrBands": null
+    },
+    "ownerId": "ppl_derek",
+    "channel": "jira",
+    "destination": "ESC",
+    "enabled": true
+  },
+  {
+    "id": "rule_bug_integrations",
+    "workspaceId": "seed",
+    "priority": 50,
+    "name": "Integration bugs → Integrations engineering",
+    "match": {
+      "types": [
+        "bug"
+      ],
+      "areas": [
+        "integrations"
+      ],
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_mei",
+    "channel": "jira",
+    "destination": "INTG",
+    "enabled": true
+  },
+  {
+    "id": "rule_bug_signal_ai",
+    "workspaceId": "seed",
+    "priority": 51,
+    "name": "Signal AI bugs → Signal AI team",
+    "match": {
+      "types": [
+        "bug"
+      ],
+      "areas": [
+        "signal_ai"
+      ],
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_omar",
+    "channel": "jira",
+    "destination": "SAI",
+    "enabled": true
+  },
+  {
+    "id": "rule_bug_presense",
+    "workspaceId": "seed",
+    "priority": 52,
+    "name": "PreSense bugs → PreSense team",
+    "match": {
+      "types": [
+        "bug"
+      ],
+      "areas": [
+        "presense"
+      ],
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_lena",
+    "channel": "jira",
+    "destination": "PRES",
+    "enabled": true
+  },
+  {
+    "id": "rule_bug_other",
+    "workspaceId": "seed",
+    "priority": 59,
+    "name": "All other bugs → Platform",
+    "match": {
+      "types": [
+        "bug"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_alex",
+    "channel": "jira",
+    "destination": "PLAT",
+    "enabled": true
+  },
+  {
+    "id": "rule_feature_integrations",
+    "workspaceId": "seed",
+    "priority": 60,
+    "name": "Integration requests → Integrations PM",
+    "match": {
+      "types": [
+        "feature_request"
+      ],
+      "areas": [
+        "integrations"
+      ],
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_sam",
+    "channel": "linear",
+    "destination": "Integrations",
+    "enabled": true
+  },
+  {
+    "id": "rule_feature_ai",
+    "workspaceId": "seed",
+    "priority": 61,
+    "name": "AI requests (Signal AI, QM, Agents) → Signal AI PM",
+    "match": {
+      "types": [
+        "feature_request"
+      ],
+      "areas": [
+        "signal_ai",
+        "quality_management",
+        "ai_agents"
+      ],
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_omar",
+    "channel": "linear",
+    "destination": "Conversation AI",
+    "enabled": true
+  },
+  {
+    "id": "rule_feature_core",
+    "workspaceId": "seed",
+    "priority": 62,
+    "name": "Other feature requests → Core product",
+    "match": {
+      "types": [
+        "feature_request"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_nina",
+    "channel": "linear",
+    "destination": "Core Product",
+    "enabled": true
+  },
+  {
+    "id": "rule_praise",
+    "workspaceId": "seed",
+    "priority": 70,
+    "name": "Praise → weekly wins digest",
+    "match": {
+      "types": [
+        "praise"
+      ],
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_elena",
+    "channel": "email_digest",
+    "destination": "Weekly wins digest",
+    "enabled": true
+  },
+  {
+    "id": "rule_fallback",
+    "workspaceId": "seed",
+    "priority": 999,
+    "name": "Fallback → Product Ops triage",
+    "match": {
+      "types": null,
+      "areas": null,
+      "minSeverity": null,
+      "arrBands": null
+    },
+    "ownerId": "ppl_jamie",
+    "channel": "triage",
+    "destination": "Product Ops triage",
+    "enabled": true
+  }
+]

@@ -1,0 +1,212 @@
+[
+  {
+    "id": "ppl_marcus",
+    "name": "Marcus Bell",
+    "role": "csm",
+    "title": "Senior Customer Success Manager",
+    "productArea": null,
+    "slackHandle": "@marcus.bell",
+    "email": "marcus.bell@invoca.example",
+    "initials": "MB"
+  },
+  {
+    "id": "ppl_priya",
+    "name": "Priya Raman",
+    "role": "csm",
+    "title": "Customer Success Manager, Healthcare",
+    "productArea": null,
+    "slackHandle": "@priya.raman",
+    "email": "priya.raman@invoca.example",
+    "initials": "PR"
+  },
+  {
+    "id": "ppl_diego",
+    "name": "Diego Alvarez",
+    "role": "csm",
+    "title": "Customer Success Manager",
+    "productArea": null,
+    "slackHandle": "@diego.alvarez",
+    "email": "diego.alvarez@invoca.example",
+    "initials": "DA"
+  },
+  {
+    "id": "ppl_rachel",
+    "name": "Rachel Okafor",
+    "role": "csm",
+    "title": "Principal Customer Success Manager",
+    "productArea": null,
+    "slackHandle": "@rachel.okafor",
+    "email": "rachel.okafor@invoca.example",
+    "initials": "RO"
+  },
+  {
+    "id": "ppl_tom",
+    "name": "Tom Lindqvist",
+    "role": "csm",
+    "title": "Senior Customer Success Manager",
+    "productArea": null,
+    "slackHandle": "@tom.lindqvist",
+    "email": "tom.lindqvist@invoca.example",
+    "initials": "TL"
+  },
+  {
+    "id": "ppl_aisha",
+    "name": "Aisha Coleman",
+    "role": "csm",
+    "title": "Customer Success Manager, Financial Services",
+    "productArea": null,
+    "slackHandle": "@aisha.coleman",
+    "email": "aisha.coleman@invoca.example",
+    "initials": "AC"
+  },
+  {
+    "id": "ppl_renee",
+    "name": "Renee Adams",
+    "role": "csm",
+    "title": "VP, Customer Success",
+    "productArea": null,
+    "slackHandle": "@renee.adams",
+    "email": "renee.adams@invoca.example",
+    "initials": "RA"
+  },
+  {
+    "id": "ppl_nina",
+    "name": "Nina Patel",
+    "role": "pm",
+    "title": "Senior PM, Call Tracking & Attribution",
+    "productArea": "call_tracking",
+    "slackHandle": "@nina.patel",
+    "email": "nina.patel@invoca.example",
+    "initials": "NP"
+  },
+  {
+    "id": "ppl_omar",
+    "name": "Omar Haddad",
+    "role": "pm",
+    "title": "Group PM, Signal AI",
+    "productArea": "signal_ai",
+    "slackHandle": "@omar.haddad",
+    "email": "omar.haddad@invoca.example",
+    "initials": "OH"
+  },
+  {
+    "id": "ppl_lena",
+    "name": "Lena Brooks",
+    "role": "pm",
+    "title": "PM, PreSense",
+    "productArea": "presense",
+    "slackHandle": "@lena.brooks",
+    "email": "lena.brooks@invoca.example",
+    "initials": "LB"
+  },
+  {
+    "id": "ppl_sam",
+    "name": "Sam Whitaker",
+    "role": "pm",
+    "title": "Senior PM, Integrations",
+    "productArea": "integrations",
+    "slackHandle": "@sam.whitaker",
+    "email": "sam.whitaker@invoca.example",
+    "initials": "SW"
+  },
+  {
+    "id": "ppl_grace",
+    "name": "Grace Liu",
+    "role": "pm",
+    "title": "PM, AI-Powered Quality Management",
+    "productArea": "quality_management",
+    "slackHandle": "@grace.liu",
+    "email": "grace.liu@invoca.example",
+    "initials": "GL"
+  },
+  {
+    "id": "ppl_ben",
+    "name": "Ben Adeyemi",
+    "role": "pm",
+    "title": "PM, AI Agents",
+    "productArea": "ai_agents",
+    "slackHandle": "@ben.adeyemi",
+    "email": "ben.adeyemi@invoca.example",
+    "initials": "BA"
+  },
+  {
+    "id": "ppl_alex",
+    "name": "Alex Romero",
+    "role": "pm",
+    "title": "PM, Platform & Reporting",
+    "productArea": "platform",
+    "slackHandle": "@alex.romero",
+    "email": "alex.romero@invoca.example",
+    "initials": "AR"
+  },
+  {
+    "id": "ppl_elena",
+    "name": "Elena Vasquez",
+    "role": "vp_product",
+    "title": "VP, Product",
+    "productArea": null,
+    "slackHandle": "@elena.vasquez",
+    "email": "elena.vasquez@invoca.example",
+    "initials": "EV"
+  },
+  {
+    "id": "ppl_jordan",
+    "name": "Jordan Reyes",
+    "role": "competitive_intel",
+    "title": "Competitive Intelligence Lead",
+    "productArea": null,
+    "slackHandle": "@jordan.reyes",
+    "email": "jordan.reyes@invoca.example",
+    "initials": "JR"
+  },
+  {
+    "id": "ppl_kate",
+    "name": "Kate Morrison",
+    "role": "pricing",
+    "title": "Director, Pricing & Packaging",
+    "productArea": "billing_pricing",
+    "slackHandle": "@kate.morrison",
+    "email": "kate.morrison@invoca.example",
+    "initials": "KM"
+  },
+  {
+    "id": "ppl_derek",
+    "name": "Derek Shaw",
+    "role": "support_escalation",
+    "title": "Support Escalations Lead",
+    "productArea": null,
+    "slackHandle": "@derek.shaw",
+    "email": "derek.shaw@invoca.example",
+    "initials": "DS"
+  },
+  {
+    "id": "ppl_mei",
+    "name": "Mei Tanaka",
+    "role": "eng_manager",
+    "title": "Engineering Manager, Integrations",
+    "productArea": "integrations",
+    "slackHandle": "@mei.tanaka",
+    "email": "mei.tanaka@invoca.example",
+    "initials": "MT"
+  },
+  {
+    "id": "ppl_chris",
+    "name": "Chris Donovan",
+    "role": "sales_lead",
+    "title": "RVP, Enterprise Sales",
+    "productArea": null,
+    "slackHandle": "@chris.donovan",
+    "email": "chris.donovan@invoca.example",
+    "initials": "CD"
+  },
+  {
+    "id": "ppl_jamie",
+    "name": "Jamie Fowler",
+    "role": "triage",
+    "title": "Product Operations (feedback triage)",
+    "productArea": null,
+    "slackHandle": "@jamie.fowler",
+    "email": "jamie.fowler@invoca.example",
+    "initials": "JF"
+  }
+]

@@ -60,6 +60,24 @@ export const ANCHORS = {
   'evals.promote': 'Promote button',
   'evals.gate': 'Promotion gate result',
   'health.budget': 'Budget gauge on Health',
+  // signal loop → platform
+  'nav.agentops': 'Link from Signal Loop into Agent Ops (header or sidebar)',
+  // ch8 · operate it (Agent Ops platform, /ops)
+  'ops.overview.kpis': 'Agent Ops overview KPI strip (hours returned, value, AI cost, ROI, active users)',
+  'ops.overview.chart': 'Hours returned per week, stacked by agent',
+  'ops.overview.attention': 'Needs-attention list (overdue reviews, SLO breaches, standard gaps)',
+  'ops.registry': 'Agent registry table',
+  'ops.registry.signal': 'The Signal Loop row in the registry',
+  'ops.agent.standard': 'Agent standard checklist on the agent page',
+  'ops.agent.review': 'Owner + review cadence block on the agent page',
+  'ops.usage.live': 'Live viewers panel ("that\'s you")',
+  'ops.usage.heatmap': 'Usage heatmap by weekday × hour',
+  'ops.logs': 'Log explorer table',
+  'ops.logs.trace': 'Trace filter / "your last run" quick filter',
+  'ops.trace.waterfall': 'Trace span waterfall',
+  'ops.slos': 'SLO cards',
+  'ops.alerts': 'Alerts list',
+  'ops.cost': 'Cost per agent / per unit panel',
 } as const;
 
 export type AnchorId = keyof typeof ANCHORS;

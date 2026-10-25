@@ -1,0 +1,193 @@
+{
+  "insightTypes": [
+    {
+      "id": "feature_request",
+      "label": "Feature request",
+      "definition": "The customer asks for a capability Invoca does not have today, or for an existing one to work differently.",
+      "examples": [
+        "\"Can we build our own QM scorecard criteria for disclosure language?\"",
+        "\"We need to push dashboards into Looker without a CSV step.\""
+      ],
+      "counterExamples": [
+        "Something that should already work but is broken is a bug.",
+        "A request for training or a how-to answer is not a feature request."
+      ]
+    },
+    {
+      "id": "bug",
+      "label": "Bug / defect",
+      "definition": "An Invoca product or integration behaves incorrectly, loses data, is late, or contradicts its documented behaviour.",
+      "examples": [
+        "\"Offline conversions land in Google Ads two to three days late.\"",
+        "\"PreSense data disappears when Genesys transfers the call.\""
+      ],
+      "counterExamples": [
+        "A complaint about a rep, a slow support reply or a missed meeting is not a product bug.",
+        "Problems in the customer's own systems with no Invoca component are not bugs."
+      ]
+    },
+    {
+      "id": "pricing_objection",
+      "label": "Pricing objection",
+      "definition": "Pushback on price, packaging, add-ons, contract terms or perceived value for money.",
+      "examples": [
+        "\"Finance wants to know why PreSense is an add-on. It feels like paying twice.\""
+      ],
+      "counterExamples": [
+        "A competitor quoting a lower price is a competitor mention; log both only if the customer also objects to Invoca's price.",
+        "A billing error (wrong invoice) is a bug in billing, not an objection."
+      ]
+    },
+    {
+      "id": "competitor_mention",
+      "label": "Competitor mention",
+      "definition": "A named competitor is being evaluated, is pitching, or is used as a comparison (CallRail, Marchex, CallTrackingMetrics, WhatConverts, Gong).",
+      "examples": [
+        "\"CallRail is telling Jeff they sync conversions the same day.\""
+      ],
+      "counterExamples": [
+        "Mentioning a partner Invoca integrates with (Salesforce, Genesys, Five9) is not a competitor mention."
+      ]
+    },
+    {
+      "id": "churn_risk",
+      "label": "Churn risk",
+      "definition": "Signals that the customer may not renew, may reduce scope, or is actively considering leaving. Hedged threats count.",
+      "examples": [
+        "\"If this isn't fixed by renewal we'll have to look around.\""
+      ],
+      "counterExamples": [
+        "Routine budget planning with no threat to the relationship is not churn risk.",
+        "Frustration about one bug, with no link to renewal or scope, is the bug alone."
+      ]
+    },
+    {
+      "id": "praise",
+      "label": "Praise",
+      "definition": "Specific positive feedback about an Invoca capability or outcome that a product team would want to hear.",
+      "examples": [
+        "\"Our dispatchers love the AI call summaries.\""
+      ],
+      "counterExamples": [
+        "Politeness (\"thanks, great call\") is not praise.",
+        "Praise for the CSM personally, with no product angle, is not routed."
+      ]
+    }
+  ],
+  "productAreas": [
+    {
+      "id": "call_tracking",
+      "label": "Call Tracking & Attribution",
+      "definition": "Tracking numbers, dynamic number insertion (DNI), the Invoca tag, call flows, campaign and keyword attribution, Advanced IVR.",
+      "examples": [
+        "DNI numbers not swapping on a single-page checkout.",
+        "Calls attributed to the wrong campaign."
+      ],
+      "counterExamples": [
+        "Conversions arriving late in Google Ads are integrations, not attribution."
+      ]
+    },
+    {
+      "id": "signal_ai",
+      "label": "Signal AI",
+      "definition": "Signal AI Studio and Discovery: call classification, custom signals, spam detection, transcription, summaries, redaction.",
+      "examples": [
+        "After-hours callers tagged as spam.",
+        "Transcripts not redacting a spoken date of birth."
+      ],
+      "counterExamples": [
+        "Scorecards for agent coaching belong to Quality Management."
+      ]
+    },
+    {
+      "id": "presense",
+      "label": "PreSense",
+      "definition": "Passing a caller's digital journey to contact-center agents and routing before the call is answered.",
+      "examples": [
+        "Screen pop arrives blank after a Genesys transfer."
+      ],
+      "counterExamples": [
+        "The Genesys connector failing for all call data is integrations."
+      ]
+    },
+    {
+      "id": "integrations",
+      "label": "Integrations",
+      "definition": "Data flowing between Invoca and partner platforms: Google Ads, Meta, Adobe Analytics, Marketo, Salesforce, Five9, Genesys, NICE, Amazon Connect.",
+      "examples": [
+        "Offline conversions late to Google Ads.",
+        "Salesforce field mapping breaking on custom objects."
+      ],
+      "counterExamples": [
+        "A missing PreSense field on transfer is PreSense, even when the platform is Genesys."
+      ]
+    },
+    {
+      "id": "quality_management",
+      "label": "Quality Management",
+      "definition": "AI-Powered Quality Management: automated scorecards, agent evaluation, coaching and compliance checks on 100% of calls.",
+      "examples": [
+        "Custom scorecard criteria for required disclosures."
+      ],
+      "counterExamples": [
+        "A spam label on a call is Signal AI."
+      ]
+    },
+    {
+      "id": "ai_agents",
+      "label": "AI Agents",
+      "definition": "AI Voice Agent and AI Messaging Agent: automated answering, intake, SMS follow-up and handoff to live agents.",
+      "examples": [
+        "Voice Agent transfers to a live agent without the caller's context."
+      ],
+      "counterExamples": [
+        "Human agents' call handling quality is Quality Management."
+      ]
+    },
+    {
+      "id": "billing_pricing",
+      "label": "Billing & Pricing",
+      "definition": "Contracts, packaging, add-ons, seat and usage pricing, invoices and renewal terms.",
+      "examples": [
+        "PreSense sold as an add-on at renewal.",
+        "Per-rooftop pricing versus a competitor."
+      ],
+      "counterExamples": [
+        "A reporting export limitation is platform even when raised in a renewal call."
+      ]
+    },
+    {
+      "id": "platform",
+      "label": "Platform & Reporting",
+      "definition": "Reporting, dashboards, exports, UI, permissions, user management and anything not covered elsewhere.",
+      "examples": [
+        "Exporting dashboards to Looker or Google Sheets on a schedule."
+      ],
+      "counterExamples": [
+        "Problems inside a partner integration belong to integrations."
+      ]
+    }
+  ],
+  "severities": [
+    {
+      "id": "low",
+      "label": "Low",
+      "definition": "Nice to have, cosmetic, or a single user's preference. No revenue impact."
+    },
+    {
+      "id": "medium",
+      "label": "Medium",
+      "definition": "A real workflow cost or a recurring annoyance; a workaround exists."
+    },
+    {
+      "id": "high",
+      "label": "High",
+      "definition": "Material business impact (spend, bidding, compliance, renewal) or no workaround."
+    },
+    {
+      "id": "critical",
+      "label": "Critical",
+      "definition": "Outage, data loss, a compliance exposure in progress, or an immediate threat to the account."
+    }
+  ]
+}

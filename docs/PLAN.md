@@ -425,3 +425,24 @@ docs/          PLAN.md, ARCHITECTURE.md, speaker-notes.md, RUNBOOK.md, data-revi
 2. **repos.hunterborman.com landing page:** list it there? (Recommendation: no, keep it unlisted.)
 3. **The name "Signal Loop":** keep it?
 4. **Presentation direction:** I recommend the editorial dark narrative layer (§2). The alternative is light, paper-style editorial on Invoca's sand tones.
+
+---
+
+## v3 addendum: Agent Ops, the platform this agent lives in
+
+The role is as much about *operating* agents as building them. That means logging and observability, maintenance after launch, knowing when and how often people actually use an agent, and showing how much time and money it returns. So the build now has two products:
+
+- **Agent Ops** (`/ops`) is an internal AI-operations platform for executives and the AI team. It has:
+  - **Overview:** the executive view, covering hours returned, value against AI cost, ROI and adoption across all agents, plus a list of what needs attention.
+  - **Registry:** every agent has a named owner, purpose, review cadence and data access.
+  - **The agent standard:** 9 checks plus a review calendar.
+  - **Usage:** who uses each agent, when and how often, with retention and live viewers.
+  - **Logs and traces:** structured logs, plus a span waterfall per run.
+  - **Reliability:** SLOs, error budgets and alerts.
+  - **Cost.**
+
+  It has its own D1 database (`invoca-agent-ops`). It uses HB Systems in Invoca colours, with a deep-navy rail so it reads as a separate product from Signal Loop.
+- **Signal Loop** is one registered agent. It reports real logs, spans, usage events and work units through `src/worker/platform/sdk.ts`. The other 7–9 agents (Claude, Gumloop and Databricks builds) are simulated, and every panel is labelled **Live** or **Simulated**.
+- **The walkthrough** gains **Chapter 8, "Operate it"** (~2:30): the executive overview, Signal Loop's registry record and standard, the live usage panel ("that's you"), logs filtered to the viewer's own run, the trace waterfall, and SLOs and alerts.
+  The other parts are trimmed to keep the total at about 25 minutes. The rollout scene now covers adoption measurement, reporting hours returned, review cadence and builder enablement.
+- **The impact maths is honest:** hours returned = Σ(registered baseline minutes per unit − measured human review minutes). The baselines are labelled assumptions, to be checked against a 2-week time study.

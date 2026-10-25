@@ -1,0 +1,283 @@
+[
+  {
+    "id": "acct_brightline",
+    "name": "Brightline Home Services",
+    "vertical": "home_services",
+    "tier": "Enterprise",
+    "arrUsd": 310000,
+    "arrBand": "250k-1m",
+    "seats": 85,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations"
+    ],
+    "renewalDate": "2027-01-15",
+    "health": "watch",
+    "csmId": "ppl_marcus",
+    "hq": "Charlotte, NC",
+    "notes": "HVAC, plumbing and electrical across 14 branches; bids on Google Ads Smart Bidding from Invoca offline conversions; PreSense added mid-term."
+  },
+  {
+    "id": "acct_meridian",
+    "name": "Meridian Health Partners",
+    "vertical": "healthcare",
+    "tier": "Elite",
+    "arrUsd": 1240000,
+    "arrBand": ">1m",
+    "seats": 340,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations",
+      "quality_management"
+    ],
+    "renewalDate": "2027-06-30",
+    "health": "healthy",
+    "csmId": "ppl_priya",
+    "hq": "Nashville, TN",
+    "notes": "38-clinic health system; central scheduling on Genesys; BAA in place and redaction is a standing agenda item."
+  },
+  {
+    "id": "acct_atlas",
+    "name": "Atlas Auto Group",
+    "vertical": "automotive",
+    "tier": "Enterprise",
+    "arrUsd": 455000,
+    "arrBand": "250k-1m",
+    "seats": 160,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations"
+    ],
+    "renewalDate": "2026-12-01",
+    "health": "at_risk",
+    "csmId": "ppl_diego",
+    "hq": "Phoenix, AZ",
+    "notes": "22 rooftops across AZ and NV; Marchex is quoting a lower per-rooftop price ahead of the December renewal."
+  },
+  {
+    "id": "acct_keystone",
+    "name": "Keystone Mutual",
+    "vertical": "insurance",
+    "tier": "Elite",
+    "arrUsd": 1580000,
+    "arrBand": ">1m",
+    "seats": 420,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations",
+      "quality_management",
+      "ai_agents"
+    ],
+    "renewalDate": "2027-09-30",
+    "health": "healthy",
+    "csmId": "ppl_rachel",
+    "hq": "Columbus, OH",
+    "notes": "Auto and home carrier; Genesys contact center with 300+ licensed agents; piloting AI Voice Agent on after-hours claims intake."
+  },
+  {
+    "id": "acct_northwind",
+    "name": "Northwind Telecom",
+    "vertical": "telecom",
+    "tier": "Elite",
+    "arrUsd": 920000,
+    "arrBand": "250k-1m",
+    "seats": 280,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations",
+      "ai_agents"
+    ],
+    "renewalDate": "2027-03-31",
+    "health": "watch",
+    "csmId": "ppl_tom",
+    "hq": "Denver, CO",
+    "notes": "Regional fiber and wireless provider; PreSense screen pops into Genesys for sales; transfer issues raised twice this quarter."
+  },
+  {
+    "id": "acct_harbor",
+    "name": "Harbor Federal Credit Union",
+    "vertical": "financial_services",
+    "tier": "Enterprise",
+    "arrUsd": 142000,
+    "arrBand": "50k-250k",
+    "seats": 45,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations",
+      "quality_management"
+    ],
+    "renewalDate": "2027-02-28",
+    "health": "healthy",
+    "csmId": "ppl_aisha",
+    "hq": "Tacoma, WA",
+    "notes": "210k members; Salesforce Financial Services Cloud; compliance team reviews every QM scorecard change."
+  },
+  {
+    "id": "acct_sunpeak",
+    "name": "SunPeak Solar",
+    "vertical": "solar",
+    "tier": "Enterprise",
+    "arrUsd": 268000,
+    "arrBand": "250k-1m",
+    "seats": 70,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations",
+      "ai_agents"
+    ],
+    "renewalDate": "2026-11-30",
+    "health": "watch",
+    "csmId": "ppl_diego",
+    "hq": "Austin, TX",
+    "notes": "Residential solar installer in TX, AZ and FL; bilingual sales floor; heavy Google Ads and Meta lead gen."
+  },
+  {
+    "id": "acct_cedarridge",
+    "name": "Cedar Ridge Dental Group",
+    "vertical": "healthcare",
+    "tier": "Pro",
+    "arrUsd": 64000,
+    "arrBand": "50k-250k",
+    "seats": 22,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations"
+    ],
+    "renewalDate": "2027-04-15",
+    "health": "healthy",
+    "csmId": "ppl_priya",
+    "hq": "Boise, ID",
+    "notes": "19 dental practices; new-patient calls drive Google Ads bidding; practice managers read call summaries daily."
+  },
+  {
+    "id": "acct_evergreen",
+    "name": "Evergreen Pest & Lawn",
+    "vertical": "home_services",
+    "tier": "Pro",
+    "arrUsd": 38000,
+    "arrBand": "<50k",
+    "seats": 12,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations"
+    ],
+    "renewalDate": "2027-05-01",
+    "health": "healthy",
+    "csmId": "ppl_marcus",
+    "hq": "Raleigh, NC",
+    "notes": "Owner-operated, 6 locations; one marketing manager runs everything; price-sensitive and gets CallRail outreach."
+  },
+  {
+    "id": "acct_coastal",
+    "name": "Coastal Comfort Mattress",
+    "vertical": "retail",
+    "tier": "Enterprise",
+    "arrUsd": 176000,
+    "arrBand": "50k-250k",
+    "seats": 55,
+    "products": [
+      "call_tracking",
+      "presense",
+      "integrations",
+      "ai_agents"
+    ],
+    "renewalDate": "2027-08-15",
+    "health": "healthy",
+    "csmId": "ppl_tom",
+    "hq": "Tampa, FL",
+    "notes": "64 showrooms in the Southeast; Amazon Connect call center; launched AI Voice Agent for store-hours and order-status calls."
+  },
+  {
+    "id": "acct_ridgeway",
+    "name": "Ridgeway Motor Group",
+    "vertical": "automotive",
+    "tier": "Pro",
+    "arrUsd": 92000,
+    "arrBand": "50k-250k",
+    "seats": 30,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "integrations"
+    ],
+    "renewalDate": "2027-01-31",
+    "health": "at_risk",
+    "csmId": "ppl_diego",
+    "hq": "Tulsa, OK",
+    "notes": "Seven-rooftop dealer group; new GM since August is comparing Marchex; BDC relies on Google Ads call conversions."
+  },
+  {
+    "id": "acct_bluewater",
+    "name": "Bluewater Insurance Partners",
+    "vertical": "insurance",
+    "tier": "Enterprise",
+    "arrUsd": 395000,
+    "arrBand": "250k-1m",
+    "seats": 130,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations",
+      "quality_management"
+    ],
+    "renewalDate": "2027-07-31",
+    "health": "watch",
+    "csmId": "ppl_rachel",
+    "hq": "Hartford, CT",
+    "notes": "Independent agency network selling Medicare Advantage and P&C; Genesys plus Salesforce; QM rollout behind plan."
+  },
+  {
+    "id": "acct_prairielink",
+    "name": "Prairie Link Broadband",
+    "vertical": "telecom",
+    "tier": "Enterprise",
+    "arrUsd": 214000,
+    "arrBand": "50k-250k",
+    "seats": 60,
+    "products": [
+      "call_tracking",
+      "integrations",
+      "ai_agents"
+    ],
+    "renewalDate": "2027-10-31",
+    "health": "healthy",
+    "csmId": "ppl_tom",
+    "hq": "Sioux Falls, SD",
+    "notes": "Rural fiber provider in five states; rebuilt its order flow as a single-page app in September; AI Voice Agent handles outage calls."
+  },
+  {
+    "id": "acct_frontier",
+    "name": "Frontier Home Lending",
+    "vertical": "financial_services",
+    "tier": "Elite",
+    "arrUsd": 735000,
+    "arrBand": "250k-1m",
+    "seats": 210,
+    "products": [
+      "call_tracking",
+      "signal_ai",
+      "presense",
+      "integrations",
+      "quality_management"
+    ],
+    "renewalDate": "2027-04-30",
+    "health": "healthy",
+    "csmId": "ppl_aisha",
+    "hq": "Dallas, TX",
+    "notes": "Mortgage lender with a Five9 call center of 180 loan officers; Salesforce custom objects for loan applications."
+  }
+]
