@@ -1,0 +1,41 @@
+Harbor Federal Credit Union / Invoca | check-in | Mon, Sep 28, 2026
+
+[00:00:03] Aisha Coleman: Morning, Denise. How's the week going up there in Tacoma?
+[00:00:07] Denise Morales: Morning, Aisha. Rainy, but that's September for you. Things are okay. Busy.
+[00:00:13] Aisha Coleman: Same here. I wanted to check in on QM since we're a few weeks past the scorecard rollout. How's it landing with your team?
+[00:00:24] Denise Morales: It's landing. The compliance reviewers like having all the calls scored instead of the old sampling. That part is working the way we hoped.
+[00:00:36] Aisha Coleman: Good to hear. How many calls are you scoring in a typical week now?
+[00:00:43] Denise Morales: We're averaging around 4,800 member calls a week across the branch and contact center lines. QM is covering all of them, which is new for us.
+[00:00:53] Aisha Coleman: And the reviewers, is it still the same three people working the queue?
+[00:00:58] Denise Morales: Three of us. Well, two plus me. Renee is out on leave until January, so it's been tighter than planned.
+[00:01:06] Aisha Coleman: Got it. That's a lot of queue for two people. Any backlog building up?
+[00:01:12] Denise Morales: Some, but we're keeping it to about a week behind. We catch up on Fridays. It's manageable, just not comfortable.
+[00:01:21] Aisha Coleman: Okay. Let me know if it gets past two weeks and we can talk about how the queue is set up.
+[00:01:30] Denise Morales: Will do. Actually, while I have you, there's something I've been meaning to raise.
+[00:01:36] Aisha Coleman: Go ahead.
+[00:01:38] Denise Morales: It's about the scorecard criteria. The templates cover the obvious stuff, greeting, verification, resolution. But we have a state-specific disclosure for HELOC calls that we're required to read, and there's no way for me to score that.
+[00:01:54] Aisha Coleman: So you're scoring the calls but not that particular behavior.
+[00:01:59] Denise Morales: Right. Our reviewers have to pull the call, listen for the disclosure, and score it outside the system in a spreadsheet. It defeats the point of having it all in one place.
+[00:02:12] Aisha Coleman: How many HELOC calls a week are we talking?
+[00:02:16] Denise Morales: Maybe 300. So it's not the volume that's the problem, it's that the compliance record is split. Our examiners ask for the full picture and I'm handing them two things.
+[00:02:29] Aisha Coleman: And it's the same disclosure every time, or does it vary by call type?
+[00:02:35] Denise Morales: Same language, but only required on certain call types. And I'd want it weighted heavier than the standard items, because if it's missed that's a finding, not a coaching note.
+[00:02:45] Aisha Coleman: Understood. So what you'd want is to define your own criteria, score by call type, and set your own weighting.
+[00:02:54] Denise Morales: Exactly. We've been asking for it since spring, honestly.
+[00:02:59] Aisha Coleman: I didn't realize it was that far back. Let me pull the history and take this to the QM product team. I don't want to promise a timeline, but I'll make sure it's in front of them with your numbers attached.
+[00:03:14] Denise Morales: That's all I'm asking. If they need someone to walk through the HELOC requirement, I can do that.
+[00:03:22] Aisha Coleman: I'll set that up if it helps. Anything else on the QM side? Transcripts, summaries, all behaving?
+[00:03:30] Denise Morales: Those are fine. No complaints there.
+[00:03:33] Aisha Coleman: Good. Let's talk about the rest. Call volume through Invoca overall, still tracking where you expected?
+[00:03:40] Denise Morales: Slightly up. We did about 61,000 tracked calls in August, which is a bit ahead of July.
+[00:03:47] Aisha Coleman: Nice. And the Google Ads conversions are still flowing into the campaigns?
+[00:03:52] Denise Morales: They are. Marketing hasn't flagged anything. The Salesforce side is quiet too, the call records are landing where they should.
+[00:03:59] Aisha Coleman: Great. Anything changing on your end heading into Q4? New campaigns, new lines?
+[00:04:05] Denise Morales: We're adding a second Spanish-language queue in November. That's the big one. I'll need to think about how that affects scoring, but that's a next-year problem.
+[00:04:16] Aisha Coleman: Noted. I'll put a reminder on my side to check in with you once that queue is live.
+[00:04:25] Denise Morales: Perfect. Oh, and we're moving buildings the first week of October, so if I'm slow to respond, that's why.
+[00:04:33] Aisha Coleman: Good to know. Same number for you?
+[00:04:37] Denise Morales: Same everything. Just a different floor and a worse view.
+[00:04:42] Aisha Coleman: Ha. Okay. So I'll follow up by Friday with whatever I hear on the scorecard criteria, and we can grab thirty minutes in October to look at the queue.
+[00:04:54] Denise Morales: Sounds good. Thanks, Aisha.
+[00:04:56] Aisha Coleman: Thanks, Denise. Good luck with the move.

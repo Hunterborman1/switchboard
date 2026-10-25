@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bluewater_escalation_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense data missing on about one in five calls after a Genesys blind transfer.",
+      "quote": "Peter confirmed PreSense data is missing on roughly one in five calls after a Genesys blind transfer.",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "COO will not expand QM and will revisit the contract if transfers are not reliable by Q1.",
+      "quote": "Gwen said plainly that if transfers aren't reliable by Q1 she will not expand QM to the remaining agencies and will revisit the contract.",
+      "owner": "ppl_renee"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Pushback on QM per-seat pricing when half the agents are part-time.",
+      "quote": "Sanjay pushed back on QM being priced per seat when half their agents are part-time.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

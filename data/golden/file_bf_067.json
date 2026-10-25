@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_067",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "So the Google Ads offline conversions. We're seeing them land one to three days after the call. Sometimes two days, sometimes three.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Every time we get to renewal, they look at the bill and there's the base, then PreSense, then the QM seats, then AI Voice Agent minutes stacked on top.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

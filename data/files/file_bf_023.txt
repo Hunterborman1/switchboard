@@ -1,0 +1,46 @@
+Bluewater Insurance Partners / Invoca | renewal | Thu, Oct 22, 2026
+
+[00:00:03] Rachel Okafor: Hi Sanjay, hi Peter. Thanks for joining. How's Thursday going in Hartford?
+[00:00:07] Sanjay Iyer: Not bad. Busy week. We're in the middle of open enrollment prep, so the timing works.
+[00:00:15] Peter Lang: Same here. I've got a list of Genesys queues to touch before Monday, so I'll duck out if anything blows up.
+[00:00:25] Rachel Okafor: Understood. I'll keep us on track. This is our renewal conversation, but I want to make sure we cover anything that's been sitting on your side.
+[00:00:36] Sanjay Iyer: Let's start with the integration issue, because that's been eating Peter's team alive.
+[00:00:42] Peter Lang: So the Salesforce piece. Standard objects update fine. Call records land on the Lead and Contact without a problem. But when we push call data into our custom objects, it just stops.
+[00:00:56] Rachel Okafor: Stops meaning no new records, or records that come in without the data populated?
+[00:01:01] Peter Lang: No new records. It's like the mapping breaks. And it happens right after someone on the admin team edits a field or adds a picklist value.
+[00:01:11] Sanjay Iyer: We've got two custom objects for Medicare Advantage dispositions and one for P&C referrals. Those are the ones that go dark.
+[00:01:21] Rachel Okafor: When did you last see it happen?
+[00:01:25] Peter Lang: Two weeks ago. We added a picklist value for a new plan code. Standard objects kept flowing. The custom ones went quiet for about three days.
+[00:01:35] Rachel Okafor: Did it come back on its own, or did someone touch the config?
+[00:01:42] Peter Lang: Someone touched it. I rebuilt the mapping from scratch and it started working again. Took me most of a day.
+[00:01:50] Sanjay Iyer: That's the part that worries me. We're heading into AEP with 300 agents on the phones. If that breaks during open enrollment, we're blind on disposition data.
+[00:02:01] Rachel Okafor: Okay. Can you send me the timestamp of the last break and the field change that preceded it? I'll take it to the integrations team so we can look at what's happening on the custom object side specifically.
+[00:02:16] Peter Lang: I'll pull the audit log tonight. I have the Salesforce change history, so it shouldn't take long.
+[00:02:22] Rachel Okafor: Great. Anything else on the technical side?
+[00:02:26] Peter Lang: No, the rest is fine. Genesys routing is stable, Google Ads conversions are matching, no complaints there.
+[00:02:34] Sanjay Iyer: Which brings me to the money conversation.
+[00:02:37] Rachel Okafor: Go ahead.
+[00:02:39] Sanjay Iyer: Finance and procurement are pushing back on paying separately for the add-ons. PreSense, the QM seats, any AI Voice Agent minutes. They want one number.
+[00:02:51] Rachel Okafor: When you say separately, are they reacting to the line items on the invoice, or to the renewal structure?
+[00:02:58] Sanjay Iyer: Both. They see four or five line items and they start asking why each one is its own purchase. And next year we're on a budget freeze. Flat spend at best.
+[00:03:11] Rachel Okafor: So if the total comes in at the same number but the structure changes, does that help?
+[00:03:17] Sanjay Iyer: It might. I can't promise. But a single consolidated renewal line would be easier to defend than what we have now.
+[00:03:28] Rachel Okafor: Understood. I'll bring that to our deal desk and see what options exist for packaging. I'm not going to promise anything today.
+[00:03:37] Sanjay Iyer: That's fair.
+[00:03:39] Rachel Okafor: While I have you, how's the QM rollout going?
+[00:03:43] Sanjay Iyer: Behind. We're at about forty percent of the seats live. The agency managers are doing the scorecards, but slowly.
+[00:03:51] Peter Lang: A lot of it is change management. The managers were used to sampling five calls a week. Now they've got a hundred percent and they're overwhelmed.
+[00:04:02] Rachel Okafor: Do you want me to set up a working session with the agency managers? I can walk through how to use the scorecards without listening to every call.
+[00:04:14] Sanjay Iyer: That would help. Let's do it after open enrollment. Maybe early December.
+[00:04:20] Rachel Okafor: I'll send some times next week.
+[00:04:24] Peter Lang: One staffing note. We lost a person on the telephony side. Her last day is next Friday. So if I'm slow to respond, that's why.
+[00:04:33] Rachel Okafor: Noted. Do you need help documenting the Genesys and Salesforce setup before she leaves?
+[00:04:40] Peter Lang: I might take you up on that. I'll let you know.
+[00:04:45] Sanjay Iyer: Also, are we still doing the quarterly business review in November?
+[00:04:50] Rachel Okafor: Yes. I'll send the deck a week ahead.
+[00:04:54] Sanjay Iyer: Good. I want to show the board the call volume trend. We're up about twelve percent year over year.
+[00:05:02] Rachel Okafor: I can pull that.
+[00:05:04] Sanjay Iyer: Alright. I think that covers it.
+[00:05:07] Rachel Okafor: I'll follow up on the Salesforce issue and the packaging question by end of next week. And I'll send QBR prep.
+[00:05:17] Sanjay Iyer: Thanks Rachel.
+[00:05:19] Peter Lang: Thanks.

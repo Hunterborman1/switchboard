@@ -1,0 +1,45 @@
+Evergreen Pest & Lawn / Invoca | onboarding | Mon, Sep 14, 2026
+
+[00:00:05] Marcus Bell: Hi Kyle, hi Ashley. Marcus here. Thanks for making the time today.
+[00:00:11] Kyle Brennan: Hey Marcus. Good to be on. I'm out in the truck between jobs, so if I drop for a second it's just the parking lot.
+[00:00:23] Ashley Moore: Hi Marcus. I've got the calendar open, so I can grab dates while we talk.
+[00:00:29] Marcus Bell: Perfect. The plan for today is mostly logistics. Where we are with the account setup, training dates, who needs access, and what the next couple of weeks look like. Sound okay?
+[00:00:42] Kyle Brennan: Works for us.
+[00:00:43] Marcus Bell: Great. So the tracking numbers are live across the six locations. Ashley, you saw the test calls come through on Friday?
+[00:00:51] Ashley Moore: I did. I made three calls from my cell and one from the office line and they all showed up with the right location attached.
+[00:01:00] Marcus Bell: Good. And the tag is on the website, so dynamic number insertion is swapping the numbers per campaign. That part looked clean on my end.
+[00:01:10] Ashley Moore: Yep, I spot checked a couple of landing pages and the numbers were changing like they should.
+[00:01:18] Kyle Brennan: What about the Google Ads side? Are the conversions flowing yet?
+[00:01:23] Marcus Bell: That's connected. The offline conversions are set to send once a call qualifies, and it matches on the click ID. It can take a day or two before you see it reflected in the ads reporting.
+[00:01:37] Kyle Brennan: Okay. We don't need to watch it that closely, but good to know it's on.
+[00:01:44] Marcus Bell: Now, training. I usually do two sessions, one for the folks answering phones and one for you two on the reporting side. Does that split make sense?
+[00:01:56] Ashley Moore: Yes, please. The front desk people need the call handling part more than the dashboards.
+[00:02:03] Marcus Bell: How many people would be in the first session?
+[00:02:07] Ashley Moore: Probably five. Two at the Raleigh office, one in Durham, one in Greensboro, one in Charlotte. The other locations are smaller and the managers there mostly answer their own phones.
+[00:02:20] Marcus Bell: Got it. And for the second session, just you and Kyle?
+[00:02:26] Kyle Brennan: Probably me, Ashley, and our office manager Renata. She handles a lot of the scheduling and she'll be in the tool more than I am.
+[00:02:38] Marcus Bell: Renata, okay. I'll add her to the invite. What's her email?
+[00:02:42] Ashley Moore: I'll send it to you after the call, I don't have it memorized.
+[00:02:48] Marcus Bell: No rush. Let's talk dates. I have Tuesday the 22nd and Thursday the 24th open in the morning. Would a 9:30 start work for the front desk group?
+[00:03:01] Ashley Moore: Tuesdays are usually lighter for us, so the 22nd at 9:30 is better.
+[00:03:07] Marcus Bell: Let's book that. An hour should cover it. And then the reporting session, does the 24th at 9:30 work, or would you rather do the following week?
+[00:03:18] Kyle Brennan: The 24th is fine. Mornings before ten are good for me, I'm usually still in the office doing paperwork.
+[00:03:25] Marcus Bell: Great. I'll send both invites today with a join link and a short agenda. Ashley, do you want me to send the agenda to you first so you can add anything?
+[00:03:39] Ashley Moore: Sure, send it over and I'll forward it to the group.
+[00:03:44] Marcus Bell: Will do. How's the call volume looking right now? I know fall is a busy stretch for pest work.
+[00:03:51] Kyle Brennan: It's picking up. We're probably at 400 to 450 calls a month across the locations, and it'll climb once the weather turns. Termite inspections drive a lot of it.
+[00:04:03] Ashley Moore: And the lawn side slows down in November, so the mix shifts. More pest, less lawn.
+[00:04:10] Marcus Bell: That lines up with what I usually see. Anything changing on your side before the training? New numbers, new campaigns?
+[00:04:21] Ashley Moore: Not right now. We might add a campaign for the Charlotte area in October, but that's not confirmed yet.
+[00:04:28] Marcus Bell: Okay. If it happens, just let me know and we can make sure the number is set up before it goes live.
+[00:04:37] Kyle Brennan: Sounds good.
+[00:04:38] Marcus Bell: One more thing on logistics. Who should have admin access besides the two of you?
+[00:04:45] Ashley Moore: Just us for now. I'd rather keep it tight while we're getting used to it.
+[00:04:52] Marcus Bell: That's fine. You can add people later whenever you want. And the billing contact is still you, Kyle?
+[00:05:01] Kyle Brennan: Yes, that's me.
+[00:05:03] Marcus Bell: Perfect. So to recap the action items, I'll send the two training invites for the 22nd and 24th at 9:30, plus an agenda for Ashley to review. Ashley will send me Renata's email so I can add her. Anything else you want on the list?
+[00:05:23] Ashley Moore: I don't think so. That covers it.
+[00:05:27] Kyle Brennan: Nothing from me. Thanks Marcus.
+[00:05:30] Marcus Bell: Thanks both. Talk to you on the 22nd.
+[00:05:34] Ashley Moore: Sounds good, bye.
+[00:05:36] Kyle Brennan: Bye.

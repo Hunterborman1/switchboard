@@ -1,0 +1,86 @@
+Meridian Health Partners QBR
+Wed, Oct 7, 2026, 2:30PM • 4:29
+
+Priya Raman  0:06
+Hey Mark, how's it going? Sorry, I was muted for a second there.
+
+Mark Delgado  0:12
+Hey Priya. Good, good. Busy week. You?
+
+Priya Raman  0:15
+Same, same. Did you all get any of that rain yesterday? I saw Nashville got hammered.
+
+Mark Delgado  0:22
+Oh yeah, my drive in was awful. Um, took me like forty minutes instead of fifteen. But hey, we're here.
+
+Priya Raman  0:31
+Okay so I've got an agenda, but honestly I want to leave room for whatever's on your mind. Want me to walk through what I've got, or do you want to start?
+
+Mark Delgado  0:45
+Let's just go. Um, the one thing I did want to say uh, first, before we get into numbers, is I mean, PreSense has been really good for us. Like, our Genesys agents on you know, the scheduling side, they were getting calls from people who'd been all over the website, and before, they'd have to ask all these questions from scratch.
+
+Priya Raman  1:13
+You know, right, so they weren't sure what the caller had already looked at.
+
+Mark Delgado  1:18
+Exactly. Now the screen pop shows the ad, the pages, what they were researching, so my agents open with, you know, 'I see you were looking at the cardiology page,' and it just flows. Handle time is down, I don't have the exact figure in front of me, but it's noticeable. Especially on the digital shoppers.
+
+Priya Raman  1:40
+That's really good to hear. Was that a Genesis change or... no, you said it was already live, right?
+
+Mark Delgado  1:49
+Um, yeah, we rolled it out to all the clinics in June. Took a couple weeks for people to trust it, but now they'd riot if we took it away.
+
+Priya Raman  2:01
+Okay, noted. Let me pull up the volume numbers. Give me one sec... okay. So last quarter you had about 61,000 inbound calls across the 38 clinics. That's up from 54,000 the quarter before.
+
+Mark Delgado  2:14
+That tracks. We added two clinics in Murfreesboro in August, so that's part of it.
+
+Priya Raman  2:20
+Yeah, I figured. And Signal AI, um, the appointment booked signal fired on about 39 percent of calls. Quote given, that one's not really relevant for you, so ignore that.
+
+Mark Delgado  2:32
+Right. Scheduling calls don't have quotes. But the booked one, that's the number we watch.
+
+Priya Raman  2:38
+Okay. And how's um, staffing looking? I know you mentioned turnover at the last check-in.
+
+Mark Delgado  2:44
+We hired four new agents in September, so we're at about 92 in the central scheduling group now. Still training two of them, but it's better. Last spring was rough.
+
+Priya Raman  2:57
+I bet. Do you want me to set up a refresher session for the new folks on the QM side? Just so they they know what's being scored.
+
+Mark Delgado  3:08
+Yeah, that could be helpful. Maybe not this month, but November.
+
+Priya Raman  3:14
+I'll send you a couple of dates. Okay, moving on. Anything on the Salesforce side giving you trouble?
+
+Mark Delgado  3:22
+No, that's fine. Call records are landing where they should. Google Ads too, those offline conversions are flowing.
+
+Priya Raman  3:29
+Good. So, I guess the big thing is the renewal in June. We're a ways out but I wanted to plant the flag early. Anything you're thinking about for next year?
+
+Mark Delgado  3:40
+Not really. I mean, we're happy. I'll need to loop in our finance person closer to the date, but no red flags from my side.
+
+Priya Raman  3:50
+Great. I'll get you a one-pager with the usage summary in a couple weeks, so you have it for budget talks.
+
+Mark Delgado  3:58
+Like, Perfect. Um, one thing, unrelated. Can you get me the attendance um, list from the Nashville user group? I missed it it last month.
+
+Priya Raman  4:07
+Oh, sure. I'll dig it up. I think it was about twenty people. I'll email it over.
+
+Mark Delgado  4:14
+Thanks. That's all I've got.
+
+Priya Raman  4:17
+Okay, I'll send the recap today. Talk soon, Mark. Say hi to the team for me.
+
+Mark Delgado  4:24
+Will do. You know, Thanks, Priya. Bye.

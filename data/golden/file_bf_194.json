@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_194",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "for 2027 they want one bundled number that covers call tracking, signal ai and the voice agent minutes, not presense & qm priced separately on top",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Customer links \"add-on pricing friction at renewal\" to the renewal decision.",
+      "quote": "also fyi we've had a couple of inbound calls from other vendors lately. nothing signed, but with the pricing thing sitting open it's coming up in leadership meetings",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

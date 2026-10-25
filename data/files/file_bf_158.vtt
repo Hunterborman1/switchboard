@@ -1,0 +1,281 @@
+WEBVTT
+
+1
+00:00:03.909 --> 00:00:07.894
+Speaker 1: hey michelle hey brandon thanks for hopping on how's the week going
+
+2
+00:00:07.894 --> 00:00:08.558
+Speaker 1: over there?
+
+3
+00:00:09.842 --> 00:00:14.862
+Speaker 2: It's going. Busy We're down two people on the sales floor this week,
+
+4
+00:00:14.862 --> 00:00:17.566
+Speaker 2: uh, so it's been a little chaotic
+
+5
+00:00:17.382 --> 00:00:20.794
+Speaker 3: yeah, and we just pushed through a new promo
+
+6
+00:00:20.794 --> 00:00:25.722
+Speaker 3: for the fiber bundles so call volume is up maybe twelve percent over
+
+7
+00:00:25.722 --> 00:00:26.480
+Speaker 3: last week.
+
+8
+00:00:27.261 --> 00:00:29.810
+Speaker 1: okay like good to know any change
+
+9
+00:00:29.810 --> 00:00:32.358
+Speaker 1: in the mix, more sales calls or
+
+10
+00:00:32.358 --> 00:00:33.087
+Speaker 1: more support?
+
+11
+00:00:33.252 --> 00:00:38.366
+Speaker 2: mostly sales the um, support queue has been pretty steady around the the
+
+12
+00:00:38.366 --> 00:00:39.939
+Speaker 2: same as last month
+
+13
+00:00:40.052 --> 00:00:44.334
+Speaker 1: Got it Anything you you need from me on the
+
+14
+00:00:44.334 --> 00:00:49.044
+Speaker 1: invoka side? Um I know we had so a couple of
+
+15
+00:00:49.044 --> 00:00:50.328
+Speaker 1: things open [crosstalk]
+
+16
+00:00:57.108 --> 00:01:01.234
+Speaker 3: so yeah actually i want to bring up something that's
+
+17
+00:01:01.234 --> 00:01:03.710
+Speaker 3: been biting us. it's about pre-sense.
+
+18
+00:01:04.861 --> 00:01:05.661
+Speaker 1: okay
+
+19
+00:01:05.900 --> 00:01:16.015
+Speaker 3: when a call gets transferred in genesis either between queues or from one agent to another, the screen pop comes up blank for the agent who receives the transfer
+
+20
+00:01:16.015 --> 00:01:19.154
+Speaker 3: um nothing so in it no journey i mean
+
+21
+00:01:19.154 --> 00:01:20.898
+Speaker 3: no ad source uh, nothing.
+
+22
+00:01:22.793 --> 00:01:25.831
+Speaker 2: and it's not every time but it's often enough
+
+23
+00:01:25.831 --> 00:01:28.195
+Speaker 2: that supervisors are noticing. two of them
+
+24
+00:01:28.195 --> 00:01:30.896
+Speaker 2: have escalated it it to me this week
+
+25
+00:01:31.027 --> 00:01:35.318
+Speaker 1: okay i mean so the pop itself fires it's just empty? [crosstalk]
+
+26
+00:01:36.625 --> 00:01:40.716
+Speaker 3: right. the window opens but there's no data in it
+
+27
+00:01:40.716 --> 00:01:43.581
+Speaker 3: the the agent has to go look
+
+28
+00:01:43.581 --> 00:01:47.263
+Speaker 3: everything up manually which kind of defeats the point
+
+29
+00:01:46.489 --> 00:01:50.491
+Speaker 1: And is this new or has it been happening for
+
+30
+00:01:50.491 --> 00:01:51.291
+Speaker 1: a while?
+
+31
+00:01:52.004 --> 00:01:55.852
+Speaker 2: i i i mean want to say it started maybe three
+
+32
+00:01:55.852 --> 00:01:58.650
+Speaker 2: or four weeks ago we changed some routing
+
+33
+00:01:58.650 --> 00:02:02.498
+Speaker 2: rules around the same time but i don't know if that's
+
+34
+00:02:02.498 --> 00:02:02.847
+Speaker 2: related
+
+35
+00:02:13.823 --> 00:02:17.943
+Speaker 1: Okay Can you send me a couple of call examples?
+
+36
+00:02:17.943 --> 00:02:22.888
+Speaker 1: Call IDs, timestamps the agent names on the receiving side That'll help
+
+37
+00:02:22.888 --> 00:02:25.772
+Speaker 1: me get it in front of the
+
+38
+00:02:25.772 --> 00:02:26.596
+Speaker 1: right people.
+
+39
+00:02:27.154 --> 00:02:30.049
+Speaker 3: yeah i can pull those. i'll get you
+
+40
+00:02:30.049 --> 00:02:32.944
+Speaker 3: ten or so by end of day tomorrow
+
+41
+00:02:35.118 --> 00:02:39.096
+Speaker 1: perfect. and just so i understand, is it only
+
+42
+00:02:39.096 --> 00:02:43.516
+Speaker 1: on transfers or does it happen on first contact too?
+
+43
+00:02:43.266 --> 00:02:46.970
+Speaker 2: First contact looks fine It's the transfers where it [inaudible]
+
+44
+00:02:47.999 --> 00:02:53.258
+Speaker 1: so got it. i'll take this back and see what we can find
+
+45
+00:02:53.258 --> 00:02:56.900
+Speaker 1: out. i can't promise a fix today, but i'll
+
+46
+00:02:56.900 --> 00:03:00.136
+Speaker 1: make sure it's in the the right hands
+
+47
+00:03:00.851 --> 00:03:05.654
+Speaker 3: appreciate it it's just frustrating because we sold this internally as a time-saver,
+
+48
+00:03:05.654 --> 00:03:07.501
+Speaker 3: and now agents are complaining
+
+49
+00:03:07.899 --> 00:03:11.368
+Speaker 1: um understood anything else on your list? [crosstalk]
+
+50
+00:03:20.884 --> 00:03:24.865
+Speaker 2: no, everything else is fine. signal ai is doing what it's supposed
+
+51
+00:03:24.865 --> 00:03:26.192
+Speaker 2: to, no issues there
+
+52
+00:03:27.725 --> 00:03:31.734
+Speaker 1: good how are the a i voice agent calls looking?
+
+53
+00:03:31.734 --> 00:03:32.936
+Speaker 1: still mostly after-hours?
+
+54
+00:03:40.300 --> 00:03:44.232
+Speaker 2: yeah we're seeing about four hundred a week mostly evenings and
+
+55
+00:03:44.232 --> 00:03:46.019
+Speaker 2: weekends it's been holding steady
+
+56
+00:03:45.898 --> 00:03:49.116
+Speaker 3: we did have a question about reporting on
+
+57
+00:03:49.116 --> 00:03:52.335
+Speaker 3: those but that's not urgent we can talk
+
+58
+00:03:52.335 --> 00:03:53.944
+Speaker 3: about it another time
+
+59
+00:03:55.460 --> 00:03:59.928
+Speaker 1: sure we can put that on the agenda for next month speaking
+
+60
+00:03:59.928 --> 00:04:03.279
+Speaker 1: of which do you want to keep the same
+
+61
+00:04:03.279 --> 00:04:05.140
+Speaker 1: time for our november check-in
+
+62
+00:04:04.997 --> 00:04:07.158
+Speaker 2: so second tuesday works same time
+
+63
+00:04:07.028 --> 00:04:12.031
+Speaker 1: great and before i forget are you still using the adobe analytics dashboards
+
+64
+00:04:12.031 --> 00:04:14.725
+Speaker 1: for the campaign review? yeah we pull
+
+65
+00:04:15.586 --> 00:04:17.438
+Speaker 3: those weekly no changes there.
+
+66
+00:04:18.424 --> 00:04:23.345
+Speaker 1: okay i'll follow up on the pre sense thing once i have
+
+67
+00:04:23.345 --> 00:04:26.216
+Speaker 1: the examples anything else before we wrap?
+
+68
+00:04:27.133 --> 00:04:28.814
+Speaker 2: no that's it thanks tom
+
+69
+00:04:30.103 --> 00:04:30.903
+Speaker 3: thanks [crosstalk]
+
+70
+00:04:31.167 --> 00:04:31.967
+Speaker 1: talk soon

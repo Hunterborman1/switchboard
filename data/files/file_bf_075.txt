@@ -1,0 +1,29 @@
+evergreen pest & lawn / invoca
+Call notes, Marcus B. Tue 10/6 12:45pm
+
+ashley still the only one running marketing for all six branches. said they hired a new office person in durham last week, so call handling might look different for a bit. didn't catch name. she's training.
+
+Sept volume, rough from her side: about 2,100 inbound across the six locations, up maybe 8% from August. Fayetteville & Wilmington numbers climbing w/ the fall lawn stuff. Raleigh flat.
+
+Her email pasted below, she sent it while we were talking so I'd have it:
+
+"marcus, pulled the conversion report in google ads for sept 1 to sept 20 & put it next to our call log. the calls happened on the day, but the conversion dates in the column are two, sometimes three days later. same call, different date. so when i look at what smart bidding did that week it's working off a picture that's still filling in. i don't know if that's just how it works or somethng on our end. can you check?"
+
+we pulled three examples live. call 9/4, conversion shows 9/6. call 9/11, shows 9/13. call 9/15, shows 9/18. she's right, it's a 2 to 3 day gap between the call date and the date sitting in that column. weekly reporting is what she lives on, so by the time she pulls monday numbers the weekend calls aren't in yet. asked me if she should stop looking at same-week numbers. told her not yet, let me take it to the team.
+
+Her exact words at one point in the call (transcript): "It's not wrong, it's just late. & I make spend calls on Monday."
+
+To do:
+- send her the export steps for the conversion date column so she has it documented
+- flag the lag to the integrations folks, medium, not an outage, reporting accuracy
+- ask her whether the lag is the same on both ad accounts or just the main one
+
+Scheduling: she's out the week of the 19th for a family thing. Next call push to 10/27 or 10/28. She has a board thing first week of Nov so don't put it there.
+
+Tangent: she asked if we were at the pest conference in Charlotte, said she skipped it this year.
+
+signal ai she says is fine, no issues. didn't get into it, we were on the google thing most of the call.
+
+renewal's a long way out, may. she did mention she keeps getting mail from callrail. didn't ask for anything, just mentioned it.
+
+follow up thursday w/ the export steps.

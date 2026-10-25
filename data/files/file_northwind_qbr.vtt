@@ -1,0 +1,213 @@
+WEBVTT
+
+1
+00:00:04.354 --> 00:00:11.427
+Tom Lindqvist: Morning, everyone. Thanks for making time. I know Q3 close is always busy on your side, so I'll keep us moving.
+
+2
+00:00:11.792 --> 00:00:17.976
+Owen Price: Morning, Tom. We're good. Michelle's dialed in from the office, Brandon's on his headset somewhere.
+
+3
+00:00:18.248 --> 00:00:20.553
+Brandon Hughes: I'm here. Can you hear me okay?
+
+4
+00:00:21.032 --> 00:00:30.315
+Tom Lindqvist: Loud and clear. Let's start with the numbers, then I want to leave plenty of room for the stuff you flagged.
+
+5
+00:00:31.092 --> 00:00:31.943
+Owen Price: Sounds good.
+
+6
+00:00:32.603 --> 00:00:43.805
+Tom Lindqvist: So inbound sales calls for Q3 came in at about 41,200, that's up 7% over Q2. Fiber install calls were the biggest mover, roughly 12,800 of that total.
+
+7
+00:00:44.496 --> 00:00:54.391
+Owen Price: Yeah, that lines up with what we saw on the media side. The fiber campaign in the Denver metro really carried the quarter.
+
+8
+00:00:55.357 --> 00:01:04.519
+Tom Lindqvist: Attribution held up well too. About 68% of those calls tied back to a paid campaign or keyword, which is a couple points better than last quarter.
+
+9
+00:01:05.604 --> 00:01:12.289
+Owen Price: The new attribution view by campaign is honestly the report my team opens first every morning.
+
+10
+00:01:13.185 --> 00:01:20.512
+Tom Lindqvist: Good to hear. Anything you want changed on it, just tell me and I'll pass it along.
+
+11
+00:01:20.941 --> 00:01:24.138
+Owen Price: Not right now. It's doing what we need.
+
+12
+00:01:25.167 --> 00:01:34.405
+Tom Lindqvist: Okay. On the AI Voice Agent side, containment came in at 31% for the quarter. That's up from 24% in Q2.
+
+13
+00:01:35.150 --> 00:01:38.217
+Brandon Hughes: That's a real jump. What's driving it?
+
+14
+00:01:38.958 --> 00:01:46.481
+Tom Lindqvist: Mostly the billing and hours-of-operation calls. Those are the two intents getting handled end to end without a transfer.
+
+15
+00:01:47.889 --> 00:01:54.305
+Michelle Tran: That matches what I see in Genesys. The queue volume for general billing is down noticeably.
+
+16
+00:01:54.996 --> 00:02:01.810
+Tom Lindqvist: Good. And messaging, the SMS follow-up after a missed call, that's running at about 4,100 conversations for the quarter.
+
+17
+00:02:02.838 --> 00:02:08.588
+Brandon Hughes: We've had decent pickup on that. The sales team likes it because it keeps the lead warm.
+
+18
+00:02:09.371 --> 00:02:16.204
+Tom Lindqvist: Okay, that's the summary. Michelle, you had something on the PreSense side you wanted to walk through?
+
+19
+00:02:17.421 --> 00:02:28.070
+Michelle Tran: Yeah, this is the big one for me. Every time we transfer from sales to retention in Genesys, the PreSense data just doesn't come across. The second agent gets nothing.
+
+20
+00:02:28.921 --> 00:02:36.238
+Tom Lindqvist: So the screen pop works on the first leg into sales, but on the warm transfer to retention it drops.
+
+21
+00:02:37.010 --> 00:02:45.607
+Michelle Tran: Correct. The retention agent sees the caller ID and that's it. No journey, no pages viewed, nothing. They end up asking the customer to repeat everything.
+
+22
+00:02:46.109 --> 00:02:47.813
+Tom Lindqvist: How often is this happening?
+
+23
+00:02:48.715 --> 00:02:56.230
+Michelle Tran: It's consistent. Any time the call moves from the sales skill to retention. I'd say a few hundred calls a week.
+
+24
+00:02:56.968 --> 00:03:01.696
+Tom Lindqvist: Okay. And this is the second time this quarter we've talked about transfer behavior.
+
+25
+00:03:02.663 --> 00:03:07.976
+Michelle Tran: It is. I raised it in August and we didn't get to a fix.
+
+26
+00:03:08.980 --> 00:03:18.657
+Tom Lindqvist: I remember. Let me get the specifics from you after this call, the exact skill names and a couple of example calls, and I'll take it to the team.
+
+27
+00:03:18.657 --> 00:03:22.328
+Tom Lindqvist: I don't want to guess at the cause on the call.
+
+28
+00:03:23.171 --> 00:03:28.474
+Michelle Tran: That works. I can pull two or three call IDs this afternoon.
+
+29
+00:03:28.843 --> 00:03:31.266
+Tom Lindqvist: Perfect. Brandon, you had the other one.
+
+30
+00:03:31.924 --> 00:03:45.582
+Brandon Hughes: The voice agent is handing people to a live rep and the rep has to ask for the account number again. That's the one thing we told customers they wouldn't have to do.
+
+31
+00:03:46.371 --> 00:03:51.787
+Tom Lindqvist: So the handoff from the voice agent into the live queue isn't carrying the context over.
+
+32
+00:03:53.140 --> 00:04:03.540
+Brandon Hughes: Right. The agent collected the account number, verified the caller, then transfers, and the rep starts from zero. It makes us look like we don't know who's calling.
+
+33
+00:04:04.310 --> 00:04:06.708
+Tom Lindqvist: Is it every handoff or specific intents?
+
+34
+00:04:07.888 --> 00:04:15.644
+Brandon Hughes: Mostly the ones that go to the billing queue. The sales handoffs seem better, but I haven't measured it closely.
+
+35
+00:04:15.895 --> 00:04:27.688
+Tom Lindqvist: Okay. Can you send me a few examples too? Same as Michelle, call IDs and the time of day. I'll bring both of these to the product team together since they're related.
+
+36
+00:04:28.679 --> 00:04:31.379
+Brandon Hughes: Yeah, I'll get you something by Friday.
+
+37
+00:04:31.680 --> 00:04:33.477
+Tom Lindqvist: Thanks. Owen, you mentioned procurement.
+
+38
+00:04:34.701 --> 00:04:45.465
+Owen Price: Procurement is going to ask me why AI Voice Agent is priced per minute on top of the platform fee. I need a better answer than I have.
+
+39
+00:04:46.170 --> 00:04:50.839
+Tom Lindqvist: Fair. Is this for the renewal planning or a separate review?
+
+40
+00:04:51.548 --> 00:04:58.875
+Owen Price: It's the annual vendor review. They look at every line item and they've been on a cost-per-outcome kick all year.
+
+41
+00:04:59.791 --> 00:05:08.315
+Tom Lindqvist: Got it. Let me pull the usage detail and put together something you can hand them. I'd rather give you real numbers than a talking point.
+
+42
+00:05:09.088 --> 00:05:13.412
+Owen Price: That would help. They respond better to math than to a slide.
+
+43
+00:05:14.589 --> 00:05:18.371
+Tom Lindqvist: Understood. I'll have that to you by early next week.
+
+44
+00:05:18.922 --> 00:05:19.722
+Owen Price: Thanks.
+
+45
+00:05:21.131 --> 00:05:23.840
+Tom Lindqvist: Anything else on your list before we wrap?
+
+46
+00:05:25.088 --> 00:05:29.369
+Michelle Tran: The Google Ads and Adobe Analytics connections have been fine. No issues there.
+
+47
+00:05:30.625 --> 00:05:34.623
+Brandon Hughes: Same for us. The Salesforce sync is doing what it should.
+
+48
+00:05:35.299 --> 00:05:46.586
+Tom Lindqvist: Good. So action items: Michelle and Brandon send call examples, I take the transfer and handoff issues to the team, and I get Owen the pricing breakdown.
+
+49
+00:05:47.649 --> 00:05:48.830
+Owen Price: That covers it.
+
+50
+00:05:49.925 --> 00:05:52.994
+Tom Lindqvist: Great. I'll send a recap this afternoon. Thanks, everyone.
+
+51
+00:05:54.162 --> 00:05:54.962
+Michelle Tran: Thanks, Tom.
+
+52
+00:05:55.804 --> 00:05:56.604
+Brandon Hughes: Talk soon.
+
+53
+00:05:57.118 --> 00:05:58.491
+Owen Price: Have a good one.

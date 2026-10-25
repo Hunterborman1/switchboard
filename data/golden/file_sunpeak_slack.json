@@ -1,0 +1,32 @@
+{
+  "fileId": "file_sunpeak_slack",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance wants AI Voice Agent pricing restructured or will cap the deal at $200k.",
+      "quote": "amanda wants the voice agent pricing restructured or she's capping the whole deal at 200k",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Growth lead forwarded CallRail's same-day sync one-pager to sales director and CEO.",
+      "quote": "cody forwarded callrail's same-day sync one-pager to marisol & their CEO",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Conversions still a day or two late in Google Ads.",
+      "quote": "the conversions are still a day or two late in google ads and that's honestly what's killing us",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

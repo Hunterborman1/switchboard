@@ -1,0 +1,74 @@
+Return-Path: <priya.raman@invoca.example>
+Received: from smtp-out.invoca.example (smtp-out.invoca.example [10.33.243.223])
+        by mx1.invoca.example with ESMTPS id 169220.1751
+        for <heather.collins@cedarridgedental.example>; Mon, 19 Oct 2026 08:22:00 -0600
+MIME-Version: 1.0
+Date: Mon, 19 Oct 2026 08:22:00 -0600
+Message-ID: <CAEbaM5jNn1yUsk0TuumRZNzJFqzZ60OWz3v2KVv@mail.invoca.example>
+In-Reply-To: <CAqI4Cs6KJ46YaTee1TTX6pSXcgqzIwGVHvnKVhE@mail.invoca.example>
+References: <CAwSF6oNHrTWF1LTf5Mp2Z3UxlQxWn66nYoZFrA4@mail.invoca.example>
+        <CAqI4Cs6KJ46YaTee1TTX6pSXcgqzIwGVHvnKVhE@mail.invoca.example>
+Subject: Patient info in daily summary - please advise
+From: Priya Raman <priya.raman@invoca.example>
+To: Heather Collins <heather.collins@cedarridgedental.example>, Rosa Jimenez <rosa.jimenez@cedarridgedental.example>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+Hi Rosa, hi Heather,
+
+Thank you for sending this over so quickly, and for keeping it contained. I want to make sure I understand it before I take it to the right people.
+
+Rosa, a few questions. Did the entry come through on the normal 6:00 AM summary send, or was it a separate email? And is the shared inbox a group address that forwards to the coordinators, or do they log into it directly? That will help me describe the exposure accurately. No need to send me the original again, I have what you pasted.
+
+Heather, I have your question noted and I am not going to answer it off the cuff. I am taking both items to our support and product teams this morning. I will come back to you today with who is owning it and what the next step is. In the meantime, please keep the email where it is and do not change anything on your end yet, so we are all looking at the same thing.
+
+One more thing, Rosa: can you confirm whether the other offices use the same summary settings as Hillcrest? If you are not sure, that is fine, I can ask Heather.
+
+I will follow up today.
+
+Priya
+
+Priya Raman
+Customer Success Manager, Healthcare
+Invoca
+priya.raman@invoca.example
+
+On Mon, Oct 19, 2026 at 8:14 AM Heather Collins <heather.collins@cedarridgedental.example> wrote:
+> Priya, adding myself here. Thank you for sending this, Rosa.
+>
+> We have nineteen practices and the managers all read these summaries first thing. I do not want to guess at how many other offices have seen something like this, so I would rather deal with it now.
+>
+> Could the summaries for our offices leave out patient identifiers entirely and just say new patient or existing patient? That is really all the managers need to act on the call. If there is a setting on our side that I should change, tell me and I will do it today.
+>
+> Rosa, please pull that email out of the shared inbox and let me know if anyone opened it besides you. I will handle anything that comes from it.
+>
+> Heather
+>
+> Heather Collins
+> Director of Practice Operations
+> Cedar Ridge Dental Group
+> heather.collins@cedarridgedental.example
+> (208) 555-0111
+
+> On Mon, Oct 19, 2026 at 7:20 AM Rosa Jimenez <rosa.jimenez@cedarridgedental.example> wrote:
+> > Hi Priya,
+> >
+> > I manage the Hillcrest practice and I read the daily call summary every morning before the front desk opens. Something came through today that I need to flag. The daily summary email is including the patient's full name and date of birth, even though we have PHI redaction turned on.
+> >
+> > Here is the entry exactly as it came through:
+> >
+> > New patient Daniel Okoro (DOB 07/22/1991) called to book a cleaning and asked about implant pricing. Callback 208-555-0193.
+> > Address on file: 1450 W Hillcrest Dr, Boise. Insurance member ID BCI-55821930.
+> >
+> > I saw it on my phone at 6:40 this morning and again in my inbox when I got in. I have not forwarded it to anyone and I deleted it from my phone, but it is still sitting in the shared inbox that our front desk also reads. Two of our coordinators open that inbox.
+> >
+> > Can you tell me who at Invoca can look at this, and what I should do in the meantime? If it helps, I can send you the exact time the email arrived and the subject line. I just do not want to keep passing it around.
+> >
+> > Thank you,
+> > Rosa
+> >
+> > Rosa Jimenez
+> > Practice Manager | Hillcrest Office
+> > Cedar Ridge Dental Group
+> > rosa.jimenez@cedarridgedental.example
+> > (208) 555-0140

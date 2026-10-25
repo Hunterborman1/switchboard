@@ -1,0 +1,23 @@
+{
+  "readyAt": "2026-10-25T03:48:00.744Z",
+  "files": 266,
+  "featured": 48,
+  "backfill": 218,
+  "goldenLabels": 266,
+  "goldenInsights": 384,
+  "accounts": 14,
+  "people": 21,
+  "routingRules": 14,
+  "themeSeeds": 14,
+  "recommended": "file_c1042",
+  "tourFiles": {
+    "main": "file_c1042",
+    "clean": "file_harbor_checkin_notes",
+    "messy": "file_sunpeak_checkin_asr",
+    "security": "file_ridgeway_prep_injection",
+    "negative": "file_prairielink_friendly",
+    "privacy": "file_meridian_phi_call"
+  },
+  "aiSpendUsd": 0.9788,
+  "aiCalls": 1201
+}

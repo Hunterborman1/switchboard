@@ -1,0 +1,52 @@
+Harbor FCU - 9/24 notes
+
+Jason called 1:30. mostly good.
+
+salesforce thing - jason: "when we add a field to one of our custom objects, the salesforce integration just stops writing call data to those objects entirely." started after their sandbox refresh push to prod on the 12th. they added a loan_purpose__c field and a new picklist value. conversion writes to the standard call object are still landing, but everything on the custom objects goes quiet.
+
+asked how often they change the schema - roughly quarterly, compliance usually signs off. asked if it's isolated to that one object - he thinks so, hasn't tested others. told him i'd get it to the team, no eta yet. he's fine documenting workaround if needed.
+
+volumes: ~18,400 calls last month, up from 16,900 in august. mortgage line carrying most of it.
+
+qm: compliance still reviewing scorecards, no changes this month.
+
+staffing: their marketing ops team is down a person, req open since july. jason doing the work himself meanwhile.
+
+scheduling: pushed our next check-in to oct 8, 2pm pt. he's out the week of the 28th.
+
+Tangent: we spent five minutes on the Mariners. He has tickets for the 30th.
+
+To-dos:
+- send jason the custom object field list template
+- log the salesforce issue, tag integrations, high
+- confirm Oct 8 invite
+
+---
+
+From: jason.park@harborfcu.example
+sent: wednesday, september 23, 2026 4:12 pm
+To: aisha.coleman@invoca.example
+subject: sync
+
+aisha,
+
+quick one before we talk - added loan_purpose__c to the application object monday & our call writes to that object have been empty since. nothing else changed on our side.
+
+Jason
+
+Marketing Operations
+harbor federal credit union
+
+---
+
+transcript fragment:
+jason: ...& it's not throwing an error anywhere, that's the part that's throwing me.
+Aisha: When did you first notice it?
+Jason: Monday, probably. The field went in Friday.
+
+---
+
+slack fragment:
+Jason: any word on the salesforce sync
+aisha: not yet
+Jason: ok

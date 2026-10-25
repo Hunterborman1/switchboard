@@ -1,0 +1,104 @@
+Keystone Mutual check-in
+Mon, Sep 21, 2026, 10:15AM • 5:28
+
+Rachel Okafor  0:03
+Morning, Nate. Morning, Luis. How was the weekend? Did you end up doing that 5k?
+
+Nate Simmons  0:09
+I I did. Worst decision of my life. My knees are still mad at me.
+
+Luis Ortega  0:17
+He was limping through the parking garage this morning. Very dramatic.
+
+Rachel Okafor  0:22
+Ha. Well, respect for finishing. Okay, I know you two have the ops huddle at eleven, so I'll keep us tight. Uh, Anything top of mind before I run through a couple of housekeeping things?
+
+Nate Simmons  0:38
+Yeah, actually, let me start with the after-hours pilot. Luis has been living in it, so I'll let him talk, but we wanted to flag something.
+
+Luis Ortega  0:48
+Yeah. So, overall the voice agent on claims intake is doing what we hoped. Overnight volume's around 140 calls a a night, and it's containment, roughly 60 percent, which is about where we thought we'd land.
+
+Rachel Okafor  1:01
+That's good to hear.
+
+Luis Ortega  1:04
+It is. Except when it hands off. So when someone's in a live transfer, you know, going to an actual person, the stuff it already collected, the policy number, the loss date, the description, none of it shows up on the agent's screen. So the caller starts over from scratch.
+
+Rachel Okafor  1:26
+Okay. So the caller's repeating themselves, and the agent's re-asking. Is that on every transfer, or certain ones?
+
+Luis Ortega  1:34
+Feels like most of them. I'd say eight out of ten. And it's not just annoying. Sometimes it lands them in the wrong place. Like a water damage claim, the agent gets it, and it's not who should have it. So the voice agent's sending callers to the wrong queue, and they get bounced again. Two, three transfers sometimes.
+
+Rachel Okafor  1:57
+Bounced how? Like the agent reroutes, or the caller hangs up and calls back?
+
+Luis Ortega  2:03
+Both. Mostly the agent warm-transfers them where they should've gone in the first place. But we've had a few just give up. You can see it in the recordings.
+
+Nate Simmons  2:14
+And that's the part that worries me. The whole point of after-hours is people don't have to call back at eight a.m. If they're telling the story three times at one in the morning, we've just moved the pain.
+
+Rachel Okafor  2:31
+No, that makes sense. Can I ask, is this only on after-hours, or are you seeing it on the daytime voice agent traffic too?
+
+Luis Ortega  2:40
+Daytime it's lighter, maybe because there are more agents and the routing settles faster. But it happens. It's the handoff itself, I think. The details just don't come with the caller.
+
+Rachel Okafor  2:53
+Okay. And Luis, do you have a couple of examples, call IDs or timestamps, from last week? That'd help me get this in front like, of the right folks with something concrete rather than a description.
+
+Luis Ortega  3:09
+So, yeah, I pulled four or five Friday. I'll send them over this afternoon.
+
+Rachel Okafor  3:14
+Perfect. I'll take that back to the team and come back to you with next steps. I won't guess at what's happening on my end, I'd rather get a real answer.
+
+Nate Simmons  3:27
+Appreciated. So, it's medium in our book, not a stop-the-line thing, but it's the kind of thing that turns a good pilot into a bad survey score if it it sits.
+
+Rachel Okafor  3:40
+Understood. Okay, housekeeping. Your QM scorecard refresh went through, right? Uh, Audits look normal?
+
+Nate Simmons  3:47
+Uh, yeah, that's all fine. No issues.
+
+Rachel Okafor  3:51
+Good. And PreSense, screen pops still working with Genesys?
+
+Luis Ortega  3:55
+Fine, yeah. So, no complaints there.
+
+Rachel Okafor  3:58
+Great. One more thing, um, your renewal's not until next September, so nothing due now, but I'd like to get a business review on the calendar for early Q1. Does February still work, or is that too close to your busy season?
+
+Nate Simmons  4:16
+February's fine. Storm season really kicks in March, so earlier is better.
+
+Rachel Okafor  4:22
+Okay, you know, I'll send an invite. And how are you staffing through the fall? I I know you had a couple of openings.
+
+Nate Simmons  4:31
+We filled two of the three. Still hunting for a supervisor on the auto side. It's slow going.
+
+Luis Ortega  4:40
+Tell me about it. I've been covering two teams since August.
+
+Rachel Okafor  4:45
+Oof. Well, if it'd help, I I can pull together a short training refresher for the new folks on the claims side. Just say the word.
+
+Luis Ortega  4:55
+Might take you up on that once we're staffed.
+
+Rachel Okafor  4:59
+Great. So, okay, I'll let you two get to your huddle. Nate, I'll send the February invite today, Luis, I'll watch for those call examples you know, this afternoon and follow up by Wednesday.
+
+Luis Ortega  5:16
+Um, Sounds good. Thanks, Rachel.
+
+Nate Simmons  5:18
+Thanks. And hey, if you ever want to run a 5k, don't.
+
+Rachel Okafor  5:23
+Noted. Have a good one, both.

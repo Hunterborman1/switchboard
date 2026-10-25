@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_131",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "Our compliance group wants redaction we can configure ourselves, not a fixed setting, so we can decide what gets masked in transcripts and summaries and who on our side is allowed to see the unmasked version.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

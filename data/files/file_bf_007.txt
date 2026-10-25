@@ -1,0 +1,41 @@
+Atlas Auto Group / Invoca | QBR | Fri, Oct 23, 2026
+
+[00:00:06] Diego Alvarez: Hey Greg, hey Tanya. Thanks for making time. How's Friday treating you both?
+[00:00:11] Greg Hollis: Busy. End of the month is close, so we're chasing numbers. But good to see you, Diego.
+[00:00:19] Tanya Mercer: Hi Diego. I've got about thirty minutes before I need to jump on something with the BDC team, so we should dig in.
+[00:00:29] Diego Alvarez: That works. I want to walk through Q3 volume and what we're seeing in Signal AI, then leave room for whatever's on your list.
+[00:00:39] Greg Hollis: Sounds good.
+[00:00:40] Diego Alvarez: So across the 22 rooftops, you tracked about 61,000 calls in Q3. Up roughly 9% over Q2. Phoenix stores carried most of that.
+[00:00:49] Tanya Mercer: That tracks. We added two BDC reps in Tempe in August, so the call handling is better than it was in the spring.
+[00:01:00] Diego Alvarez: I saw the appointment-booked signal rate move from 31% to 34%. Is that the extra reps, or something else?
+[00:01:08] Tanya Mercer: Mostly the reps. We also tightened the script for service-to-sales transfers, which helped.
+[00:01:15] Greg Hollis: And the Las Vegas stores have been flat. We're putting more spend behind Henderson in Q4.
+[00:01:22] Diego Alvarez: Got it. Anything on the Signal AI side you want to look at? New signals, tuning?
+[00:01:28] Greg Hollis: Signals have been fine. No complaints there.
+[00:01:31] Tanya Mercer: Yeah, the custom signals we built for trade-in and financing are doing what we need.
+[00:01:37] Diego Alvarez: Good. And the Salesforce lead records?
+[00:01:41] Tanya Mercer: Those are fine, too.
+[00:01:43] Greg Hollis: Diego, before we get too far, can we talk about the Google Ads side? Tanya's been raising something with me.
+[00:01:51] Diego Alvarez: Of course. What's going on?
+[00:01:54] Tanya Mercer: So the offline call conversions we send to Google Ads, they're landing one to three days after the call. Google shows them eventually, but by then the day is gone.
+[00:02:06] Diego Alvarez: Are you seeing them in the Google Ads UI, just late, or not at all?
+[00:02:13] Tanya Mercer: They show up. It's the timing. My team is making daily budget calls on which campaigns to push, and we can't see the call conversions for two or three days, so Smart Bidding is optimizing on incomplete data.
+[00:02:29] Greg Hollis: We're moving money around based on a picture that's still filling in. That's the part that worries me.
+[00:02:37] Diego Alvarez: When did you first notice the lag?
+[00:02:41] Tanya Mercer: It's been like this for a while, but it got more noticeable when we ramped spend in September. I flagged it to our Google rep, and they said the conversions are coming through, just delayed.
+[00:02:55] Diego Alvarez: Okay. I want to get the specifics. Is it every campaign, or certain ones?
+[00:03:02] Tanya Mercer: Mostly the new-vehicle campaigns. Service is less of an issue because we're not bidding as aggressively there.
+[00:03:11] Diego Alvarez: Let me pull the conversion timestamps from the last two weeks and take it to our integrations team. I don't want to guess at what's happening.
+[00:03:22] Tanya Mercer: Appreciate that. I can send you a couple of campaign IDs where it's worst.
+[00:03:29] Diego Alvarez: Please do. And I'll follow up by Wednesday with what I find out.
+[00:03:34] Greg Hollis: That's all we're asking. We just need to know if it's on our end or yours.
+[00:03:41] Diego Alvarez: Understood. Let me also ask, is anything else on the tracking side giving you trouble?
+[00:03:47] Greg Hollis: No, the tracking numbers and the tag have been solid.
+[00:03:52] Tanya Mercer: Same. No issues there.
+[00:03:53] Diego Alvarez: Good. One logistics thing: our next QBR would land in late January. Does that work, or do you want to move it after the first of the year?
+[00:04:06] Greg Hollis: Late January is fine. Let's aim for the 26th or so.
+[00:04:10] Tanya Mercer: Works for me. I'll have my team pull the Q4 numbers beforehand.
+[00:04:16] Diego Alvarez: I'll send the invite and a prep doc. Anything else before we wrap?
+[00:04:22] Greg Hollis: That's it from me. Thanks, Diego.
+[00:04:26] Tanya Mercer: I'll get you those campaign IDs this afternoon.
+[00:04:29] Diego Alvarez: Perfect. Talk soon, both.

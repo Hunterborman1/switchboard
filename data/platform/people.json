@@ -1,0 +1,68 @@
+{
+  "note": "Simulated Invoca employees for Agent Ops (fictional). A small cast: Signal Loop users come from data/world/people.json (read-only; departments mapped by departmentMap), plus these people for the RFP agent and the platform team.",
+  "departmentMap": {
+    "Customer Success": "Customer Success",
+    "Product": "Product",
+    "Product Marketing": "Marketing",
+    "Finance & Strategy": "Finance",
+    "Support": "Support",
+    "Engineering": "Product",
+    "Sales": "Sales",
+    "Product Operations": "Operations"
+  },
+  "people": [
+    {
+      "id": "ppl_hunter",
+      "name": "Hunter Borman",
+      "role": "ai_ops",
+      "department": "Operations",
+      "title": "AI Operations Lead"
+    },
+    {
+      "id": "ppl_ao_malik",
+      "name": "Malik Johnson",
+      "role": "ai_ops",
+      "department": "Operations",
+      "title": "Automation Specialist (Gumloop)"
+    },
+    {
+      "id": "ppl_ao_sofia",
+      "name": "Sofia Marino",
+      "role": "security",
+      "department": "Operations",
+      "title": "Security & GRC Manager"
+    },
+    {
+      "id": "ppl_ao_ruth",
+      "name": "Ruth Abernathy",
+      "role": "ae",
+      "department": "Sales",
+      "title": "Enterprise Account Executive"
+    },
+    {
+      "id": "ppl_ao_gabe",
+      "name": "Gabe Lindstrom",
+      "role": "sales_eng",
+      "department": "Sales",
+      "title": "Principal Solutions Consultant"
+    },
+    {
+      "id": "ppl_ao_mike",
+      "name": "Mike Delgado",
+      "role": "rfp",
+      "department": "Sales",
+      "title": "Proposal Manager"
+    }
+  ],
+  "worldUsers": [
+    "ppl_marcus",
+    "ppl_priya",
+    "ppl_diego",
+    "ppl_rachel",
+    "ppl_nina",
+    "ppl_omar",
+    "ppl_elena",
+    "ppl_renee",
+    "ppl_chris"
+  ]
+}

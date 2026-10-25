@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bf_191",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "The offline call conversions we send to Google Ads, they're showing up one to three days after the call. Sometimes three.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "My managers read the summaries before callbacks and handoffs instead of pulling recordings. It saves them forty minutes a day, easy.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Customer links \"offline conversions lag in google ads\" to the renewal decision.",
+      "quote": "And Diego, I'll be blunt, this one is on my radar for the renewal. If our conversions are lagging in Google Ads, we're paying for leads we can't read properly.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

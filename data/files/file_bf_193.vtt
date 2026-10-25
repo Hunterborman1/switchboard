@@ -1,0 +1,149 @@
+WEBVTT
+
+1
+00:00:07.730 --> 00:00:10.455
+Diego Alvarez: Morning, Cody. How's it going down in Austin?
+
+2
+00:00:11.284 --> 00:00:20.460
+Cody Barrett: Morning, Diego. Pretty good, busy week. We just kicked off the fall campaign for the Phoenix metro, so the phones are ringing more than usual.
+
+3
+00:00:21.920 --> 00:00:24.936
+Diego Alvarez: Nice. What kind of volume are you seeing now?
+
+4
+00:00:26.103 --> 00:00:37.287
+Cody Barrett: Across the three states we're doing about 9,200 calls a month, and roughly 60 percent of that is Google Ads, the rest Meta and some organic.
+
+5
+00:00:37.287 --> 00:00:39.868
+Cody Barrett: Texas is still the biggest chunk.
+
+6
+00:00:40.698 --> 00:00:45.614
+Diego Alvarez: Good, that's up from the last time we talked. Anything new on the team side?
+
+7
+00:00:46.820 --> 00:00:57.870
+Cody Barrett: Yeah, we added four more seats on the Spanish-speaking floor in San Antonio, so we're at 70 now. Two of them are still in training with Marisol.
+
+8
+00:00:58.829 --> 00:01:03.666
+Diego Alvarez: Got it. Is the bilingual queue routing the way you want it?
+
+9
+00:01:04.980 --> 00:01:12.983
+Cody Barrett: It's fine, no issues there. The Spanish line gets about 30 percent of the traffic and it's holding steady.
+
+10
+00:01:13.851 --> 00:01:23.576
+Diego Alvarez: Okay. I saw the renewal is coming up at the end of November. We'll want to get ahead of that in the next few weeks.
+
+11
+00:01:24.232 --> 00:01:32.363
+Cody Barrett: Right, November 30. I'll pull in our finance folks once we get closer. Nothing dramatic on our end so far.
+
+12
+00:01:33.815 --> 00:01:37.826
+Diego Alvarez: Perfect. Did you have anything you wanted to walk through today?
+
+13
+00:01:38.245 --> 00:01:45.226
+Cody Barrett: Actually, there is one thing that's been bugging us for a couple weeks. It's about the tracking numbers on our site.
+
+14
+00:01:46.028 --> 00:01:47.611
+Diego Alvarez: Okay, tell me more.
+
+15
+00:01:48.655 --> 00:02:01.914
+Cody Barrett: So our marketing site is a single-page app, it's built in React, and we've got the Invoca tag on it. When someone lands on the homepage the dynamic number insertion swaps in the right tracking number, that part works.
+
+16
+00:02:02.362 --> 00:02:15.046
+Cody Barrett: But as soon as they navigate to another page inside the app, like the pricing page or the incentives page, the number reverts back to our default number. It stops swapping.
+
+17
+00:02:16.471 --> 00:02:20.229
+Diego Alvarez: So it's the route change that's tripping it up?
+
+18
+00:02:20.495 --> 00:02:33.100
+Cody Barrett: That's what it looks like. The page doesn't do a full reload, so the number goes back to the main line and we lose the campaign attribution on those calls.
+
+19
+00:02:33.498 --> 00:02:35.834
+Diego Alvarez: How long has this been happening?
+
+20
+00:02:36.417 --> 00:02:47.341
+Cody Barrett: About two, maybe three weeks. It started around when we pushed the new site build. Our dev, Kenji, noticed it first when he was testing the Phoenix landing pages.
+
+21
+00:02:47.905 --> 00:02:51.052
+Diego Alvarez: And is it every route, or just certain pages?
+
+22
+00:02:51.650 --> 00:02:57.759
+Cody Barrett: It seems like every internal navigation does it. The initial load is fine, then anything after that resets.
+
+23
+00:02:59.178 --> 00:03:01.080
+Diego Alvarez: What's the impact you're seeing?
+
+24
+00:03:01.803 --> 00:03:10.862
+Cody Barrett: Honestly it's medium for us. The landing page calls still attribute fine, but the deeper in-app navigations are getting lumped into the default source.
+
+25
+00:03:10.862 --> 00:03:13.882
+Cody Barrett: Maybe 15, 20 percent of our paid calls.
+
+26
+00:03:15.119 --> 00:03:23.977
+Diego Alvarez: Okay. I want to get the details right, so a few questions. Does it happen on both Google Ads and Meta traffic?
+
+27
+00:03:24.782 --> 00:03:29.905
+Cody Barrett: Both. And it's across all three states, so it's not a regional thing.
+
+28
+00:03:30.136 --> 00:03:39.063
+Diego Alvarez: Got it. Can you send me a couple of example calls where the number was wrong, plus the timestamp and the path the visitor took?
+
+29
+00:03:40.311 --> 00:03:44.606
+Cody Barrett: Yeah, I can have Kenji pull that today. He's got the session replays.
+
+30
+00:03:45.007 --> 00:03:53.676
+Diego Alvarez: That would help a lot. I'll take it to our engineering team and see what they say. I don't want to guess at what's causing it.
+
+31
+00:03:54.736 --> 00:04:00.478
+Cody Barrett: Makes sense. No rush on our side, just wanted to flag it while it's fresh.
+
+32
+00:04:01.253 --> 00:04:07.901
+Diego Alvarez: Appreciate it. Meanwhile, how's everything else looking? The Salesforce sync and the offline conversions to Google Ads.
+
+33
+00:04:09.013 --> 00:04:12.061
+Cody Barrett: Those are fine. No complaints from the ops team.
+
+34
+00:04:12.839 --> 00:04:22.335
+Diego Alvarez: Good. I'll follow up once I hear back from engineering, probably within a couple of days. And let's get a renewal planning call on the calendar for early November.
+
+35
+00:04:23.037 --> 00:04:28.527
+Cody Barrett: Sounds good. Send me a couple of slots next week, mornings work best.
+
+36
+00:04:28.789 --> 00:04:31.343
+Diego Alvarez: Will do. Thanks, Cody. Talk soon.
+
+37
+00:04:32.299 --> 00:04:34.946
+Cody Barrett: Thanks, Diego. Have a good one.

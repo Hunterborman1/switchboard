@@ -1,0 +1,49 @@
+Ridgeway Motor Group / Invoca | working session | Tue, Oct 6, 2026
+
+[00:00:02] Diego Alvarez: Hi Brittany, hi Mike. How's your Tuesday going?
+[00:00:06] Brittany Sawyer: Not bad. Busy morning. We had a ton of calls before ten.
+[00:00:11] Mike Castillo: Yeah, Mondays and Tuesdays are always heavy. We're at about 2,100 calls a week across the seven stores right now.
+[00:00:20] Diego Alvarez: That's up from what I remember. Was it around 1,800 a few months ago?
+[00:00:26] Brittany Sawyer: Yeah, since the new GM came in August we've been pushing more Google Ads spend, so more calls.
+[00:00:34] Diego Alvarez: Makes sense. I saw the call volume tick up in the dashboard. How's the BDC handling it?
+[00:00:42] Brittany Sawyer: We're okay. We added one rep in September, so we're at eleven now. Still, some days the queue gets long around lunch.
+[00:00:51] Diego Alvarez: Got it. Anything I can help with there? Routing, hours, anything like that?
+[00:00:57] Brittany Sawyer: No, the routing is fine. It's just staffing. We're managing.
+[00:01:02] Mike Castillo: Hey Diego, while we're on the call, there's something I want to flag about the Google Ads side.
+[00:01:09] Diego Alvarez: Sure, go ahead.
+[00:01:10] Mike Castillo: So we send our call conversions to Google Ads, right? And they're showing up one to three days after the call. Sometimes longer.
+[00:01:21] Diego Alvarez: Okay. Is that causing a problem for you?
+[00:01:24] Mike Castillo: It is. Smart Bidding looks at those days and thinks we had no conversions, so it pulls back spend. Then the next day it sees them and pushes back up. It's like a yo-yo.
+[00:01:38] Brittany Sawyer: We've seen that. Last week Tuesday looked terrible in Google Ads, then Wednesday it caught up.
+[00:01:44] Mike Castillo: Right. And our cost per lead bounces around because of it. The BDC gets fewer calls on those pullback days, then it's slammed when the spend comes back.
+[00:01:56] Diego Alvarez: How long have you been noticing the delay?
+[00:02:00] Mike Castillo: A few weeks. I first saw it maybe mid-September. I thought it was a Google thing at first, but I checked the timestamps in Invoca and the conversion isn't sent until later.
+[00:02:14] Diego Alvarez: Okay. Are you seeing the conversions in Google Ads eventually? Nothing missing?
+[00:02:19] Mike Castillo: They all show up. Just late. And since we're optimizing for calls, the delay messes with the bidding.
+[00:02:26] Diego Alvarez: Got it. I'll take this back to the team. Can you send me a couple of examples? Call IDs and the times they hit Google Ads?
+[00:02:37] Mike Castillo: Yeah, I can pull a few from yesterday and last week.
+[00:02:41] Diego Alvarez: Perfect. And is this happening on all seven stores or just some?
+[00:02:48] Mike Castillo: Looks like all of them. I checked Tulsa and Broken Arrow mostly, but the pattern is the same.
+[00:02:56] Brittany Sawyer: I can help pull the list too. I have the call logs.
+[00:03:02] Diego Alvarez: That would help. Send whatever you have by Thursday and I'll get it to the right people.
+[00:03:08] Mike Castillo: Will do.
+[00:03:10] Diego Alvarez: Anything else on the Google Ads side? Or Salesforce?
+[00:03:14] Mike Castillo: Salesforce is fine. Leads are writing over like they should.
+[00:03:18] Brittany Sawyer: Yeah, no issues there. The BDC sees the call record and the outcome.
+[00:03:24] Diego Alvarez: Good. And Signal AI? Any changes you want to talk about?
+[00:03:30] Mike Castillo: No, it's working. We still get appointment booked and quote given tagged. That's all we use.
+[00:03:36] Diego Alvarez: Okay. I noticed your call volume went up about 15% month over month. Is that from the new GM's push?
+[00:03:44] Brittany Sawyer: Yeah, he wants more leads from search. He's been asking a lot of questions about how we track everything.
+[00:03:53] Diego Alvarez: Makes sense. Anything he's asking that I can help with?
+[00:03:58] Brittany Sawyer: Not right now. He's just getting up to speed.
+[00:04:01] Mike Castillo: He did ask me about Marchex last week. He used them at his last group.
+[00:04:07] Diego Alvarez: Okay. Well, if it's helpful, I can put together a quick summary of what you're using now and the results. Not a pitch, just the numbers.
+[00:04:18] Mike Castillo: That might be good. He likes data.
+[00:04:22] Diego Alvarez: I'll send something over next week. On the delay, I'll follow up once I hear back from the team.
+[00:04:30] Brittany Sawyer: Sounds good. Oh, one more thing. We're doing a hiring event on the 20th, so the BDC will be short-staffed that afternoon.
+[00:04:41] Diego Alvarez: Noted. Do you want me to pause any alerts that day?
+[00:04:46] Brittany Sawyer: No, we'll be fine. Just wanted you to know if you see a dip in answer rates.
+[00:04:53] Diego Alvarez: Got it. I'll keep that in mind. Anything else before we wrap?
+[00:04:59] Mike Castillo: That's it for me. Thanks Diego.
+[00:05:02] Brittany Sawyer: Same here. Talk soon.
+[00:05:03] Diego Alvarez: Thanks both. I'll send the follow-up by Thursday. Have a good one.

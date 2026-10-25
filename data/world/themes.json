@@ -1,0 +1,226 @@
+[
+  {
+    "id": "gads_lag",
+    "name": "Offline conversions lag in Google Ads",
+    "type": "bug",
+    "productArea": "integrations",
+    "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+    "plannedCount": 32,
+    "weeklyWeights": [
+      1,
+      1,
+      2,
+      3,
+      6,
+      8
+    ]
+  },
+  {
+    "id": "sai_spam",
+    "name": "Signal AI mislabels after-hours callers as spam",
+    "type": "bug",
+    "productArea": "signal_ai",
+    "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+    "plannedCount": 22,
+    "weeklyWeights": [
+      2,
+      3,
+      3,
+      4,
+      4,
+      4
+    ]
+  },
+  {
+    "id": "presense_genesys",
+    "name": "PreSense data missing on Genesys transfers",
+    "type": "bug",
+    "productArea": "presense",
+    "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+    "plannedCount": 18,
+    "weeklyWeights": [
+      1,
+      2,
+      4,
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "id": "addon_pricing",
+    "name": "Add-on pricing friction at renewal",
+    "type": "pricing_objection",
+    "productArea": "billing_pricing",
+    "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+    "plannedCount": 22,
+    "weeklyWeights": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7
+    ]
+  },
+  {
+    "id": "sfdc_mapping",
+    "name": "Salesforce field mapping breaks on custom objects",
+    "type": "bug",
+    "productArea": "integrations",
+    "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+    "plannedCount": 18,
+    "weeklyWeights": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ]
+  },
+  {
+    "id": "hipaa_redaction",
+    "name": "Want HIPAA-safe transcript redaction controls",
+    "type": "feature_request",
+    "productArea": "signal_ai",
+    "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+    "plannedCount": 12,
+    "weeklyWeights": [
+      1,
+      2,
+      2,
+      2,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "callrail_sync",
+    "name": "CallRail same-day sync pitch",
+    "type": "competitor_mention",
+    "productArea": "integrations",
+    "summary": "CallRail is pitching same-day conversion sync to Google Ads, often with a lower quote.",
+    "plannedCount": 14,
+    "weeklyWeights": [
+      1,
+      1,
+      2,
+      2,
+      4,
+      4
+    ]
+  },
+  {
+    "id": "voice_agent_handoff",
+    "name": "AI Voice Agent handoff loses context",
+    "type": "bug",
+    "productArea": "ai_agents",
+    "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+    "plannedCount": 16,
+    "weeklyWeights": [
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+    ]
+  },
+  {
+    "id": "qm_custom",
+    "name": "QM scorecards need custom criteria",
+    "type": "feature_request",
+    "productArea": "quality_management",
+    "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+    "plannedCount": 14,
+    "weeklyWeights": [
+      2,
+      2,
+      2,
+      3,
+      3,
+      2
+    ]
+  },
+  {
+    "id": "marchex_auto",
+    "name": "Marchex pricing undercut in automotive",
+    "type": "competitor_mention",
+    "productArea": "billing_pricing",
+    "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+    "plannedCount": 9,
+    "weeklyWeights": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "id": "dashboard_export",
+    "name": "Dashboard export to Looker/Sheets",
+    "type": "feature_request",
+    "productArea": "platform",
+    "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+    "plannedCount": 16,
+    "weeklyWeights": [
+      3,
+      3,
+      3,
+      2,
+      3,
+      2
+    ]
+  },
+  {
+    "id": "dni_spa",
+    "name": "DNI number swap fails on single-page apps",
+    "type": "bug",
+    "productArea": "call_tracking",
+    "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+    "plannedCount": 9,
+    "weeklyWeights": [
+      0,
+      1,
+      2,
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "id": "praise_summaries",
+    "name": "Teams love AI call summaries",
+    "type": "praise",
+    "productArea": "signal_ai",
+    "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+    "plannedCount": 18,
+    "weeklyWeights": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ]
+  },
+  {
+    "id": "praise_presense",
+    "name": "PreSense routing lifts conversion",
+    "type": "praise",
+    "productArea": "presense",
+    "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+    "plannedCount": 12,
+    "weeklyWeights": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_prairielink_checkin_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "high",
+      "summary": "Since the SPA relaunch, DNI swaps the number only on first page load; later route changes show the default number.",
+      "quote": "Since the September relaunch of the order flow as a single-page app, DNI only swaps the number on the first page load; after that every visitor sees the default number.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Wants to share the campaign dashboard with their agency as a read-only link without buying a seat.",
+      "quote": "Dale asked whether the campaign dashboard can be shared as a read-only link with their agency, without creating a user seat.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

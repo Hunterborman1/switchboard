@@ -1,0 +1,128 @@
+Keystone Mutual check-in
+Mon, Oct 12, 2026, 8:00AM • 7:16
+
+Rachel Okafor  0:04
+Morning, both. How's Columbus? We got about a foot of snow up here in Minneapolis over the weekend, so I'm jealous of anybody who still has grass.
+
+Nate Simmons  0:15
+Hey Rachel. Cold but no um, snow yet. Give it a a month and we'll be the ones complaining. How was your weekend?
+
+Rachel Okafor  0:26
+Mostly shoveling, honestly. I did get out for a walk Sunday, which was nice. Erin, how are you? I know Q4 is usually loud on your side.
+
+Erin Walsh  0:37
+Loud is one word for it. Open enrollment stuff plus the home side is running that bundling push, so my dashboards have been busy. But we're upright.
+
+Nate Simmons  0:48
+Speak for yourself.
+
+Rachel Okafor  0:50
+Ha. Okay, I had three things on my list, but you all drive it. What's worth talking about today?
+
+Nate Simmons  0:58
+There's one thing I you know, want to get in front of you on, and it's kind of urgent from where I sit. It's about the spam side of Signal AI.
+
+Rachel Okafor  1:13
+Okay. Tell me what you're seeing.
+
+Nate Simmons  1:17
+So our after-hours claims intake. People call in at ten at night, they just had a tree land on the garage, and the first thing out of their mouth when we pick up is the address. That's it. No chit chat, no policy number, they just want help. And a chunk of those calls are getting tagged spam.
+
+Rachel Okafor  1:40
+Tagged as spam by the the model, uh, you mean.
+
+Nate Simmons  1:45
+I mean, right. And once that tag lands, they they drop out of the reporting. So my team is looking at last week's claim call numbers and they don't match what the Genesys side shows. We're talking real customers, people with a house full of water, and they're invisible in the dashboard.
+
+Erin Walsh  2:09
+It's not just the counts. We feed those calls to Google Ads as offline conversions, so if they're marked spam they don't get attributed. Our cost per claim call is going to look wrong for the whole month, and I have a review with the auto and home VPs on the twenty-eighth.
+
+Rachel Okafor  2:32
+Okay. So two pieces. Nate, the reporting side. Erin, the attribution side. Same root calls though, right?
+
+Nate Simmons  2:40
+Same calls, yeah. It's the short ones. If the call is, I don't know, ninety seconds and all they give is an address, that's the pattern. Longer calls where somebody rambles for four minutes don't seem to get hit.
+
+Rachel Okafor  2:55
+Is it specific to after-hours, or are you seeing it on weekends too?
+
+Nate Simmons  3:01
+Weekends, yes. Sunday especially. Saturday during the day it's less. I don't have a clean number for you yet, I just know Monday mornings last week we had a pile of them.
+
+Rachel Okafor  3:13
+That's okay. What I'd like to do is get the call IDs for maybe ten or fifteen of these so the team can look at the transcripts and the signal output side by side. Can you export those from the uh, reporting view, or do you want me to show somebody how?
+
+Nate Simmons  3:32
+I can get you those. I'll pull them this afternoon and email you. Should I flag the ones where the the caller opens with the address specifically?
+
+Rachel Okafor  3:42
+If it's easy, yes. And anything where um, the call is under two minutes and it's after eight p.m. or on a Sunday. I'll take it back to the Signal AI folks and come back to you with what I hear.
+
+Erin Walsh  3:57
+Do you need me to pull the Adobe Analytics side too? Because I can line up sessions against those calls so you can see they had a real digital journey before they dialed.
+
+Rachel Okafor  4:09
+That would help, actually. Especially if a few of those calls came in from paid search. Then we can show what the attribution impact looks like on the Google Ads side too.
+
+Erin Walsh  4:24
+I'll put that together. It won't be today, I've got the bundling numbers due, but Wednesday probably.
+
+Rachel Okafor  4:30
+Wednesday's fine. Okay, moving on. How's the Voice Agent pilot holding up? Nate, I know after-hours intake was the whole point of the pilot.
+
+Nate Simmons  4:41
+It's early, but it's taking calls, and it's handing off to a live adjuster when somebody wants a person. We're still watching it. No complaints that I'd bring to you yet.
+
+Rachel Okafor  4:54
+Good. And PreSense, the screen pops to Genesys, the agents are getting the journey before they pick up?
+
+Nate Simmons  5:02
+Yeah, that's working. I mean, Jason walked me through it last week, agent sees the page and the campaign before the call connects. No issues there.
+
+Rachel Okafor  5:13
+Great. Anything on the the QM side of things? I haven't heard from the quality team in a while.
+
+Nate Simmons  5:21
+Fine. Scorecards are running, nobody's raising anything. Honestly the spam thing is my only fire right now.
+
+Rachel Okafor  5:30
+Understood. Other logistics. Are we still on for the quarterly review the first week of November? I had it as the fourth.
+
+Erin Walsh  5:40
+Fourth is fine for me, but can we do nine instead of eight? My daughter has a thing at the school at seven-thirty that morning.
+
+Rachel Okafor  5:50
+Nine works. I'll send the invite.
+
+Nate Simmons  5:53
+Before you go, one staffing note. We're adding about twenty licensed agents to the auto side in November, so those seats will need to be turned on when the time comes.
+
+Rachel Okafor  6:07
+Send me the names and start dates when you've got them and I'll coordinate.
+
+Nate Simmons  6:13
+Will do.
+
+Erin Walsh  6:14
+Oh, and do we need to do anything with the tag with the I mean, website redesign? Marketing is moving pages around in January.
+
+Rachel Okafor  6:25
+You know, it depends how the URL structure changes. Loop me in before the pages go live and we'll check the dynamic number insertion against the new templates. That's usually a quick look.
+
+Erin Walsh  6:39
+Perfect. I'll put you on the email when we get to the staging review.
+
+Rachel Okafor  6:45
+Great. So takeaways from me: Nate, call IDs this afternoon, I take that to the Signal AI team and come back. Erin, Adobe session data Wednesday if you can. And the quarterly review moves to nine on the fourth.
+
+Nate Simmons  7:00
+Sounds right. Thanks for jumping on this, Rachel.
+
+Rachel Okafor  7:04
+Of course. And hey, if the snow comes your way, send pictures. Uh, I need to feel less alone.
+
+Nate Simmons  7:11
+Deal. Talk soon.
+
+Erin Walsh  7:13
+Bye Rachel.

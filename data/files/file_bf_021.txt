@@ -1,0 +1,131 @@
+Bluewater Insurance Partners escalation
+Mon, Oct 12, 2026, 12:00PM • 7:06
+
+Rachel Okafor  0:03
+Hey Sanjay, hey Peter. Um, How's the Hartford weather treating you? I saw it was supposed to rain all weekend.
+
+Sanjay Iyer  0:11
+It did. My Saturday soccer game got cancelled, so I ended up at the office going through the QM scorecard drafts. Not the weekend I planned.
+
+Peter Lang  0:21
+At least you got something done. I spent Sunday raking leaves and then it rained again, so now they're just wet leaves.
+
+Rachel Okafor  0:29
+Wet leaves are the worst. Okay, uh, well, I know we had this on the calendar for the PreSense thing, so should we just jump in?
+
+Sanjay Iyer  0:38
+So, yeah, let's do it. Peter's got the details, he's been living in this for two weeks.
+
+Peter Lang  0:45
+So, um, the short version is the screen pop is broken for transferred calls. Since the Genesys update in early October, whenever a call moves between queues or gets transferred to another agent, the PreSense panel comes up empty for whoever picks it up.
+
+Rachel Okafor  1:03
+Empty as in no journey data at all, or just missing some fields?
+
+Peter Lang  1:08
+Nothing. No ad, no pages, no product. It's like the caller is brand new. The first agent sees everything fine, and then the second agent gets a blank card.
+
+Rachel Okafor  1:20
+Okay. And this is only on transfers, not on the initial answer?
+
+Peter Lang  1:26
+Right. Initial answer is fine. It's the handoff. We do a lot of handoffs, Medicare Advantage calls start in the general queue and then go to a licensed agent, so that's maybe 40 percent of our volume.
+
+Sanjay Iyer  1:43
+And for those calls the licensed agent is basically starting cold. They're asking the member to repeat everything. It makes us look like we don't know who's calling.
+
+Rachel Okafor  1:55
+That's not great. When did you first notice it, Peter? Was it the day of the Genesys update or a few days after?
+
+Peter Lang  2:04
+Couple days after, I think. We pushed the Genesys update on the 3rd, and the first ticket from an agent was the 5th. By the 7th I had six or seven of them.
+
+Rachel Okafor  2:17
+And have you already opened something with Genesys on their um, side, or is this just with us so far?
+
+Peter Lang  2:25
+I opened one with them Thursday. Their guy said the transfer payload looks normal on their end, so he pointed me back to you. I I didn't want to ping you until I had something concrete.
+
+Rachel Okafor  2:39
+No, that's good, thank you. Can you send me the ticket numbers, both theirs and any examples you have? Even two or three call IDs from um, the 5th or 6th would help.
+
+Peter Lang  2:53
+Yeah, I can get you a list this afternoon. I've been pulling them into a spreadsheet anyway.
+
+Sanjay Iyer  3:02
+Rachel, I'll be honest, this is the kind of thing that makes me nervous, because we're also behind on the QM rollout and now agents are grumbling about the screen pop.
+
+Rachel Okafor  3:13
+I hear that. Let's separate the two for a second. On the QM side, where are you actually at? Last I saw you had two scorecards live.
+
+Sanjay Iyer  3:24
+Two live, and I've got drafts for the Medicare compliance one and the P&C one. My goal was four by the end of September, so we're about three weeks behind. The hold-up is really on our side, we keep rewriting the compliance questions.
+
+Rachel Okafor  3:40
+That's fair. Do you want me to sit in on the next calibration session? I can be quiet and just take notes.
+
+Sanjay Iyer  3:50
+Maybe. Let me check with the team. Like, honestly the bigger thing this week is the screen pop, because that's affecting calls today.
+
+Rachel Okafor  3:59
+Understood. So on the PreSense uh, issue, so, I want to get a few things straight so I can take it to the right people. Um, it it started after the October 3rd Genesys update, it only shows up on transfers between queues or agents, and the receiving agent sees a completely blank panel. Did I get that right?
+
+Peter Lang  4:26
+That's it, like, yeah. Well, one more thing, it's not every transfer. It's maybe eight out of ten. So it's enough to be maddening.
+
+Rachel Okafor  4:36
+Okay, that's actually helpful. Is there a pattern you've noticed, like certain queues, certain agents, time of day?
+
+Peter Lang  4:44
+I thought it was the Medicare queues at first, but no, I saw it on a P&C transfer Friday. So I don't think it's queue-specific.
+
+Rachel Okafor  4:55
+Got it. I'm going to write this up today and get it in front of the the support and product teams. I can't tell you what the fix is from here, but I'll push on it and I'll come back to you with next steps, probably by Wednesday.
+
+Sanjay Iyer  5:16
+Wednesday so, works. And if they need to talk to Peter directly, he's the one who knows the plumbing.
+
+Peter Lang  5:24
+Happy to. I can also grab a screen recording from one of the agents if that helps.
+
+Rachel Okafor  5:30
+That would be great, like, actually. Send it with the call IDs and and I'll attach everything.
+
+Peter Lang  5:38
+Will do.
+
+Rachel Okafor  5:39
+While I have you, anything else on the account I should know? Volumes look steady, you were around 61,000 calls in September, right?
+
+Sanjay Iyer  5:49
+Just under 62. We're heading into open enrollment so October and November will be heavier. I also had a supervisor leave in September, so we're short one person on the QA side until we backfill.
+
+Rachel Okafor  6:04
+Okay, good to know. Does that change who owns the QM calibration?
+
+Sanjay Iyer  6:10
+For now it's me and the two team leads, so it's slower. That's part of uh, the three weeks.
+
+Rachel Okafor  6:18
+Makes sense. Anything else on the call tracking or Salesforce side, or is that all behaving?
+
+Peter Lang  6:25
+I mean, that's all fine. No issues there.
+
+Rachel Okafor  6:29
+Okay. So I'll write this up today, and Peter, you'll send me the ticket numbers, the call IDs and the recording.
+
+Peter Lang  6:38
+Uh, By end of day.
+
+Rachel Okafor  6:40
+Perfect. And Sanjay, let's keep the calibration thing on the calendar for next week, even if it's just fifteen minutes.
+
+Sanjay Iyer  6:48
+I mean, Sounds good. Thanks for moving fast on this one, Rachel.
+
+Rachel Okafor  6:54
+I mean, Of course. Talk soon, and good luck with the wet leaves, Peter.
+
+Peter Lang  7:00
+They're not going anywhere. Bye, Rachel.

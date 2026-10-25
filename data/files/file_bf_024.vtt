@@ -1,0 +1,153 @@
+WEBVTT
+
+1
+00:00:03.111 --> 00:00:06.336
+Rachel Okafor: Morning Peter. How's it going up in Hartford?
+
+2
+00:00:07.788 --> 00:00:11.162
+Peter Lang: Morning Rachel. Cold but fine. Busy week, open enrollment stuff.
+
+3
+00:00:12.065 --> 00:00:22.915
+Rachel Okafor: Yeah, I figured. Let's keep this one tight then. I had two things on my list and you had one you wanted to walk me through.
+
+4
+00:00:23.116 --> 00:00:28.341
+Peter Lang: Right, the PreSense thing. That's the one that's actually causing us pain right now.
+
+5
+00:00:29.782 --> 00:00:32.088
+Rachel Okafor: Okay, tell me what you're seeing.
+
+6
+00:00:33.317 --> 00:00:48.750
+Peter Lang: So when a call comes in and our Genesys flow hands it off between queues, or a rep warm transfers it to somebody else, the second agent gets the pop but there's nothing in it. Just an empty frame.
+
+7
+00:00:49.004 --> 00:00:51.117
+Rachel Okafor: Blank on the receiving side.
+
+8
+00:00:52.598 --> 00:01:02.366
+Peter Lang: Completely blank. The first agent sees the ad and the pages the caller was on, that all works. Then it transfers and the next person gets a shell.
+
+9
+00:01:02.366 --> 00:01:04.110
+Peter Lang: No journey, no source, nothing.
+
+10
+00:01:04.568 --> 00:01:09.431
+Rachel Okafor: And this is only on the transfers, not on the initial pop?
+
+11
+00:01:10.640 --> 00:01:19.917
+Peter Lang: Only transfers. Direct calls are fine. It started maybe two weeks ago, right around when we moved the Medicare queue split.
+
+12
+00:01:20.861 --> 00:01:23.453
+Rachel Okafor: How many of these are we talking?
+
+13
+00:01:24.082 --> 00:01:31.019
+Peter Lang: It's probably a quarter of the transfers in the Medicare queue. P and C queues, less, but it happens there too.
+
+14
+00:01:31.930 --> 00:01:36.988
+Rachel Okafor: And the agents, are they telling you or just working around it?
+
+15
+00:01:38.004 --> 00:01:46.128
+Peter Lang: Working around it. They just ask the caller again. Which is the whole thing we bought this to avoid, right?
+
+16
+00:01:46.778 --> 00:01:57.735
+Rachel Okafor: Yeah. Okay. Can you get me a couple of call IDs from this week? Ones where the transfer happened and the second agent got the empty frame?
+
+17
+00:01:58.807 --> 00:02:04.026
+Peter Lang: I can pull those this afternoon. I'll send them over with the timestamps.
+
+18
+00:02:04.568 --> 00:02:08.547
+Rachel Okafor: Perfect. And is it every transfer or only certain paths?
+
+19
+00:02:09.848 --> 00:02:16.178
+Peter Lang: Seems like any transfer where the call changes queue or agent. I haven't found a pattern beyond that.
+
+20
+00:02:17.500 --> 00:02:25.108
+Rachel Okafor: Okay, I'll take that to the team with your examples and see what they say. I'm not going to guess at it here.
+
+21
+00:02:25.531 --> 00:02:34.666
+Peter Lang: Appreciate it. It's not blocking calls, it's just making the reps look dumb when they ask a caller something we already know.
+
+22
+00:02:34.957 --> 00:02:39.175
+Rachel Okafor: Understood. Okay, second thing, QM. Where are you on seats?
+
+23
+00:02:40.490 --> 00:02:45.817
+Peter Lang: We're at sixty two active. We were supposed to be near a hundred by now.
+
+24
+00:02:46.170 --> 00:02:47.791
+Rachel Okafor: What's holding it up?
+
+25
+00:02:48.244 --> 00:02:57.140
+Peter Lang: Honestly just bandwidth. Our supervisors are the ones who have to review and score, and two of them are out on leave.
+
+26
+00:02:57.140 --> 00:02:58.758
+Peter Lang: So the rollout's crawling.
+
+27
+00:02:59.475 --> 00:03:07.610
+Rachel Okafor: Do you want me to do a short session for the supervisors who are still on, just on the scoring side?
+
+28
+00:03:07.610 --> 00:03:09.160
+Rachel Okafor: Not the admin stuff.
+
+29
+00:03:10.557 --> 00:03:15.781
+Peter Lang: That could help. Let me check calendars and get back to you.
+
+30
+00:03:16.142 --> 00:03:18.955
+Rachel Okafor: Sure. And on volumes, how's October looking?
+
+31
+00:03:19.738 --> 00:03:28.007
+Peter Lang: Heavy. We're running about eighteen thousand calls a month across the network, maybe twenty two with the open enrollment push.
+
+32
+00:03:28.266 --> 00:03:31.079
+Rachel Okafor: That's up from what, sixteen in August?
+
+33
+00:03:32.150 --> 00:03:38.146
+Peter Lang: Yeah, sixteen, seventeen. The Google Ads side is doing its job, the conversions are matching fine.
+
+34
+00:03:38.867 --> 00:03:42.867
+Rachel Okafor: Good. Anything else on the tracking or the Salesforce side?
+
+35
+00:03:43.320 --> 00:03:44.828
+Peter Lang: No, that's all steady.
+
+36
+00:03:45.328 --> 00:03:52.412
+Rachel Okafor: Alright. I'll get the transfer thing moving today and follow up on the supervisor session by Thursday.
+
+37
+00:03:52.836 --> 00:03:54.477
+Peter Lang: Sounds good. Thanks Rachel.
+
+38
+00:03:55.899 --> 00:03:57.558
+Rachel Okafor: Thanks Peter. Stay warm.

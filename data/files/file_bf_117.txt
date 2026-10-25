@@ -1,0 +1,37 @@
+Keystone Mutual / Invoca | check-in | Wed, Sep 30, 2026
+
+[00:00:04] Rachel Okafor: Morning, Luis. How's your Wednesday going so far?
+[00:00:08] Luis Ortega: Morning, Rachel. It's going. We had a burst of hail claims in the northeast part of the state over the weekend, so it's been busy.
+[00:00:19] Rachel Okafor: I saw some of that weather on the news. Is that volume showing up in Invoca?
+[00:00:26] Luis Ortega: Yeah, our call volume jumped about 18 percent week over week. Most of it hit the claims intake line.
+[00:00:34] Rachel Okafor: Okay. Anything I should be watching on the tracking or reporting side while it's elevated?
+[00:00:41] Luis Ortega: No, that's all been solid. Attribution looks right, and the Google Ads conversions are coming through like they normally do.
+[00:00:49] Rachel Okafor: Good. And how's the after-hours pilot going? The AI Voice Agent on claims intake.
+[00:00:56] Luis Ortega: Mixed. The fully automated calls are actually scoring well, but anything that gets transferred to a person is a problem.
+[00:01:03] Rachel Okafor: What are you seeing there?
+[00:01:06] Luis Ortega: When the AI Voice Agent transfers to a live agent, none of the details it collected come over with the call. So the caller has to start over, give their policy number, the loss date, all of it.
+[00:01:20] Rachel Okafor: Does the live agent get anything at all when the transfer lands?
+[00:01:25] Luis Ortega: Not the details. It's frustrating, because our CSAT on transferred calls is running several points below the fully automated ones.
+[00:01:34] Rachel Okafor: That tracks with what you're describing. Let me get specifics from you and take it to the team.
+[00:01:41] Luis Ortega: Sure. There's one more thing on the screen pop side, actually.
+[00:01:47] Rachel Okafor: Go ahead.
+[00:01:48] Luis Ortega: When Genesys transfers a call between queues or between agents, the PreSense screen pop shows up blank for whoever receives it. So the agent answers with nothing in front of them.
+[00:01:59] Rachel Okafor: Is that every transfer, or specific queues?
+[00:02:02] Luis Ortega: It's been the queue-to-queue ones mostly, but I've heard about agent-to-agent too. Our supervisors are escalating it internally, so I'd like to get ahead of it.
+[00:02:13] Rachel Okafor: Understood. I'll need a few example calls if you can pull them.
+[00:02:18] Luis Ortega: I can get you timestamps by end of day.
+[00:02:23] Rachel Okafor: Perfect. Anything else before I let you get back to the hail?
+[00:02:28] Luis Ortega: One more. Our Salesforce integration has been dropping call data, but only on custom objects.
+[00:02:34] Rachel Okafor: Custom objects only. What changed on your side?
+[00:02:38] Luis Ortega: We updated some fields and picklist values last month. Standard objects are writing fine, but the custom objects stop updating when that happens.
+[00:02:47] Rachel Okafor: Okay, so it lines up with your field changes. I'll include that in what I send over.
+[00:02:55] Luis Ortega: Appreciate it. Also, just so you know, we're adding a few agents to the Genesys pool next month, so licensing stays about the same on our end.
+[00:03:07] Rachel Okafor: Good to know. I'll note it for the account.
+[00:03:10] Luis Ortega: And can we move our next check-in? I've got a conflict the week of the 19th.
+[00:03:16] Rachel Okafor: Sure, I'll send a couple of options.
+[00:03:20] Luis Ortega: Thanks. Oh, one tangent. Did you see the Buckeyes game Saturday?
+[00:03:24] Rachel Okafor: I caught the last quarter. That ending was something.
+[00:03:30] Luis Ortega: Tell me about it. Anyway, I'll get you those timestamps.
+[00:03:35] Rachel Okafor: Great. I'll follow up on all three items once I have them.
+[00:03:40] Luis Ortega: Sounds good. Talk soon, Rachel.
+[00:03:43] Rachel Okafor: Talk soon, Luis. Hang in there with the claims.

@@ -1,0 +1,137 @@
+WEBVTT
+
+1
+00:00:06.149 --> 00:00:12.781
+Priya Raman: Morning, Mark. Morning, Kevin. Thanks for jumping on. I know it was early out there.
+
+2
+00:00:14.034 --> 00:00:18.030
+Mark Delgado: Morning, Priya. Yeah, 7:45 our time. I've got coffee, so we're good.
+
+3
+00:00:18.923 --> 00:00:25.192
+Kevin Osei: Same. I've got a hard stop at 9:15, so if we can keep it tight, that'd help.
+
+4
+00:00:26.194 --> 00:00:32.592
+Priya Raman: Understood. I saw the note you sent Friday, Mark. Do you want to start there?
+
+5
+00:00:33.360 --> 00:00:45.199
+Mark Delgado: Yeah. So the Salesforce piece is the thing. Calls are coming in fine, I can see them in the console, but they're not landing on our custom objects anymore.
+
+6
+00:00:46.409 --> 00:00:48.453
+Priya Raman: When did you first notice it?
+
+7
+00:00:48.815 --> 00:01:02.090
+Mark Delgado: Last Wednesday. Our scheduling team flagged that the follow-up queue was empty, which never happens. We average about 2,100 calls a week across the 38 clinics, and a good chunk of those should be creating tasks.
+
+8
+00:01:02.335 --> 00:01:11.968
+Kevin Osei: And it's not all objects. Standard call records are writing. It's the custom ones, the ones we use for the nurse triage follow-ups.
+
+9
+00:01:12.403 --> 00:01:18.888
+Priya Raman: Okay. Did anything change on your side recently? Sandbox work, field changes, anything like that?
+
+10
+00:01:19.954 --> 00:01:27.235
+Mark Delgado: That's the thing. We had a sandbox refresh about two weeks ago, and after that the mapping had to be rebuilt.
+
+11
+00:01:27.235 --> 00:01:32.782
+Mark Delgado: Our admin spent most of a day on it. Then last week it just stopped again.
+
+12
+00:01:33.196 --> 00:01:37.865
+Priya Raman: So the mapping was rebuilt once, it worked, and then dropped off?
+
+13
+00:01:38.435 --> 00:01:46.043
+Mark Delgado: Correct. And I don't want to rebuild it every time someone touches a picklist value. That's not sustainable.
+
+14
+00:01:47.344 --> 00:01:55.815
+Priya Raman: No, it isn't. Can you tell me which objects specifically? Or I can pull the integration logs with the timestamps you gave me.
+
+15
+00:01:56.494 --> 00:02:05.007
+Mark Delgado: It's the triage object and the referral object. Both custom. The referral one has a picklist we changed, added two new values for the orthopedic clinics.
+
+16
+00:02:05.347 --> 00:02:11.378
+Priya Raman: Got it. And is this blocking patient outreach, or is it more of a reporting gap right now?
+
+17
+00:02:11.728 --> 00:02:20.379
+Mark Delgado: It's blocking. The nurses work out of that queue. Right now they're pulling reports manually, which is eating about three hours a day across the team.
+
+18
+00:02:21.611 --> 00:02:32.323
+Kevin Osei: From my side, it also means the Google Ads offline conversions are getting a thinner dataset. Not the end of the world, but I noticed the match rate dip.
+
+19
+00:02:33.564 --> 00:02:45.389
+Priya Raman: Okay. Let me take this back to the integration team today. I'll need the object names, the field that changed, and a couple of call IDs that should have written but didn't.
+
+20
+00:02:45.389 --> 00:02:48.714
+Priya Raman: Can you get me those by end of day?
+
+21
+00:02:49.524 --> 00:02:54.426
+Mark Delgado: Yeah, I can do that. I'll pull three or four from Wednesday.
+
+22
+00:02:54.908 --> 00:03:05.098
+Priya Raman: Perfect. If you email them to me, I'll open it with support and stay on it. I won't guess at a fix on this call.
+
+23
+00:03:06.047 --> 00:03:11.802
+Kevin Osei: Appreciate that. While we're here, the PreSense screen pops have been solid. No issues there.
+
+24
+00:03:12.184 --> 00:03:17.808
+Priya Raman: Good to hear. How are the QM scorecards landing with the new hires?
+
+25
+00:03:18.095 --> 00:03:24.447
+Mark Delgado: Fine. We onboarded six schedulers this month, so the volume's up a bit. They're getting used to the scoring.
+
+26
+00:03:25.092 --> 00:03:30.235
+Priya Raman: And staffing on the Genesys side, are you covered for the respiratory season?
+
+27
+00:03:30.443 --> 00:03:37.763
+Mark Delgado: Mostly. We're two bodies short on the overnight shift, but that's a hiring thing, not an Invoca thing.
+
+28
+00:03:38.058 --> 00:03:43.984
+Priya Raman: Understood. Anything on the renewal side you want to talk about while we're both here?
+
+29
+00:03:45.269 --> 00:03:50.423
+Kevin Osei: Not today. We're good through next June as far as I know.
+
+30
+00:03:51.805 --> 00:03:58.708
+Priya Raman: Right, June 2027. I'll flag it when we get closer. Let me get the Salesforce issue moving first.
+
+31
+00:03:59.480 --> 00:04:04.255
+Mark Delgado: Thanks, Priya. I'll send the object names and call IDs this afternoon.
+
+32
+00:04:05.085 --> 00:04:12.527
+Priya Raman: Great. And Kevin, I'll send the QBR deck by Thursday so you have time to review before the 30th.
+
+33
+00:04:12.903 --> 00:04:14.034
+Kevin Osei: Perfect. Thanks, Priya.
+
+34
+00:04:14.938 --> 00:04:16.499
+Priya Raman: Thanks, both. Talk soon.

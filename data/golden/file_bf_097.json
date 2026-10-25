@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_097",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "It's about the scorecard criteria. The templates cover the obvious stuff, greeting, verification, resolution. But we have a state-specific disclosure for HELOC calls that we're required to read, and there's no way for me to score that.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

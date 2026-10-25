@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:07.834 --> 00:00:11.546
+Diego Alvarez: Hey Cody, hey Hector. Thanks for making time this afternoon.
+
+2
+00:00:12.746 --> 00:00:21.125
+Cody Barrett: Hey Diego. Good to see you. Hector's joining because a chunk of what we want to talk about touches the Spanish floor.
+
+3
+00:00:22.166 --> 00:00:28.580
+Hector Ruiz: Hola Diego. I'm on a headset in the bullpen, so if it gets loud you'll know why.
+
+4
+00:00:28.981 --> 00:00:33.681
+Diego Alvarez: No problem at all. Before we get into it, how's volume looking this month?
+
+5
+00:00:34.361 --> 00:00:43.698
+Cody Barrett: We're tracking around 9,400 calls for September across the three states. Texas is still the biggest, Arizona's been creeping up since the Phoenix push.
+
+6
+00:00:45.180 --> 00:00:49.196
+Diego Alvarez: That's up from the low eights last time we talked, right?
+
+7
+00:00:50.142 --> 00:00:55.088
+Cody Barrett: Yeah, maybe eight percent. Meta's been doing more of the work lately, Google's roughly flat.
+
+8
+00:00:55.949 --> 00:01:04.549
+Hector Ruiz: Spanish calls are about a third of that. We finally got the second bilingual pod fully staffed, so hold times are way down from the summer.
+
+9
+00:01:06.017 --> 00:01:12.518
+Diego Alvarez: Good timing heading into Q4. Anything you want me to look at while we're on?
+
+10
+00:01:13.492 --> 00:01:25.749
+Cody Barrett: One thing, and it's the main reason I asked for this session. The offline conversions we send to Google Ads are landing one to three days after the call.
+
+11
+00:01:25.749 --> 00:01:32.090
+Cody Barrett: Not all of them, but enough that Smart Bidding is optimizing on a partial picture.
+
+12
+00:01:33.524 --> 00:01:37.923
+Diego Alvarez: Okay. Is it consistent across campaigns, or worse on some?
+
+13
+00:01:38.186 --> 00:01:45.920
+Cody Barrett: Worse on the residential campaigns with the longer sales cycle. Some conversions show up same day, others drag out two or three days.
+
+14
+00:01:45.920 --> 00:01:50.291
+Cody Barrett: We can't tell what's a slow sync and what's just a slow sale.
+
+15
+00:01:51.006 --> 00:01:59.222
+Hector Ruiz: And the Spanish campaigns are in that same bucket. Those leads take longer to close, so they're probably hit hardest.
+
+16
+00:01:59.431 --> 00:02:02.092
+Diego Alvarez: Got it. When did you first notice it?
+
+17
+00:02:02.947 --> 00:02:12.253
+Cody Barrett: About three weeks ago. I pulled a report for our Monday standup and the numbers didn't line up with Salesforce, so I started digging.
+
+18
+00:02:12.920 --> 00:02:15.571
+Diego Alvarez: And what's the impact on bidding right now?
+
+19
+00:02:16.759 --> 00:02:27.009
+Cody Barrett: We moved one campaign, the Austin residential one, to manual bidding as a stopgap. I didn't want the algorithm making decisions on data that's still trickling in.
+
+20
+00:02:27.519 --> 00:02:30.226
+Diego Alvarez: How long has that one been on manual?
+
+21
+00:02:30.785 --> 00:02:38.287
+Cody Barrett: Since last Thursday. It's fine for now, but I don't want to run the whole account that way through the winter.
+
+22
+00:02:39.152 --> 00:02:50.399
+Diego Alvarez: Understood. I'll need a couple of examples, campaign names and a few call IDs where the timing was off, so I can take it to the team with something concrete.
+
+23
+00:02:50.945 --> 00:02:55.091
+Cody Barrett: I can send those tonight. I already have a spreadsheet going.
+
+24
+00:02:56.400 --> 00:02:58.923
+Diego Alvarez: Perfect. Anything else on the integration side?
+
+25
+00:03:00.124 --> 00:03:03.274
+Cody Barrett: Salesforce and Meta are fine. No complaints there.
+
+26
+00:03:03.532 --> 00:03:12.192
+Hector Ruiz: From the floor, everything else is working. Signal AI is tagging our Spanish calls well enough that the leads route correctly.
+
+27
+00:03:13.469 --> 00:03:23.396
+Diego Alvarez: Good. Let me get the examples over to the team, and I'll come back to you with next steps. I don't want to guess at what's happening until they've looked.
+
+28
+00:03:23.747 --> 00:03:25.460
+Cody Barrett: That's all I'm asking.
+
+29
+00:03:26.529 --> 00:03:38.158
+Diego Alvarez: One more thing while I have you. Renewal's on the calendar for the end of November. Do you want to do a quick business review before then, or keep it simple?
+
+30
+00:03:39.639 --> 00:03:48.400
+Cody Barrett: Let's do a short one. Thirty minutes, just the three of us. I'll get Hector's numbers for the bilingual side.
+
+31
+00:03:49.772 --> 00:03:53.803
+Hector Ruiz: I can pull those by the second week of October.
+
+32
+00:03:55.220 --> 00:04:00.452
+Diego Alvarez: Great. I'll send a couple of times for the week of the twelfth.
+
+33
+00:04:01.574 --> 00:04:10.354
+Cody Barrett: Works for me. And hey, if the team needs anything else from us, just say so. I'd rather over-share than have them chasing ghosts.
+
+34
+00:04:10.995 --> 00:04:15.183
+Diego Alvarez: Appreciate that. I'll follow up after I hear back. Thanks, both.
+
+35
+00:04:16.465 --> 00:04:18.565
+Hector Ruiz: Thanks Diego. Back to the phones.
+
+36
+00:04:19.945 --> 00:04:20.745
+Cody Barrett: Talk soon.

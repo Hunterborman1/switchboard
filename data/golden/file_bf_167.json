@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_167",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "high",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "since we relaunched the order flow as a single-page app back in september, dynamic number insertion basically stops swapping after a client-side route change. like you land on /order, you click through a couple steps, url changes but no full reload, and the number in the header just... stays whatever loaded first. mobile click-to-call is the worst, people tapping the button get our default 800 number instead of the campaign one.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

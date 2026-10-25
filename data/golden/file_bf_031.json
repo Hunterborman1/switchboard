@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_031",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Finance and procurement are pushing back hard on the way the add-ons are billed. They see Call Tracking on one line, then PreSense on another line, and then they start asking why the seats and the minutes are all separate.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

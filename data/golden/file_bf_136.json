@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_136",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "our agents genuinely like seeing what the caller browsed before they picked up",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

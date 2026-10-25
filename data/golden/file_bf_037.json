@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_037",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "The front-line teams keep telling me the AI call summaries are saving them real time on callbacks and on the handoffs to the back office.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "She wants to know we can control redaction by identifier type. Like, we choose whether it's DOB, member IDs, account numbers, and it's not all-or-nothing.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

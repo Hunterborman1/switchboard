@@ -1,0 +1,129 @@
+WEBVTT
+
+1
+00:00:05.667 --> 00:00:08.914
+Aisha Coleman: Morning, Jason. How's the week going so far?
+
+2
+00:00:09.636 --> 00:00:17.808
+Jason Park: Morning. Pretty good, busy. We had the fall auto loan campaign go live last week, so the phones are up.
+
+3
+00:00:18.574 --> 00:00:27.542
+Aisha Coleman: I saw the volume uptick in the dashboard, looks like you're running about 30 percent over the September weekly average. How are the branch teams holding up?
+
+4
+00:00:28.332 --> 00:00:38.910
+Jason Park: Okay so far. We're down one person in the Tacoma contact center, she's out on leave until November, so the remaining folks are picking up the slack.
+
+5
+00:00:39.157 --> 00:00:47.056
+Aisha Coleman: Got it. Do you want me to pull the QM scorecards for the folks who are covering, just so nothing slips while she's out?
+
+6
+00:00:47.604 --> 00:00:55.163
+Jason Park: That would help. Renee runs the scorecard reviews now, so if you can send me the export I'll pass it to her.
+
+7
+00:00:56.119 --> 00:01:02.676
+Aisha Coleman: I'll get that to you by end of day tomorrow. Anything else come up since we last talked?
+
+8
+00:01:03.565 --> 00:01:10.470
+Jason Park: One thing I wanted to mention. The call summaries in Signal AI have been really well received on the front line.
+
+9
+00:01:11.420 --> 00:01:14.026
+Aisha Coleman: Oh good. What are you hearing?
+
+10
+00:01:14.452 --> 00:01:26.785
+Jason Park: Our callbacks and dispatch folks say the summaries save them a ton of time when they pick up a member's file, no more listening to the whole recording to figure out what happened.
+
+11
+00:01:27.344 --> 00:01:34.663
+Jason Park: And the handoffs between the branch and the contact center are smoother because the next person already knows the gist.
+
+12
+00:01:36.069 --> 00:01:39.735
+Aisha Coleman: That's great to hear. Is the accuracy holding up for them?
+
+13
+00:01:40.272 --> 00:01:48.845
+Jason Park: That's the thing, it's accurate enough that they trust it without going back to the audio. That's the bar, and it's clearing it.
+
+14
+00:01:49.174 --> 00:01:55.291
+Aisha Coleman: Good. Are they using the summaries for anything on the member side, or mostly internal?
+
+15
+00:01:56.081 --> 00:02:08.396
+Jason Park: Mostly internal right now. A couple of supervisors have started pasting the summary into the case notes in Salesforce Financial Services Cloud, which the compliance team has noticed.
+
+16
+00:02:09.507 --> 00:02:10.375
+Aisha Coleman: Noticed how?
+
+17
+00:02:11.271 --> 00:02:22.050
+Jason Park: Mostly questions about retention, how long those summaries stay on the case record. Nothing pressing, they just want to be able to answer it if an examiner asks.
+
+18
+00:02:22.679 --> 00:02:33.475
+Aisha Coleman: Got it. Let me check with our team on the retention details and I'll follow up with you in writing so you have something to hand them.
+
+19
+00:02:34.169 --> 00:02:45.440
+Jason Park: Perfect. Separately, we have the quarterly scorecard change review with compliance on the 22nd, so any QM updates need to be locked a week before that.
+
+20
+00:02:46.305 --> 00:02:53.685
+Aisha Coleman: Noted, the 15th. I'll make sure anything we touch is done by then so it can go through your review.
+
+21
+00:02:54.026 --> 00:02:59.274
+Jason Park: Thanks. How are things on your end, you're covering the whole Northwest territory now, right?
+
+22
+00:02:59.942 --> 00:03:06.611
+Aisha Coleman: I am. It's a lot of driving to conferences, but the accounts are interesting. I was in Spokane last week.
+
+23
+00:03:07.493 --> 00:03:10.056
+Jason Park: Ouch. Well, at least it's not January.
+
+24
+00:03:11.325 --> 00:03:21.356
+Aisha Coleman: True. Okay, so for today, I mainly wanted to walk through the tracking numbers for the auto loan campaign and confirm the Google Ads conversion imports are landing cleanly.
+
+25
+00:03:21.676 --> 00:03:28.714
+Jason Park: Sure. The numbers look right on our side, we added three new ones for the Tacoma and Puyallup markets.
+
+26
+00:03:29.002 --> 00:03:36.948
+Aisha Coleman: I see them. And the offline conversion uploads to Google Ads, are you seeing calls attributed to the right campaigns?
+
+27
+00:03:38.135 --> 00:03:44.780
+Jason Park: Yes, the GCLID matching has been solid since we fixed the landing page tags in August.
+
+28
+00:03:45.404 --> 00:03:56.158
+Aisha Coleman: Great. I'll pull a report on the campaign performance for the first two weeks and send it over so you have it for your Monday marketing standup.
+
+29
+00:03:56.376 --> 00:04:04.861
+Jason Park: That would be helpful. Can you include the call outcome breakdown by signal? The team likes to see quotes versus applications.
+
+30
+00:04:05.794 --> 00:04:11.285
+Aisha Coleman: Will do. I'll have that to you Friday. Anything else before I let you go?
+
+31
+00:04:11.716 --> 00:04:14.263
+Jason Park: No, that covers it. Thanks, Aisha.
+
+32
+00:04:15.631 --> 00:04:16.772
+Aisha Coleman: Anytime. Talk soon.

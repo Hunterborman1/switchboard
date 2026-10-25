@@ -1,0 +1,193 @@
+WEBVTT
+
+1
+00:00:03.075 --> 00:00:11.526
+Rachel Okafor: Hey Luis, hey Nate. Thanks for making time. I've got Leah on with us, she's going to drive the config today.
+
+2
+00:00:11.526 --> 00:00:13.136
+Rachel Okafor: How's Monday treating you?
+
+3
+00:00:13.364 --> 00:00:22.941
+Luis Ortega: Busy, but good. We had a spike in claims over the weekend with that storm front, so the timing on this is decent.
+
+4
+00:00:23.313 --> 00:00:28.809
+Nate Simmons: Yeah, after-hours held up fine, which is kind of why we're here. Ready when you are.
+
+5
+00:00:29.042 --> 00:00:42.194
+Leah Marsh: Perfect. So the goal today is to take what's working after hours and extend it into daytime overflow. I want to walk the intents, the transfer targets, and then the Salesforce write-back at the end.
+
+6
+00:00:42.194 --> 00:00:42.946
+Leah Marsh: Sound okay?
+
+7
+00:00:44.186 --> 00:00:45.203
+Luis Ortega: Works for us.
+
+8
+00:00:46.048 --> 00:00:54.270
+Leah Marsh: Great. Right now the agent is handling claims intake after hours, so FNOL basics, policy lookup, and then a transfer to an on-call adjuster.
+
+9
+00:00:54.270 --> 00:00:57.695
+Leah Marsh: For daytime overflow, which queues should it pick up from?
+
+10
+00:00:58.256 --> 00:01:06.558
+Nate Simmons: Start with the general claims line and the policyholder services queue. Those are the two that spill over most days between eleven and two.
+
+11
+00:01:07.043 --> 00:01:12.229
+Leah Marsh: Got it. And when the agent can't resolve, where should it hand off?
+
+12
+00:01:12.894 --> 00:01:19.496
+Nate Simmons: Same as after hours, the claims queue in Genesys. If nobody's available it should offer a callback rather than hold.
+
+13
+00:01:20.651 --> 00:01:31.227
+Leah Marsh: Okay. Let's talk intents. After hours we've got FNOL, policy status, and billing. What else do you get during the day that we should cover?
+
+14
+00:01:31.533 --> 00:01:44.076
+Luis Ortega: Glass. Glass claims are a big chunk. We need the voice agent to tell a glass claim from a collision claim and send glass straight to our glass vendor's line.
+
+15
+00:01:44.559 --> 00:01:48.689
+Leah Marsh: So a separate transfer target for glass, not the claims queue.
+
+16
+00:01:49.634 --> 00:02:00.020
+Luis Ortega: Right. They have their own intake team. If we route glass into the main claims queue it just bounces back to us and we call the vendor anyway.
+
+17
+00:02:01.292 --> 00:02:06.941
+Leah Marsh: How does the caller describe it usually? Do they say glass, or windshield, or something else?
+
+18
+00:02:07.516 --> 00:02:12.161
+Luis Ortega: Windshield, mostly. Sometimes back glass. A few say chip or crack.
+
+19
+00:02:13.280 --> 00:02:25.039
+Leah Marsh: Okay, so I'd build a glass signal with those phrases and set the transfer target to the vendor number. I'll need the number and the hours from you, Luis.
+
+20
+00:02:25.839 --> 00:02:28.206
+Luis Ortega: I'll send it over this afternoon.
+
+21
+00:02:29.527 --> 00:02:37.457
+Rachel Okafor: And just so we're clear on scope, we're not touching the after-hours flow today. This is a daytime config only.
+
+22
+00:02:38.601 --> 00:02:39.401
+Nate Simmons: That's fine.
+
+23
+00:02:40.366 --> 00:02:48.221
+Leah Marsh: One thing I want to check before we go further. The agent is passing the caller's digital journey through PreSense on the after-hours flow.
+
+24
+00:02:48.221 --> 00:02:51.167
+Leah Marsh: Do you want that on the overflow transfers too?
+
+25
+00:02:52.306 --> 00:02:59.454
+Nate Simmons: Yes. Our agents lean on that a lot, especially when somebody's been on the site looking at a specific policy.
+
+26
+00:03:00.459 --> 00:03:10.067
+Leah Marsh: Okay. Now, the write-back. After hours, the call outcome goes to the Case object. Is that still where you want it for overflow?
+
+27
+00:03:10.983 --> 00:03:22.241
+Nate Simmons: That's the thing. The Salesforce sync is dropping the claim number into the wrong field when it's on our custom Claim object. It works fine on the standard Case object.
+
+28
+00:03:23.011 --> 00:03:25.541
+Leah Marsh: Okay. When did you first notice that?
+
+29
+00:03:26.849 --> 00:03:35.741
+Nate Simmons: Last week sometime. We caught it doing a spot check on the overnight batch. It's not every record, maybe one in five.
+
+30
+00:03:36.793 --> 00:03:43.660
+Leah Marsh: Is it only on the voice agent calls, or are you seeing it from regular tracked calls too?
+
+31
+00:03:44.883 --> 00:03:51.548
+Nate Simmons: As far as I can tell it's specific to the agent calls. The manual ones look fine.
+
+32
+00:03:51.771 --> 00:04:00.952
+Leah Marsh: Can you send me a couple of example records? Call ID and the claim number, and I'll take it back to our team.
+
+33
+00:04:01.442 --> 00:04:05.431
+Nate Simmons: Yeah, I'll pull three or four and send them today.
+
+34
+00:04:06.736 --> 00:04:12.785
+Leah Marsh: Appreciate it. I'm not going to guess at what's happening, we'll get it looked at properly.
+
+35
+00:04:13.759 --> 00:04:21.623
+Rachel Okafor: Nate, do you want to hold the overflow go-live until that's sorted, or run it and reconcile after?
+
+36
+00:04:22.490 --> 00:04:29.522
+Nate Simmons: I'd rather wait until we know what's going on. Luis can still test on his side.
+
+37
+00:04:30.633 --> 00:04:37.804
+Luis Ortega: Fine by me. I'll run test calls into the glass line once Leah has it set up.
+
+38
+00:04:38.422 --> 00:04:47.692
+Leah Marsh: Good. And what about the AI Messaging Agent? Do you want the overflow flow to trigger a follow-up text when someone abandons before a transfer?
+
+39
+00:04:48.901 --> 00:04:53.200
+Nate Simmons: Let's leave messaging out of this for now. One change at a time.
+
+40
+00:04:54.518 --> 00:05:09.311
+Leah Marsh: Understood. So the build is: daytime overflow on two queues, glass intent routed to the vendor, PreSense on, callback offer when no one's available, and the Salesforce write-back stays as-is until we hear back on the claim number issue.
+
+41
+00:05:10.625 --> 00:05:11.477
+Luis Ortega: That's right.
+
+42
+00:05:12.261 --> 00:05:20.962
+Leah Marsh: I'll have the draft config to you by Wednesday, then we can do a test call Thursday if that works.
+
+43
+00:05:21.860 --> 00:05:23.953
+Luis Ortega: Thursday afternoon is better for me.
+
+44
+00:05:25.143 --> 00:05:27.950
+Leah Marsh: I'll send a hold for two o'clock.
+
+45
+00:05:29.150 --> 00:05:37.343
+Rachel Okafor: I'll put the notes in the shared doc and flag the Salesforce item so it doesn't get lost. Nate, Luis, anything else before we wrap?
+
+46
+00:05:37.631 --> 00:05:39.042
+Nate Simmons: Nope, that covers it.
+
+47
+00:05:39.318 --> 00:05:40.704
+Luis Ortega: All good. Thanks, both.
+
+48
+00:05:41.539 --> 00:05:43.283
+Rachel Okafor: Thanks everyone. Talk Thursday.

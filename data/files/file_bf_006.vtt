@@ -1,0 +1,129 @@
+WEBVTT
+
+1
+00:00:06.065 --> 00:00:09.419
+Diego Alvarez: Hey Steve, how's it going? Thanks for making time today.
+
+2
+00:00:10.446 --> 00:00:14.622
+Steve Kowalski: Hey Diego, good. Busy week, but good. How about you?
+
+3
+00:00:14.994 --> 00:00:16.975
+Diego Alvarez: Can't complain. Phoenix still hot?
+
+4
+00:00:18.152 --> 00:00:23.807
+Steve Kowalski: Yeah, still triple digits. The service bays are miserable by two in the afternoon.
+
+5
+00:00:24.931 --> 00:00:34.141
+Diego Alvarez: I bet. So I wanted to check in on call volumes since we last talked, see how the rooftops are trending.
+
+6
+00:00:34.525 --> 00:00:43.888
+Steve Kowalski: We're averaging about 14,000 calls a month across the 22 stores, which is up maybe 6% from the spring. The Nevada stores are carrying a lot of that.
+
+7
+00:00:44.445 --> 00:00:51.316
+Diego Alvarez: Good to hear. Any staffing changes on the BDC side that would affect how calls get handled?
+
+8
+00:00:51.739 --> 00:01:04.255
+Steve Kowalski: Yeah, we lost a couple of reps in the Tempe BDC, so we're down to eight there. We're interviewing, but until we backfill, the routing is a little lumpy.
+
+9
+00:01:05.554 --> 00:01:10.518
+Diego Alvarez: Okay, that makes sense. Anything I can do to help while you're short?
+
+10
+00:01:11.214 --> 00:01:18.264
+Steve Kowalski: Not right now. We're managing. I might have you pull a report on hold times for that group, but later.
+
+11
+00:01:19.502 --> 00:01:25.562
+Diego Alvarez: Just say the word. How's the Salesforce side holding up with the call records?
+
+12
+00:01:26.859 --> 00:01:31.149
+Steve Kowalski: Fine, no complaints there. Leads are landing where they should.
+
+13
+00:01:32.362 --> 00:01:36.475
+Diego Alvarez: Great. And the Google Ads conversions, those are still flowing?
+
+14
+00:01:37.730 --> 00:01:41.665
+Steve Kowalski: As far as I know. The marketing team hasn't flagged anything.
+
+15
+00:01:42.151 --> 00:01:47.498
+Diego Alvarez: Good. So what's on your mind heading into the end of the year?
+
+16
+00:01:48.086 --> 00:01:57.623
+Steve Kowalski: Honestly, one thing that keeps coming up from my analysts is getting the data out of the platform into our BI stack without someone manually exporting CSVs every Monday.
+
+17
+00:01:57.623 --> 00:02:13.410
+Steve Kowalski: We're pulling call data into Looker, and right now it's a person and a spreadsheet. If there was a native Looker connection, or a way to schedule a dashboard push to Google Sheets or whatever tool, that would save my team probably four or five hours a week.
+
+18
+00:02:14.667 --> 00:02:21.159
+Diego Alvarez: Got it. So it's really about scheduled delivery into Looker rather than the manual export?
+
+19
+00:02:21.948 --> 00:02:31.921
+Steve Kowalski: Exactly. We already have the Looker license, we just need the pipe. Right now it's duct tape and a guy named Rick staying late on Mondays.
+
+20
+00:02:32.812 --> 00:02:44.190
+Diego Alvarez: Okay, let me write that down and take it back to the product team. I can't promise anything, but I'll make sure it's logged with the details.
+
+21
+00:02:44.555 --> 00:02:48.471
+Steve Kowalski: Appreciate it. That's the only real ask I've got.
+
+22
+00:02:49.629 --> 00:02:55.369
+Diego Alvarez: Noted. Anything else on the account side, or are we in good shape?
+
+23
+00:02:56.005 --> 00:03:00.656
+Steve Kowalski: We're fine. The tracking numbers are working, the signals are firing. No fires.
+
+24
+00:03:01.296 --> 00:03:10.906
+Diego Alvarez: Good. I know renewal is coming up in December. Do you want to get a call on the calendar for late October to walk through the year?
+
+25
+00:03:11.319 --> 00:03:17.268
+Steve Kowalski: Yeah, let's do the week of the 26th. I'll have my admin send you a couple of slots.
+
+26
+00:03:18.064 --> 00:03:22.655
+Diego Alvarez: Perfect. I'll send an invite placeholder so it's on both our radars.
+
+27
+00:03:24.136 --> 00:03:31.500
+Steve Kowalski: Sounds good. Hey, one quick thing, unrelated. Do you know if the Phoenix auto show is worth going to this year?
+
+28
+00:03:31.500 --> 00:03:32.902
+Steve Kowalski: My kid's into cars.
+
+29
+00:03:34.232 --> 00:03:38.947
+Diego Alvarez: I haven't been, but I hear it's decent. I can ask around.
+
+30
+00:03:39.320 --> 00:03:44.508
+Steve Kowalski: No worries, just curious. Alright, I should run to a service meeting.
+
+31
+00:03:45.105 --> 00:03:50.979
+Diego Alvarez: Of course. Thanks Steve, I'll follow up on the Looker thing and get that invite out.
+
+32
+00:03:52.342 --> 00:03:53.865
+Steve Kowalski: Thanks Diego. Talk soon.

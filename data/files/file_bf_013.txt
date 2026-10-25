@@ -1,0 +1,98 @@
+Atlas Auto Group check-in
+Mon, Oct 19, 2026, 12:30PM • 4:57
+
+Diego Alvarez  0:03
+Hey Greg, hey Tanya. Um, How's it going out there in Phoenix? Still triple digits?
+
+Greg Hollis  0:10
+Finally broke, we're at like 94 today. Tanya's been living in the BDC with the AC cranked, so she's fine.
+
+Tanya Mercer  0:17
+It's true. I've got two people out on PTO this week, so I'm basically answering every overflow call myself. Fun times.
+
+Diego Alvarez  0:26
+Oof. Do you want to push this to Thursday instead? I don't mind.
+
+Tanya Mercer  0:32
+No no, we're good, I've got twenty minutes before the next shift huddle.
+
+Diego Alvarez  0:37
+Okay, perfect. So I pulled the numbers this morning. You guys did about 11,400 calls across the 22 rooftops last month, up maybe 6 percent from August. Phoenix stores are carrying most of that.
+
+Greg Hollis  0:49
+That tracks. The Tempe and Peoria stores have been hammering the Google Ads budget since Labor Day, so I'd expect that to keep climbing through December.
+
+Diego Alvarez  1:01
+Good to hear. Anything about the tracking numbers themselves giving you trouble, or is all that quiet?
+
+Greg Hollis  1:08
+Tracking's been fine. Signal stuff's fine too, the appointment-booked signal is still firing the way we expect.
+
+Tanya Mercer  1:16
+Yeah. Actually, um, since you asked, there is one thing that's been nagging me and it's on the Google side.
+
+Diego Alvarez  1:25
+Go ahead.
+
+Tanya Mercer  1:26
+So the offline conversions, the call conversions that get sent over to Google Ads... they're landing late. One to three days after the call, sometimes longer on a weekend.
+
+Diego Alvarez  1:38
+Okay. Is it all of them landing late, or just some?
+
+Tanya Mercer  1:44
+That's the thing, it's inconsistent. Some show up the same day, so, some drag. And the effect is Google's Smart Bidding is making decisions on a half-finished picture. It's not seeing the calls we already know closed until days later, so it's bidding like those calls never happened.
+
+Diego Alvarez  2:04
+Got it. And on your end, so, have you changed anything recently, the tag, the GCLID capture, anything like that?
+
+Tanya Mercer  2:12
+That's what I checked first. We verified the GCLID is getting captured, we verified the tag is still on the site, we didn't touch the Salesforce sync. Nothing changed on our side. I went back and forth on it for like two weeks before I said anything, because I honestly wondered if it was us.
+
+Greg Hollis  2:32
+She did. She cornered me in the parking lot about it. Twice.
+
+Tanya Mercer  2:37
+Because it matters, Greg. We're spending real money on those campaigns and if Google isn't counting the calls correctly, we're paying for it.
+
+Diego Alvarez  2:47
+Yeah, that's fair. Let me ask a couple more things so I can write this up properly. Is it across all 22 uh, stores or concentrated in a few?
+
+Tanya Mercer  3:01
+Um, I've seen it like, on Phoenix, Tempe, Henderson, I mean, and the two Vegas stores. I haven't checked every single one, but it's not one weird store.
+
+Diego Alvarez  3:13
+So, okay. And are you looking at this inside Google Ads, or through a report on our side?
+
+Tanya Mercer  3:21
+Google Ads mainly. Our paid media guy pulls it every Monday, that's his whole ritual.
+
+Diego Alvarez  3:28
+Perfect, like, that helps. I'm going to take this back to the team with the stores you named and the timing pattern, and I'll come back to you with something concrete by, let's say Thursday. I'm not going to guess at it on this call.
+
+Tanya Mercer  3:46
+That's all I want. Just somebody looking at it.
+
+Diego Alvarez  3:50
+You'll have it. Okay, other thing I wanted to flag, just logistics. I mean, your renewal lands December 1, so I'd like to get a review on the calendar for early November. Greg, are you the right person for that, or does um, procurement drive it?
+
+Greg Hollis  4:09
+Bring me and Tanya, and I'll loop in our controller when we get closer. Second week of November works.
+
+Diego Alvarez  4:17
+I'll send a couple of options. Tanya, did you still want that walkthrough on pulling the call data into your BDC reporting? We can tack it onto the same week.
+
+Tanya Mercer  4:29
+Yeah, after the huddle schedule calms down. Week of the ninth is better for me.
+
+Diego Alvarez  4:36
+Done. Okay, I know you've got a huddle, so I'll let you go. I'll get the write-up moving today.
+
+Tanya Mercer  4:43
+Thanks Diego. And hey, good luck with that 94 degrees, I know it's rough for you.
+
+Diego Alvarez  4:49
+I'm in a hoodie, um, Tanya. Talk Thursday.
+
+Greg Hollis  4:53
+Um, Take care, Diego.

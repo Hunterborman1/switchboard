@@ -1,0 +1,674 @@
+{
+  "file_bf_001": [
+    "dashboard_export"
+  ],
+  "file_bf_002": [
+    "praise_summaries",
+    "audit_extra"
+  ],
+  "file_bf_003": [
+    "marchex_auto"
+  ],
+  "file_bf_004": [
+    "marchex_auto"
+  ],
+  "file_bf_005": [
+    "marchex_auto"
+  ],
+  "file_bf_006": [
+    "dashboard_export"
+  ],
+  "file_bf_007": [
+    "gads_lag"
+  ],
+  "file_bf_008": [
+    "addon_pricing",
+    "churn_signal"
+  ],
+  "file_bf_009": [
+    "marchex_auto"
+  ],
+  "file_bf_010": [
+    "gads_lag",
+    "audit_extra"
+  ],
+  "file_bf_011": [
+    "addon_pricing",
+    "churn_signal"
+  ],
+  "file_bf_012": [
+    "gads_lag"
+  ],
+  "file_bf_013": [
+    "gads_lag"
+  ],
+  "file_bf_014": [
+    "presense_genesys"
+  ],
+  "file_bf_015": [
+    "qm_custom"
+  ],
+  "file_bf_016": [
+    "qm_custom"
+  ],
+  "file_bf_017": [
+    "presense_genesys"
+  ],
+  "file_bf_018": [
+    "sfdc_mapping",
+    "qm_custom"
+  ],
+  "file_bf_019": [
+    "sfdc_mapping"
+  ],
+  "file_bf_020": [
+    "qm_custom"
+  ],
+  "file_bf_021": [
+    "presense_genesys"
+  ],
+  "file_bf_022": [
+    "addon_pricing",
+    "churn_signal"
+  ],
+  "file_bf_023": [
+    "sfdc_mapping",
+    "addon_pricing"
+  ],
+  "file_bf_024": [
+    "presense_genesys"
+  ],
+  "file_bf_025": [
+    "gads_lag"
+  ],
+  "file_bf_026": [
+    "sai_spam"
+  ],
+  "file_bf_027": [
+    "sai_spam"
+  ],
+  "file_bf_028": [
+    "gads_lag"
+  ],
+  "file_bf_029": [
+    "sai_spam"
+  ],
+  "file_bf_030": [
+    "sai_spam"
+  ],
+  "file_bf_031": [
+    "addon_pricing"
+  ],
+  "file_bf_032": [
+    "sai_spam",
+    "churn_signal"
+  ],
+  "file_bf_033": [
+    "gads_lag",
+    "addon_pricing"
+  ],
+  "file_bf_034": [
+    "gads_lag",
+    "churn_signal"
+  ],
+  "file_bf_035": [
+    "gads_lag"
+  ],
+  "file_bf_036": [
+    "praise_summaries"
+  ],
+  "file_bf_037": [
+    "praise_summaries",
+    "hipaa_redaction"
+  ],
+  "file_bf_038": [
+    "praise_summaries"
+  ],
+  "file_bf_039": [
+    "gads_lag"
+  ],
+  "file_bf_040": [
+    "callrail_sync"
+  ],
+  "file_bf_041": [
+    "praise_summaries"
+  ],
+  "file_bf_042": [
+    "callrail_sync"
+  ],
+  "file_bf_043": [
+    "gads_lag"
+  ],
+  "file_bf_044": [
+    "sai_spam"
+  ],
+  "file_bf_045": [
+    "praise_summaries"
+  ],
+  "file_bf_046": [
+    "praise_summaries"
+  ],
+  "file_bf_047": [
+    "callrail_sync"
+  ],
+  "file_bf_048": [
+    "callrail_sync"
+  ],
+  "file_bf_049": [
+    "praise_summaries"
+  ],
+  "file_bf_050": [
+    "gads_lag"
+  ],
+  "file_bf_051": [
+    "gads_lag"
+  ],
+  "file_bf_052": [
+    "gads_lag"
+  ],
+  "file_bf_053": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_054": [
+    "dashboard_export"
+  ],
+  "file_bf_055": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_056": [
+    "gads_lag"
+  ],
+  "file_bf_057": [
+    "dni_spa"
+  ],
+  "file_bf_058": [
+    "voice_agent_handoff",
+    "addon_pricing"
+  ],
+  "file_bf_059": [
+    "dashboard_export"
+  ],
+  "file_bf_060": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_061": [
+    "dashboard_export"
+  ],
+  "file_bf_062": [
+    "dni_spa",
+    "audit_extra"
+  ],
+  "file_bf_063": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_064": [
+    "callrail_sync"
+  ],
+  "file_bf_065": [
+    "gads_lag"
+  ],
+  "file_bf_066": [
+    "dashboard_export"
+  ],
+  "file_bf_067": [
+    "gads_lag",
+    "addon_pricing"
+  ],
+  "file_bf_068": [
+    "callrail_sync",
+    "sai_spam"
+  ],
+  "file_bf_069": [
+    "dashboard_export"
+  ],
+  "file_bf_070": [
+    "callrail_sync"
+  ],
+  "file_bf_071": [
+    "sai_spam",
+    "praise_summaries"
+  ],
+  "file_bf_072": [
+    "sai_spam"
+  ],
+  "file_bf_073": [
+    "gads_lag"
+  ],
+  "file_bf_074": [
+    "sai_spam"
+  ],
+  "file_bf_075": [
+    "gads_lag",
+    "audit_extra"
+  ],
+  "file_bf_076": [
+    "callrail_sync",
+    "sai_spam"
+  ],
+  "file_bf_077": [
+    "gads_lag",
+    "callrail_sync"
+  ],
+  "file_bf_078": [
+    "callrail_sync"
+  ],
+  "file_bf_079": [
+    "callrail_sync"
+  ],
+  "file_bf_080": [
+    "praise_presense"
+  ],
+  "file_bf_081": [
+    "sfdc_mapping"
+  ],
+  "file_bf_082": [
+    "qm_custom"
+  ],
+  "file_bf_083": [
+    "dashboard_export"
+  ],
+  "file_bf_084": [
+    "hipaa_redaction",
+    "sfdc_mapping"
+  ],
+  "file_bf_085": [
+    "qm_custom"
+  ],
+  "file_bf_086": [
+    "sfdc_mapping"
+  ],
+  "file_bf_087": [
+    "praise_presense"
+  ],
+  "file_bf_088": [
+    "praise_presense",
+    "hipaa_redaction"
+  ],
+  "file_bf_089": [
+    "hipaa_redaction"
+  ],
+  "file_bf_090": [
+    "sfdc_mapping",
+    "dni_spa"
+  ],
+  "file_bf_091": [
+    "dni_spa"
+  ],
+  "file_bf_092": [
+    "sai_spam"
+  ],
+  "file_bf_093": [
+    "sfdc_mapping"
+  ],
+  "file_bf_094": [
+    "qm_custom"
+  ],
+  "file_bf_095": [
+    "praise_summaries"
+  ],
+  "file_bf_096": [
+    "addon_pricing"
+  ],
+  "file_bf_097": [
+    "qm_custom"
+  ],
+  "file_bf_098": [
+    "sfdc_mapping"
+  ],
+  "file_bf_099": [
+    "sfdc_mapping"
+  ],
+  "file_bf_100": [
+    "sfdc_mapping"
+  ],
+  "file_bf_101": [
+    "praise_summaries",
+    "sfdc_mapping"
+  ],
+  "file_bf_102": [
+    "praise_summaries"
+  ],
+  "file_bf_103": [
+    "sfdc_mapping"
+  ],
+  "file_bf_104": [
+    "praise_summaries"
+  ],
+  "file_bf_105": [
+    "addon_pricing"
+  ],
+  "file_bf_106": [
+    "qm_custom"
+  ],
+  "file_bf_107": [
+    "addon_pricing"
+  ],
+  "file_bf_108": [
+    "addon_pricing"
+  ],
+  "file_bf_109": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_110": [
+    "praise_presense"
+  ],
+  "file_bf_111": [
+    "presense_genesys"
+  ],
+  "file_bf_112": [
+    "qm_custom"
+  ],
+  "file_bf_113": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_114": [
+    "presense_genesys"
+  ],
+  "file_bf_115": [
+    "praise_presense"
+  ],
+  "file_bf_116": [
+    "sai_spam"
+  ],
+  "file_bf_117": [
+    "presense_genesys",
+    "voice_agent_handoff",
+    "sfdc_mapping"
+  ],
+  "file_bf_118": [
+    "praise_presense"
+  ],
+  "file_bf_119": [
+    "presense_genesys"
+  ],
+  "file_bf_120": [
+    "praise_presense",
+    "sai_spam"
+  ],
+  "file_bf_121": [
+    "qm_custom",
+    "presense_genesys"
+  ],
+  "file_bf_122": [
+    "qm_custom",
+    "presense_genesys"
+  ],
+  "file_bf_123": [
+    "presense_genesys"
+  ],
+  "file_bf_124": [
+    "praise_summaries",
+    "sfdc_mapping"
+  ],
+  "file_bf_125": [
+    "praise_presense"
+  ],
+  "file_bf_126": [
+    "sai_spam"
+  ],
+  "file_bf_127": [
+    "sai_spam"
+  ],
+  "file_bf_128": [
+    "sai_spam"
+  ],
+  "file_bf_129": [
+    "hipaa_redaction"
+  ],
+  "file_bf_130": [
+    "sfdc_mapping"
+  ],
+  "file_bf_131": [
+    "hipaa_redaction"
+  ],
+  "file_bf_132": [
+    "sai_spam"
+  ],
+  "file_bf_133": [
+    "hipaa_redaction"
+  ],
+  "file_bf_134": [
+    "praise_presense",
+    "presense_genesys"
+  ],
+  "file_bf_135": [
+    "praise_summaries",
+    "sfdc_mapping",
+    "hipaa_redaction"
+  ],
+  "file_bf_136": [
+    "praise_presense"
+  ],
+  "file_bf_137": [
+    "qm_custom"
+  ],
+  "file_bf_138": [
+    "hipaa_redaction"
+  ],
+  "file_bf_139": [
+    "hipaa_redaction"
+  ],
+  "file_bf_140": [
+    "praise_presense"
+  ],
+  "file_bf_141": [
+    "praise_presense"
+  ],
+  "file_bf_142": [
+    "qm_custom"
+  ],
+  "file_bf_143": [
+    "sfdc_mapping"
+  ],
+  "file_bf_144": [
+    "hipaa_redaction"
+  ],
+  "file_bf_145": [
+    "praise_summaries",
+    "hipaa_redaction"
+  ],
+  "file_bf_146": [
+    "praise_summaries"
+  ],
+  "file_bf_147": [
+    "presense_genesys"
+  ],
+  "file_bf_148": [
+    "dashboard_export",
+    "audit_extra"
+  ],
+  "file_bf_149": [
+    "dashboard_export"
+  ],
+  "file_bf_150": [
+    "presense_genesys"
+  ],
+  "file_bf_151": [
+    "sai_spam"
+  ],
+  "file_bf_152": [
+    "presense_genesys"
+  ],
+  "file_bf_153": [
+    "presense_genesys"
+  ],
+  "file_bf_154": [
+    "sai_spam"
+  ],
+  "file_bf_155": [
+    "sai_spam"
+  ],
+  "file_bf_156": [
+    "sai_spam"
+  ],
+  "file_bf_157": [
+    "presense_genesys",
+    "dashboard_export",
+    "churn_signal"
+  ],
+  "file_bf_158": [
+    "presense_genesys"
+  ],
+  "file_bf_159": [
+    "addon_pricing",
+    "audit_extra"
+  ],
+  "file_bf_160": [
+    "dashboard_export",
+    "voice_agent_handoff"
+  ],
+  "file_bf_161": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_162": [
+    "dashboard_export",
+    "voice_agent_handoff"
+  ],
+  "file_bf_163": [
+    "dni_spa"
+  ],
+  "file_bf_164": [
+    "dashboard_export"
+  ],
+  "file_bf_165": [
+    "dni_spa"
+  ],
+  "file_bf_166": [
+    "dashboard_export"
+  ],
+  "file_bf_167": [
+    "dni_spa"
+  ],
+  "file_bf_168": [
+    "marchex_auto"
+  ],
+  "file_bf_169": [
+    "gads_lag"
+  ],
+  "file_bf_170": [
+    "gads_lag",
+    "audit_extra"
+  ],
+  "file_bf_171": [
+    "marchex_auto"
+  ],
+  "file_bf_172": [
+    "marchex_auto",
+    "addon_pricing"
+  ],
+  "file_bf_173": [
+    "gads_lag",
+    "audit_extra"
+  ],
+  "file_bf_174": [
+    "addon_pricing",
+    "churn_signal",
+    "audit_extra"
+  ],
+  "file_bf_175": [
+    "marchex_auto",
+    "audit_extra"
+  ],
+  "file_bf_176": [
+    "callrail_sync"
+  ],
+  "file_bf_177": [
+    "addon_pricing",
+    "marchex_auto",
+    "churn_signal"
+  ],
+  "file_bf_178": [
+    "addon_pricing"
+  ],
+  "file_bf_179": [
+    "gads_lag",
+    "churn_signal"
+  ],
+  "file_bf_180": [
+    "gads_lag"
+  ],
+  "file_bf_181": [
+    "addon_pricing"
+  ],
+  "file_bf_182": [
+    "gads_lag"
+  ],
+  "file_bf_183": [
+    "voice_agent_handoff"
+  ],
+  "file_bf_184": [
+    "addon_pricing"
+  ],
+  "file_bf_185": [
+    "voice_agent_handoff",
+    "gads_lag"
+  ],
+  "file_bf_186": [
+    "dashboard_export"
+  ],
+  "file_bf_187": [
+    "voice_agent_handoff",
+    "gads_lag"
+  ],
+  "file_bf_188": [
+    "gads_lag",
+    "voice_agent_handoff"
+  ],
+  "file_bf_189": [
+    "gads_lag"
+  ],
+  "file_bf_190": [
+    "addon_pricing",
+    "churn_signal"
+  ],
+  "file_bf_191": [
+    "gads_lag",
+    "praise_summaries",
+    "churn_signal"
+  ],
+  "file_bf_192": [
+    "addon_pricing",
+    "dni_spa",
+    "churn_signal"
+  ],
+  "file_bf_193": [
+    "dni_spa"
+  ],
+  "file_bf_194": [
+    "addon_pricing",
+    "churn_signal"
+  ],
+  "file_bf_195": [
+    "voice_agent_handoff",
+    "churn_signal"
+  ],
+  "file_bf_196": [
+    "callrail_sync"
+  ],
+  "file_bf_197": [
+    "gads_lag"
+  ],
+  "file_bf_198": [
+    "callrail_sync"
+  ],
+  "file_bf_199": [],
+  "file_bf_200": [],
+  "file_bf_201": [],
+  "file_bf_202": [],
+  "file_bf_203": [],
+  "file_bf_204": [],
+  "file_bf_205": [],
+  "file_bf_206": [],
+  "file_bf_207": [],
+  "file_bf_208": [],
+  "file_bf_209": [],
+  "file_bf_210": [],
+  "file_bf_211": [],
+  "file_bf_212": [],
+  "file_bf_213": [],
+  "file_bf_214": [],
+  "file_bf_215": [],
+  "file_bf_216": [],
+  "file_bf_217": [],
+  "file_bf_218": []
+}

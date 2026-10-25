@@ -1,0 +1,125 @@
+SunPeak Solar working session
+Thu, Oct 1, 2026, 1:15PM • 4:37
+
+Diego Alvarez  0:05
+Hey Marisol, hey Cody. How's the week going?
+
+Marisol Vega  0:09
+Busy. End of quarter, so the floor's been loud all day.
+
+Cody Barrett  0:13
+Yeah, um, and we're mid push on the fall Meta stuff, so it's a lot of staring at dashboards.
+
+Diego Alvarez  0:22
+I bet. How'd the Texas numbers look last month?
+
+Marisol Vega  0:26
+Calls were up, around eleven thousand across the three states. Texas is still the bulk of it it.
+
+Cody Barrett  0:34
+Florida's picking up though. Phoenix too, a little.
+
+Diego Alvarez  0:38
+Good. Anything you want to put on the table for today?
+
+Marisol Vega  0:43
+Yeah, two things. One's the Google Ads side. The other's um, the the voice agent handoff.
+
+Diego Alvarez  0:49
+Okay, start with Google Ads.
+
+Marisol Vega  0:52
+So the offline conversions, when a call comes in from a Google click, we're seeing them land in Google Ads a day to three days after the call. Sometimes one day, sometimes three.
+
+Cody Barrett  1:07
+And it's not consistent. Like, some days it's next morning, some days it's Wednesday for a Monday call.
+
+Marisol Vega  1:15
+Right. So Smart Bidding is making decisions on partial data the whole time. It's basically always looking at a lagging window.
+
+Diego Alvarez  1:24
+How long has it been like that?
+
+Marisol Vega  1:28
+We noticed it probably uh, three, four weeks ago. Cody flagged it first.
+
+Cody Barrett  1:33
+I was reconciling spend against booked appointments and the numbers just didn't line up until later in the week. I thought I was going crazy.
+
+Diego Alvarez  1:44
+And you checked the GCLID capture on your end?
+
+Marisol Vega  1:49
+We did. Our web guy went through the the tag, went through the GCLID setup, everything looked the way it always has. Nothing changed on our side.
+
+Cody Barrett  2:01
+Same tag, same container, same everything. We didn't touch it.
+
+Diego Alvarez  2:05
+Okay. Can you send me a couple of examples? Call time, the conversion time in Google Ads, and the GCLID if you have it?
+
+Cody Barrett  2:15
+Yeah, I can pull five or six from last week.
+
+Diego Alvarez  2:19
+So, That'd help. I'll take it back to the team, that's not something I I can dig into from here.
+
+Marisol Vega  2:28
+Uh, Appreciate it. Um, it's not breaking anything, it's just... we're flying half blind on bid strategy.
+
+Diego Alvarez  2:37
+Understood. Like, What's the voice agent thing?
+
+Marisol Vega  2:41
+When the AI Voice Agent transfers to a live person, whatever it collected doesn't come with it. Name, address, what they want, none of it shows up.
+
+Cody Barrett  2:52
+So the rep picks up and the caller starts over from zero. It's the same four questions again.
+
+Marisol Vega  3:01
+And our people have stopped trusting it. They just assume they're getting nothing, so they open with the basics instead of picking up where the agent left off.
+
+Diego Alvarez  3:12
+Is that on every transfer, um, or specific flows?
+
+Marisol Vega  3:16
+You know, Seems like most of them. The Spanish line and the English line both.
+
+Cody Barrett  3:22
+It's more obvious on the Spanish side because the callers are already a little annoyed about repeating themselves.
+
+Diego Alvarez  3:30
+How many transfers a day are we talking?
+
+Marisol Vega  3:34
+Maybe two hundred, two fifty.
+
+Diego Alvarez  3:36
+Okay. I'll write both of these up today and get you a ticket number. Anything else on the list?
+
+Marisol Vega  3:45
+The Salesforce side is fine, the call I mean, records are landing where they they should.
+
+Cody Barrett  3:50
+Yeah, no complaints there.
+
+Diego Alvarez  3:52
+Good. Hey, uh, quick one, are you still doing the Thursday coaching block? So, I want to make sure I'm not scheduling over it next time.
+
+Marisol Vega  4:03
+We moved it to Wednesdays. Two o'clock, right after the standup.
+
+Diego Alvarez  4:08
+Noted. And is Nadia still running the bilingual team?
+
+Marisol Vega  4:13
+She is. She's hiring two more reps for the Spanish floor, um, interviews start next week.
+
+Diego Alvarez  4:21
+Nice. Okay, I'll get those write-ups over by end of day and we can look at next steps on a shorter call.
+
+Cody Barrett  4:30
+Sounds good. Thanks Diego.
+
+Marisol Vega  4:32
+Yeah, thanks. Talk soon.

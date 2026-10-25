@@ -1,0 +1,133 @@
+WEBVTT
+
+1
+00:00:05.835 --> 00:00:09.159
+Tom Lindqvist: Morning, both. How's Denver treating you this week?
+
+2
+00:00:09.951 --> 00:00:15.765
+Brandon Hughes: Pretty good. Busy. We're heading into the fall promo push so it's all hands.
+
+3
+00:00:16.965 --> 00:00:25.310
+Michelle Tran: Same here. I've got two new folks starting on the Genesys side next Monday, so I'm mostly doing training prep right now.
+
+4
+00:00:25.542 --> 00:00:29.365
+Tom Lindqvist: Nice. Are they going straight onto the sales queues?
+
+5
+00:00:30.696 --> 00:00:36.888
+Michelle Tran: One of them, yeah. The other is going to the billing side first, then we'll see.
+
+6
+00:00:37.291 --> 00:00:47.894
+Tom Lindqvist: Got it. Before we get into anything else, how are the call volumes looking? Last time we talked you were around the mid-forty-thousands a month.
+
+7
+00:00:48.714 --> 00:00:54.927
+Brandon Hughes: We're a bit above that now. August came in around fifty-one thousand, and September is tracking similar.
+
+8
+00:00:55.948 --> 00:00:57.708
+Tom Lindqvist: That's a decent jump.
+
+9
+00:00:58.665 --> 00:01:06.667
+Brandon Hughes: Yeah, the fiber bundle campaign is doing well. Google Ads is spending more, so more calls are coming in.
+
+10
+00:01:07.347 --> 00:01:11.387
+Tom Lindqvist: And the offline conversions are still landing in Google Ads okay?
+
+11
+00:01:11.954 --> 00:01:16.050
+Brandon Hughes: Far as I know, yeah. Nothing's come up on that.
+
+12
+00:01:16.728 --> 00:01:25.053
+Tom Lindqvist: Good. Michelle, I wanted to check in on the PreSense side. You flagged something a couple weeks back about screen pops.
+
+13
+00:01:25.561 --> 00:01:37.723
+Michelle Tran: I did, and it's still happening. Here's the thing. When Genesys transfers a call from one queue to another, or from one agent to another, the receiving agent gets a blank screen pop.
+
+14
+00:01:37.723 --> 00:01:38.828
+Michelle Tran: Nothing in it.
+
+15
+00:01:39.317 --> 00:01:42.925
+Tom Lindqvist: So the pop fires, it just has no data in it.
+
+16
+00:01:44.070 --> 00:01:57.947
+Michelle Tran: Right. The agent sees the PreSense window come up but there's no journey, no pages, no ad. So they end up asking the caller what they were looking at, which is exactly what we bought this to avoid.
+
+17
+00:01:58.501 --> 00:02:00.193
+Tom Lindqvist: How often is it happening?
+
+18
+00:02:00.889 --> 00:02:11.863
+Michelle Tran: It's not every transfer, but it's often enough that my supervisors are noticing. Probably a handful a day per queue, more on the busier ones.
+
+19
+00:02:12.631 --> 00:02:19.494
+Brandon Hughes: It's coming up in our sales huddles too. The agents on the receiving end are the ones complaining.
+
+20
+00:02:19.878 --> 00:02:23.852
+Tom Lindqvist: Okay. Is it specific to certain queues, or is it any transfer?
+
+21
+00:02:24.999 --> 00:02:32.495
+Michelle Tran: Any transfer as far as I can tell. We tried it on the wireless queue and the fiber queue, same result.
+
+22
+00:02:33.474 --> 00:02:38.046
+Tom Lindqvist: And is this happening on warm transfers, cold transfers, or both?
+
+23
+00:02:39.141 --> 00:02:42.656
+Michelle Tran: Both. We tested it with a couple of supervisors watching.
+
+24
+00:02:44.038 --> 00:02:56.742
+Tom Lindqvist: Got it. I want to get this in front of the right folks with the details you just gave me. Can you send me a couple of call IDs where it happened?
+
+25
+00:02:56.742 --> 00:02:58.727
+Tom Lindqvist: That'll help them trace it.
+
+26
+00:03:00.144 --> 00:03:02.606
+Michelle Tran: Yeah, I can pull those this afternoon.
+
+27
+00:03:02.908 --> 00:03:13.218
+Tom Lindqvist: Perfect. I'll take it back to the team and see what we can find out. I won't promise anything on timing yet, but I'll keep you posted.
+
+28
+00:03:14.037 --> 00:03:15.519
+Michelle Tran: That works. Thanks, Tom.
+
+29
+00:03:15.937 --> 00:03:17.940
+Tom Lindqvist: Anything else on the list today?
+
+30
+00:03:18.995 --> 00:03:27.563
+Brandon Hughes: I think we're good. Oh, one thing. Can we move our next check-in to the Tuesday instead of Wednesday? I've got a conflict that week.
+
+31
+00:03:28.985 --> 00:03:35.236
+Tom Lindqvist: Sure, I'll send a new invite. Anything else, or should I let you both get back to it?
+
+32
+00:03:36.571 --> 00:03:38.930
+Michelle Tran: That's it from me. Talk soon.
+
+33
+00:03:39.395 --> 00:03:41.439
+Tom Lindqvist: Sounds good. Thanks, both. Talk soon.

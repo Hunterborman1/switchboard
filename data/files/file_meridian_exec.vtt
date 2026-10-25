@@ -1,0 +1,213 @@
+WEBVTT
+
+1
+00:00:06.675 --> 00:00:14.681
+Priya Raman: Morning everyone. Lauren, Kevin, thanks for making the time. Elena, this is the Meridian team I was telling you about.
+
+2
+00:00:15.611 --> 00:00:19.967
+Elena Vasquez: Hi Lauren, hi Kevin. Nice to finally put faces to names.
+
+3
+00:00:20.783 --> 00:00:28.791
+Lauren Whitfield: Good to meet you, Elena. We've been on Invoca a while now, so it's nice to talk to someone on the product side.
+
+4
+00:00:29.990 --> 00:00:32.584
+Kevin Osei: Yeah, welcome. How's your week going?
+
+5
+00:00:34.063 --> 00:00:41.279
+Elena Vasquez: Busy, but good. I spend most of my time with healthcare and home services accounts, so this is familiar ground.
+
+6
+00:00:42.634 --> 00:00:55.696
+Lauren Whitfield: Perfect. Let me start with the big picture, then. We're at 38 clinics live on Invoca right now. The plan the executive team signed off on is to bring on twelve more by the middle of next year.
+
+7
+00:00:57.023 --> 00:01:01.310
+Elena Vasquez: Twelve more clinics. That's a meaningful jump. What's driving the timeline?
+
+8
+00:01:02.158 --> 00:01:15.071
+Lauren Whitfield: Growth. We acquired a group in the Knoxville area, and those clinics are running their own call handling today. Central scheduling wants them on Genesys and on Invoca so we can see the whole patient access picture.
+
+9
+00:01:16.282 --> 00:01:33.804
+Kevin Osei: And from my side, the marketing team needs call attribution consistent across all of them. Right now I can tell you what a call from a Google Ads campaign did at 26 of our clinics, but the rest is a patchwork.
+
+10
+00:01:34.181 --> 00:01:38.534
+Priya Raman: So the expansion is really about consistency for both of you.
+
+11
+00:01:39.118 --> 00:01:42.487
+Lauren Whitfield: Right. Same tracking numbers, same call flows, same reporting.
+
+12
+00:01:43.105 --> 00:01:48.733
+Elena Vasquez: Got it. And what does the board care about most in all of this?
+
+13
+00:01:49.896 --> 00:02:00.778
+Lauren Whitfield: Access. Whether patients can get in quickly. I want QM to score our schedulers on whether they offered the earliest available appointment. That's the metric my board looks at.
+
+14
+00:02:01.993 --> 00:02:07.657
+Elena Vasquez: So a scorecard question around appointment offering. Is that something you're doing manually today?
+
+15
+00:02:08.893 --> 00:02:18.793
+Lauren Whitfield: We sample maybe 40 calls a month across the system. It's not enough, and it's inconsistent between clinics. I'd rather score every scheduling call.
+
+16
+00:02:19.317 --> 00:02:33.062
+Elena Vasquez: Okay. Let me make sure I understand the shape of it before I take anything back. You'd want a scorecard item that checks whether the scheduler mentioned the soonest opening, and then reporting by clinic and by scheduler.
+
+17
+00:02:33.477 --> 00:02:40.083
+Lauren Whitfield: Exactly. And I'd want to see it trend over time, not just a monthly snapshot.
+
+18
+00:02:40.411 --> 00:02:52.781
+Elena Vasquez: That's clear. I don't want to promise anything on this call, but I'll take it back to the team and Priya and I can come back to you with what's realistic.
+
+19
+00:02:54.022 --> 00:02:58.390
+Lauren Whitfield: That's fair. No rush on a date, I just want it moving.
+
+20
+00:02:59.735 --> 00:03:04.054
+Priya Raman: I'll write it up after this so it doesn't get lost.
+
+21
+00:03:05.162 --> 00:03:09.922
+Elena Vasquez: Kevin, how are things on the marketing side? Anything notable since we last talked?
+
+22
+00:03:10.925 --> 00:03:21.787
+Kevin Osei: Actually, yes. Signal Discovery found that a third of our cardiology calls were people asking about parking and directions. We fixed the landing page and those calls dropped by half.
+
+23
+00:03:23.055 --> 00:03:27.656
+Elena Vasquez: Oh, that's a nice one. Was that a surprise to you?
+
+24
+00:03:28.981 --> 00:03:37.999
+Kevin Osei: A little. We assumed those calls were clinical. Turned out people were circling the building and dialing the number on the page.
+
+25
+00:03:39.136 --> 00:03:45.114
+Lauren Whitfield: It was a good catch. Front desk at the cardiology clinic noticed the difference within a couple weeks.
+
+26
+00:03:45.957 --> 00:03:53.163
+Kevin Osei: Now I'm using Discovery on the orthopedics calls to see if there's a similar pattern. Nothing yet, but it's early.
+
+27
+00:03:53.455 --> 00:03:56.807
+Elena Vasquez: Good. Keep us posted on what surfaces there.
+
+28
+00:03:57.480 --> 00:04:03.395
+Priya Raman: Kevin, did you want to talk about the Google Ads side while Elena's on?
+
+29
+00:04:04.238 --> 00:04:12.282
+Kevin Osei: Sure, briefly. Offline conversions are flowing to Google Ads the way they should. Smart Bidding has been stable since the summer.
+
+30
+00:04:12.282 --> 00:04:13.432
+Kevin Osei: No complaints there.
+
+31
+00:04:14.305 --> 00:04:15.460
+Elena Vasquez: Good to hear.
+
+32
+00:04:15.724 --> 00:04:27.106
+Lauren Whitfield: Let me raise the thing that's actually blocking us, though. Before we expand to the other twelve clinics, legal wants role-based access, so only compliance can see an unredacted transcript.
+
+33
+00:04:27.619 --> 00:04:38.060
+Elena Vasquez: Okay. So today redaction is applied across the board and everyone who has access sees the redacted version. Legal wants a narrower door for the full transcript.
+
+34
+00:04:38.754 --> 00:04:50.366
+Lauren Whitfield: Yes. Our compliance officer is the only person who should ever see raw PII, and right now that's controlled by policy and training, not by the system.
+
+35
+00:04:51.287 --> 00:04:54.811
+Priya Raman: And that's a precondition for the Knoxville clinics going live?
+
+36
+00:04:55.119 --> 00:05:04.424
+Lauren Whitfield: It is. Legal signed off on the current footprint under the BAA with the understanding that we'd tighten this before adding sites.
+
+37
+00:05:05.871 --> 00:05:17.367
+Elena Vasquez: Understood. I don't want to guess at what's possible, so let me ask a couple of questions. Is it just transcripts, or does it extend to call recordings and summaries too?
+
+38
+00:05:17.913 --> 00:05:21.683
+Lauren Whitfield: Transcripts first. Recordings and summaries would be the next conversation.
+
+39
+00:05:23.172 --> 00:05:30.043
+Elena Vasquez: And how many people would need the unredacted view? One compliance officer, or a small team?
+
+40
+00:05:31.478 --> 00:05:35.093
+Lauren Whitfield: A small team. Probably three or four people, all in compliance.
+
+41
+00:05:35.454 --> 00:05:42.048
+Elena Vasquez: That's helpful. I'll take it back and Priya will follow up with what we can do and when.
+
+42
+00:05:42.354 --> 00:05:46.614
+Lauren Whitfield: Thank you. I'd rather hear a real answer than a fast one.
+
+43
+00:05:47.563 --> 00:05:51.294
+Elena Vasquez: Fair enough. Priya, anything else on your list before we wrap?
+
+44
+00:05:52.125 --> 00:06:01.984
+Priya Raman: Just logistics. Lauren, your team asked about training for the Knoxville schedulers. I'll get dates on the calendar for the week after next.
+
+45
+00:06:03.160 --> 00:06:05.493
+Lauren Whitfield: That works. My operations manager will coordinate.
+
+46
+00:06:06.098 --> 00:06:07.623
+Priya Raman: I'll loop her in.
+
+47
+00:06:09.009 --> 00:06:16.553
+Kevin Osei: One small thing from me. Can you send the Discovery summary from last quarter? I want to share it with our marketing analyst.
+
+48
+00:06:17.899 --> 00:06:20.896
+Priya Raman: I'll dig it up and send it over today.
+
+49
+00:06:22.184 --> 00:06:26.457
+Elena Vasquez: Lauren, Kevin, this was useful. Thanks for walking me through it.
+
+50
+00:06:27.875 --> 00:06:32.706
+Lauren Whitfield: Thanks for joining, Elena. Good to have a product voice in the room.
+
+51
+00:06:34.164 --> 00:06:35.952
+Kevin Osei: Yeah, appreciate it. Talk soon.
+
+52
+00:06:37.284 --> 00:06:38.392
+Elena Vasquez: Take care, both.
+
+53
+00:06:39.125 --> 00:06:41.789
+Priya Raman: I'll send a recap this afternoon. Thanks everyone.

@@ -1,0 +1,177 @@
+WEBVTT
+
+1
+00:00:03.116 --> 00:00:09.908
+Aisha Coleman: Hi Linda, hi Jason. Thanks for making the time this afternoon. How's the week going up there in Tacoma?
+
+2
+00:00:10.136 --> 00:00:17.338
+Linda Sorensen: Hi Aisha. Going alright, busy. We're short two people on the member contact team this week, so it's all hands.
+
+3
+00:00:17.998 --> 00:00:29.173
+Jason Park: Yeah, one of our reps is out on leave and another is at a Salesforce admin training, so Linda's been on the phones more than she'd like.
+
+4
+00:00:30.200 --> 00:00:40.843
+Aisha Coleman: That's a lot. Anything I can do to lighten the load? I can pull anything you need so you're not digging through the platform mid-week.
+
+5
+00:00:41.715 --> 00:00:52.623
+Linda Sorensen: Not right now, but I might take you up on that next week. I wanted to flag something that's been bugging us for a few weeks.
+
+6
+00:00:53.892 --> 00:00:55.129
+Aisha Coleman: Sure, go ahead.
+
+7
+00:00:55.975 --> 00:01:14.176
+Linda Sorensen: So Signal AI is tagging a chunk of our after-hours and weekend callers as spam, and these are real members. People calling Saturday morning about a card issue, or on a Sunday about a loan payment. Those calls are getting pulled out of the reporting entirely.
+
+8
+00:01:14.561 --> 00:01:23.348
+Aisha Coleman: Okay, when you say pulled out, they're marked spam in the call log and then don't show in the campaign numbers?
+
+9
+00:01:24.233 --> 00:01:38.262
+Linda Sorensen: Right. And it makes our weekend Google Ads look terrible. We're spending on Saturday and Sunday, and the call counts coming back look like almost nobody's calling, when the phones are actually ringing.
+
+10
+00:01:38.262 --> 00:01:45.064
+Linda Sorensen: It's not a small thing for us because those are member calls we're paying to get.
+
+11
+00:01:46.130 --> 00:01:56.071
+Jason Park: I can see it in Salesforce too. The call records land but the spam flag is on, so the outcomes don't roll into the campaign dashboards.
+
+12
+00:01:56.071 --> 00:02:04.483
+Jason Park: We had a Monday meeting last week where the weekend numbers looked like a dead zone and I had to explain why.
+
+13
+00:02:04.483 --> 00:02:06.012
+Jason Park: That was not fun.
+
+14
+00:02:06.733 --> 00:02:09.178
+Aisha Coleman: How long has this been happening, roughly?
+
+15
+00:02:10.490 --> 00:02:18.985
+Linda Sorensen: I first noticed maybe four weeks ago. It's not every after-hours call, maybe one in five, but it's enough that the trend line looks wrong.
+
+16
+00:02:19.709 --> 00:02:24.1000
+Aisha Coleman: And it's specifically after-hours and weekend? Or are you seeing it during business hours too?
+
+17
+00:02:26.314 --> 00:02:42.657
+Jason Park: Mostly outside business hours. During the week, during the day, it's fine. It's the off-hours ones. My guess is the model sees a call at 9 PM and decides it's not a real member, but I don't know.
+
+18
+00:02:43.307 --> 00:02:57.479
+Aisha Coleman: Got it. Can you send me two or three call IDs where this happened? I'll take it to our signal team and see what's going on with the spam logic for off-hours calls.
+
+19
+00:02:57.740 --> 00:03:03.225
+Jason Park: Yeah, I'll pull a few from last weekend and send them over this afternoon.
+
+20
+00:03:03.952 --> 00:03:11.471
+Linda Sorensen: I'd appreciate that. It's not a crisis, but I don't want to be reporting numbers to our CMO that are wrong.
+
+21
+00:03:11.850 --> 00:03:26.207
+Aisha Coleman: Understood. I'll get it in front of the right people and come back with something by early next week. Do you want me to loop in your compliance contact on it, or keep it between us for now?
+
+22
+00:03:27.498 --> 00:03:34.078
+Linda Sorensen: Keep it between us until you know more. No need to drag compliance in unless it turns into something bigger.
+
+23
+00:03:34.870 --> 00:03:38.558
+Aisha Coleman: Works for me. Aside from that, how are things otherwise?
+
+24
+00:03:39.673 --> 00:03:45.357
+Jason Park: Fine. Call tracking's been solid, volumes are where we expect them. Nothing else on my list.
+
+25
+00:03:45.726 --> 00:03:55.867
+Linda Sorensen: Same. The QM scorecards are running, our compliance lead reviews any change before it goes live, so that's all steady. No issues there.
+
+26
+00:03:56.882 --> 00:04:01.002
+Aisha Coleman: Good. Jason, what's the Salesforce side looking like these days?
+
+27
+00:04:01.916 --> 00:04:09.995
+Jason Park: It's okay. We did a sandbox refresh last month, and I'm slowly cleaning up some old campaign memberships from before I started.
+
+28
+00:04:09.995 --> 00:04:14.035
+Jason Park: The Invoca call records write in fine, so no problem there.
+
+29
+00:04:15.225 --> 00:04:23.504
+Aisha Coleman: Nice. When you pull those call IDs, do you want to include the campaign name they came from? It'll help my team trace them.
+
+30
+00:04:24.919 --> 00:04:31.195
+Jason Park: I can do that, sure. I'll send the campaign and the landing page too, if that's useful.
+
+31
+00:04:32.523 --> 00:04:39.137
+Aisha Coleman: That'd be great. And Linda, are you still running the Saturday ad campaign through the end of the quarter?
+
+32
+00:04:40.549 --> 00:04:51.175
+Linda Sorensen: We are. I'm actually thinking about extending it into November, but I want to see the real numbers first, which is part of why this spam thing is annoying.
+
+33
+00:04:52.166 --> 00:04:56.546
+Aisha Coleman: Makes sense. Let's get the data sorted before you decide.
+
+34
+00:04:56.795 --> 00:05:05.860
+Linda Sorensen: Right. One other thing, a small tangent. Jason's been working on a dashboard for the exec team, and he wants to show weekend call volume by campaign.
+
+35
+00:05:05.860 --> 00:05:08.882
+Linda Sorensen: Could you walk him through how to build that?
+
+36
+00:05:10.204 --> 00:05:14.172
+Jason Park: Not urgent, just something I've been meaning to set up.
+
+37
+00:05:14.704 --> 00:05:22.798
+Aisha Coleman: Sure. I can send a short guide on building campaign reports, and if you want, we can do a 20-minute screen share next week.
+
+38
+00:05:22.798 --> 00:05:23.809
+Aisha Coleman: What day works?
+
+39
+00:05:25.027 --> 00:05:28.299
+Jason Park: Tuesday or Wednesday morning is fine. I'm flexible before 11.
+
+40
+00:05:28.784 --> 00:05:31.850
+Aisha Coleman: Let's do Tuesday at 9:30. I'll send an invite.
+
+41
+00:05:32.235 --> 00:05:33.035
+Jason Park: Perfect.
+
+42
+00:05:33.850 --> 00:05:44.270
+Aisha Coleman: Okay, so I'll get you a note with what I need for the spam issue, and we'll talk Tuesday. Anything else before we hop off?
+
+43
+00:05:45.022 --> 00:05:47.682
+Linda Sorensen: Nope, that's it. Thanks Aisha. Talk soon.
+
+44
+00:05:48.111 --> 00:05:51.160
+Aisha Coleman: Thanks both. Hang in there with the staffing. Bye.

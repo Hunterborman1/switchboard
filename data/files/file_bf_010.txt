@@ -1,0 +1,88 @@
+auto-transcript | audio_1020_atlas | duration 00:04:12 | speakers detected: 3
+
+Speaker 1  00:00:01
+hey greg hey tanya thanks for hopping on. how's everything going over there?
+
+Speaker 2  00:00:08
+hey diego busy as always phoenix is still hot which is good for air conditioning sales not so much for the lot staff.
+
+Speaker 3  00:00:17
+Yeah, you know, we're hanging in We just wrapped up a hiring push for the BDC Like Two new reps starting next week
+
+Speaker 1  00:00:28
+nice that should help with the call volume. are you seeing the usual fall uptick
+
+Speaker 3  00:00:35
+yeah we're tracking maybe 8,500 calls a month across all rooftops. up about 12 percent from summer
+
+Speaker 2  00:00:41
+which is great, but it also means more of my budget goes to google ads. speaking of which i need to bring something up [crosstalk]
+
+Speaker 1  00:00:52
+sure, go ahead
+
+Speaker 2  00:00:55
+our agency, they flagged that the offline call conversions we're sending to google adds are showing up one to three days after the call sometimes they come in batches every few days so smart bidding is optimizing on incomplete data [crosstalk]
+
+Speaker 1  00:01:12
+okay so the conversions aren't reaching google adds in real time can you give me an example of a specific batch
+
+Speaker 2  00:01:23
+yeah, last week we had a bunch of calls on monday and tuesday and the conversions didn't hit until thursday the agency was like, why are these coming in waves it's messing with our bid strategy
+
+Speaker 3  00:01:37
+i've noticed that too. when i pull the salesforce reports the call records are there pretty quick but the the google ad side seems delayed.
+
+Speaker 1  00:01:48
+got it so the issue is specifically with the google ads offline conversion timing. i'll need to dig into that with our integrations team. can you you send me a couple of specific call ids and dates so i can trace them?
+
+Speaker 2  00:02:04
+yeah i can have my analyst pull that. but it's happening across all 22 rooftops not just one
+
+Speaker 1  00:02:11
+understood i'll open a ticket and get back to you by end of week. in the meantime is there anything else on the account side?
+
+Speaker 3  00:02:23
+you know just the usual. we're still using the same call flows, and the signal a eye is flagging appointments and and quotes fine no issues there
+
+Speaker 1  00:02:34
+good to hear and how's the salesforce integration working for the the bdc leads
+
+Speaker 3  00:02:41
+it's solid the leads are populating correctly no complaints
+
+Speaker 2  00:02:44
+yeah that part's been fine. it's just the google ad piece that's causing headaches.
+
+Speaker 1  00:02:51
+okay i'll focus on that anything else? any upcoming campaigns or changes?
+
+Speaker 2  00:02:57
+we're planning a big end-of-year sales event in december. so so we'll be ramping up spend which makes this conversion delay even more critical
+
+Speaker 3  00:03:05
+and we're still waiting on the new hires to get their in vocal seats set up can you check on that?
+
+Speaker 1  00:03:13
+sure i'll follow up with our provisioning team. should be done before they start
+
+Speaker 2  00:03:31
+also just so you know, we've been getting some competitive quotes. marquex came in lower per rooftop but we're not making any decisions yet [crosstalk]
+
+Speaker 1  00:03:42
+i appreciate the heads up so we can talk about that as we get closer to renewal but first let's get this google adds issue sorted
+
+Speaker 2  00:03:51
+so, [inaudible] the priority
+
+Speaker 3  00:03:54
+yeah let's fix that first then we can talk numbers.
+
+Speaker 1  00:03:59
+sounds good. i'll send a follow-up email with the ticket number and next steps. thanks for your time [crosstalk]
+
+Speaker 2  00:04:08
+thanks diego
+
+Speaker 3  00:04:08
+bye

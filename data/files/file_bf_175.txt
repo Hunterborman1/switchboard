@@ -1,0 +1,55 @@
+ridgeway mtor group sync ntes
+10/12, 8am CT
+Diego (Invoca), Mike Castillo (Internet Sales Director), Frank DeLuca (GM)
+
+Frank sitting in for the first time since he started in August. Wants to see the numbers behind what we pay for.
+
+call volumes sept, all seven rooftops: 11,240 total, up 6% mom. tulsa & broken arrow carry most of it. edmond still slow.
+
+bdc staffing: two new hires on phones starting next week, so mike wants a refresher on reading call transcripts.
+
+---
+
+Frank: "I've had two other dealer groups in the area tell me Marchex is quoting them a lower per-rooftop number than what we're paying, and some of those packages come with call scoring built in. Sand Springs moved over to them in the spring."
+
+diego: "what number are they quoting you per rooftop?"
+
+Frank: "I don't have it in front of me. I'll get it from the notes."
+
+diego: "send it over and i'll get it to my team to look at how we're priced against that."
+
+---
+
+mike: "google ads call conversions are still matching up. salesforce records are writing over like they should."
+
+frank: "good. that's the part i care about."
+
+---
+
+Email pasted from Mike, 10/9:
+diego, can you send the signal ai summary from last month? i want to show frank which campaigns are actually booking appointments vs just quoting. also the bdc team wants to know if we can pull a report by rooftop.
+
+diego reply: on it, sending this afternoon.
+
+---
+
+Short tangent: Frank asked about the ping-pong table in the Tulsa break room. Apparently it's gone. Nobody knows who took it.
+
+---
+
+to-dos:
+- diego: get marchex per-rooftop pricing info from frank, escalate to pricing team
+- diego: send sept signal ai summary + rooftop report to mike
+- Mike: share BDC new-hire training doc with Diego
+- Diego: schedule 30-min refresher on transcripts for BDC next week
+
+next check-in: 10/26, 8am ct
+
+renewal 1/31/27. frank hasn't said anything about it yet. keep an eye on it.
+
+---
+
+Error message Mike forwarded 10/8 (he'd tried to export a call list):
+"export failed: timeout after 30s. pls try again or contact support."
+
+diego: "i'll flag that to support, haven't seen it before."

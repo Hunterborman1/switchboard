@@ -1,0 +1,165 @@
+WEBVTT
+
+1
+00:00:06.967 --> 00:00:09.081
+Marcus Bell: Hey Ashley, how's it going?
+
+2
+00:00:09.846 --> 00:00:12.863
+Ashley Moore: Hey Marcus, doing okay. Busy week. How about you?
+
+3
+00:00:13.864 --> 00:00:22.041
+Marcus Bell: Good, good. Just working through end-of-quarter stuff. Wanted to check in, see how things are going with call tracking and Signal AI.
+
+4
+00:00:23.050 --> 00:00:30.602
+Ashley Moore: Call tracking's been fine. We're seeing maybe 1,800 calls a month across the six locations, which is up a bit from summer.
+
+5
+00:00:31.104 --> 00:00:35.684
+Marcus Bell: Nice, that's a decent bump. Anything driving that, or just season?
+
+6
+00:00:36.908 --> 00:00:42.040
+Ashley Moore: Probably season plus the Google Ads push we did in September. Termite stuff mostly.
+
+7
+00:00:42.624 --> 00:00:45.840
+Marcus Bell: Makes sense. How's the team handling the volume?
+
+8
+00:00:46.487 --> 00:00:55.810
+Ashley Moore: We're a little thin. One of our Raleigh dispatchers is out on leave until November, so everyone's covering. It's been a juggle.
+
+9
+00:00:56.447 --> 00:01:02.439
+Marcus Bell: Got it. Let me know if you need anything from our side, even just reporting help.
+
+10
+00:01:03.685 --> 00:01:08.234
+Ashley Moore: Will do. Actually, there is something I've been meaning to bring up.
+
+11
+00:01:08.710 --> 00:01:09.723
+Marcus Bell: Sure, go ahead.
+
+12
+00:01:10.096 --> 00:01:16.826
+Ashley Moore: So the spam detection in Signal AI has been flagging calls that aren't spam. Specifically after-hours and weekend calls.
+
+13
+00:01:18.194 --> 00:01:20.608
+Marcus Bell: Okay. How often are we talking?
+
+14
+00:01:21.799 --> 00:01:36.072
+Ashley Moore: I pulled a couple weeks of data. About 30 calls in September got marked spam, and when I listened to them, most were real customers calling after hours about ants or a wasp nest or whatever.
+
+15
+00:01:36.072 --> 00:01:38.847
+Ashley Moore: Those are gone from our reporting now.
+
+16
+00:01:39.913 --> 00:01:44.209
+Marcus Bell: So they're being excluded from the numbers you look at.
+
+17
+00:01:44.863 --> 00:01:52.113
+Ashley Moore: Right. And that's a problem because we run a weekend crew, and those calls are a big chunk of weekend bookings.
+
+18
+00:01:52.113 --> 00:02:00.743
+Ashley Moore: If they're tagged as spam, it looks like nobody's calling, and I can't tell the owners we had a slow weekend when we actually didn't.
+
+19
+00:02:02.026 --> 00:02:05.426
+Marcus Bell: How are you catching it? Just spot-checking, or something else?
+
+20
+00:02:05.952 --> 00:02:15.878
+Ashley Moore: I noticed it because our call volume for Saturdays looked weirdly low two weeks in a row. So I went into the transcript list and started listening.
+
+21
+00:02:15.878 --> 00:02:17.716
+Ashley Moore: That's when I found them.
+
+22
+00:02:18.521 --> 00:02:22.931
+Marcus Bell: Okay. Is it happening on specific numbers, or across all six locations?
+
+23
+00:02:23.804 --> 00:02:30.805
+Ashley Moore: I've seen it on the Raleigh and Durham numbers mostly, but I haven't checked the others closely.
+
+24
+00:02:31.579 --> 00:02:37.180
+Marcus Bell: And is it just the after-hours piece, or are daytime calls getting hit too?
+
+25
+00:02:37.929 --> 00:02:43.542
+Ashley Moore: Daytime looks fine. It's the late-night ones, like after 9pm, and some Sunday mornings.
+
+26
+00:02:44.951 --> 00:02:54.779
+Marcus Bell: Got it. So if a call comes in at 11pm and gets flagged, it drops out of the spam-excluded view and you lose it.
+
+27
+00:02:55.261 --> 00:03:06.869
+Ashley Moore: Exactly. And I can see it in the transcript list, but the reporting doesn't count it. So I'm manually re-checking, which is not how I want to spend my Monday.
+
+28
+00:03:08.119 --> 00:03:14.022
+Marcus Bell: Yeah, that's not sustainable. Can you send me a few examples? Call IDs or timestamps, anything you have.
+
+29
+00:03:14.522 --> 00:03:19.098
+Ashley Moore: Yeah, I can put together a list. I've got about eight I saved.
+
+30
+00:03:19.467 --> 00:03:30.728
+Marcus Bell: Perfect. I'll take that to the product team and see what they say. I can't promise a fix today, but I'll make sure it's in front of the right people.
+
+31
+00:03:32.207 --> 00:03:36.557
+Ashley Moore: That's all I'm asking. Just want to know it's being looked at.
+
+32
+00:03:37.566 --> 00:03:39.669
+Marcus Bell: Understood. Anything else on your list?
+
+33
+00:03:40.547 --> 00:03:44.221
+Ashley Moore: No, that's the main thing. Everything else is fine.
+
+34
+00:03:44.742 --> 00:03:47.225
+Marcus Bell: Okay. How's the Google Ads connection doing?
+
+35
+00:03:47.808 --> 00:03:49.182
+Ashley Moore: Fine. No issues there.
+
+36
+00:03:49.521 --> 00:03:54.284
+Marcus Bell: Good. And how's the new hire working out? The one you mentioned last time.
+
+37
+00:03:55.070 --> 00:04:04.147
+Ashley Moore: Oh, Dana? She's great. Picking things up fast. She's actually the one who flagged the weekend volume drop to me first.
+
+38
+00:04:04.737 --> 00:04:12.332
+Marcus Bell: Nice, glad to hear it. Alright, send me those call examples when you get a chance, and I'll follow up by Wednesday.
+
+39
+00:04:12.635 --> 00:04:14.188
+Ashley Moore: Will do. Thanks, Marcus.
+
+40
+00:04:14.715 --> 00:04:16.233
+Marcus Bell: Thanks, Ashley. Talk soon.
+
+41
+00:04:17.001 --> 00:04:17.801
+Ashley Moore: Bye.

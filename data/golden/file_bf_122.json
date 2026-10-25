@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_122",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "so first the exact required disclosure language. we have a script that legal signed off on word for word and right now we can't score against that specific wording",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "since the genesys update in early october when a call gets transferred between queues the receiving agent gets a blank screen pop",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

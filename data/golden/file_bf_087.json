@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_087",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "our routed cohort is converting about, i think it was 2.4x the ones with no journey context last quarter",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

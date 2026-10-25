@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_071",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "It's the spam flags. Twice last month we had people call on a Sunday afternoon about a wasp nest, real customers, and Signal AI tagged them as spam. So they never showed up in the campaign reporting.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "So when someone's out or a callback gets handed to dispatch, they read the AI summary instead of listening to the whole recording. A couple of the newer folks said it's how they actually learned what a good call sounds like.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

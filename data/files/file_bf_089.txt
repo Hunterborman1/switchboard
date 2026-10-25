@@ -1,0 +1,79 @@
+auto-transcript | rec_20261021_frontier_raw-2 | duration 00:04:32 | speakers detected: 2
+
+Speaker 1  00:00:04
+hey monica like how's it going thanks for making time today.
+
+Speaker 2  00:00:09
+yeah good busy. we're right in the middle of the fall purchase season so the floor's humming
+
+Speaker 1  00:00:17
+that's what i figured. let me pull up your dashboard real quick... okay so you're at about 41,500 calls month to date up maybe 9 percent from september
+
+Speaker 2  00:00:27
+that tracks we added sixteen loan officers like on the consumer direct side in early october. still hiring, actually uh two more start next monday.
+
+Speaker 1  00:00:39
+nice. any strain on the 5 9 routing with the the new folks? [crosstalk]
+
+Speaker 2  00:00:46
+Nothing we can't handle pre sense is doing its thing screen pops are landing before the answer that part's been quiet
+
+Speaker 1  00:00:56
+good. and how are the loan application records looking in sales force? i know you built out that custom object
+
+Speaker 2  00:01:05
+Fine, fine. Our ops team pokes at it weekly but but no fires
+
+Speaker 1  00:01:11
+okay so.. i wanted to check in because last time you mentioned a couple of things your compliance folks were chewing on.
+
+Speaker 2  00:01:23
+Right So here's the thing so and this is coming from my compliance director, she's been on me about the transcripts. Uh We're a regulated lender so everything a borrower says on a recorded call and everything your summaries spit out it all [inaudible] there.
+
+Speaker 1  00:01:48
+um sits there how
+
+Speaker 2  00:01:49
+indefinitely as far as she can tell and what she's asking for is.. okay two pieces one we want to be able to configure redaction ourselves like not just the standard pii but the specific identifiers for our world social account numbers whatever we decide counts and it needs to be role based, so a loan officer sees a redacted version but my qa lead sees the full thing. and every time somebody views an unredacted transcript that's logged audit trail
+
+Speaker 1  00:02:19
+so configurable redaction plus role based access and an audit log on views
+
+Speaker 2  00:02:23
+yeah and then the the other half is retention we want to set a clock like auto delete transcripts after ninety days or a hundred and eighty whatever legal lands on and have it actually purge, not just hide them right now we're exporting everything to our um, own archive just to have a defensible story, and that's a lot of manual work for my team. got it.
+
+Speaker 1  00:02:53
+so uh, the retention piece is really about auto deletion on a schedule you control.
+
+Speaker 2  00:03:01
+uh exactly ninety days maybe a a hundred eighty but the point is we set it and it happens [crosstalk]
+
+Speaker 1  00:03:08
+Uh okay Can I ask is this blocking anything right now or is it it more of a 'before the next exam' kind of thing
+
+Speaker 2  00:03:20
+not blocking our our next state exam is in the spring so it's more... we'd like to have an answer before then medium priority i'd say not a five alarm fire but it's it's the loudest thing on my list
+
+Speaker 1  00:03:34
+um okay, that helps me frame it internally anything else on the list [crosstalk]
+
+Speaker 2  00:03:40
+no, that's the one everything else has been pretty smooth. q.m scorecards are running, the loan like, officers grumble about being scored but they always grumble
+
+Speaker 1  00:03:51
+ha yeah that's universal. okay, uh let me um write this up and get it in front of the the product team. i'll come back to you with what i hear
+
+Speaker 2  00:04:05
+sounds good oh and can we do the next uh one in two weeks instead of a a month? i want to stay ahead of the exam stuff
+
+Speaker 1  00:04:18
+yeah, i'll send an invite for the fourth same time? [crosstalk]
+
+Speaker 2  00:04:22
+uh same time works.
+
+Speaker 1  00:04:24
+perfect talk soon um monica
+
+Speaker 2  00:04:27
+thanks aisha. bye

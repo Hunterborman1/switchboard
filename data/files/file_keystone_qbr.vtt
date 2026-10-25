@@ -1,0 +1,285 @@
+WEBVTT
+
+1
+00:00:02.839 --> 00:00:09.272
+Rachel Okafor: Hey Erin, hey Nate. How's the week going? Nate, I saw the storm track, are you guys buried?
+
+2
+00:00:10.250 --> 00:00:22.411
+Nate Simmons: Buried is generous. We're at like 140 percent of normal claims volume since Sunday. I've got people doing twelve-hour shifts and the after-hours queue is the worst part.
+
+3
+00:00:23.796 --> 00:00:27.270
+Rachel Okafor: Ouch. And you're still in hurricane season through November, right?
+
+4
+00:00:27.936 --> 00:00:33.447
+Nate Simmons: Yeah, technically through the end of November. October is usually the worst of it for us.
+
+5
+00:00:34.606 --> 00:00:44.392
+Erin Walsh: Sorry, I'm coming in hot, I just got back from that marketing analytics conference in Chicago last night. My brain is still half in a hotel ballroom.
+
+6
+00:00:45.696 --> 00:00:47.531
+Rachel Okafor: Oh nice, how was it?
+
+7
+00:00:48.931 --> 00:01:00.537
+Erin Walsh: Good, actually. Lots of sessions on attribution, like, which is funny because half the room is still fighting the same last-click argument we were having in 2019.
+
+8
+00:01:00.537 --> 00:01:04.835
+Erin Walsh: But it was good to get out of the building.
+
+9
+00:01:06.313 --> 00:01:08.612
+Rachel Okafor: Any um, sessions that were actually useful?
+
+10
+00:01:08.844 --> 00:01:18.045
+Erin Walsh: One on um, offline conversion imports, which, you know, relevant. I took a bunch of notes. I'll send them your way if there's anything worth stealing.
+
+11
+00:01:18.523 --> 00:01:30.561
+Rachel Okafor: Please do. Okay, so, agenda. I want to walk through Q3 numbers, then a couple of items you flagged, and Patricia said she'd join for the last ten minutes or so.
+
+12
+00:01:30.561 --> 00:01:31.337
+Rachel Okafor: Sound okay?
+
+13
+00:01:32.468 --> 00:01:33.671
+Nate Simmons: Works for me.
+
+14
+00:01:34.464 --> 00:01:35.264
+Erin Walsh: Yep.
+
+15
+00:01:36.183 --> 00:01:48.427
+Rachel Okafor: Cool. So top of the funnel first. Erin, call volume across tracking numbers was up 11 percent quarter over quarter, which tracks with the auto campaign you launched in August.
+
+16
+00:01:48.427 --> 00:01:54.549
+Rachel Okafor: Google Ads offline conversions are flowing, match rate held steady. Anything surprising on your side?
+
+17
+00:01:54.853 --> 00:02:05.391
+Erin Walsh: Not really, the volume's where we we expected. The one thing, um, and I've been meaning to bring this up, is the spam filtering.
+
+18
+00:02:05.391 --> 00:02:08.465
+Erin Walsh: Not a huge deal but it's noisy.
+
+19
+00:02:08.978 --> 00:02:10.394
+Rachel Okafor: Okay, tell me more.
+
+20
+00:02:11.631 --> 00:02:21.522
+Erin Walsh: So the spam filter is catching a chunk of our after-hours roadside calls, people calling from the shoulder of the highway, and they're dropping out of my reports.
+
+21
+00:02:21.522 --> 00:02:28.940
+Erin Walsh: And I only found it because one of the claims folks mentioned a call that never showed up in the dashboard.
+
+22
+00:02:29.819 --> 00:02:36.623
+Rachel Okafor: Okay. Do you have a rough sense of how many, or is it more anecdotal right now?
+
+23
+00:02:36.942 --> 00:02:53.534
+Erin Walsh: Anecdotal so far. I'd guess a couple dozen a month, but I don't want to quote that. Um, the pattern seems to be short calls from mobile numbers, and the audio quality is rough because, you know, highway.
+
+24
+00:02:54.813 --> 00:03:11.294
+Rachel Okafor: That makes sense. Let me take that back and have the team look at how those calls are being classified, and we can look at whether there's a way to keep them out of the the spam bucket.
+
+25
+00:03:11.294 --> 00:03:16.064
+Rachel Okafor: I don't want to guess at a fix on the call.
+
+26
+00:03:16.607 --> 00:03:22.700
+Erin Walsh: That's all I'm asking. It's not breaking anything, it's just, my roadside numbers look soft and they're not.
+
+27
+00:03:23.105 --> 00:03:28.848
+Rachel Okafor: Got it. I'll follow up by end of next week with what we find.
+
+28
+00:03:29.818 --> 00:03:30.618
+Erin Walsh: Perfect.
+
+29
+00:03:31.435 --> 00:03:38.468
+Rachel Okafor: Nate, let's talk contact center. Genesys routing's been stable, PreSense is firing on the inbound sales queue. How's the agent experience?
+
+30
+00:03:39.451 --> 00:03:46.291
+Nate Simmons: Stable, yeah. Screen pops are landing before the agent picks up, which was the whole point. No complaints there.
+
+31
+00:03:46.513 --> 00:03:49.841
+Rachel Okafor: Good. And QM, you're still scoring the sales queues?
+
+32
+00:03:50.781 --> 00:03:56.399
+Nate Simmons: Sales, yes. Claims, no, and that's the thing I wanted to talk about.
+
+33
+00:03:57.111 --> 00:03:57.911
+Rachel Okafor: Okay.
+
+34
+00:03:59.156 --> 00:04:09.480
+Nate Simmons: So we've got QM scoring 100 percent of the sales calls against the sales scorecard, and it's been fine. But claims is a different animal.
+
+35
+00:04:09.480 --> 00:04:19.391
+Nate Simmons: A claims call is somebody you know, having the worst week of their life, and the behaviors we're coaching on sales calls don't map.
+
+36
+00:04:20.824 --> 00:04:21.624
+Rachel Okafor: Right.
+
+37
+00:04:21.988 --> 00:04:40.114
+Nate Simmons: And I've been trying to explain this to my ops leads and I keep not getting it across. It's like, the scorecard has a section on needs discovery and a section on closing, and on a claims call there's no close.
+
+38
+00:04:40.114 --> 00:04:49.399
+Nate Simmons: There's no upsell. So So the agents get dinged for stuff that doesn't apply and then they stop trusting the scores.
+
+39
+00:04:50.602 --> 00:04:54.358
+Rachel Okafor: So the scorecard itself is the mismatch, not the scoring engine.
+
+40
+00:04:54.892 --> 00:05:02.983
+Nate Simmons: I think so, but I don't know how to say what I actually want. It's not just swapping words on the scorecard.
+
+41
+00:05:02.983 --> 00:05:13.648
+Nate Simmons: The weighting is different, the call types are different. A fender bender and a total loss are not the same conversation, and I want the scoring to know that.
+
+42
+00:05:14.836 --> 00:05:19.571
+Rachel Okafor: Okay, so walk me through an example. Take a total loss call.
+
+43
+00:05:20.883 --> 00:05:33.408
+Nate Simmons: Total loss, the agent's job is to absorb the emotion, be clear about next steps, not over-promise on the settlement, and get the person off the phone with a plan.
+
+44
+00:05:33.408 --> 00:05:40.922
+Nate Simmons: Empathy is the whole job. Versus a policy question, which is accuracy and speed. Those are opposite scorecards.
+
+45
+00:05:42.409 --> 00:05:45.461
+Rachel Okafor: And today you're scoring both against the sales scorecard.
+
+46
+00:05:45.948 --> 00:05:56.382
+Nate Simmons: Yeah, which is why for claims we need to grade empathy differently, like a total loss call is not a policy question, and right now I can't build that.
+
+47
+00:05:57.796 --> 00:06:15.528
+Rachel Okafor: Okay. Let me make sure I've got it. You want claims scorecards that are segmented by call type, so a total loss call gets graded on a different set of behaviors than a routine policy question, and the weighting reflects that.
+
+48
+00:06:16.917 --> 00:06:21.453
+Nate Simmons: Yes. That's it. That's what I've been trying to say for three weeks.
+
+49
+00:06:22.154 --> 00:06:43.287
+Rachel Okafor: Okay, I'm going to write that up and take it to the product team. I can't tell you today what's possible, but I want to get your exact example in front of them because the total loss versus policy question distinction is the clearest version of this I've heard.
+
+50
+00:06:44.445 --> 00:06:49.335
+Nate Simmons: Good. And I'm happy to get on a call with them if that helps.
+
+51
+00:06:50.292 --> 00:06:52.862
+Rachel Okafor: It might. Let me find out first.
+
+52
+00:06:54.172 --> 00:06:54.972
+Rachel Okafor: Go ahead.
+
+53
+00:06:55.579 --> 00:07:02.542
+Rachel Okafor: Okay, last thing before Patricia joins, Adobe Analytics. Anything you need from me on the integration side?
+
+54
+00:07:03.860 --> 00:07:05.665
+Erin Walsh: No, it's fine. Data's flowing.
+
+55
+00:07:06.039 --> 00:07:08.228
+Rachel Okafor: Great. Let me grab Patricia.
+
+56
+00:07:08.796 --> 00:07:16.038
+Patricia Hale: Hi everyone, sorry, I'm two minutes late, I was on a call with our Ohio governor's office thing. What did I miss?
+
+57
+00:07:16.250 --> 00:07:21.808
+Nate Simmons: Rachel's taking a couple of things back to product, mostly QM for claims.
+
+58
+00:07:22.224 --> 00:07:32.795
+Patricia Hale: Good. That's the one I care about most, honestly. Our claims CSAT is fine but the coaching side has been a a gap for a while.
+
+59
+00:07:33.463 --> 00:07:40.445
+Rachel Okafor: We're on it. Nate gave me a really clear example, so I have something concrete to bring to the team.
+
+60
+00:07:41.455 --> 00:07:53.985
+Patricia Hale: Great. And I'll say, since I'm here, the PreSense routing is honestly the best thing we bought last year. My distribution VPs bring it up unprompted, which never happens with technology.
+
+61
+00:07:54.420 --> 00:07:58.002
+Rachel Okafor: That's good to hear. The screen pops are landing clean?
+
+62
+00:07:59.356 --> 00:08:05.847
+Patricia Hale: Clean. Agents know who they're talking to before they say hello. It's changed the tone of the calls.
+
+63
+00:08:07.248 --> 00:08:16.086
+Rachel Okafor: Love that. Okay, so where we landed. Erin, spam classification on after-hours roadside calls, I'll come back to you by end of next week.
+
+64
+00:08:16.086 --> 00:08:23.083
+Rachel Okafor: Nate, claims scorecards, I'll write it up and take it to product. Everything else is steady. Anything I'm missing?
+
+65
+00:08:23.968 --> 00:08:25.543
+Nate Simmons: No, that covers it.
+
+66
+00:08:25.837 --> 00:08:26.637
+Erin Walsh: Same.
+
+67
+00:08:27.958 --> 00:08:35.475
+Patricia Hale: Nothing from me. Rachel, thank you for running these, they're actually useful, which is not something I say uh, about QBRs.
+
+68
+00:08:35.923 --> 00:08:41.823
+Rachel Okafor: I'll take it. I'll send notes tomorrow. Nate, hang in there with the season.
+
+69
+00:08:42.297 --> 00:08:44.026
+Nate Simmons: Yeah, thanks. Talk soon.
+
+70
+00:08:44.683 --> 00:08:45.553
+Erin Walsh: Bye everyone.
+
+71
+00:08:46.820 --> 00:08:47.620
+Patricia Hale: Take care.

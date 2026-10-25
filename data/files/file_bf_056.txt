@@ -1,0 +1,40 @@
+Coastal Comfort Mattress / Invoca | escalation | Fri, Sep 25, 2026
+
+[00:00:04] Tom Lindqvist: Morning, Vanessa. How's it going?
+[00:00:06] Vanessa Grant: Morning, Tom. I'm okay. Busy week. How about you?
+[00:00:11] Tom Lindqvist: Same here. Thanks for making time. I know you flagged something for us.
+[00:00:17] Vanessa Grant: Yeah. I want to talk about the Google Ads piece. It's been off for a couple of weeks and it's getting visible upstairs.
+[00:00:26] Tom Lindqvist: Okay. Tell me what you're seeing.
+[00:00:29] Vanessa Grant: So our offline call conversions are landing in Google Ads one to three days after the call. Sometimes two days, sometimes three. And Smart Bidding is making decisions on data that's half there.
+[00:00:41] Tom Lindqvist: How are you seeing the lag? Where does it show up?
+[00:00:46] Vanessa Grant: Our CMO pulls the weekly numbers every Monday morning. She compares what Invoca says we sent versus what Google Ads shows as received. Last week it was a 41 percent gap on Monday. By Wednesday it closed, but by then the bidding had already adjusted.
+[00:01:05] Tom Lindqvist: And this started when?
+[00:01:07] Vanessa Grant: About three weeks ago. First week of September. Nothing changed on our side that I know of.
+[00:01:13] Tom Lindqvist: Okay. Do you know if it's all campaigns or specific ones?
+[00:01:18] Vanessa Grant: It looks like all of them. We run 14 campaigns across the Southeast. Tampa, Orlando, Atlanta, Charlotte, Nashville, a few smaller markets. The lag shows up across the board.
+[00:01:32] Tom Lindqvist: Got it. And who on your team is watching this day to day?
+[00:01:38] Vanessa Grant: Our marketing ops lead, Priyanka, pulls the reports. She's the one who caught it. She showed me the Monday numbers and I took it to the CMO.
+[00:01:50] Tom Lindqvist: Okay. I want to get this in front of our integrations team today. Can you send me the campaign IDs and a couple of examples with call times and conversion times?
+[00:02:04] Vanessa Grant: Yes. Priyanka has a spreadsheet. I'll have her send it over this morning.
+[00:02:10] Tom Lindqvist: Perfect. And just so I understand the impact, what's the CMO worried about specifically?
+[00:02:17] Vanessa Grant: She thinks we're wasting spend. If Smart Bidding doesn't see the calls that converted, it's going to keep pushing budget toward whatever looks good on incomplete data. We spend about 90k a month on Google. That's not a rounding error.
+[00:02:31] Tom Lindqvist: Understood. I'm not going to guess at a cause on this call. I'll take it to the team and come back with what they find.
+[00:02:41] Vanessa Grant: That's all I'm asking. I don't need a fix this second, I need to know it's being looked at.
+[00:02:49] Tom Lindqvist: It will be. Let me ask one more thing. Is the lag consistent, or does it vary by day?
+[00:02:57] Vanessa Grant: It varies. Some days it's one day, some days three. Priyanka has the detail.
+[00:03:03] Tom Lindqvist: Okay. While I have you, how are call volumes looking overall?
+[00:03:09] Vanessa Grant: Steady. We're around 11,000 calls a month across the 64 showrooms. A little up from summer. The AI Voice Agent is handling maybe 2,300 of those for store hours and order status.
+[00:03:23] Tom Lindqvist: And how's that going?
+[00:03:25] Vanessa Grant: Fine. No complaints. It does what we need it to do.
+[00:03:31] Tom Lindqvist: Good. Any staffing changes I should know about on the call center side?
+[00:03:36] Vanessa Grant: We added two agents in Tampa last month. Still hiring for the Charlotte hub, but that's slow going.
+[00:03:44] Tom Lindqvist: Got it. And PreSense is still routing the way you want?
+[00:03:50] Vanessa Grant: Yes, that's fine.
+[00:03:51] Tom Lindqvist: Okay. I'll put the Google Ads issue at the top of my list today. I'll send you a note by end of day with next steps, even if it's just that we're investigating.
+[00:04:05] Vanessa Grant: Appreciate that. One thing, Tom. Can you loop in Priyanka on the updates? She's closer to the data than I am.
+[00:04:15] Tom Lindqvist: Of course. Same email as before?
+[00:04:18] Vanessa Grant: Yes, priyanka at coastalcomfort.
+[00:04:20] Tom Lindqvist: I'll copy her. Anything else on your list?
+[00:04:24] Vanessa Grant: No, that's the big one. The rest is fine.
+[00:04:29] Tom Lindqvist: Okay. I'll talk to the integrations team this morning and follow up. Thanks for the detail, Vanessa.
+[00:04:36] Vanessa Grant: Thanks, Tom. Talk soon.

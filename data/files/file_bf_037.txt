@@ -1,0 +1,110 @@
+Cedar Ridge Dental Group check-in
+Mon, Sep 21, 2026, 9:45AM • 5:37
+
+Priya Raman  0:02
+Morning, Heather. Morning, Rosa. How's the week going up there?
+
+Heather Collins  0:07
+Morning, Priya. Busy. We've got two offices short a front desk person this week, so Rosa's been bouncing between Hillcrest and the Meridian location.
+
+Rosa Jimenez  0:16
+Bouncing is a generous word. I was at Meridian Friday and half of Saturday. But we're surviving.
+
+Priya Raman  0:23
+Oh no. Is that a flu thing or just turnover?
+
+Heather Collins  0:27
+One person out with a family thing, and we had a resignation at Meridian, so. It'll settle in a couple weeks, I mean, we've got two interviews Thursday.
+
+Rosa Jimenez  0:39
+And honestly the summaries have been a lifesaver like, while we're short. My new hire, Beth, you know, she started three weeks ago, and she's already handling callbacks on her own because she reads um, the summary before she dials.
+
+Priya Raman  0:54
+That's good to hear. How is Beth doing otherwise?
+
+Heather Collins  0:58
+She's great. And that's the thing, it's not just her. The front-line teams keep telling me the AI call summaries are saving them real time on callbacks and on the handoffs to the back office. Our treatment coordinators pull one up before they call a patient back and and they already know what the patient asked about, what insurance, all of it.
+
+Rosa Jimenez  1:24
+Right, and when we're moving a patient to another office for a scheduling thing, whoever picks it up isn't starting from zero.
+
+Priya Raman  1:35
+Is that mostly new-patient calls, or are you seeing it on the existing-patient side too?
+
+Rosa Jimenez  1:40
+Mostly new patients. Um, Reschedules, people asking about hours, that kind of call is pretty quick anyway.
+
+Heather Collins  1:46
+But for a new-patient call, where somebody's nervous and there's a lot going on, the summary is the difference between a two-minute callback and and a six-minute callback. That adds up across nineteen offices.
+
+Priya Raman  1:58
+Yeah. And you were saying the ramp time for new hires feels shorter?
+
+Heather Collins  2:03
+Noticeably. A year ago a new front-desk person would take, um, I don't know, five or six weeks before I'd trust them on new-patient calls alone. With the summaries they can read what happened, so they're ramping in more like three. Beth's basically there.
+
+Rosa Jimenez  2:21
+She still asks me stuff. But she asks better questions now, if that makes sense.
+
+Priya Raman  2:28
+It does. Okay, one other thing while we're on summaries. Anything you'd want different about them?
+
+Heather Collins  2:34
+Funny you ask. So we're working through some HIPAA stuff with our compliance consultant, and this is the one place I I keep getting stuck. She asked me who can see the transcripts and the summaries, and what stops a a date of birth or a member ID from sitting in there.
+
+Priya Raman  2:57
+Okay, so so tell me a little more about what she's asking for.
+
+Heather Collins  3:03
+She wants to know we can control redaction by identifier type. Like, we choose whether it's DOB, member IDs, account numbers, and it's not all-or-nothing. And then who on our side can see the unredacted version, and a record of who looked at what.
+
+Rosa Jimenez  3:18
+Because right now, honestly, I don't know what gets pulled out. I just read them.
+
+Priya Raman  3:25
+Got it. And when you say role-based access, is that something compliance wants to review themselves, or is it more for your internal audit?
+
+Heather Collins  3:35
+Both. She wants to see it, and our privacy officer would need to be able to show the log if we ever got asked. So it's not a today problem, but it's coming up in the next month or two and I'd rather not be scrambling.
+
+Priya Raman  3:53
+That makes sense. Let me write this down properly and take it to the product team. I don't want to promise anything on the call, but I'll come back to you with what's possible and where it sits.
+
+Heather Collins  4:07
+That's all I need. Just want to know what to tell her.
+
+Priya Raman  4:12
+Okay. Switching gears, how are the Google Ads numbers looking? Your new-patient call volume, are you still around the I mean, same range as August?
+
+Rosa Jimenez  4:23
+Up a bit at Hillcrest. We did about four hundred fifty new-patient calls in August, we're tracking higher than that this month.
+
+Heather Collins  4:32
+Boise and Nampa are up, Eagle's flat. We haven't touched the campaigns, so I think it's seasonal.
+
+Priya Raman  4:40
+Okay. Anything weird on the bidding side, or is it just doing its thing?
+
+Heather Collins  4:46
+It's fine. We're not changing anything right now.
+
+Priya Raman  4:49
+Good. I'll pull the monthly numbers before our next one so we can look at it together. Anything else on your uh, list?
+
+Rosa Jimenez  4:59
+No, I think we're good. Oh, one thing. Can we move the next call to the 8th? I've got a vendor walkthrough that morning on the 1st.
+
+Priya Raman  5:09
+The 8th works on my end. I'll send a new invite.
+
+Heather Collins  5:13
+Perfect. And Priya, thank you for taking the redaction thing seriously. I know it's not a quick answer.
+
+Priya Raman  5:22
+Happy to. I'll follow up by email this week so you have something in writing. Give Beth my best.
+
+Rosa Jimenez  5:30
+Will do. Thanks, I mean, Priya.
+
+Heather Collins  5:33
+Like, Talk soon. Bye.

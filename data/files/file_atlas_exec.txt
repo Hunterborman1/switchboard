@@ -1,0 +1,194 @@
+Atlas Auto Group exec sponsor
+Mon, Oct 12, 2026, 3:00PM • 7:59
+
+Diego Alvarez  0:05
+Hey Greg, hey Raj. Uh, Thanks for hopping on. How's Phoenix treating you? Still triple digits?
+
+Greg Hollis  0:11
+Oh man, it finally broke. We hit 94 yesterday. Practically sweater weather.
+
+Raj Malhotra  0:15
+Sweater weather. Sure. My AC disagrees.
+
+Chris Donovan  0:19
+Raj, uh, good to see you again. Greg, I caught the tail end of the Cardinals game. That fourth quarter was rough.
+
+Greg Hollis  0:29
+Don't. I was there. My son kept asking why we stayed. I didn't have a good answer.
+
+Diego Alvarez  0:36
+Ha. Well, we appreciate you both making time. I know it's a busy week.
+
+Raj Malhotra  0:43
+It It is. So let me just jump in. We're about seven weeks out from the renewal and I've got to put a number in front of the budget committee.
+
+Greg Hollis  0:55
+And we've got some other folks sniffing around, so we figured it was time to talk.
+
+Chris Donovan  1:02
+Yeah, we heard that. That's part of why I asked to join. What are you hearing?
+
+Raj Malhotra  1:09
+I'll be straight with you, I've been asked to bring two options to the December budget meeting, and you're one of them.
+
+Diego Alvarez  1:18
+Okay. That's fair. Can I ask what the other option looks like?
+
+Greg Hollis  1:23
+Marchex is offering a flat rate per rooftop that's about thirty percent under what we pay you, and they'll include the call scoring.
+
+Chris Donovan  1:33
+Per rooftop, flat. So no seat math, no usage tiers?
+
+Raj Malhotra  1:38
+Flat. Twenty-two rooftops, one number. That's the pitch. And it's clean, I'll give them that. My job is easier with a flat line item.
+
+Greg Hollis  1:48
+It's not just um, the price though. I mean, price matters, um, obviously. But the thing that's been bugging my team is the Google side.
+
+Diego Alvarez  1:58
+The offline conversions?
+
+Greg Hollis  2:01
+Yeah. The conversions are landing in Google Ads late. Like two days late. My paid search manager shows me reports and the numbers don't match what we see in Invoca until Wednesday. By then we've already made bid decisions on bad data.
+
+Chris Donovan  2:16
+How long has that been going on?
+
+Greg Hollis  2:20
+A A few weeks? Maybe a month. It wasn't always like that.
+
+Raj Malhotra  2:26
+And to be clear, that's not a billing thing. That's a, what do you call it, um, a confidence thing. If the data's late, I mean, I can't defend the spend.
+
+Diego Alvarez  2:37
+Got it. Uh, Let me write that down. Two days late, started roughly a month ago. Is it it every conversion or some?
+
+Greg Hollis  2:46
+I'd have to check. Like, my gut says most of them. The GCLID matching seems fine, it's just... late.
+
+Diego Alvarez  2:54
+Okay. I don't want to guess at a cause on this call. Let me pull the integration logs and get our support team looking at the timing, and I'll come back to you with what we find.
+
+Raj Malhotra  3:11
+How long does that take?
+
+Diego Alvarez  3:14
+I'll have an update for you by Thursday.
+
+Raj Malhotra  3:17
+Thursday's fine. But I need to know if this is a fix or a, you know, a known thing we live with.
+
+Chris Donovan  3:27
+We'll be honest with you either way.
+
+Greg Hollis  3:30
+The Google conversions being two days late is the thing that makes Marchex sound good. Fix that and half this conversation goes away.
+
+Raj Malhotra  3:41
+Half. He said half, I heard half.
+
+Greg Hollis  3:44
+I'm being generous. The other half is still the thirty percent.
+
+Chris Donovan  3:49
+Understood. And I'm not going to sit here and tell you we'll beat a flat per-rooftop rate line for line. What I can tell you is what you'd be giving up, and then you decide.
+
+Raj Malhotra  4:05
+That's the thing. I need it in numbers, not a story. What does Invoca actually save us or make us?
+
+Chris Donovan  4:14
+So the call tracking and attribution side, that's the core. Every call from your Google and Meta campaigns gets attributed back to the campaign, the keyword, the page. That's what feeds your bidding. If that goes away or gets worse, your cost per lead drifts.
+
+Raj Malhotra  4:32
+Drifts how much?
+
+Chris Donovan  4:34
+I don't have a number I can stand behind for you today. I can have Diego pull your call volume and conversion mix and we can model it.
+
+Raj Malhotra  4:47
+Model it. Okay. I like models.
+
+Greg Hollis  4:51
+He really does. He has a spreadsheet for his fantasy league.
+
+Raj Malhotra  4:57
+It's a good spreadsheet.
+
+Diego Alvarez  4:59
+I'd like to see that. Okay, so, what I'm hearing is two things. One, the Google timing issue. So, Two, the flat rate comparison. Anything else on the table?
+
+Greg Hollis  5:11
+The Salesforce side is fine. Leads are writing over, the BDC sees them, nobody's complaining.
+
+Raj Malhotra  5:17
+Yeah, that's been solid.
+
+Diego Alvarez  5:20
+Good. And the signal side? Your appointment booked and quote given signals?
+
+Greg Hollis  5:25
+Those are working. That's actually why the the scoring thing in the Marchex pitch caught my eye, but it sounds like it's in the same bucket.
+
+Raj Malhotra  5:36
+Right. So the question I have to answer is, do we pay thirty percent less for roughly the same thing, or do we pay you and get whatever it is we're getting that's worth thirty percent?
+
+Chris Donovan  5:50
+That's the right question. And I'd um, rather answer it with your data than with a slide.
+
+Raj Malhotra  5:57
+When can you get me something? Because I present on the eighth of December.
+
+Chris Donovan  6:04
+Give us two weeks. Diego and I will build a side-by-side, your current cost, what the switch would you know, actually cost you all-in, and what changes operationally.
+
+Diego Alvarez  6:17
+And I'll fold in the Google timing update by Thursday so that's not hanging over the whole thing.
+
+Raj Malhotra  6:25
+Good. And Chris, I'll say this plainly. I'm not trying to squeeze you. I have a mandate to cut vendor spend where it makes sense. If it doesn't make sense, I'll say so.
+
+Chris Donovan  6:39
+That's all I can ask. I'd rather you uh, tell me no with a reason than yes with a grudge.
+
+Greg Hollis  6:46
+He's a grudge guy. You don't want that.
+
+Raj Malhotra  6:49
+I heard that.
+
+Greg Hollis  6:51
+You were supposed to.
+
+Diego Alvarez  6:54
+Okay, so action items. I'll dig into the Google conversion timing and come back Thursday. Chris and I will pull together the comparison and get it to to you by, let's say the twenty-sixth?
+
+Raj Malhotra  7:06
+Twenty-sixth works. That gives me a week before I um, have to lock the deck.
+
+Chris Donovan  7:13
+And Raj, so, one more thing. If there's a specific rooftop or two where the pain is worst, tell Diego. It helps us focus.
+
+Greg Hollis  7:22
+I'd say the Nevada stores. They've got the highest call volume and the thinnest margin, so late data hurts more there.
+
+Raj Malhotra  7:31
+Vegas and Henderson, yeah. Those two.
+
+Diego Alvarez  7:34
+Perfect. I'll note that.
+
+Greg Hollis  7:36
+And hey, next time you're in Phoenix, we owe you a game. Assuming they can win one.
+
+Chris Donovan  7:44
+I'll take that bet. Thanks for the time, both of you.
+
+Raj Malhotra  7:49
+Thanks Chris, Diego. Thursday, you know, right?
+
+Diego Alvarez  7:53
+Thursday. Talk soon.
+
+Greg Hollis  7:55
+Take care, guys.

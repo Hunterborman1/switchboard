@@ -1,0 +1,129 @@
+WEBVTT
+
+1
+00:00:03.720 --> 00:00:08.004
+Rachel Okafor: Hi both, thanks for making time. How's the week going in Columbus?
+
+2
+00:00:09.265 --> 00:00:17.257
+Patricia Hale: Busy. We're in the middle of open enrollment for the small group book, but the contact center side has been steady.
+
+3
+00:00:17.525 --> 00:00:27.795
+Luis Ortega: Steady is one word for it. We're right around 11,400 calls a week across claims and policy service, up maybe 4% over last month.
+
+4
+00:00:29.073 --> 00:00:37.076
+Rachel Okafor: That tracks with what I saw in the dashboard. Is the after-hours claims pilot still where you want it, or are you tweaking hours?
+
+5
+00:00:37.739 --> 00:00:48.243
+Luis Ortega: Still 6pm to 8am and weekends. The Voice Agent is picking up about 62% of those without a transfer now, which is better than I expected three weeks in.
+
+6
+00:00:48.941 --> 00:00:57.066
+Patricia Hale: And the transcripts are landing in Genesys and Salesforce the way we hoped, so the adjusters aren't chasing notes.
+
+7
+00:00:57.804 --> 00:01:02.187
+Rachel Okafor: Good. Any staffing changes I should note for the QM scorecards?
+
+8
+00:01:02.914 --> 00:01:11.440
+Luis Ortega: We've got two new team leads starting Monday, so I'll need their QM seats turned on. I'll send their names over after this.
+
+9
+00:01:12.076 --> 00:01:16.720
+Rachel Okafor: Perfect. And Patricia, how's the distribution side looking heading into Q4?
+
+10
+00:01:17.618 --> 00:01:25.185
+Patricia Hale: Fine. The Google Ads offline conversions are still matching well, and Adobe is showing the campaign attribution we need. Nothing urgent there.
+
+11
+00:01:25.459 --> 00:01:32.767
+Rachel Okafor: Okay. Anything from the pilot team you want me to capture while we're all on the line?
+
+12
+00:01:33.506 --> 00:01:42.747
+Luis Ortega: Actually, yeah. One thing keeps coming up from our compliance folks, and it's worth putting in front of your product team.
+
+13
+00:01:44.128 --> 00:01:44.928
+Rachel Okafor: Go ahead.
+
+14
+00:01:46.167 --> 00:01:55.049
+Luis Ortega: On the claims side, our transcripts and the AI summaries can still carry things like policy numbers, dates of birth, and driver's license numbers.
+
+15
+00:01:55.049 --> 00:02:08.373
+Luis Ortega: Our compliance group wants redaction we can configure ourselves, not a fixed setting, so we can decide what gets masked in transcripts and summaries and who on our side is allowed to see the unmasked version.
+
+16
+00:02:09.331 --> 00:02:14.031
+Rachel Okafor: So configurable redaction of identifiers, with role-based access tied to it?
+
+17
+00:02:14.312 --> 00:02:27.746
+Luis Ortega: Right, and audit so we can show who viewed what. The other piece is retention. We'd want transcripts to auto-delete after a set period we choose, say 90 days for the after-hours claims calls, and have that run on its own.
+
+18
+00:02:28.126 --> 00:02:39.020
+Patricia Hale: That last part matters for our state filings. If we can set the window ourselves and prove it's enforced, that's a much easier conversation with the auditors.
+
+19
+00:02:40.241 --> 00:02:46.278
+Rachel Okafor: Got it. Is this specific to the Voice Agent calls, or does it apply to live-agent calls too?
+
+20
+00:02:47.060 --> 00:02:55.109
+Luis Ortega: Both, honestly. The after-hours pilot is where it surfaced, but the same rules should hold for anything a licensed agent handles.
+
+21
+00:02:56.411 --> 00:03:00.718
+Rachel Okafor: How urgent is it? I want to set the right expectation internally.
+
+22
+00:03:02.131 --> 00:03:11.483
+Luis Ortega: Medium. Nothing is on fire, but our next internal audit window is early next year, so it would be good to have an answer before then.
+
+23
+00:03:12.189 --> 00:03:22.833
+Rachel Okafor: That's helpful. I'll write it up with the examples you gave and take it to the product team. I can't promise a date, but I'll come back with what I hear.
+
+24
+00:03:23.044 --> 00:03:24.597
+Luis Ortega: That's all I'm asking.
+
+25
+00:03:25.203 --> 00:03:31.520
+Patricia Hale: One more scheduling thing. Can we move the November review? The second week is heavy for us.
+
+26
+00:03:32.471 --> 00:03:42.548
+Rachel Okafor: Sure. I'll send a couple of options for the week after. And I'll get the two QM seats provisioned once I have the names.
+
+27
+00:03:43.522 --> 00:03:45.147
+Luis Ortega: I'll send them today.
+
+28
+00:03:45.832 --> 00:03:50.306
+Rachel Okafor: Anything else on the pilot you want me to look at before then?
+
+29
+00:03:51.607 --> 00:03:55.380
+Luis Ortega: No, the rest is running fine. Call volumes, routing, all good.
+
+30
+00:03:56.835 --> 00:04:02.651
+Rachel Okafor: Great. I'll follow up with the write-up and the scheduling options by Monday. Thanks, both.
+
+31
+00:04:03.485 --> 00:04:04.314
+Patricia Hale: Thanks, Rachel.
+
+32
+00:04:05.088 --> 00:04:06.434
+Luis Ortega: Appreciate it. Talk soon.

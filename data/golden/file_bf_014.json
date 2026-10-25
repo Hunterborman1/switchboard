@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_014",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "So when a call comes in, the first agent sees the digital journey fine, ad, pages, all of it. But when they blind transfer to another queue, or even to another agent in a different queue, the receiving agent gets a blank pop.",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

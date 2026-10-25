@@ -1,0 +1,27 @@
+Brightline Home Services / Invoca | renewal | Thu, Oct 22, 2026
+
+[00:00:07] Marcus Bell: Hi Carla, thanks for making time. How's the week going in Charlotte?
+[00:00:14] Carla Nguyen: Busy. We had two branches short a dispatcher, so I've been covering the board from seven to four most days.
+[00:00:21] Marcus Bell: That's a long stretch. Are the weekend calls still landing the way they should?
+[00:00:27] Carla Nguyen: That's actually what I wanted to talk about. Something's off with the spam detection on weekends.
+[00:00:34] Marcus Bell: Tell me what you're seeing.
+[00:00:37] Carla Nguyen: We run after-hours HVAC calls through the main tracking numbers, and a chunk of them get flagged as spam and drop out of the reporting. Last Saturday I counted at least eleven real calls that never showed up.
+[00:00:52] Marcus Bell: Okay, so when a caller reaches us after hours or on a weekend, the signal marks them spam and they vanish from the dashboard. Is that every weekend or just some?
+[00:01:05] Carla Nguyen: Weekends are the worst. Saturdays especially, because that's when the emergency furnace calls come in and nobody's in the office to check.
+[00:01:15] Marcus Bell: Do you have examples with call IDs or timestamps I can pull?
+[00:01:20] Carla Nguyen: I can send you a list. I've been keeping a spreadsheet since the first week of the month.
+[00:01:28] Marcus Bell: That helps. I'll take it to the team and see what we can find out. I can't promise a fix today, but I'll get it looked at.
+[00:01:39] Carla Nguyen: I appreciate that. The thing is, this affects how I think about the renewal.
+[00:01:46] Marcus Bell: Go on.
+[00:01:47] Carla Nguyen: If our after-hours calls keep getting mislabeled, we'll have to look at other options before January. I don't want to, but I have to bring our leadership something that works.
+[00:02:00] Marcus Bell: I'll make sure this gets the right attention. On the rest of the account, how are things tracking?
+[00:02:07] Carla Nguyen: Call volume is about where we expected, maybe a little higher. The PreSense screen pops have been fine for the agents.
+[00:02:15] Marcus Bell: Good. And Google Ads Smart Bidding?
+[00:02:19] Carla Nguyen: That's fine too. Our bids are holding steady.
+[00:02:23] Marcus Bell: Any changes coming on your side before the new year?
+[00:02:27] Carla Nguyen: We're adding a third shift at the north branch in November, so a few more seats might come up. I'll confirm once the schedule's locked.
+[00:02:39] Marcus Bell: Let me know and I'll update the paperwork. Does the fifteenth still work for the renewal call?
+[00:02:45] Carla Nguyen: Should be fine. My calendar's open that morning.
+[00:02:48] Marcus Bell: I'll send an invite. And send me that spreadsheet when you can, I'll dig into the weekend calls.
+[00:02:57] Carla Nguyen: Will do. Thanks, Marcus.
+[00:02:58] Marcus Bell: Talk soon, Carla.

@@ -1,0 +1,133 @@
+WEBVTT
+
+1
+00:00:02.982 --> 00:00:05.262
+Tom Lindqvist: Morning, Vanessa. How's Tampa treating you?
+
+2
+00:00:06.603 --> 00:00:11.104
+Vanessa Grant: Good, good. Traffic on 275 was actually moving today, so I'll take it.
+
+3
+00:00:12.032 --> 00:00:17.924
+Tom Lindqvist: Ha. Small wins. Before we get into it, how's the Amazon Connect side holding up?
+
+4
+00:00:19.245 --> 00:00:28.463
+Vanessa Grant: Yeah, it's been solid. We're seeing maybe 2,800 calls a week across the 64 showrooms, which is about where we were in August.
+
+5
+00:00:28.463 --> 00:00:38.884
+Vanessa Grant: The AI Voice Agent is handling the store-hours and and order-status stuff, so the queue's been lighter. But hey, that's not why I asked for this.
+
+6
+00:00:39.247 --> 00:00:40.590
+Tom Lindqvist: Right. What's going on?
+
+7
+00:00:40.813 --> 00:00:49.143
+Vanessa Grant: So we redid the checkout flow. It's a single-page app now, which is a whole thing our devs are proud of.
+
+8
+00:00:49.143 --> 00:00:52.317
+Vanessa Grant: And something's off with um, the tracking numbers.
+
+9
+00:00:52.552 --> 00:00:54.145
+Tom Lindqvist: You know, Off how?
+
+10
+00:00:55.433 --> 00:01:12.527
+Vanessa Grant: The dynamic number insertion just stops swapping. After someone navigates within the app, the number on the page stays whatever it was when the page first loaded. So if they click through to checkout and then call, it's the original number, not the campaign one.
+
+11
+00:01:13.674 --> 00:01:18.002
+Tom Lindqvist: Okay. Um, and you're seeing that in the reports as...
+
+12
+00:01:19.456 --> 00:01:28.497
+Vanessa Grant: As direct traffic. Calls from the new checkout are showing up as direct, no campaign, no keyword. Which makes the whole attribution thing useless for that flow.
+
+13
+00:01:28.497 --> 00:01:33.186
+Vanessa Grant: We're talking maybe a couple hundred calls a month landing in the wrong bucket.
+
+14
+00:01:34.599 --> 00:01:39.821
+Tom Lindqvist: Got it. Is this only on the checkout path, or are you seeing it elsewhere?
+
+15
+00:01:40.645 --> 00:01:47.330
+Vanessa Grant: Honestly, mostly checkout. The rest of the site is fine. But checkout is where the money is, so.
+
+16
+00:01:47.799 --> 00:01:55.526
+Tom Lindqvist: Yeah, that makes sense. Let me ask a couple things so I can get this in front of the right folks.
+
+17
+00:01:55.526 --> 00:01:58.102
+Tom Lindqvist: When did the new checkout go live?
+
+18
+00:01:59.371 --> 00:02:09.679
+Vanessa Grant: Uh, two weeks ago? The 2nd, I think. Our dev lead, Marcus, pushed it. Actually, wait, Marcus is on vacation, so it was his team.
+
+19
+00:02:10.595 --> 00:02:15.667
+Tom Lindqvist: Like, okay. And are you seeing it on both mobile and desktop?
+
+20
+00:02:16.328 --> 00:02:19.464
+Vanessa Grant: Yeah, both. Mobile's worse, but that's probably just volume.
+
+21
+00:02:20.335 --> 00:02:31.379
+Tom Lindqvist: Alright. I'll pull the tracking numbers for a few of those checkout calls and get engineering on it. Can you send me one example call ID?
+
+22
+00:02:32.318 --> 00:02:35.373
+Vanessa Grant: Yeah, you know, I'll dig one up after this.
+
+23
+00:02:36.222 --> 00:02:38.997
+Tom Lindqvist: Perfect. Anything else on the tracking side, or...?
+
+24
+00:02:39.737 --> 00:02:42.897
+Vanessa Grant: No, that's the main thing. Attribution's been fine otherwise.
+
+25
+00:02:44.158 --> 00:02:47.552
+Tom Lindqvist: Good. And PreSense, still popping the journey for agents?
+
+26
+00:02:48.796 --> 00:02:50.145
+Vanessa Grant: Yep, no complaints there.
+
+27
+00:02:51.467 --> 00:02:59.316
+Tom Lindqvist: Great. So what I'll do is open a ticket with the details, um, loop in our tracking team, and keep you posted.
+
+28
+00:02:59.316 --> 00:03:01.814
+Tom Lindqvist: Probably early next week for an update.
+
+29
+00:03:02.642 --> 00:03:13.975
+Vanessa Grant: Sounds good. One more um, thing, uh, unrelated. We're onboarding a new batch of agents in November, eight of them. Do I need to do anything on the Invoca seat side?
+
+30
+00:03:14.646 --> 00:03:21.837
+Tom Lindqvist: Just send me their emails and I'll get them provisioned. No charge since you're under your seat count.
+
+31
+00:03:22.047 --> 00:03:29.476
+Vanessa Grant: Perfect. Oh, and tell your team the AI Voice Agent's been a nice surprise. Callers actually use it.
+
+32
+00:03:29.838 --> 00:03:34.887
+Tom Lindqvist: Ha, I'll pass that along. Alright, I'll get that ticket moving. Talk soon.
+
+33
+00:03:36.362 --> 00:03:37.623
+Vanessa Grant: Thanks, Tom. Bye.

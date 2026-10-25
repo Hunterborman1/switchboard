@@ -1,0 +1,151 @@
+auto-transcript | audio_1021_coastal_presense | duration 00:06:44 | speakers detected: 3
+
+Speaker 1  00:00:05
+hey darnell hey julie thanks for jumping on i know you flagged something this morning you know so i figured we'd just get straight into it
+
+Speaker 2  00:00:15
+yeah morning. or afternoon for you i
+
+Speaker 3  00:00:17
+guess Hi Tom
+
+Speaker 1  00:00:19
+so tell me what's going on.
+
+Speaker 2  00:00:22
+pre-sense isn't showing up in the amazon connect panel for about a third of calls since last thursday
+
+Speaker 3  00:00:32
+yeah so i've been pulling the numbers this morning just to make sure it's not me seeing things.
+
+Speaker 1  00:00:37
+okay. a third um that's yeah that's a lot i mean, when did it start, exactly do you know?
+
+Speaker 3  00:00:45
+last thursday. first one i can find is thursday around uh, let me look 9:47 in the morning and then it just keeps happening
+
+Speaker 1  00:00:55
+And it's all calls I mean or certain queues
+
+Speaker 3  00:00:59
+that's the thing it's not one queue i checked order status, store hours the general line the returns i mean line um, it's kind of spread out.
+
+Speaker 2  00:01:11
+it's not every call which honestly makes it worse if it was every call we'd know something's broken um instead the agents get the screen pop half the time and and then they just start guessing with the customer
+
+Speaker 1  00:01:26
+you know, right, so inconsistent.
+
+Speaker 2  00:01:28
+yeah
+
+Speaker 1  00:01:30
+okay and when you say the panel um you mean the agent desktop in connect, the screen pop with the caller's journey the pages they looked at that stuff [crosstalk]
+
+Speaker 2  00:01:49
+yeah the ad the the pages the product when it works it's great the agent knows the guy was looking at a king mattress on the site before he called. when it doesn't, they open with nothing and the customer has to start from scratch
+
+Speaker 3  00:02:09
+i i can send you the call ids i've got about uh you know forty of them [inaudible] thursday through yesterday where i could match the invoca session to the connect contact yeah um, the call
+
+Speaker 1  00:02:25
+ids would be you know really helpful. um send those over and i'll get them in front of the support team today
+
+Speaker 3  00:02:33
+i'll send them right after this.
+
+Speaker 1  00:02:38
+so so is it happening on the ai voice agent calls too, or just the ones that go to a live agent
+
+Speaker 2  00:02:47
+Mostly live agent. So the voice agent handles the store hours stuff uh fine order status that's been, that's been okay actually
+
+Speaker 1  00:02:57
+Okay
+
+Speaker 2  00:02:59
+you know it's the transfers, the ones that that um land on a human that's where the panel's blank
+
+Speaker 1  00:03:07
+got it and has anything changed on your side? um, new numbers new campaigns, anything in connect a routing change, new queue? nothing i
+
+Speaker 3  00:03:16
+know of we added two tracking numbers for the nashville showroom in september but that was september this started thursday
+
+Speaker 2  00:03:23
+We didn't touch Connect. I'd know
+
+Speaker 1  00:03:27
+okay and when um, it doesn't show does the agent get anything at all, like or just an empty panel?
+
+Speaker 2  00:03:35
+I mean, Empty. No name, no journey nothing They just get the phone number ringing and a blank
+
+Speaker 3  00:03:43
+box some of them said they see the number but not the the rest it's not always fully blank sorry i should've said that
+
+Speaker 1  00:03:53
+that earlier. No um that's helpful Number but no journey or nothing at all both Okay
+
+Speaker 2  00:04:00
+so what are like we looking at here is this a config thing on our end is [inaudible] on yours..
+
+Speaker 1  00:04:07
+i don't want to guess at a cause before the team looks at the sessions i'll take the call ids and i'll get someone on it today and we'll come back to you with what they find
+
+Speaker 2  00:04:22
+okay.
+
+Speaker 1  00:04:24
+and in the meantime is it worth telling the the floor to just ask the caller the basics when the panel's empty uh so they're not stuck?
+
+Speaker 2  00:04:37
+they're already doing that that's the part that bugs me we bought this so they wouldn't have to
+
+Speaker 1  00:04:45
+fair
+
+Speaker 2  00:04:47
+i mean i guess paying extra for presence is fine if it actually shows up
+
+Speaker 3  00:04:54
+darnell
+
+Speaker 2  00:04:55
+what, i'm just saying um two thirds of the time it's fine it's the other third that's costing us
+
+Speaker 1  00:05:05
+i get it and look i'm not going to sit here and tell you it's working great when you're telling me a third of [inaudible] are missing it
+
+Speaker 2  00:05:17
+right.
+
+Speaker 1  00:05:19
+so here's what i'll do. julie you send the call ids i'll open it with support this afternoon and copy you both if they need anything else from connect or from your tag setup i'll come back to to you you before i um go asking [crosstalk]
+
+Speaker 3  00:05:41
+sounds good. i'll include the timestamps and the queue for each one
+
+Speaker 1  00:05:47
+perfect and darnell if you can think of anything that shifted last wednesday or thursday, even something small a campaign launch a promo just shoot me a note.
+
+Speaker 2  00:06:00
+yeah i'll ask around
+
+Speaker 1  00:06:10
+thanks. i know it's a pain to chase this stuff.
+
+Speaker 2  00:06:15
+It's It's not the chasing, it's the [inaudible] our agents fumble the first thirty seconds of every call
+
+Speaker 1  00:06:23
+yeah okay i'll get on it today and and we'll talk tomorrow same time?
+
+Speaker 2  00:06:27
+uh tomorrow works
+
+Speaker 3  00:06:37
+uh, i'll send those ids now
+
+Speaker 1  00:06:40
+thanks julie. talk soon

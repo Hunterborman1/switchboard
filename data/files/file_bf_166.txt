@@ -1,0 +1,95 @@
+Prairie Link Broadband check-in
+Tue, Oct 13, 2026, 3:15PM • 4:41
+
+Tom Lindqvist  0:06
+Hey Dale. How's it going out there? Did you get any of that wind we had overnight?
+
+Dale Henderson  0:13
+Morning, Tom. Yeah, knocked a few branches down, nothing major. We had about forty minutes of outage calls in the northwest cluster around six a.m. The voice agent picked most of them up so my team could focus on dispatch.
+
+Tom Lindqvist  0:31
+Good timing on that. How's the volume overall compared to September?
+
+Dale Henderson  0:35
+We're up. We had around 11,200 calls last month across the five states. October is tracking maybe eight percent above that. Part of uh, it is the new single-page order flow we launched in September. Fewer form drop-offs, so more people call in to finish the order.
+
+Tom Lindqvist  0:52
+That tracks. Anything specific you wanted to cover today? I had a couple of housekeeping items.
+
+Dale Henderson  0:59
+One thing I've been meaning to bring up. It's about how we get the data out of Invoca.
+
+Tom Lindqvist  1:06
+Okay, go ahead.
+
+Dale Henderson  1:08
+So right now my analyst, Renata, pulls CSV exports every Monday morning. She drops them into Looker and builds the weekly view for our exec team. It works, but it's manual. If she's out, the report doesn't happen. Our COO, Bill, asked me last week if he could just get something in his inbox Friday morning without anyone touching so, it.
+
+Tom Lindqvist  1:29
+Got it. So you're looking at scheduled delivery into Looker, or somewhere else?
+
+Dale Henderson  1:35
+Ideally Looker, but honestly Google Sheets would cover it for the exec view. The point is it shows up on a schedule. Friday at seven, something like that, with the key numbers for the week. Nobody has uh, to remember to run it.
+
+Tom Lindqvist  1:52
+And how many people would be looking at this?
+
+Dale Henderson  1:57
+The exec team is six people. But Renata would set it up, and a couple of regional managers would probably want their own version eventually. So call it ten or so downstream.
+
+Tom Lindqvist  2:09
+Okay. What's the urgency on your side? Is this a this quarter thing or a a next year thing?
+
+Dale Henderson  2:16
+Medium, I'd say. It's not breaking anything. It's just friction. If we could get it in the next few months, that'd be great. Bill's been asking since August.
+
+Tom Lindqvist  2:29
+Let me write this up and take it back to the product team. I can't promise anything on timing, but I'll make sure it gets in front of them with your numbers attached.
+
+Dale Henderson  2:42
+That's all I'm asking. I don't need a promise, just don't want it to fall into a void.
+
+Tom Lindqvist  2:48
+Understood. Now, um, housekeeping. I noticed your Marketo connection hasn't had a sync event in about two weeks. Is that intentional?
+
+Dale Henderson  2:56
+Probably our side. We rotated the API user when we moved to the new order flow. I'll have Renata check the credentials today and let you know.
+
+Tom Lindqvist  3:05
+Perfect. And your Google Ads offline conversions are still flowing, I saw activity as of yesterday, so that side looks fine.
+
+Dale Henderson  3:14
+Good. That's the one Bill actually looks at.
+
+Tom Lindqvist  3:18
+Also, your renewal is coming up next October. I'll start the internal prep around mid-year so we're not scrambling. Nothing for you you to do now.
+
+Dale Henderson  3:27
+Appreciate that.
+
+Tom Lindqvist  3:29
+How's the team holding up? I know you had someone leave in August.
+
+Dale Henderson  3:35
+Yeah, we backfilled that. New hire started two weeks ago, still ramping. Renata's been covering the reporting while he learns the ropes. That's part of why the manual exports are bugging me right now. She's stretched.
+
+Tom Lindqvist  3:51
+Makes sense. Do you want me to send over a short refresher on the reporting side for the new hire? Just the basics so Renata doesn't have to walk him through everything.
+
+Dale Henderson  4:05
+That'd help. She'd appreciate it.
+
+Tom Lindqvist  4:08
+I'll send it this week. I mean, Anything else on your list?
+
+Dale Henderson  4:12
+No, that's it. Oh, one quick thing. We're doing a um, site visit in Rapid City next month. If you're ever out this way, let me know. I'll buy you a coffee.
+
+Tom Lindqvist  4:27
+I might take you up on that. I'll check my travel schedule.
+
+Dale Henderson  4:32
+Sounds good. Talk soon.
+
+Tom Lindqvist  4:34
+Talk soon, Dale. I'll follow up on the reporting thing by Friday.

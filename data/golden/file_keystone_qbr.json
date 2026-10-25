@@ -1,0 +1,32 @@
+{
+  "fileId": "file_keystone_qbr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Claims calls need empathy graded differently from sales calls (e.g. total loss); cannot build that scorecard today.",
+      "quote": "for claims we need to grade empathy differently, like a total loss call is not a policy question, and right now I can't build that",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Spam filter catches after-hours roadside assistance calls, removing them from reports.",
+      "quote": "the spam filter is catching a chunk of our after-hours roadside calls, people calling from the shoulder of the highway, and they're dropping out of my reports",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "Sponsor calls PreSense routing the best purchase of last year.",
+      "quote": "the PreSense routing is honestly the best thing we bought last year",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

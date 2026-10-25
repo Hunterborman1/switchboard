@@ -1,0 +1,157 @@
+WEBVTT
+
+1
+00:00:04.677 --> 00:00:11.685
+Rachel Okafor: Hey Sanjay, hey Peter. How's the Hartford weather treating you? I saw it was supposed to rain all weekend.
+
+2
+00:00:12.652 --> 00:00:21.700
+Sanjay Iyer: It did. My daughter's soccer game got rained out Saturday, so we ended up at the mall instead. Not the plan.
+
+3
+00:00:22.219 --> 00:00:29.532
+Peter Lang: Same here. I spent most of Saturday on a Genesys upgrade that got pushed to next month anyway.
+
+4
+00:00:29.808 --> 00:00:42.366
+Rachel Okafor: Oh no. Well, at least it's out of the way. Let's jump in. I wanted to walk through Q3 numbers and then spend most of the time on QM, since that's the thing we've been watching.
+
+5
+00:00:43.297 --> 00:00:51.836
+Sanjay Iyer: Sounds good. Before that, just so you know, we're onboarding two new agency groups in November, so call volume is going to bump.
+
+6
+00:00:52.856 --> 00:00:56.063
+Rachel Okafor: How much of a bump are you expecting?
+
+7
+00:00:56.718 --> 00:01:04.261
+Sanjay Iyer: Probably twelve, fifteen percent. Medicare Advantage open enrollment starts the fifteenth, so it's going to be heavy through December.
+
+8
+00:01:04.613 --> 00:01:20.499
+Rachel Okafor: Okay. So looking at the um, numbers, you did about 41,000 calls in Q3, up from 38,500 in Q2. Signal AI is classifying around 93 percent of them, which is right in line with what we see at your size.
+
+9
+00:01:21.529 --> 00:01:28.431
+Peter Lang: Yeah, that tracks. PreSense screen pops have been solid. The Genesys routing piece has been fine too, no complaints there.
+
+10
+00:01:29.179 --> 00:01:32.096
+Rachel Okafor: Good. And Google Ads? Conversions still flowing?
+
+11
+00:01:33.564 --> 00:01:42.171
+Peter Lang: Yeah, that's been clean. Actually, the thing I wanted to raise is on the Salesforce side. Not the Google piece.
+
+12
+00:01:43.521 --> 00:01:44.321
+Rachel Okafor: Go ahead.
+
+13
+00:01:45.655 --> 00:02:01.035
+Peter Lang: So we have a custom object for call outcomes, and our team keeps adding fields to it. Last month someone added a new field and a couple new picklist values, and the Invoca sync just stopped writing to that object.
+
+14
+00:02:01.467 --> 00:02:04.325
+Rachel Okafor: Stopped entirely, or stopped for the new field?
+
+15
+00:02:05.157 --> 00:02:14.297
+Peter Lang: Entirely. Nothing was landing. We caught it after about a week because an ops manager asked why her dashboard was empty.
+
+16
+00:02:14.297 --> 00:02:25.613
+Peter Lang: I had to rebuild the field mapping in Salesforce to to get it flowing again, but any time we touch that object I'm worried it'll break.
+
+17
+00:02:26.119 --> 00:02:28.966
+Rachel Okafor: Okay. How often are you changing that object?
+
+18
+00:02:30.138 --> 00:02:39.157
+Peter Lang: Maybe once a quarter. It's not constant, but it's enough that it's a problem. I can send you the timestamps and the field names.
+
+19
+00:02:40.536 --> 00:02:49.870
+Rachel Okafor: Please do. I'll take that back to the team and see what we can find out. I don't want to guess at it on the call.
+
+20
+00:02:50.884 --> 00:02:56.591
+Sanjay Iyer: I'd second that. Peter's been dealing with it, but it costs us visibility every time.
+
+21
+00:02:57.724 --> 00:03:00.035
+Rachel Okafor: Understood. Okay, QM. Where are you?
+
+22
+00:03:00.864 --> 00:03:15.174
+Sanjay Iyer: Behind. We're at about 40 percent of calls scored, and we wanted to be at 80 by now. Part of it is just the rollout to the P&C side took longer than we thought.
+
+23
+00:03:15.671 --> 00:03:19.872
+Rachel Okafor: Is it the seat provisioning, or is it the scorecards themselves?
+
+24
+00:03:20.279 --> 00:03:27.973
+Sanjay Iyer: Mostly the I mean, scorecards. The default criteria are fine as a starting point, but they don't match how we actually coach.
+
+25
+00:03:27.973 --> 00:03:32.870
+Sanjay Iyer: For Medicare we have required disclosures, and for P&C the calls look completely different.
+
+26
+00:03:33.122 --> 00:03:36.123
+Rachel Okafor: So you want to build your own criteria.
+
+27
+00:03:37.231 --> 00:03:49.517
+Sanjay Iyer: Right. And not just build them, weight them. A new agent who's three weeks in versus someone who's been here four years shouldn't get scored the same way on the same rubric.
+
+28
+00:03:49.517 --> 00:03:54.125
+Sanjay Iyer: We want to weight the criteria differently for new versus tenured agents.
+
+29
+00:03:54.326 --> 00:03:56.595
+Rachel Okafor: And different scorecards by call type?
+
+30
+00:03:57.282 --> 00:04:04.194
+Sanjay Iyer: Ideally, yes. A Medicare enrollment call and a homeowners quote call shouldn't share a rubric at all.
+
+31
+00:04:04.433 --> 00:04:13.325
+Rachel Okafor: Got it. I'll write this up and bring it to product. I can't promise anything on timing, but I'll make sure they see the specifics.
+
+32
+00:04:14.685 --> 00:04:25.297
+Sanjay Iyer: That's all I'm asking. If it helps, I can send over our current scorecard in a spreadsheet so they see what we're working with.
+
+33
+00:04:25.811 --> 00:04:33.762
+Rachel Okafor: That That would actually help a lot. Okay, housekeeping. Renewal is next July, so we'll start that conversation in the spring.
+
+34
+00:04:33.762 --> 00:04:35.655
+Rachel Okafor: Anything else on your list?
+
+35
+00:04:37.057 --> 00:04:44.277
+Peter Lang: Nothing from me. Oh, one thing, are you the one handling the new seat adds, or do I go through support?
+
+36
+00:04:45.372 --> 00:04:49.260
+Rachel Okafor: Send them to me and I'll route it. How many?
+
+37
+00:04:49.917 --> 00:04:54.721
+Peter Lang: Probably six, for the two new groups. I'll get you names by Friday.
+
+38
+00:04:56.018 --> 00:05:04.189
+Rachel Okafor: Perfect. I'll send a recap this afternoon with the Salesforce timestamps request and the scorecard writeup. And Sanjay, good luck with open enrollment.
+
+39
+00:05:04.907 --> 00:05:07.023
+Sanjay Iyer: Thanks. We'll need it. Talk soon.

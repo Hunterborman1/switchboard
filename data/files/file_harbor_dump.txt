@@ -1,0 +1,65 @@
+harbor fcu scratch
+
+thu 10/15 4:40p
+
+- Tyler on at 3
+- linda joined late, ~3:18
+- call was maybe 35 min
+
+what came up
+
+- tyler: mapping broke again on member interaction obj after they added 'preferred branch' field
+- said he's been re-pasting the GCLID into the call record by hand for a week & a half, only new calls affected, backfill from Sept is fine
+- he pasted the error, saved it below
+- didn't try anything on our side yet, didn't want to "poke it mid-quarter"
+- asked if it's something on the SF side or the Invoca side, told him I don't know yet, taking it to support
+- he wants a name on the ticket, I said I'd send it today
+
+pasted from Tyler's email (3:04p)
+
+from: tyler reed <tyler.reed@harborfcu.example>
+to: aisha coleman <aisha.coleman@invoca.example>
+Subject: FSC mapping error
+
+Aisha,
+
+here's the exact text from the log. started monday morning, nothing changed on our end that i know of.
+
+Error: REQUIRED_FIELD_MISSING: Required fields are missing: [Preferred_Branch__c]
+
+let me know what you need from me. i can pull the full debug log if that helps.
+
+Tyler
+
+- forwarded to support 4:10p, ticket # pending
+- need to reply to tyler w/ ticket number, put a reminder for tmrw 9a
+
+linda
+
+- msotly member experience stuff, she's happy with the call tracking side, said numbers are matching what her team sees
+- linda - qm line item at renewal = 'not what we were told in 2024'
+- compliance team signs off on every scorecard change, so any tweak goes through their review, takes ~2 weeks
+- she said the current scorecard is "close" but she wants to walk through it w/ us before Feb
+- wants to get ahead of it, not a renewal convo yet
+- she asked who owns scorecards on our side, told her I'd find out
+
+few lines i grabbed off the recording
+
+"...so the branch field, that's the one we added in August..."
+"...I don't think it's your tag, I think it's the object..."
+"...linda, do you want to take the scorecard piece or should i..."
+
+next
+
+- ticket number to Tyler by EOD tomorrow
+- find out who owns QM scorecards internally, get a name for Linda
+- scorecard wakthrough w/ Linda + compliance, she'll send 2-3 dates
+- set internal note on account re: mapping + QM line item
+- check if preferred branch field is new on their side or ours (ask Tyler)
+
+branch # if needed for the walkthrough (Linda's assistant gave it): 253-555-0148
+
+- next check-in w/ Tyler: Mon 10/19
+- next w/ linda: after she sends dates
+
+reminder: don't forget the SF ticket link goes in the acct, not just email

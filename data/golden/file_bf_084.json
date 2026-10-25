@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_084",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "We need to pick which identifiers get masked, and we need it driven by role. A loan officer shouldn't see a full Social Security number on a transcript, but someone in compliance reviewing a complaint should be able to unmask it, and that unmask action needs to land in an audit log showing who viewed what and when.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "We added a 'Property Type' picklist value for condos, and calls just stopped landing on the object. No error on our side, nothing in the call record, just silence.",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

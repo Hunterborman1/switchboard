@@ -1,0 +1,76 @@
+Return-Path: <tom.lindqvist@invoca.example>
+Received: from smtp-out.invoca.example (smtp-out.invoca.example [10.55.211.42])
+        by mx1.invoca.example with ESMTPS id 715807.2968
+        for <ben.adeyemi@invoca.example>; Mon, 19 Oct 2026 10:12:00 -0400
+MIME-Version: 1.0
+Date: Mon, 19 Oct 2026 10:12:00 -0400
+Message-ID: <CAj8l0KF3HJ1FQ2C8SBia6e8VqYLZEdhsyLqMyBi@mail.invoca.example>
+In-Reply-To: <CA45dPwmfMayrSDfqOPo8Ydh3RpkvQCTVVy5oLCI@mail.invoca.example>
+References: <CAaku3NFT2nUbFs2oWn6W1c6hEXTN9EH0jFkYsmy@mail.invoca.example>
+        <CA45dPwmfMayrSDfqOPo8Ydh3RpkvQCTVVy5oLCI@mail.invoca.example>
+Subject: Fwd: Voice agent transfers - examples
+From: Tom Lindqvist <tom.lindqvist@invoca.example>
+To: Ben Adeyemi <ben.adeyemi@invoca.example>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+ben - flagging this one up to you. darnell escalated this morning re: ai voice agent xfers not carrying context into connect. 12 examples, all last week. julie also asked (again) for a scheduled export of the voice agent containment report to sheets. i asked for examples on friday & got this back. pasting the bit from the first recording on his list (below).
+
+need your eyes on the transfer payload piece. i'll hold off on promising anything until you've looked.
+
+AI Voice Agent: [inaudible] for calling coastal comfort like i can help with store hours order status or connect you with a team member
+Caller: yeah i ordered a mattress last week and and i want to check when it's coming
+AI Voice Agent: I can look that up What's the order number? [crosstalk]
+Caller: it's 4471 i think the um, confirmation email had it.
+AI Voice Agent: got it let me transfer you to someone who can help with delivery
+Agent: coastal comfort this is keisha, how can i help
+Caller: hi i [inaudible] talking to the automated thing about my order
+Agent: Um okay I mean what's the order number
+Caller: [inaudible] thought it would pass that that along
+
+---------- Forwarded message ---------
+From: Darnell Wright <darnell.wright@coastalcomfort.example>
+Date: Mon, Oct 19, 2026 at 8:47 AM
+Subject: Voice agent transfers - examples
+To: Tom Lindqvist <tom.lindqvist@invoca.example>
+Cc: Julie Hammond <julie.hammond@coastalcomfort.example>
+
+Tom,
+
+Julie pulled these from Connect this morning. All from last week, all cases where the caller said they'd already been talking to the voice agent about an order. In all 12 examples below, the agent receiving the transfer saw no order number and no reason for the call.
+
+10/12 9:14 AM - 4471 - contact ID 8f2a...c91
+10/12 11:02 AM - 2298 - contact ID 3b7d...e04
+10/13 8:47 AM - 6613 - contact ID a1c9...77f
+10/13 2:31 PM - 1042 - contact ID 5e8b...d20
+10/14 10:19 AM - 8830 - contact ID c4f1...9aa
+10/14 3:55 PM - 3716 - contact ID 7d2e...b58
+10/15 9:38 AM - 5524 - contact ID 2a6f...4c3
+10/15 1:07 PM - 9905 - contact ID e9b3...1f6
+10/16 8:52 AM - 1178 - contact ID 6c0a...8d1
+10/16 12:44 PM - 7749 - contact ID b8e5...3a7
+10/16 4:21 PM - 2036 - contact ID 4f7c...92e
+10/17 10:05 AM - 6390 - contact ID 9d1a...6b0
+
+Agents are having to ask the customer to repeat everything, which is exactly the handoff we were trying to avoid. Let me know what else you need.
+
+Darnell
+
+Darnell Wright
+Contact Center Director | Coastal Comfort Mattress
+darnell.wright@coastalcomfort.example
+
+On Fri, Oct 16, 2026 at 9:47 AM Tom Lindqvist <tom.lindqvist@invoca.example> wrote:
+> Darnell,
+>
+> Following up on our call earlier. To get Ben and the agent team looking at the right thing, could you send over a handful of recent calls where a transfer from the AI Voice Agent landed with an agent and the context didn't come through? Date, time, last four of the order number, and the Amazon Connect contact ID if you have it would be ideal.
+>
+> Even five or six would give us something to trace. If Julie has a report that pulls those, that works too.
+>
+> Thanks,
+>
+> Tom
+>
+> Tom Lindqvist
+> Senior Customer Success Manager | Invoca
+> tom.lindqvist@invoca.example

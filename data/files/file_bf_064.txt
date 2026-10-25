@@ -1,0 +1,38 @@
+Coastal Comfort Mattress / Invoca | working session | Thu, Oct 15, 2026
+
+[00:00:06] Tom Lindqvist: Morning, both. Thanks for making time. How's the week going down there?
+[00:00:11] Vanessa Grant: Morning Tom. Busy. We're a week into the fall mattress promo, so it's all hands.
+[00:00:17] Darnell Wright: Yeah, same on my side. October's always heavy.
+[00:00:21] Tom Lindqvist: Do you have five minutes of housekeeping first, or should we go straight into the AI Voice Agent numbers?
+[00:00:28] Darnell Wright: Let's do the numbers first, then I've got one thing I want to walk through with you.
+[00:00:36] Tom Lindqvist: Perfect. So I pulled the last thirty days. You're at about 41,200 calls, up maybe six percent month over month.
+[00:00:44] Vanessa Grant: That tracks with what we saw on the paid side.
+[00:00:49] Tom Lindqvist: And the Voice Agent is handling around 9,800 of those, mostly the store-hours and order-status intents.
+[00:00:56] Darnell Wright: Which is roughly where we wanted it. It's offloading the easy stuff so my people can stay on the sales calls.
+[00:01:05] Tom Lindqvist: How's staffing looking going into November?
+[00:01:09] Darnell Wright: We're adding four agents on the eleventh. And I'm still short one supervisor on the weekend shift, but we're working on it.
+[00:01:18] Vanessa Grant: Which reminds me, Darnell, I need to get you the updated headcount sheet.
+[00:01:23] Darnell Wright: Whenever. No rush.
+[00:01:25] Tom Lindqvist: Okay, what did you want to walk through?
+[00:01:29] Darnell Wright: So this is more of a heads-up than anything. Our agency, the paid media shop in Atlanta, they came to us last week and said we should take another look at CallRail.
+[00:01:42] Tom Lindqvist: What's prompting that?
+[00:01:44] Darnell Wright: They're pitching same-day conversion sync into Google Ads. Like, the call closes and the conversion lands in Ads the same day, and their quote came in under what we're paying you.
+[00:01:57] Vanessa Grant: And to be fair, the agency is the one pushing it, not us. But they asked me to at least look.
+[00:02:06] Tom Lindqvist: Understood. Can I ask what the same-day piece would change for you?
+[00:02:11] Darnell Wright: Honestly? Smart Bidding. We're running a pretty tight budget on the mattress category, and if the conversions land faster, the algorithm has more runway to learn inside the week.
+[00:02:24] Vanessa Grant: Right now we're looking at Monday numbers on Friday's spend, and by then we've already made the next day's decisions.
+[00:02:33] Tom Lindqvist: Okay, that's helpful. Let me take that back and get you something concrete rather than me guessing at it on the call.
+[00:02:42] Darnell Wright: That's all I'm asking. I told the agency we'd look, not that we were moving.
+[00:02:48] Tom Lindqvist: Do you know how they'd match the calls? Are they using the Google click ID the same way we do?
+[00:02:56] Darnell Wright: I didn't get that far into it. I can ask them.
+[00:03:02] Vanessa Grant: I'll get you the agency's contact too, if that helps.
+[00:03:07] Tom Lindqvist: That would. I'll put together a side-by-side on the sync timing and send it to you both by end of next week.
+[00:03:16] Darnell Wright: Works for me.
+[00:03:18] Tom Lindqvist: Anything else on the platform side that's bugging you?
+[00:03:23] Vanessa Grant: PreSense is fine. The screen pops are landing and the Amazon Connect side has been stable.
+[00:03:30] Darnell Wright: Yeah, no complaints there.
+[00:03:32] Tom Lindqvist: Good. One scheduling thing, I'm out the last week of October, so if something comes up, ping the support line and they'll route it.
+[00:03:42] Vanessa Grant: Noted. We'll be fine, we've got the promo running.
+[00:03:46] Tom Lindqvist: Alright, I'll follow up with the sync comparison and the agency intro. Thanks, both.
+[00:03:51] Darnell Wright: Thanks Tom.
+[00:03:52] Vanessa Grant: Thanks, talk soon.

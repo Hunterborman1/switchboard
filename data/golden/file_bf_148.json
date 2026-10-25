@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_148",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "medium",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "Honestly if it just showed up in a Google Sheet every Monday morning without me touching it, that'd be huge.",
+      "owner": "ppl_nina"
+    },
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense screen pop lost on transfer",
+      "quote": "But when a call comes in, agent sees the PreSense stuff, and then if they push it to a supervisor or another team, the second person gets nothing. Just a bare call.",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

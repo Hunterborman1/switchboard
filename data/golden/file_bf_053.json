@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_053",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+      "quote": "So when the AI Voice Agent hands a call to one of my people in Amazon Connect, the stuff it collected doesn't come with it.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bluewater_checkin",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Salesforce push fails on the Policy Quote custom object; agents type call notes by hand.",
+      "quote": "the Salesforce push is failing on our Policy Quote custom object, so agents are back to typing call notes in by hand",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "QM needs to verify the exact required Medicare disclaimer language.",
+      "quote": "Medicare calls have a required disclaimer script, and I need QM to check for the exact language, not just whether they talked about the plan",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "quality_management",
+      "severity": "low",
+      "summary": "One agency uses Gong; its manager keeps sending Gong scorecard screenshots.",
+      "quote": "One of our agencies already uses Gong, and their manager keeps sending me screenshots of its scorecards",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

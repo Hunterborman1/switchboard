@@ -1,0 +1,37 @@
+Keystone Mutual / Invoca | working session | Thu, Oct 15, 2026
+
+[00:00:07] Rachel Okafor: Hey Nate, hey Luis. How's the week going over there?
+[00:00:12] Nate Simmons: Busy. We're down two supervisors on the auto side, so I'm bouncing between floors more than usual.
+[00:00:18] Luis Ortega: Yeah, and open enrollment for the home book is coming up, so claims volume is climbing. We ran about 41,000 calls through Genesys last month, which is up maybe 12 percent from August.
+[00:00:30] Rachel Okafor: That tracks with what I see on the Invoca side. Call tracking is showing the same lift, mostly from the paid search campaigns and a little from the direct mail landing pages.
+[00:00:42] Nate Simmons: Good. Anything weird in the data before we get into the agenda?
+[00:00:47] Rachel Okafor: Nothing flagged. PII redaction is doing its job, and the Genesys handoff is clean. What did you want to cover today?
+[00:00:57] Luis Ortega: Two things on my list, and one is just me saying thank you to the team. The AI call summaries have been a real help on the claims side.
+[00:01:09] Rachel Okafor: Tell me more about that.
+[00:01:12] Luis Ortega: So when a first notice of loss comes in after hours, the agent used to spend five, six minutes reading the transcript before calling the customer back. Now the summary gives them the vehicle, the loss date, the police report number, all of it in one block, so callbacks are happening the same day instead of the next morning.
+[00:01:33] Rachel Okafor: That's good to hear. Is that on the auto side or across both books?
+[00:01:40] Luis Ortega: Mostly auto right now, but the home team started using it for water damage claims last week. My dispatch folks use it too when they're handing a tow over to the roadside vendor.
+[00:01:54] Nate Simmons: It's helped with the handoffs between claims and the total loss unit. Less back and forth on what was already discussed with the caller.
+[00:02:04] Rachel Okafor: Okay, I'll pass that along. What's the second thing?
+[00:02:08] Luis Ortega: This one's less fun. We added a new picklist value to the Claim Stage field in Salesforce, something our underwriting team asked for, and now the call records from Invoca aren't writing to our custom objects at all.
+[00:02:21] Rachel Okafor: When did you notice it?
+[00:02:25] Luis Ortega: Late last week. Our Salesforce admin, Priya, caught it when a report came back empty. The standard task records still show up, but the custom claim object stopped getting the call outcome and the signal data.
+[00:02:41] Rachel Okafor: And this started right after the picklist change?
+[00:02:45] Luis Ortega: Same day, as far as we can tell. We rolled it back for about an hour to test, and the records started writing again, so we're fairly sure that's the trigger.
+[00:02:56] Rachel Okafor: Got it. Can you send me the field name, the new value and a couple of example call IDs? I'll get it to the integrations team so they can look at how the mapping handles new picklist values.
+[00:03:10] Luis Ortega: I'll send that this afternoon. Priya has the call IDs.
+[00:03:15] Rachel Okafor: Perfect. I won't promise a date, but I'll come back to you with what they find.
+[00:03:23] Nate Simmons: Appreciate it. It's not breaking the contact center, but our claims leadership looks at those custom object reports every Monday, so the sooner the better.
+[00:03:33] Rachel Okafor: Understood. While I have you, how's the after-hours AI Voice Agent pilot going?
+[00:03:40] Nate Simmons: Quietly well. It's handling maybe 300 calls a week overnight, mostly FNOL and simple status questions, and it transfers to a live adjuster when someone asks for one. We're still keeping the sample small until the holidays.
+[00:03:53] Rachel Okafor: Any changes you want to make before then?
+[00:03:57] Nate Simmons: Not right now. We want a couple more weeks of data before we touch the flows.
+[00:04:05] Rachel Okafor: Makes sense. Anything on the QM side you want to talk through?
+[00:04:11] Luis Ortega: No, that's been steady. We're scoring the claims queues every week and the supervisors are using it in their one-on-ones.
+[00:04:19] Rachel Okafor: Good. One logistics thing, your renewal isn't until September of next year, so nothing urgent there. I'll still do a mid-year check-in in the spring.
+[00:04:28] Nate Simmons: Sounds right. And I owe you a heads-up, we're hiring eight agents in November, so seat count will move a little.
+[00:04:37] Rachel Okafor: Thanks, I'll note it. Do you want me to set up a short call with the integrations team once they've looked at the Salesforce mapping?
+[00:04:46] Luis Ortega: Yes, include Priya and me. Mornings work better for us, Columbus time.
+[00:04:51] Rachel Okafor: I'll aim for next week. Send me the field details and I'll take it from there.
+[00:04:58] Luis Ortega: Will do. Thanks, Rachel.
+[00:05:00] Rachel Okafor: Thanks both. Talk soon.

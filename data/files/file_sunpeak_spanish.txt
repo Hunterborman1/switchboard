@@ -1,0 +1,42 @@
+SunPeak Solar / Invoca | check-in | Fri, Oct 16, 2026
+
+[00:00:05] Diego Alvarez: Héctor, buenas tardes. ¿Cómo va todo? Perdón por la hora, sé que andan en el rush de mediodía.
+[00:00:13] Hector Ruiz: No te preocupes, Diego. Justo saliendo del rush. Todo bien por acá. ¿Y tú?
+[00:00:20] Diego Alvarez: Bien, bien, gracias. ¿Cómo van los números de octubre? Sobre todo el equipo en español, que es lo que quería revisar hoy.
+[00:00:28] Hector Ruiz: Pues mira, el volumen sigue subiendo. En septiembre tuvimos alrededor de mil doscientas llamadas en español entre San Antonio y Phoenix, y en octubre vamos como un ocho por ciento arriba.
+[00:00:42] Diego Alvarez: ¿Ocho por ciento? Qué bueno. ¿Y eso viene más de Google Ads o de Meta?
+[00:00:50] Hector Ruiz: Más de Meta, la verdad. Las campañas en español de Meta están trayendo bastante lead nuevo, sobre todo en el Valle.
+[00:01:00] Diego Alvarez: Órale. Y en el dashboard, ¿el tracking se ve bien? O sea, ¿los números dinámicos del sitio están asignando bien las llamadas a campaña?
+[00:01:10] Hector Ruiz: Sí, eso sí lo revisé ayer. El tracking está bien, las llamadas se están atribuyendo a las campañas correctas. Ahí no tengo queja.
+[00:01:20] Diego Alvarez: Perfecto. ¿Y cómo te está cayendo Signal AI en las llamadas en español? Es lo que más me interesa, porque sé que al principio batallábamos un poco con la transcripción.
+[00:01:35] Hector Ruiz: Ahí es donde tengo algo que platicarte. La señal de cita agendada casi nunca se activa en las llamadas en español; revisamos cincuenta y solo nueve estaban marcadas.
+[00:01:45] Diego Alvarez: Nueve de cincuenta. ¿Y tú cómo sabes que eran citas? ¿Las revisaste manualmente?
+[00:01:50] Hector Ruiz: Sí, yo y Marisol, la directora de ventas, escuchamos las cincuenta una por una. Muchas sí terminaron en cita agendada, pero la señal no se activó.
+[00:02:03] Diego Alvarez: ¿Y las frases que usan los clientes para agendar? ¿Son distintas a las que tenemos en las señales?
+[00:02:10] Hector Ruiz: Sí, mucho. La gente no dice 'agendar cita', dice 'apúntame', '¿me apartas el sábado?', 'yo voy para allá el martes'. Son otras frases.
+[00:02:19] Diego Alvarez: Claro, tiene sentido. ¿Eso también está afectando el reporte de conversiones a Google Ads?
+[00:02:25] Hector Ruiz: Sí, porque las citas que no se marcan no se suben como conversión. Nos estamos perdiendo como un tercio de las conversiones en las campañas en español.
+[00:02:36] Diego Alvarez: Órale, eso ya es bastante. ¿Y qué necesitarían de su lado para arreglarlo?
+[00:02:42] Hector Ruiz: Necesitamos poder crear señales personalizadas en español, con nuestras propias frases.
+[00:02:47] Diego Alvarez: Ok, entiendo. Déjame anotar los ejemplos que me diste, 'apúntame', 'me apartas', 'voy para allá'. ¿Te parece si lo llevo con el equipo de producto y te digo algo la próxima semana?
+[00:03:01] Hector Ruiz: Sí, por favor. Y si necesitan más ejemplos, Marisol tiene la lista completa de las cincuenta llamadas.
+[00:03:07] Diego Alvarez: Perfecto, te agradezco. ¿Y cómo va el piloto del agente de voz en español?
+[00:03:14] Hector Ruiz: Ese va muy bien, Diego. La verdad es que nos ha sorprendido. Llevamos como tres semanas con él en llamadas de fin de semana en San Antonio.
+[00:03:24] Diego Alvarez: ¿Y qué te dicen los clientes?
+[00:03:27] Hector Ruiz: A los clientes les encanta el agente de voz en español; muchos ni se dan cuenta de que no es una persona.
+[00:03:36] Diego Alvarez: No manches, qué bueno. ¿Y el agente también está haciendo el transfer a un agente humano cuando se necesita?
+[00:03:44] Hector Ruiz: Sí, en los casos que ya son más de cotización o de financiamiento, los pasa. Ahí los muchachos toman la llamada.
+[00:03:52] Diego Alvarez: ¿Y cómo se comparan los transfers del agente contra los que recibían directo de Google Ads? ¿Se ve bien la atribución?
+[00:04:01] Hector Ruiz: Sí, esa parte está bien. La atribución se ve correcta, no hemos visto nada raro.
+[00:04:08] Diego Alvarez: Bien, bien. ¿Tienes pensado ampliar el agente a Phoenix o a Florida pronto?
+[00:04:13] Hector Ruiz: Quisiéramos, pero primero quiero arreglar lo de las señales en español. No tiene caso ampliar si no estamos midiendo bien las citas.
+[00:04:23] Diego Alvarez: No, claro. Tiene toda la lógica. ¿Y del lado de Salesforce, cómo van? ¿Se están escribiendo bien los registros de las llamadas?
+[00:04:32] Hector Ruiz: Sí, eso está funcionando sin problema. Los records se están creando bien y los muchachos los usan.
+[00:04:41] Diego Alvarez: Qué bueno. Oye, y ¿cómo está la carga para el equipo? Porque con el volumen arriba, imagino que andan ocupados.
+[00:04:48] Hector Ruiz: Sí, andamos apretados, pero el agente nos está ayudando con lo de fin de semana, que era lo más pesado. Ahí ya se siente el alivio.
+[00:04:58] Diego Alvarez: Me da gusto. Oye, una última cosa: ¿quieren que armemos una llamada con producto para ver lo de las señales en español, o prefieres que yo lo lleve primero?
+[00:05:09] Hector Ruiz: Mejor que tú lo lleves primero, y si necesitan hablar con nosotros, nos avisas. Tú sabes que aquí estamos.
+[00:05:16] Diego Alvarez: Perfecto, Héctor. Entonces te mando un correo hoy con los ejemplos de frases y te digo algo la próxima semana. ¿Va bien el jueves que viene a la misma hora?
+[00:05:29] Hector Ruiz: Sí, a la misma hora me queda bien. Gracias, Diego.
+[00:05:34] Diego Alvarez: Gracias a ti, Héctor. Salúdame a Marisol. Que te vaya bien en el resto del día.
+[00:05:41] Hector Ruiz: Igualmente, Diego. Nos hablamos.

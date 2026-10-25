@@ -1,0 +1,129 @@
+WEBVTT
+
+1
+00:00:06.000 --> 00:00:12.444
+Rachel Okafor: Hey Sanjay, how's it going? Sorry, I was juggling two things, but I'm here now.
+
+2
+00:00:12.732 --> 00:00:18.339
+Sanjay Iyer: No worries. Busy week here, open enrollment prep is basically a full contact sport.
+
+3
+00:00:18.709 --> 00:00:22.497
+Rachel Okafor: I bet. How are the numbers looking this month?
+
+4
+00:00:23.742 --> 00:00:31.108
+Sanjay Iyer: Call volume's up, we're at about 48,000 inbound so far in September. Medicare's driving most of it.
+
+5
+00:00:32.185 --> 00:00:34.956
+Rachel Okafor: That's a jump from August, you know, right?
+
+6
+00:00:35.902 --> 00:00:43.340
+Sanjay Iyer: Yeah, maybe twelve percent. And we've got two new agents starting Monday, so I'm hoping that helps with the queue.
+
+7
+00:00:43.790 --> 00:00:45.763
+Rachel Okafor: Good. Are they on Genesys already?
+
+8
+00:00:47.088 --> 00:00:51.722
+Sanjay Iyer: They will be. IT's doing the provisioning this week. Fingers crossed.
+
+9
+00:00:52.992 --> 00:01:01.037
+Rachel Okafor: Okay. So I wanted to check in on the QM rollout. I know it's been like, a little slower than we mapped out.
+
+10
+00:01:01.657 --> 00:01:07.769
+Sanjay Iyer: It has. So, We're at 60 seats live, I think, out of the 130.
+
+11
+00:01:09.239 --> 00:01:11.446
+Rachel Okafor: Got it. What's been the holdup?
+
+12
+00:01:12.798 --> 00:01:21.485
+Sanjay Iyer: Honestly, it's just bandwidth. Our compliance team wants to review everything before it goes live, like, and they've been slammed.
+
+13
+00:01:22.878 --> 00:01:27.129
+Rachel Okafor: Makes sense. Is there anything I can do to help unblock that?
+
+14
+00:01:28.568 --> 00:01:38.879
+Sanjay Iyer: Maybe. Actually, there's something that came up in a session with our compliance folks last week that I wanted to talk through with you.
+
+15
+00:01:39.657 --> 00:01:40.457
+Rachel Okafor: Go ahead.
+
+16
+00:01:40.970 --> 00:01:53.982
+Sanjay Iyer: They want more control over what the scorecards actually measure. The templates are fine as a starting point, but they're not built for how we have to score a Medicare call.
+
+17
+00:01:55.109 --> 00:01:57.675
+Rachel Okafor: What do you mean by more control?
+
+18
+00:01:59.074 --> 00:02:15.181
+Sanjay Iyer: So, take the required disclaimer language. It's very specific, and it changes depending on the plan. The generic scorecard doesn't have a way for us to say 'this exact phrasing needs to be present or it's an automatic fail.'
+
+19
+00:02:16.058 --> 00:02:21.545
+Rachel Okafor: Okay, so it's about scoring against policy specific requirements, not just the general behaviors.
+
+20
+00:02:21.979 --> 00:02:33.146
+Sanjay Iyer: Exactly. And it's not just pass or fail. They want to weight things differently. Uh, A missing disclosure should tank the score, but a fumbled greeting shouldn't.
+
+21
+00:02:34.261 --> 00:02:42.189
+Rachel Okafor: That's helpful. I can take that back to the product team. Is this a blocker for the rollout?
+
+22
+00:02:43.252 --> 00:02:59.609
+Sanjay Iyer: It's not a blocker, but it's the difference between the tool being useful for compliance and being just a nice-to-have. They'll push back on expanding seats I mean, if they can't score the things that actually matter.
+
+23
+00:03:00.222 --> 00:03:03.649
+Rachel Okafor: Understood. I'll write it up. Anything else on that front?
+
+24
+00:03:04.483 --> 00:03:10.847
+Sanjay Iyer: Um, no, that's the main one. Uh, the rest of the integration with Salesforce is fine, no complaints there.
+
+25
+00:03:11.572 --> 00:03:17.952
+Rachel Okafor: Good. Uh, On the PreSense side, are the screen pops still landing the way you want?
+
+26
+00:03:18.421 --> 00:03:20.442
+Sanjay Iyer: Yeah, that's been smooth. No issues.
+
+27
+00:03:20.948 --> 00:03:28.115
+Rachel Okafor: Great. I'll follow up with the product team on the scorecard thing. Do you have a sense of timing?
+
+28
+00:03:28.683 --> 00:03:32.340
+Sanjay Iyer: Ideally before Q1, but I know that's not up to you.
+
+29
+00:03:33.439 --> 00:03:40.690
+Rachel Okafor: I'll set expectations. Let me get that uh, written up this week and I'll loop you in.
+
+30
+00:03:41.933 --> 00:03:43.349
+Sanjay Iyer: Perfect. Thanks, so, Rachel.
+
+31
+00:03:44.536 --> 00:03:48.593
+Rachel Okafor: Um, Of course. And hey, good luck with the open enrollment chaos.
+
+32
+00:03:49.366 --> 00:03:51.776
+Sanjay Iyer: Uh, Appreciate it. Uh, Talk soon.

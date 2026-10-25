@@ -1,0 +1,56 @@
+SunPeak Solar / Invoca | renewal | Mon, Oct 19, 2026
+
+[00:00:04] Diego Alvarez: Hey everyone, thanks for making time. I know it's a busy Monday. Amanda, Marisol, Cody, good to see you all.
+[00:00:13] Amanda Pierce: Thanks Diego. Chris, good to finally meet you.
+[00:00:16] Chris Donovan: Same here, Amanda. I've heard a lot about SunPeak from Diego.
+[00:00:22] Marisol Vega: We've got about forty minutes before my next thing, so let's get into it.
+[00:00:28] Diego Alvarez: Sounds good. I figured we'd start with where you all are coming from, and then talk about what the renewal looks like.
+[00:00:38] Amanda Pierce: I'll just start, then. We're six weeks out, and I've got a budget number I need to hit for next year. Right now the Invoca line is the second biggest item in my marketing tech stack.
+[00:00:54] Chris Donovan: What's the number you're working with?
+[00:00:56] Amanda Pierce: We're at two sixty-eight annually. We went from a hundred and ninety to two sixty-eight over two years, and the AI Voice Agent piece is most of that. I need that number to come down.
+[00:01:12] Chris Donovan: Okay. Can I ask what you're targeting?
+[00:01:16] Amanda Pierce: I'd like to see something in the low two hundreds. Call it two fifteen, two twenty.
+[00:01:22] Diego Alvarez: That's a pretty significant step down from where we are. Can I ask what's driving the target? Is it overall budget pressure, or is it specific to what you're getting from us?
+[00:01:37] Amanda Pierce: Mostly budget. The CFO gave every department a percentage cut and I have to find it somewhere.
+[00:01:43] Marisol Vega: From my side, the product is working. My team uses it every day. I'm not looking to change tools.
+[00:01:50] Chris Donovan: That's helpful to hear, Marisol. Amanda, when you say the AI Voice Agent is most of the increase, is the concern the per minute cost or the seat count?
+[00:02:04] Amanda Pierce: Both. We're at seventy seats, and the voice minutes went up more than we projected. Part of that is we're just getting more calls.
+[00:02:13] Cody Barrett: More calls is a good problem, but it does mean the bill scales with volume, which is not something I can easily forecast.
+[00:02:22] Amanda Pierce: The integrations aren't the issue. It's the total spend.
+[00:02:26] Cody Barrett: One thing I do want to put on the table. CallRail told us they can send conversions to Google the same day, and their quote was a lot lower.
+[00:02:37] Chris Donovan: Okay. When did you talk to them?
+[00:02:41] Cody Barrett: A couple weeks ago. I took the meeting because they kept calling. I'm not saying we're switching, but I'd be lying if I said the number didn't get my attention.
+[00:02:53] Marisol Vega: Cody, you didn't mention that to me.
+[00:02:57] Cody Barrett: It was exploratory. I didn't want to make it a thing.
+[00:03:03] Diego Alvarez: I'd rather know than not know, so I appreciate you saying it. Can I ask what the quote covered? Same seat count, same voice volume?
+[00:03:14] Cody Barrett: Roughly. Their voice offering is newer, so I'd want to pilot it before I believed it.
+[00:03:23] Chris Donovan: That's fair. I won't pretend I can match a number I haven't seen. What I can do is go back and look at what we can do on the structure, particularly the seat and minute mix.
+[00:03:37] Amanda Pierce: I'm not going to sign a renewal at this number. We'll run an RFP if we have to.
+[00:03:45] Chris Donovan: Understood. Nobody here wants to put you through an RFP, Amanda. Give me until Thursday and let me come back with something real.
+[00:03:54] Amanda Pierce: Thursday works. But I want to be clear that two sixty-eight is not a starting point for a small discount.
+[00:04:01] Marisol Vega: For what it's worth, I don't want to go through an RFP either. My reps would lose weeks.
+[00:04:08] Diego Alvarez: Marisol, how's the bilingual side holding up? I know that was a focus when we set things up.
+[00:04:14] Marisol Vega: It's fine. The Spanish language calls get classified correctly and the summaries are usable. No issues.
+[00:04:21] Diego Alvarez: Good. And the quality side, anything you want me to look at?
+[00:04:26] Marisol Vega: Nothing pressing. We're getting what we need out of it.
+[00:04:31] Chris Donovan: Amanda, one more question. Is the constraint purely the annual number, or is there flexibility if we move some of it to a different line, say a one-time credit applied to the first quarter?
+[00:04:45] Amanda Pierce: It's an annual number. How you get there is your problem, not mine.
+[00:04:52] Chris Donovan: That's a clear answer. I'll take it.
+[00:04:56] Diego Alvarez: One thing I can do in the meantime is pull the usage report so we're all looking at the same minute counts. There may be some volume on the voice agent that you're paying for that you didn't plan for.
+[00:05:13] Amanda Pierce: That would help. If the overage is real, I want to see it.
+[00:05:19] Cody Barrett: Send it to me too. I'll compare it against what I'm seeing in the ad platforms.
+[00:05:26] Chris Donovan: Amanda, can I ask who else needs to be in the room on Thursday? Is the CFO involved?
+[00:05:34] Amanda Pierce: Not on the call, but I have to be able to take the number to her.
+[00:05:42] Chris Donovan: Then let's make sure whatever I bring is something you can take upstairs without reworking it.
+[00:05:48] Marisol Vega: Amanda, do you want me on Thursday?
+[00:05:52] Amanda Pierce: Yes, please. And Cody, if he can make it.
+[00:05:56] Cody Barrett: I can make it.
+[00:05:59] Diego Alvarez: I'll send a calendar hold for Thursday at the same time and get the usage report over before then.
+[00:06:06] Chris Donovan: I'll have a proposal for you by Wednesday night so you have time to look at it before we talk.
+[00:06:15] Amanda Pierce: Wednesday night is fine. I'll look at it Thursday morning.
+[00:06:19] Diego Alvarez: Anything else before we get off? Marisol, Cody?
+[00:06:23] Marisol Vega: I'm good. Thanks Diego.
+[00:06:25] Cody Barrett: Nothing from me.
+[00:06:26] Amanda Pierce: Thursday, then. Thanks everyone.
+[00:06:29] Chris Donovan: Thanks Amanda. Talk Thursday.
+[00:06:32] Diego Alvarez: Thanks all. I'll send the hold in a few minutes.

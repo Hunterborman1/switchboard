@@ -1,0 +1,181 @@
+WEBVTT
+
+1
+00:00:06.848 --> 00:00:14.199
+Priya Raman: Hi Megan, hi Rosa. Thanks for hopping on. How's the weather out in Boise? I heard it's been smoky.
+
+2
+00:00:14.820 --> 00:00:21.873
+Megan Foster: Hey Priya. Yeah, it's been hazy. Not terrible, but we've had the windows closed at HQ all week.
+
+3
+00:00:23.288 --> 00:00:27.678
+Rosa Jimenez: Hillcrest too. You can smell it in the parking lot. Anyway, hi.
+
+4
+00:00:28.152 --> 00:00:35.553
+Priya Raman: Uh, Hi. So I know I mean, you asked uh, for um, time on the calendar. What's going on?
+
+5
+00:00:36.723 --> 00:00:45.056
+Rosa Jimenez: So I'll start with the thing that's been bugging me. And it's not really a marketing thing, it's more on my side.
+
+6
+00:00:45.530 --> 00:00:50.379
+Megan Foster: Yeah, Rosa caught it. I'll let her so, walk through it.
+
+7
+00:00:51.292 --> 00:01:01.431
+Rosa Jimenez: Okay. So. I was in Google Ads on Monday, right, because Megan gave me view access to check the new-patient campaign, and I was looking at the conversions report.
+
+8
+00:01:01.431 --> 00:01:06.326
+Rosa Jimenez: And I noticed the conversion date column doesn't match when the calls actually happened.
+
+9
+00:01:06.790 --> 00:01:10.208
+Priya Raman: Okay. Tell me what you mean by doesn't match.
+
+10
+00:01:11.259 --> 00:01:21.327
+Rosa Jimenez: Like, I pulled our call log from Invoca for the week of the 14th. We had, I want to say forty-one new-patient calls that week across all the practices.
+
+11
+00:01:21.327 --> 00:01:31.048
+Rosa Jimenez: And when I cross-referenced with the conversion dates in Google Ads, calls from Monday the 14th were showing up as conversions on Wednesday the 16th. Some on Thursday.
+
+12
+00:01:31.272 --> 00:01:38.238
+Priya Raman: So a two to three day gap between the call date and the date the conversion lands in Google Ads.
+
+13
+00:01:38.941 --> 00:01:49.898
+Rosa Jimenez: Exactly. And I did it for the week before too, same thing. I literally put them side by side. Call date, conversion date, and the gap is two, you know, sometimes three days.
+
+14
+00:01:50.151 --> 00:01:58.434
+Megan Foster: And the reason this matters is the Smart Bidding piece. If Google's optimizing on conversions that haven't landed yet, it's making decisions on incomplete data.
+
+15
+00:01:58.434 --> 00:02:00.753
+Megan Foster: Right? That's That's my understanding, at least.
+
+16
+00:02:01.753 --> 00:02:15.042
+Priya Raman: Yeah. So let me make sure I've got it. Rosa, you're comparing the call date from the Invoca call log like, against the conversion date in the Google Ads report, and you're seeing a consistent two to three day lag.
+
+17
+00:02:16.518 --> 00:02:25.107
+Rosa Jimenez: Consistent. Um, Every day I checked. And I checked a bunch, because honestly I thought I was doing it wrong at first.
+
+18
+00:02:25.107 --> 00:02:29.011
+Rosa Jimenez: I asked Megan, like, am I reading this report right?
+
+19
+00:02:30.087 --> 00:02:39.687
+Megan Foster: And she was. I mean, I looked at it too and I saw the same thing. Two days, three days. It's not random.
+
+20
+00:02:40.245 --> 00:02:43.097
+Priya Raman: Okay. How long have you been noticing this?
+
+21
+00:02:43.874 --> 00:02:58.868
+Rosa Jimenez: I I mean, I only started poking at it because we brought on two new practices in Meridian and Nampa in August, I mean, and new-patient volume jumped, so I was paying more attention.
+
+22
+00:02:58.868 --> 00:03:05.483
+Rosa Jimenez: But it could've been happening before that. I just wasn't staring at the conversion dates.
+
+23
+00:03:05.736 --> 00:03:13.466
+Priya Raman: That makes sense. Do you know roughly what the weekly call volume looks like now with the new offices?
+
+24
+00:03:14.821 --> 00:03:27.017
+Megan Foster: We're seeing around 550 total calls a week across the 19, give or take. New-patient calls, the ones that matter for bidding, that's maybe 180 to 200 a week.
+
+25
+00:03:27.865 --> 00:03:35.718
+Priya Raman: Okay, that's helpful. And Rosa, when you looked at this, did you happen to screenshot or export anything?
+
+26
+00:03:36.146 --> 00:03:46.870
+Rosa Jimenez: I took screenshots. I can send them over. I also exported the Invoca call log for those two weeks so you can see the call dates.
+
+27
+00:03:47.257 --> 00:03:57.197
+Priya Raman: Perfect. Send those to me and I'll get this in front of the team. I want to make sure I'm not guessing at what you're seeing.
+
+28
+00:03:57.668 --> 00:04:09.120
+Rosa Jimenez: Will do. And just so you know, it's not like a disaster. We're still getting calls. But if the bidding's working off stale data, that's money, you know?
+
+29
+00:04:10.536 --> 00:04:19.591
+Priya Raman: I hear that. And I'm not going to try to diagnose it on this call, um, because I'd just be guessing.
+
+30
+00:04:19.591 --> 00:04:26.491
+Priya Raman: What I can do is take your screenshots and the export and get it looked at.
+
+31
+00:04:27.099 --> 00:04:32.341
+Megan Foster: That's all we're asking. We just wanted to flag it and have somebody actually look.
+
+32
+00:04:33.762 --> 00:04:42.358
+Priya Raman: Totally fair. Is there a specific practice or campaign where it's worse, so, or is it across the the board?
+
+33
+00:04:43.048 --> 00:04:48.074
+Rosa Jimenez: Across the board, as far as I could tell. Hillcrest, Meridian, Nampa, all the same.
+
+34
+00:04:48.507 --> 00:04:53.547
+Priya Raman: Okay. While I've got you, how's everything else? Call tracking, the signals?
+
+35
+00:04:54.845 --> 00:05:03.353
+Megan Foster: Fine. Signals are tagging appointment booked and quote given the way they should. The managers read the summaries every morning, that's become a habit.
+
+36
+00:05:04.377 --> 00:05:09.123
+Rosa Jimenez: Yeah, my front desk lead reads them before huddle. She likes it.
+
+37
+00:05:10.035 --> 00:05:15.111
+Priya Raman: Good. And no staffing headaches? I know you mentioned turnover last quarter.
+
+38
+00:05:16.498 --> 00:05:28.034
+Megan Foster: We hired a a new front desk person at the Eagle office, so that's settled. Now I'm just trying to get everyone scheduled for the October training, which is its own circus.
+
+39
+00:05:28.459 --> 00:05:30.796
+Rosa Jimenez: Nineteen offices, one calendar. Good luck.
+
+40
+00:05:32.178 --> 00:05:34.195
+Megan Foster: Right? Anyway. That's not your problem.
+
+41
+00:05:35.255 --> 00:05:48.423
+Priya Raman: Happy to help with the scheduling if it's useful. But let's get the conversion thing moving first. Rosa, send me those screenshots today if you can, and I'll confirm once the team has eyes on it.
+
+42
+00:05:49.457 --> 00:05:51.793
+Rosa Jimenez: I'll send them this afternoon. Thanks, Priya.
+
+43
+00:05:52.745 --> 00:05:58.906
+Priya Raman: Thanks for catching it, honestly. Better you than us finding it in six months.
+
+44
+00:05:59.532 --> 00:06:04.345
+Megan Foster: That's what I said. Okay, we'll let you go. Talk soon.
+
+45
+00:06:05.579 --> 00:06:08.699
+Priya Raman: Sounds good. Stay out of the smoke, you two.

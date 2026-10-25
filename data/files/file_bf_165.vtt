@@ -1,0 +1,377 @@
+WEBVTT
+
+1
+00:00:05.239 --> 00:00:08.233
+Speaker 1: morning dale how's sioux falls treating you
+
+2
+00:00:09.876 --> 00:00:13.330
+Speaker 2: cold it was [inaudible] morning my kid's soccer game
+
+3
+00:00:13.330 --> 00:00:16.016
+Speaker 2: saturday i was in three layers. anyway
+
+4
+00:00:16.016 --> 00:00:17.551
+Speaker 2: how are you you?
+
+5
+00:00:18.333 --> 00:00:22.454
+Speaker 1: not bad busy week on my side, a couple of
+
+6
+00:00:22.454 --> 00:00:26.162
+Speaker 1: renewals landing before we get into it how are
+
+7
+00:00:26.162 --> 00:00:28.223
+Speaker 1: the numbers looking call volume-wise
+
+8
+00:00:29.815 --> 00:00:33.273
+Speaker 2: Steady We're tracking maybe eleven, twelve thousand calls a
+
+9
+00:00:33.273 --> 00:00:37.115
+Speaker 2: month across the five states Outage season is um basically
+
+10
+00:00:37.115 --> 00:00:40.189
+Speaker 2: behind us so it it should settle down
+
+11
+00:00:39.502 --> 00:00:42.566
+Speaker 1: that's that's about where you were in the spring
+
+12
+00:00:42.566 --> 00:00:42.906
+Speaker 1: right?
+
+13
+00:00:45.421 --> 00:00:49.734
+Speaker 2: yeah maybe up a hair oh and we've got a
+
+14
+00:00:49.734 --> 00:00:54.478
+Speaker 2: new hire starting on the digital team monday so heads up
+
+15
+00:00:54.478 --> 00:00:58.792
+Speaker 2: you might see a new name poking around the account.
+
+16
+00:00:59.153 --> 00:01:02.128
+Speaker 1: Good to know I can do a
+
+17
+00:01:02.128 --> 00:01:05.528
+Speaker 1: a quick walkthrough with them if that helps
+
+18
+00:01:05.414 --> 00:01:09.334
+Speaker 2: maybe. let me see how she settles in first
+
+19
+00:01:10.636 --> 00:01:14.493
+Speaker 1: fair. so you had something on the tracking [inaudible]? yeah, so
+
+20
+00:01:14.024 --> 00:01:17.414
+Speaker 2: this is kind of a weird one we rebuilt
+
+21
+00:01:17.414 --> 00:01:20.804
+Speaker 2: our [inaudible] flow in september, right it's all one
+
+22
+00:01:20.804 --> 00:01:25.700
+Speaker 2: page now the whole thing plan picker address lookup credit check, all of
+
+23
+00:01:25.700 --> 00:01:28.337
+Speaker 2: it loads in place. no page reloads
+
+24
+00:01:29.350 --> 00:01:30.150
+Speaker 1: okay
+
+25
+00:01:30.790 --> 00:01:33.797
+Speaker 2: and ever since the number swap kind of...
+
+26
+00:01:33.797 --> 00:01:38.308
+Speaker 2: stops like [inaudible] on the page the tag fires, you get the
+
+27
+00:01:38.308 --> 00:01:42.067
+Speaker 2: right tracking number fine but once you start moving through
+
+28
+00:01:42.067 --> 00:01:45.075
+Speaker 2: the flow pick a plan jump to the
+
+29
+00:01:45.075 --> 00:01:48.458
+Speaker 2: address step uh, whatever the number just stays whatever
+
+30
+00:01:48.458 --> 00:01:50.713
+Speaker 2: it was. uh, it doesn't update
+
+31
+00:01:51.394 --> 00:01:53.421
+Speaker 1: stays as the first one
+
+32
+00:01:54.640 --> 00:01:58.744
+Speaker 2: stays as the first one or honestly on a lot of
+
+33
+00:01:58.744 --> 00:02:02.101
+Speaker 2: paths it just stays the default the main line
+
+34
+00:02:02.101 --> 00:02:05.458
+Speaker 2: which you you know that's not great for us
+
+35
+00:02:05.159 --> 00:02:09.318
+Speaker 1: and where are you seeing it on desktop um mobile
+
+36
+00:02:10.060 --> 00:02:13.940
+Speaker 2: mobile mostly that's where [inaudible] button lives you know, in
+
+37
+00:02:13.940 --> 00:02:18.984
+Speaker 2: the sticky bar at the bottom. so person's on their phone they tap
+
+38
+00:02:18.984 --> 00:02:22.864
+Speaker 2: it, and and it dials the default instead of the
+
+39
+00:02:22.864 --> 00:02:25.192
+Speaker 2: campaign number they came in on
+
+40
+00:02:25.837 --> 00:02:29.323
+Speaker 1: so the tap-to-call uh is grabbing the wrong
+
+41
+00:02:29.323 --> 00:02:29.759
+Speaker 1: one.
+
+42
+00:02:31.431 --> 00:02:36.665
+Speaker 2: right so the call happens, it's a real call it's a uh lead,
+
+43
+00:02:36.665 --> 00:02:40.288
+Speaker 2: and it lands in um our queue as i
+
+44
+00:02:40.288 --> 00:02:45.521
+Speaker 2: don't know, unassigned which means our paid search reporting is off and our
+
+45
+00:02:45.521 --> 00:02:48.339
+Speaker 2: team can't tell which ad drove it
+
+46
+00:02:48.577 --> 00:02:50.730
+Speaker 1: how far off are we talking?
+
+47
+00:02:52.956 --> 00:02:58.119
+Speaker 2: so hard i mean to say exactly. it's worse [inaudible] the steps
+
+48
+00:02:58.119 --> 00:03:01.992
+Speaker 2: deeper in the flow. if somebody picks a plan
+
+49
+00:03:01.992 --> 00:03:05.434
+Speaker 2: first and then taps to call, that's pretty
+
+50
+00:03:05.434 --> 00:03:07.585
+Speaker 2: much always the default. [crosstalk]
+
+51
+00:03:07.376 --> 00:03:11.257
+Speaker 1: okay so it's not every call it's calls after they've moved
+
+52
+00:03:11.257 --> 00:03:12.316
+Speaker 1: through the app
+
+53
+00:03:13.242 --> 00:03:17.232
+Speaker 2: um, yeah you know, first load is fine. it's after the
+
+54
+00:03:17.232 --> 00:03:19.409
+Speaker 2: route changes that it goes sideways.
+
+55
+00:03:20.148 --> 00:03:22.184
+Speaker 1: when did you first notice it
+
+56
+00:03:23.064 --> 00:03:25.724
+Speaker 2: Few weeks after we we shipped. Honestly we
+
+57
+00:03:25.724 --> 00:03:30.045
+Speaker 2: were so heads down on the launch that nobody looked at the numbers
+
+58
+00:03:30.045 --> 00:03:34.034
+Speaker 2: until mid-October Our you know paid search guy started asking why conversions
+
+59
+00:03:34.034 --> 00:03:34.699
+Speaker 2: looked light.
+
+60
+00:03:34.655 --> 00:03:37.127
+Speaker 1: okay. and this is only on the
+
+61
+00:03:37.127 --> 00:03:40.658
+Speaker 1: order flow page not the rest of the site? [crosstalk]
+
+62
+00:03:42.465 --> 00:03:47.634
+Speaker 2: As far as we can tell The rest of the site is normal
+
+63
+00:03:47.634 --> 00:03:49.623
+Speaker 2: pages, so it swaps fine
+
+64
+00:03:50.397 --> 00:03:54.764
+Speaker 1: there i mean got it so let me write this down properly
+
+65
+00:03:54.764 --> 00:04:07.501
+Speaker 1: dynamic number insertion isn't picking up the number changes after client-side route changes on the new single-page order flow and on mobile the click-to-call ends up dialing the default number instead of the campaign one
+
+66
+00:04:07.501 --> 00:04:07.865
+Speaker 1: that's
+
+67
+00:04:08.755 --> 00:04:13.140
+Speaker 2: it that's the whole thing it's not breaking anything, it's
+
+68
+00:04:13.140 --> 00:04:16.648
+Speaker 2: just.. the numbers are wrong and that's kind
+
+69
+00:04:16.648 --> 00:04:20.156
+Speaker 2: of the point of the thing you know?
+
+70
+00:04:20.341 --> 00:04:26.035
+Speaker 1: yeah okay, i'll take that back to the team i want to get
+
+71
+00:04:26.035 --> 00:04:30.853
+Speaker 1: the specifics right so can you send me the url for
+
+72
+00:04:30.853 --> 00:04:35.671
+Speaker 1: the new flow? and a couple of example calls where it
+
+73
+00:04:35.671 --> 00:04:37.861
+Speaker 1: happened, if you've got them
+
+74
+00:04:38.742 --> 00:04:42.803
+Speaker 2: i can get you the url today the call examples might take
+
+75
+00:04:42.803 --> 00:04:46.526
+Speaker 2: me a day or two i'll have to pull them from
+
+76
+00:04:46.526 --> 00:04:47.541
+Speaker 2: the recording side
+
+77
+00:04:48.150 --> 00:04:51.697
+Speaker 1: no rush um, and if your dev has any notes
+
+78
+00:04:51.697 --> 00:04:54.889
+Speaker 1: on how the routing works that'd help too i
+
+79
+00:04:54.889 --> 00:04:57.017
+Speaker 1: don't want to guess at it
+
+80
+00:04:57.936 --> 00:05:02.301
+Speaker 2: i'll ask him. he's the one who built it. [crosstalk]
+
+81
+00:05:04.419 --> 00:05:07.373
+Speaker 1: Perfect. Anything else on your list while we're here?
+
+82
+00:05:07.905 --> 00:05:11.383
+Speaker 2: no the rest is fine. voice agent's doing
+
+83
+00:05:11.383 --> 00:05:16.600
+Speaker 2: its job on the outage line that's been quiet marketo side is
+
+84
+00:05:16.600 --> 00:05:20.513
+Speaker 2: fine google ad uh well that's the thing we
+
+85
+00:05:20.513 --> 00:05:21.818
+Speaker 2: just talked about.
+
+86
+00:05:24.122 --> 00:05:26.432
+Speaker 1: okay uh, let me also schedule a
+
+87
+00:05:26.432 --> 00:05:28.741
+Speaker 1: follow-up for say, next thursday same time,
+
+88
+00:05:28.741 --> 00:05:31.710
+Speaker 1: so we can check where the number thing stands?
+
+89
+00:05:30.697 --> 00:05:34.824
+Speaker 2: thursday works though if it's cold again i might be
+
+90
+00:05:34.824 --> 00:05:38.952
+Speaker 2: late i'm walking over from the parking ramp i'll send
+
+91
+00:05:39.394 --> 00:05:43.133
+Speaker 1: the invite. and and dale, thanks for the detail, this
+
+92
+00:05:43.133 --> 00:05:44.254
+Speaker 1: one's actually useful
+
+93
+00:05:45.831 --> 00:05:49.689
+Speaker 2: yeah well i'd rather it just worked, so but
+
+94
+00:05:49.689 --> 00:05:51.832
+Speaker 2: here we are talk thursday.

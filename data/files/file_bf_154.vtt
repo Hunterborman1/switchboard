@@ -1,0 +1,117 @@
+WEBVTT
+
+1
+00:00:04.879 --> 00:00:07.650
+Tom Lindqvist: Hey Owen, hey Brandon. How's Monday treating you?
+
+2
+00:00:08.283 --> 00:00:14.802
+Owen Price: Not bad. Busy. We had the Broncos game yesterday so half the team is moving slow this morning.
+
+3
+00:00:15.176 --> 00:00:18.946
+Brandon Hughes: Speak for yourself. I was in bed by ten.
+
+4
+00:00:20.133 --> 00:00:30.542
+Tom Lindqvist: Ha. Okay, well, I've got a few things on my list but but mostly wanted to check in on call volumes and see how the PreSense screen pops are behaving.
+
+5
+00:00:31.094 --> 00:00:38.242
+Owen Price: Volumes are up. We did about 41,000 calls last month across the sales lines, which is maybe 6 percent over August.
+
+6
+00:00:39.680 --> 00:00:45.812
+Tom Lindqvist: That That tracks with what I'm seeing in the platform. Fiber promotions driving that?
+
+7
+00:00:46.426 --> 00:00:55.315
+Owen Price: Yeah, the so, new bundle push. And we've got two new agents starting next week on the Genesys side, so Brandon's been buried in onboarding.
+
+8
+00:00:56.076 --> 00:01:00.763
+Brandon Hughes: Buried is right. I've been doing screenshare trainings for three days straight.
+
+9
+00:01:01.500 --> 00:01:10.207
+Tom Lindqvist: Anything I can help with there? I can send over the PreSense setup guide again if that's useful for the new folks.
+
+10
+00:01:11.115 --> 00:01:14.831
+Brandon Hughes: Maybe. Let me see how they do this week first.
+
+11
+00:01:15.521 --> 00:01:22.835
+Tom Lindqvist: Sure. Now, Brandon, you flagged uh, something on Signal AI last week, wanted to dig into that.
+
+12
+00:01:23.467 --> 00:01:34.765
+Brandon Hughes: Yeah. So this is the thing that's been bugging me. Our spam detection is flagging legit after-hours and weekend callers as spam. So they're getting pulled out of the reporting entirely.
+
+13
+00:01:35.635 --> 00:01:39.912
+Tom Lindqvist: You know, okay. Can you walk me through an example?
+
+14
+00:01:40.956 --> 00:01:51.838
+Brandon Hughes: Sure. Saturday night, someone calls the sales line, hangs up after like 20 seconds, um, then calls right back and talks to an agent for eight minutes.
+
+15
+00:01:51.838 --> 00:01:55.466
+Brandon Hughes: That second call, the real one, gets tagged spam.
+
+16
+00:01:56.306 --> 00:01:59.162
+Tom Lindqvist: So it's the hang-up-then-redial pattern that's triggering it.
+
+17
+00:02:00.470 --> 00:02:09.212
+Brandon Hughes: Right. And that's not spam, that's a customer. We're losing them from the reports. I've been manually pulling them back in for two weeks now.
+
+18
+00:02:09.763 --> 00:02:18.279
+Owen Price: And that matters because the weekend numbers feed our Monday leadership deck. If those calls are missing, we look like we had a dead weekend.
+
+19
+00:02:18.539 --> 00:02:21.055
+Tom Lindqvist: How many are we talking? Ballpark.
+
+20
+00:02:22.479 --> 00:02:29.585
+Brandon Hughes: Last weekend I counted 34. Weekends before that, 20-something. So it's not huge but it's every weekend.
+
+21
+00:02:30.860 --> 00:02:38.901
+Tom Lindqvist: Okay. I want to get the exact call IDs from you so I can take it to the Signal AI team.
+
+22
+00:02:38.901 --> 00:02:42.348
+Tom Lindqvist: Can you send me a few examples by Wednesday?
+
+23
+00:02:43.824 --> 00:02:46.402
+Brandon Hughes: Yeah, I can pull five or six.
+
+24
+00:02:47.151 --> 00:02:54.084
+Tom Lindqvist: Perfect. And Owen, is there anything else on your side before I I let you two go?
+
+25
+00:02:54.627 --> 00:03:00.458
+Owen Price: No, everything else like, is fine. Google Ads offline conversions are flowing, Adobe's fine.
+
+26
+00:03:01.512 --> 00:03:11.140
+Tom Lindqvist: Good. I'll follow up with the Signal AI team and loop um, you in, Brandon. Let's aim to have an update by Friday.
+
+27
+00:03:11.707 --> 00:03:12.507
+Brandon Hughes: Appreciate it.
+
+28
+00:03:13.573 --> 00:03:16.763
+Owen Price: Thanks Tom. Say hi to your dog for me.
+
+29
+00:03:17.219 --> 00:03:19.543
+Tom Lindqvist: Ha, will do. Talk soon, guys.

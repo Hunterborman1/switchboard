@@ -1,0 +1,36 @@
+Northwind Telecom / Invoca | working session | Fri, Sep 25, 2026
+
+[00:00:03] Tom Lindqvist: Morning, both. How's Friday treating you in Denver?
+[00:00:07] Brandon Hughes: Quiet so far. Good week to get some things cleaned up before month end.
+[00:00:13] Owen Price: Same here. I've got about half an hour before my next one, so let's make it count.
+[00:00:21] Tom Lindqvist: Perfect. I want to spend most of the time on the reporting piece you flagged, and we can hit anything else at the end. Sound right?
+[00:00:32] Owen Price: Works for me. And thanks for pulling me in, Brandon. I know you're usually the one fighting with the spreadsheets.
+[00:00:39] Brandon Hughes: That's putting it politely.
+[00:00:42] Tom Lindqvist: So Owen, walk me through what you're doing today for call reporting. I want the picture before we talk about anything else.
+[00:00:52] Owen Price: Right now it's a manual CSV export out of Invoca every Monday. I pull it, drop it into a shared drive, and two analysts rebuild the same workbook.
+[00:01:05] Owen Price: It's roughly forty minutes each, so call it an hour and a half of skilled time a week, and honestly the version people look at is stale by Wednesday.
+[00:01:16] Tom Lindqvist: And that workbook feeds what downstream?
+[00:01:19] Owen Price: Looker, mostly. Our exec dashboard lives there. What I'd love is a native Looker connection so our team can pull Invoca data straight into their models instead of me emailing files around.
+[00:01:33] Owen Price: Even better would be scheduled delivery, so Friday at six the dashboard's just there. Looker, Google Sheets, whatever the BI tool is.
+[00:01:42] Owen Price: Last quarter we built a Looker Studio view on top of the CSV and it broke every time someone renamed a column.
+[00:01:53] Brandon Hughes: Owen, you should tell Tom how much time we're actually talking about across the whole team, because it's not just your two analysts.
+[00:02:03] Owen Price: Fair. Call it four hundred hours a year once you add the QA someone does on the numbers. Not huge, but it's the kind of thing my team resents doing.
+[00:02:15] Tom Lindqvist: Got it. So the ask is really about getting the data delivered on a schedule into the BI tools you already use, not another export.
+[00:02:26] Owen Price: Exactly. Native connection first choice, scheduled deliveries second. And no spreadsheet wrangling in between.
+[00:02:33] Tom Lindqvist: That's clear, and I don't want to improvise an answer on it. I'll write it up as a feature request today and send you the writeup for accuracy before it goes anywhere.
+[00:02:46] Owen Price: Appreciate that. And I'm not asking for magic, I just want our analysts out of the copy paste business.
+[00:02:53] Tom Lindqvist: Understood. Can you give me one concrete example I can put in the writeup? Something specific to how a Looker feed would get used, maybe on the sales side?
+[00:03:06] Owen Price: Sure. Sales leadership reviews weekly call volume by campaign. If that came through a Looker connection tied to our existing Invoca account, they could slice by region without me in the middle.
+[00:03:20] Tom Lindqvist: Good, that helps. I'll come back to you early next week. Meanwhile, how are call volumes looking this month?
+[00:03:28] Brandon Hughes: Up. We're tracking about eleven percent over August. The wireless promo has been running since the fourteenth and it's driving a lot of inbound.
+[00:03:38] Tom Lindqvist: Is staffing keeping up?
+[00:03:40] Brandon Hughes: Barely. We added three agents on the sales queue two weeks ago. Still hiring for two more.
+[00:03:48] Owen Price: Funny aside, the new ones picked up Genesys faster than the veterans. Brandon had to tell people to stop hoarding the good headsets.
+[00:03:56] Brandon Hughes: It was one headset. And it was mine.
+[00:04:00] Tom Lindqvist: Ha. Alright, anything else on the day to day that's giving you trouble?
+[00:04:06] Brandon Hughes: No, the Google Ads piece and Adobe Analytics are both fine. No complaints there.
+[00:04:11] Tom Lindqvist: Good. I'll send the notes from today and the writeup by Monday. Owen, does your analyst Marisol want to be on the thread?
+[00:04:21] Owen Price: Yes, include her. She's the one who'll use it most.
+[00:04:26] Tom Lindqvist: Will do. And let's keep the weekly check in Tuesdays at ten.
+[00:04:32] Brandon Hughes: Works. Thanks, Tom.
+[00:04:34] Owen Price: Thanks. Talk Monday.

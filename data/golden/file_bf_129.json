@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_129",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "They want the redaction to be configurable on our side. We decide what counts as an identifier, and it applies to the summaries, not just the transcript.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

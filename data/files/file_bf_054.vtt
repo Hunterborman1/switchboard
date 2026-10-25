@@ -1,0 +1,293 @@
+WEBVTT
+
+1
+00:00:02.580 --> 00:00:05.492
+Speaker 1: morning vanessa morning, julie how's tampa treating you?
+
+2
+00:00:06.926 --> 00:00:09.705
+Speaker 2: hot. it's it's september, so, you know
+
+3
+00:00:09.705 --> 00:00:11.293
+Speaker 2: we're good though busy.
+
+4
+00:00:12.716 --> 00:00:17.827
+Speaker 3: yeah we just wrapped the weekend numbers actually. saturdays are still our biggest
+
+5
+00:00:18.890 --> 00:00:23.036
+Speaker 1: nice how are the a.i voice agent calls looking? last time we
+
+6
+00:00:23.036 --> 00:00:25.455
+Speaker 1: talked you were maybe two months in
+
+7
+00:00:25.593 --> 00:00:28.827
+Speaker 3: so so we're at... let me pull it
+
+8
+00:00:28.827 --> 00:00:34.083
+Speaker 3: up about 41 percent of our inbound after-hours calls are getting handled end
+
+9
+00:00:34.083 --> 00:00:38.126
+Speaker 3: to end now. store hours order status that kind of
+
+10
+00:00:38.126 --> 00:00:38.531
+Speaker 3: thing
+
+11
+00:00:39.582 --> 00:00:43.779
+Speaker 2: which is up from nothing in june so we'll take
+
+12
+00:00:43.779 --> 00:00:44.198
+Speaker 2: it
+
+13
+00:00:45.903 --> 00:00:50.005
+Speaker 1: that's a real jump. are the transfers to amazon connect
+
+14
+00:00:50.005 --> 00:00:50.826
+Speaker 1: behaving? [crosstalk]
+
+15
+00:00:52.397 --> 00:00:57.229
+Speaker 3: mostly the ones that do transfer land in the right queue,
+
+16
+00:00:57.229 --> 00:00:59.865
+Speaker 3: which was the whole point so.
+
+17
+00:01:00.340 --> 00:01:03.744
+Speaker 2: which is really the thing i care about
+
+18
+00:01:03.744 --> 00:01:08.424
+Speaker 2: because i've got two folks out on leave in the contact
+
+19
+00:01:08.424 --> 00:01:12.254
+Speaker 2: center through october so anything that keeps the queue
+
+20
+00:01:12.254 --> 00:01:15.658
+Speaker 2: from backing up is worth its weight [crosstalk]
+
+21
+00:01:17.475 --> 00:01:20.928
+Speaker 1: got it and presense screen pops still fine?
+
+22
+00:01:21.513 --> 00:01:23.392
+Speaker 2: Yeah fine No complaints The
+
+23
+00:01:23.551 --> 00:01:26.889
+Speaker 3: team likes having i mean, the ad and
+
+24
+00:01:26.889 --> 00:01:32.312
+Speaker 3: the pages right there before they pick you know up. nobody's said anything
+
+25
+00:01:32.312 --> 00:01:32.729
+Speaker 3: otherwise
+
+26
+00:01:33.839 --> 00:01:37.142
+Speaker 1: good okay what else is on your list
+
+27
+00:01:37.566 --> 00:01:40.808
+Speaker 2: okay so this is the one thing i
+
+28
+00:01:40.808 --> 00:01:45.671
+Speaker 2: wanted to bring up every monday i'm pulling call data out of
+
+29
+00:01:45.671 --> 00:01:50.129
+Speaker 2: uh in vocal as a csv and then hand-building the same
+
+30
+00:01:50.129 --> 00:01:52.965
+Speaker 2: three charts in looker for our monday
+
+31
+00:01:52.965 --> 00:01:57.423
+Speaker 2: merch meeting takes me like an hour hour and a half
+
+32
+00:01:57.423 --> 00:01:59.450
+Speaker 2: sometimes if like something's off.
+
+33
+00:02:00.280 --> 00:02:03.155
+Speaker 3: and i'm doing a a version of it
+
+34
+00:02:03.155 --> 00:02:05.310
+Speaker 3: too, for the store ops side.
+
+35
+00:02:07.075 --> 00:02:24.255
+Speaker 2: Right What I want and I don't know if this is a small thing or a big thing is a scheduled export. Like every Monday at 6 AM just push the file to a Google Sheet, and let looker read off the sheet.
+
+36
+00:02:24.255 --> 00:02:27.052
+Speaker 2: Then I stop doing it by hand.
+
+37
+00:02:35.640 --> 00:02:39.915
+Speaker 1: so a recurring delivery on a schedule um you set into
+
+38
+00:02:39.915 --> 00:02:41.858
+Speaker 1: sheets and then your bi
+
+39
+00:02:41.973 --> 00:02:45.043
+Speaker 2: tool points at that exactly. and honestly
+
+40
+00:02:45.043 --> 00:02:48.113
+Speaker 2: if it could hit luker directly or
+
+41
+00:02:48.113 --> 00:02:51.183
+Speaker 2: whatever bi tool that'd be even better
+
+42
+00:02:51.183 --> 00:02:55.569
+Speaker 2: but sheets is the practical version because that's where half
+
+43
+00:02:55.569 --> 00:02:57.761
+Speaker 2: the marketing team already lives
+
+44
+00:02:58.583 --> 00:03:03.216
+Speaker 3: plus then i'm not the only one with the numbers right now
+
+45
+00:03:03.216 --> 00:03:05.532
+Speaker 3: if vanessa's out nobody has the
+
+46
+00:03:07.396 --> 00:03:11.558
+Speaker 1: monday view. yeah okay [inaudible] the pain is the manual pull
+
+47
+00:03:11.558 --> 00:03:14.207
+Speaker 1: plus the single point of failure let
+
+48
+00:03:14.207 --> 00:03:17.234
+Speaker 1: me write this up can i ask is
+
+49
+00:03:17.234 --> 00:03:19.882
+Speaker 1: it just the the monday pack or
+
+50
+00:03:19.882 --> 00:03:21.774
+Speaker 1: are there other recurring reports
+
+51
+00:03:22.906 --> 00:03:26.549
+Speaker 2: monday is the one that hurts. there's a a monthly thing
+
+52
+00:03:26.549 --> 00:03:29.198
+Speaker 2: i mean for the execs but that's smaller
+
+53
+00:03:30.718 --> 00:03:34.158
+Speaker 1: uh, how many columns are we talking just
+
+54
+00:03:34.158 --> 00:03:36.308
+Speaker 1: so i describe it accurately
+
+55
+00:03:45.419 --> 00:03:48.737
+Speaker 3: um campaign source call volume um answered converted...
+
+56
+00:03:48.737 --> 00:03:52.469
+Speaker 3: i i mean think we're at fourteen right now
+
+57
+00:03:53.096 --> 00:03:56.755
+Speaker 1: okay i'll get it in front of the product team this
+
+58
+00:03:56.755 --> 00:03:59.417
+Speaker 1: [inaudible] come back to you either way i'm
+
+59
+00:03:59.417 --> 00:04:01.745
+Speaker 1: not going to promise anything on timing
+
+60
+00:04:03.487 --> 00:04:05.162
+Speaker 2: that's all i ask.
+
+61
+00:04:05.644 --> 00:04:10.913
+Speaker 1: anything on the google ads or meta side that needs a look
+
+62
+00:04:13.779 --> 00:04:17.192
+Speaker 2: no you know those are running the offline
+
+63
+00:04:17.192 --> 00:04:21.459
+Speaker 2: conversions are going over fine as far as i know.
+
+64
+00:04:22.395 --> 00:04:25.173
+Speaker 1: great like last thing, i'm out the
+
+65
+00:04:25.173 --> 00:04:27.951
+Speaker 1: week of the [inaudible] so if anything
+
+66
+00:04:27.951 --> 00:04:32.712
+Speaker 1: comes up put it in the channel and the coverage team will
+
+67
+00:04:32.712 --> 00:04:34.300
+Speaker 1: pick it up [crosstalk]
+
+68
+00:04:34.869 --> 00:04:35.699
+Speaker 3: noted [crosstalk]
+
+69
+00:04:35.414 --> 00:04:39.621
+Speaker 1: and do you want to do the the next one
+
+70
+00:04:39.621 --> 00:04:42.566
+Speaker 1: the second week of october same time
+
+71
+00:04:42.545 --> 00:04:44.998
+Speaker 2: yeah the 13th works julie, you in
+
+72
+00:04:45.662 --> 00:04:46.683
+Speaker 3: i'll be there
+
+73
+00:04:47.530 --> 00:04:50.477
+Speaker 1: perfect i'll send the invite thanks both

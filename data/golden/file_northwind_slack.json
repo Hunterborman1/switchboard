@@ -1,0 +1,24 @@
+{
+  "fileId": "file_northwind_slack",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "Sales-to-retention transfers still lose the PreSense payload: 17 of 20 test transfers blank.",
+      "quote": "tran: xfers from sales to retention still losing the PreSense payload, we tested 20 this morning & 17 came over blank",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "Customer hinted they would drop PreSense at renewal if not fixed; VP now cc'd.",
+      "quote": "brandon hinted they'd drop presense at renewal if this isn't sorted, owen is cc'd on everything now",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

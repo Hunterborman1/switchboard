@@ -1,0 +1,32 @@
+{
+  "fileId": "file_ridgeway_escalation",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Google Ads call conversions at least two days behind since mid-September; cost per appointment up ~40%.",
+      "quote": "Our Google Ads call conversions have been at least two days behind since the middle of September. Our cost per appointment is up about forty percent.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex will match current price and add three free months.",
+      "quote": "Marchex says they'll match whatever we're paying and throw in the first three months free.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "GM has 30 days to show the owner a fix or will move to Marchex.",
+      "quote": "I've got thirty days to show my owner this is fixed, or I'm moving us to Marchex. That's not a negotiating tactic.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

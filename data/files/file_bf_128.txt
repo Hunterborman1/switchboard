@@ -1,0 +1,116 @@
+Keystone Mutual check-in
+Thu, Oct 22, 2026, 2:00PM • 5:51
+
+Rachel Okafor  0:04
+Hey Patricia, hey Nate. How's the week going?
+
+Patricia Hale  0:09
+Busy. Enrollment for Medicare supplement wrapped, so we're catching our breath before open enrollment for the commercial side kicks in.
+
+Nate Simmons  0:18
+And I've got two supervisors out on PTO this week, so I'm back on the floor more than I'd like. It's um, fine, just a lot of walking.
+
+Rachel Okafor  0:28
+Nice, the walking part at least. Before we get into anything, do you want the the quick version of what I'm seeing on the account, or do you have things you want to drive?
+
+Patricia Hale  0:44
+I've got one thing I want to put in front of you. Can I start there?
+
+Rachel Okafor  0:51
+Please.
+
+Patricia Hale  0:53
+So, this is a Signal AI thing, and it's not on fire, but it's been bugging me for a few weeks. We're seeing spam signals on calls that are absolutely not spam.
+
+Rachel Okafor  1:06
+Okay. Which signals, um, and where are you seeing it?
+
+Patricia Hale  1:11
+The spam detection. It's mostly the after-hours claims line and some weekend uh, calls. And the pattern I keep seeing, the caller hangs up and calls right back, and then that second call gets tagged as spam. Which makes no sense, because it's the same person with the same claim.
+
+Nate Simmons  1:29
+Yeah, I've seen it too. My team pulls the after-hours numbers every Monday, and there's this cluster of short calls that got flagged. When you look at them, they're real. Someone's calling about a fender bender at 11 PM.
+
+Rachel Okafor  1:44
+So the callback is what's tripping it. Do you know roughly how many calls we're talking about, and is it just claims, or are you seeing it on the sales side too?
+
+Patricia Hale  1:57
+I don't have a clean number for you. It's enough that when we look at after-hours reporting, the volume is understated. And that's the part that bothers me, so, because we use that um, to staff.
+
+Nate Simmons  2:12
+Right, and I'd rather not guess in front of you. Let me pull the last four weeks and count. I can get that to you by Monday.
+
+Rachel Okafor  2:22
+That would um, help a lot. You know, and when you say understated, is it the reporting dashboards, or is it also flowing through to Salesforce?
+
+Patricia Hale  2:32
+That I don't know. Nate, do you?
+
+Nate Simmons  2:36
+I don't think so, but I don't want to say for sure. I'd have to check like, with the ops analyst who owns the Salesforce sync.
+
+Rachel Okafor  2:47
+Okay. So here's what I'll do. I'll take this back to the team, get you a way to flag a specific call so we have examples, and and I'll come back to you with what we find. I'm not going to try to fix it on this call.
+
+Patricia Hale  3:08
+That's all I need. I just want it on the record.
+
+Rachel Okafor  3:14
+It's on the record. Anything else on your list, or can I give you the two-minute version of what I'm seeing?
+
+Nate Simmons  3:22
+Go ahead. I've got about twenty minutes before my next one.
+
+Rachel Okafor  3:27
+So, so, call volumes. You're running about 12,000 calls a month across the sales and service lines, which is up maybe four percent from the summer. Nothing alarming. The Google Ads conversions are landing, I checked that last week.
+
+Patricia Hale  3:43
+Good. And Adobe, anything there?
+
+Rachel Okafor  3:46
+Adobe's fine. No issues.
+
+Nate Simmons  3:49
+What about the after-hours pilot? Is that still looking okay?
+
+Rachel Okafor  3:54
+It's still early, but it's doing what it's supposed to. The voice agent's handling the routine intake and transferring the rest to your on-call team. Are your folks finding the transfers clean?
+
+Nate Simmons  4:08
+Mostly, yeah. The agents say the screen pop with the caller's info is helpful. That's PreSense doing its thing, I assume.
+
+Rachel Okafor  4:17
+So, that's you know, it. Okay, so scheduling. I know we've got the QM scorecard review coming up. Do you want to keep that on the calendar for the first week of November, or push it?
+
+Patricia Hale  4:31
+First week works. Nate, you're in that one, right?
+
+Nate Simmons  4:35
+I'm in. Though if the spam thing turns into a a project, we might want to combine them.
+
+Rachel Okafor  4:43
+Let's keep them separate for now. If it grows, we'll merge.
+
+Patricia Hale  4:47
+One more thing, and this is just logistics. Our renewal's not until next fall, so I'm not worried about that. But I do want the after-hours reporting cleaned up before we do any planning around it.
+
+Rachel Okafor  5:03
+Understood. And Patricia, one quick question on the spam thing. Is it only the hang-up-and-redial pattern, or have you seen it on calls where someone just calls once?
+
+Patricia Hale  5:16
+Mostly the redial. I can't say I've seen a single-call one. But I haven't gone looking either.
+
+Rachel Okafor  5:24
+Okay. I mean, that's that's helpful. Uh, I'll put a note on it and follow up with you both early next week.
+
+Nate Simmons  5:32
+Sounds good. I'll get you that count by Monday, even if it's rough.
+
+Rachel Okafor  5:37
+Rough is fine. Thanks, both. And hey, good luck with the walking, Nate.
+
+Nate Simmons  5:43
+Appreciate it. So, Talk soon.
+
+Patricia Hale  5:46
+Thanks, um, Rachel. Bye.

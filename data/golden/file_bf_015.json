@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_015",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "They want more control over what the scorecards actually measure. The templates are fine as a starting point, but they're not built for how we have to score a Medicare call.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

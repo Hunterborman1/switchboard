@@ -1,0 +1,169 @@
+WEBVTT
+
+1
+00:00:03.679 --> 00:00:10.715
+Diego Alvarez: Hey Marisol, hey Hector. Thanks for making time this afternoon. How's the week going out there?
+
+2
+00:00:11.642 --> 00:00:18.748
+Marisol Vega: Hey Diego. Busy, but good. We're in the middle of the fall push, so the floor is loud.
+
+3
+00:00:20.072 --> 00:00:26.510
+Hector Ruiz: Yeah, loud in two languages. My Spanish team closed a bunch of Phoenix leads over the weekend.
+
+4
+00:00:27.644 --> 00:00:32.159
+Diego Alvarez: Nice. Is call volume still tracking where it was in August?
+
+5
+00:00:32.788 --> 00:00:42.720
+Marisol Vega: A little higher. We're doing about 4,800 inbound calls a month across the three states now, most of it paid search and Meta.
+
+6
+00:00:43.602 --> 00:00:51.640
+Diego Alvarez: Good to hear. I saw the seat count ticked up to 70 last month. Did you add people on the AZ floor?
+
+7
+00:00:52.604 --> 00:01:00.212
+Hector Ruiz: Two new reps, one on my team. They're still ramping, so they lean on the summaries a lot.
+
+8
+00:01:00.933 --> 00:01:08.359
+Diego Alvarez: That's actually a good segue. Before I get into my list, is there anything on your side I should know about?
+
+9
+00:01:08.923 --> 00:01:20.571
+Marisol Vega: There is one thing, and it's been eating at me. The offline call conversions we send to Google Ads, they're showing up one to three days after the call. Sometimes three.
+
+10
+00:01:21.312 --> 00:01:26.888
+Diego Alvarez: Okay. Is that a change from how it used to land for you?
+
+11
+00:01:27.797 --> 00:01:37.511
+Marisol Vega: It used to be same day, close to real time. Since about mid-September it's lagging, and Smart Bidding is optimizing on data that's still half empty.
+
+12
+00:01:37.511 --> 00:01:43.489
+Marisol Vega: Our cost per lead on the search campaigns is up almost 30 percent compared to August.
+
+13
+00:01:44.934 --> 00:01:52.012
+Diego Alvarez: That's a big jump. Are you seeing the same lag on the Meta side or just Google?
+
+14
+00:01:52.970 --> 00:02:06.608
+Marisol Vega: Just what I can see in Google Ads. We match by GCLID on those, and the conversions land in batches. It's throwing off the bidding, and nobody on my team can tell me why.
+
+15
+00:02:06.972 --> 00:02:18.056
+Diego Alvarez: Got it. I don't want to guess at a cause on the call. Can I take this to our integrations team today and come back to you with what they find?
+
+16
+00:02:19.131 --> 00:02:22.927
+Marisol Vega: Please. I'd rather have a straight answer than a workaround.
+
+17
+00:02:24.173 --> 00:02:37.379
+Hector Ruiz: And Diego, I'll be blunt, this one is on my radar for the renewal. If our conversions are lagging in Google Ads, we're paying for leads we can't read properly.
+
+18
+00:02:38.453 --> 00:02:42.330
+Diego Alvarez: Understood. Is that coming up in conversations with other vendors?
+
+19
+00:02:43.361 --> 00:02:54.338
+Hector Ruiz: We've taken a couple of calls. I won't pretend we haven't. But I'd rather fix this with you than start over with a new platform in the middle of Q4.
+
+20
+00:02:55.337 --> 00:03:01.785
+Diego Alvarez: I hear that, and I'll treat it that way. Anything else on the integration front I should fold in?
+
+21
+00:03:02.535 --> 00:03:08.108
+Marisol Vega: Salesforce is fine. We're writing call records and outcomes the way we always have, no complaints there.
+
+22
+00:03:09.565 --> 00:03:15.517
+Hector Ruiz: Meta's fine too. My team pulls the leads into the dialer the same as before.
+
+23
+00:03:16.415 --> 00:03:23.092
+Diego Alvarez: Good. Now let me ask about the other side of this. How are the call summaries landing with your managers?
+
+24
+00:03:24.459 --> 00:03:34.731
+Hector Ruiz: Honestly, they've been a lifesaver. My managers read the summaries before callbacks and handoffs instead of pulling recordings. It saves them forty minutes a day, easy.
+
+25
+00:03:35.381 --> 00:03:48.628
+Marisol Vega: Same on my side. Dispatch uses them to prep the install crews, and the front-line reps say the callbacks go faster because they already know what the homeowner asked about.
+
+26
+00:03:49.900 --> 00:03:55.066
+Diego Alvarez: That's good to hear. Are the summaries holding up with the Spanish calls?
+
+27
+00:03:55.690 --> 00:03:57.653
+Hector Ruiz: Yeah, they read clean. No issues.
+
+28
+00:03:58.367 --> 00:04:06.660
+Diego Alvarez: Great. So on my list, I mostly wanted to check in on Q4 planning and get you set for the November business review.
+
+29
+00:04:07.529 --> 00:04:18.417
+Marisol Vega: When are you thinking for that? The second week of November is rough for us, we're doing a big Meta push for the end of the year.
+
+30
+00:04:19.077 --> 00:04:25.926
+Diego Alvarez: How about the 19th? I can have the volume and conversion numbers ready the Friday before.
+
+31
+00:04:26.558 --> 00:04:31.548
+Marisol Vega: The 19th works. Send the invite and I'll get the right people on it.
+
+32
+00:04:32.508 --> 00:04:39.747
+Hector Ruiz: Just make it after 10, my team starts at eight and the first two hours are all dialing.
+
+33
+00:04:41.164 --> 00:04:53.387
+Diego Alvarez: Noted, 10:30 Central. One more thing, do you want me to loop in anyone from your marketing side on the conversion issue, or keep it between us for now?
+
+34
+00:04:53.986 --> 00:04:59.678
+Marisol Vega: Keep it with us for now. If the fix touches the campaigns, I'll bring marketing in myself.
+
+35
+00:05:01.160 --> 00:05:14.240
+Diego Alvarez: That's fair. Let me recap what I owe you. I'm taking the Google Ads conversion timing to the integrations team today, and I'll come back to you with what they need from us.
+
+36
+00:05:14.240 --> 00:05:17.410
+Diego Alvarez: I'll also send the invite for the 19th.
+
+37
+00:05:17.855 --> 00:05:30.414
+Marisol Vega: That works. And if it helps, I can pull the campaign reports from the last three weeks so your team has the dates and the CPL numbers in front of them.
+
+38
+00:05:30.755 --> 00:05:36.688
+Diego Alvarez: That would help a lot. Send them over and I'll attach them to the case.
+
+39
+00:05:37.102 --> 00:05:43.370
+Hector Ruiz: I'll grab a couple of examples from my team's calls too. The ones where the conversion came in late.
+
+40
+00:05:44.424 --> 00:05:50.702
+Diego Alvarez: Perfect. I'll be in touch by Wednesday at the latest, even if it's just to say where things stand.
+
+41
+00:05:52.098 --> 00:05:53.517
+Marisol Vega: Thanks, Diego. Talk soon.
+
+42
+00:05:53.820 --> 00:05:56.132
+Hector Ruiz: Appreciate it, man. Have a good one.

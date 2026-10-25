@@ -1,0 +1,24 @@
+{
+  "fileId": "file_northwind_checkin_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Signal AI labels late-night install reschedule calls as spam; those are cancellation risks.",
+      "quote": "signal a.i is calling a bunch of our late-night install reschedules spam which is a problem because those are the people most likely to cancel",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Hedged: add-ons are adding up; wants them bundled at renewal.",
+      "quote": "i'm not saying it's a dealbreaker but the add-ons are adding up and i'll need to see them bundled at renewal",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

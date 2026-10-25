@@ -1,0 +1,32 @@
+{
+  "fileId": "file_frontier_qbr_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Call records stop writing to the Salesforce Loan Application custom object whenever a new picklist value is added; standard Lead mapping is unaffected.",
+      "quote": "Stacy reported that Invoca call records stop writing to the Loan Application custom object whenever a new picklist value is added; the standard Lead mapping is fine.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Compliance wants QM scorecards that vary by loan type so each product is graded against its own disclosure checklist.",
+      "quote": "Victor's team wants QM scorecards that change by loan type, so a VA refinance call isn't graded on the same disclosure checklist as a conventional purchase.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Analysts rebuild the Invoca dashboard in Looker weekly from CSV exports; wants a native Looker connection.",
+      "quote": "Monica asked again for a native Looker connection; her analysts rebuild the Invoca dashboard in Looker every week from CSV exports.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

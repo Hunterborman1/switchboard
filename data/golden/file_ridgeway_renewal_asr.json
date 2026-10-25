@@ -1,0 +1,32 @@
+{
+  "fileId": "file_ridgeway_renewal_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex sent a proposal that is much cheaper.",
+      "quote": "Marchex sent over a proposal and it's a lot cheaper, like a lot",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "For seven stores the cost exceeds their whole DMS.",
+      "quote": "for seven stores this is more than we pay for our whole dms and that just doesn't sit right with me",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Hedged: probably not renewing in January unless something changes.",
+      "quote": "honestly unless something changes we're probably not renewing in january",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

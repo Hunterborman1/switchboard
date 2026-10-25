@@ -1,0 +1,128 @@
+Brightline Home Services renewal
+Wed, Oct 21, 2026, 1:15PM • 5:59
+
+Marcus Bell  0:03
+Hey Dana, hey um, Priyanka. How's the weather down in Charlotte? I think it was 38 and raining when I left Chicago this morning.
+
+Dana Ortiz  0:12
+It's actually nice today, low 70s. Give it a week and we'll be back to 40.
+
+Priyanka Shah  0:20
+Yeah, I had the windows down on the drive in. Which I'll regret by Friday probably.
+
+Marcus Bell  0:27
+Ha. Okay, so so I've got us down for the renewal review. You're January 15th, right? Just want to make sure I'm not working off last year's sheet.
+
+Dana Ortiz  0:37
+January 15th, yeah. That's the date on everything.
+
+Marcus Bell  0:41
+Like, Good. Before we get into it, how's the season treating you? You're heading into heating, I'd guess.
+
+Dana Ortiz  0:49
+We're in the ramp now. October's running maybe 9,800 calls across the 14 branches, and uh, that'll probably get to 13 or 14 thousand by December. Heat tune ups, no heat calls, um, some emergency stuff.
+
+Priyanka Shah  1:05
+And that's just the tracked numbers. The branches are still doing walk ins and email volume on top of it.
+
+Marcus Bell  1:13
+Okay. And And how's that comparing to last October, do you know offhand?
+
+Dana Ortiz  1:19
+Up, I want to say 11 percent? Priyanka would know better.
+
+Priyanka Shah  1:24
+Twelve point four, through yesterday. I pulled it for the ops meeting Tuesday.
+
+Marcus Bell  1:30
+Nice. That's a good problem to have. Anything shifting on your side I should know about? Staffing, org stuff?
+
+Dana Ortiz  1:38
+We had you know, a person leave on the paid media team last month, uh, so Priyanka's been carrying that plus her own work. We're interviewing but you know how that goes.
+
+Priyanka Shah  1:49
+It's fine. Busy, but fine.
+
+Marcus Bell  1:52
+Understood. Okay, the reason I wanted to get on the phone before the renewal paperwork goes anywhere is I want to hear what's working and what isn't. So, what's not.
+
+Dana Ortiz  2:03
+So, the thing that's been bugging me is the offline conversions. When a call comes in and it's a booked job, that conversion gets into Google Ads late. Like one to three days late.
+
+Marcus Bell  2:17
+One to three days. From the call itself.
+
+Dana Ortiz  2:21
+From the call. And we're running Smart Bidding on those, so Google's making decisions on a day where I mean, half the conversions haven't landed yet. It's optimizing on incomplete data. We had one you know, campaign that was just... burning. So we flipped it to manual bidding as a stopgap, which I hate, because now I'm the one guessing.
+
+Marcus Bell  2:44
+Okay. Is that all campaigns or specific ones? And is it every call or a subset?
+
+Dana Ortiz  2:50
+The ones we've watched closely, it's all of them. It's not like some calls. It's the timing.
+
+Priyanka Shah  2:57
+I can pull the send times, um, like when the conversion hits Google versus when the call happened. I've got a spreadsheet I started. I just haven't finished it.
+
+Marcus Bell  3:09
+That would help a lot, if you can share it. Even a partial version. I want to take this to our integrations team with something concrete instead of me describing it secondhand.
+
+Priyanka Shah  3:24
+Yeah, I can get you something by Friday.
+
+Dana Ortiz  3:29
+And I'll be straight with you, Marcus. This is tied to the renewal for me. We're spending real money on Smart Bidding and if the data's arriving late, I'm paying for decisions built on half the picture. That's the kind of thing that makes me look at what else is out there.
+
+Marcus Bell  3:47
+I hear that. How long has it been behaving this way? Like, was there a point where it was fine?
+
+Dana Ortiz  3:54
+Honestly, it's been gradual. I noticed it harder in the spring. I can't point to a day it changed.
+
+Marcus Bell  4:01
+Okay. I'm not going to sit here and pretend I can fix it on this call. What I'll do is get your spreadsheet, uh, open it with the integrations folks, and come back to you with either an answer or a plan. Can I put a hold on your calendar for next Wednesday to follow up?
+
+Dana Ortiz  4:26
+Wednesday works. Morning's better, we do branch standups at two.
+
+Marcus Bell  4:30
+Ten thirty Eastern, then. I'll send it today.
+
+Priyanka Shah  4:34
+Can you include me on that? Dana's in and out that week.
+
+Marcus Bell  4:41
+Of course. Okay, other than that, how's everything else sitting? Call tracking, signals?
+
+Dana Ortiz  4:46
+Fine. No issues there.
+
+Priyanka Shah  4:48
+Yeah, all good.
+
+Marcus Bell  4:50
+Good. And on the renewal itself, is there anything on the commercial side you want me to get in front of? Seat count, terms?
+
+Dana Ortiz  5:00
+Like, Not today. Let's see where the conversion thing lands first. That's the piece that matters to me right now.
+
+Marcus Bell  5:09
+Fair. So, next steps from me: I'll send the Wednesday invite, you send Priyanka's spreadsheet, and I'll get you something real back on the conversion timing.
+
+Priyanka Shah  5:20
+I mean, and and I'll flag the manual bidding campaign in the sheet so you can see which one we moved.
+
+Marcus Bell  5:29
+Perfect. Hey, uh, one quick thing, are you all doing anything for the branch managers' meeting in November? I like, remember you had that last year.
+
+Dana Ortiz  5:40
+Second week. Fourteen branches, so it's a whole thing. We're doing it at the airport hotel again.
+
+Marcus Bell  5:47
+Nice. Well, good luck with it. I'll let you two go. Talk Wednesday.
+
+Dana Ortiz  5:53
+Thanks Marcus.
+
+Priyanka Shah  5:55
+Bye.

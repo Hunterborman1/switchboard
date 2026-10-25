@@ -1,0 +1,59 @@
+Atlas Auto Group / Invoca | check-in | Tue, Oct 13, 2026
+
+[00:00:06] Diego Alvarez: Morning, both. Can you hear me okay?
+[00:00:09] Greg Hollis: Yep, loud and clear.
+[00:00:11] Tanya Mercer: Good morning, Diego. I've got the BDC numbers open already, so I'm ready.
+[00:00:17] Diego Alvarez: Perfect. How's the service-drive volume looking the last couple weeks?
+[00:00:22] Tanya Mercer: Up a bit. We're seeing more service calls than sales calls at most of the stores now, which is a shift from where we were in the spring.
+[00:00:31] Greg Hollis: Service has been the steady one. Sales is up and down depending on the month.
+[00:00:38] Diego Alvarez: And the BDC appointment-set rate, still around where we left it?
+[00:00:43] Tanya Mercer: Thirty-four percent, give or take. It bounces between stores. The Nevada rooftops run a little lower than Phoenix.
+[00:00:51] Diego Alvarez: Okay. Is that the number you're holding the managers to?
+[00:00:56] Tanya Mercer: It's the one I report. Whether they look at it is a different question.
+[00:01:01] Greg Hollis: Before we get too far into the weeds, there's something I want to put on the table.
+[00:01:07] Diego Alvarez: Go ahead.
+[00:01:09] Greg Hollis: Marchex came in last week and quoted us about forty dollars less per rooftop per month. That's real money across twenty-two stores.
+[00:01:18] Diego Alvarez: Understood. When does that quote run through?
+[00:01:22] Greg Hollis: They gave us until the end of the month to decide. I told them we'd look at it. I'm not saying we're moving, I'm saying I have to bring it to the table.
+[00:01:37] Diego Alvarez: That's fair. I'd rather hear it from you now than in November. Can you send me what they scoped? I want to see what's actually in the per-rooftop number.
+[00:01:50] Greg Hollis: I can forward it. It's a one-pager, not much detail.
+[00:01:55] Diego Alvarez: Send it over and I'll get it in front of the right people on our side. I'm not going to negotiate against myself on this call.
+[00:02:05] Greg Hollis: Appreciate that.
+[00:02:06] Tanya Mercer: Can I jump in on something related? It's about the Google Ads side.
+[00:02:13] Diego Alvarez: Please.
+[00:02:14] Tanya Mercer: Our appointment-set conversions aren't hitting Google Ads until two days later, sometimes three.
+[00:02:19] Diego Alvarez: Two to three days. Is that from the time the call happens, or from the time the BDC marks the appointment?
+[00:02:27] Tanya Mercer: From when the appointment actually gets set. The call comes in, the agent books it, and then it's a while before it shows up on the Google side.
+[00:02:38] Diego Alvarez: And you're looking at it where, in the Google Ads UI?
+[00:02:43] Tanya Mercer: In the conversions column, yeah. We've been comparing it to what we see on our end and the lag is pretty consistent.
+[00:02:50] Diego Alvarez: Got it. How are you marking the appointment-set in Salesforce right now, is it on the lead or on a call record?
+[00:03:00] Tanya Mercer: On the lead. The BDC sets the status and that's what we're keying off.
+[00:03:07] Diego Alvarez: Okay. I want to check how that's flowing through to the conversion upload. I don't want to guess at it on the call.
+[00:03:16] Tanya Mercer: That's fine. I just need to know if it's something on our end or yours.
+[00:03:23] Diego Alvarez: I'll find out which it is and come back to you. Is the lag hurting anything specific, or is it more of a reporting annoyance?
+[00:03:33] Tanya Mercer: It's bidding. Greg's team makes budget calls on that data and if it's three days stale, they're making calls on old news.
+[00:03:40] Greg Hollis: It's not the end of the world, but it does make the weekly optimization meeting awkward.
+[00:03:48] Diego Alvarez: Noted. Anything else on the Google side while we're here?
+[00:03:53] Tanya Mercer: No, that's the main one. The rest of it's been fine.
+[00:03:58] Diego Alvarez: Okay. What about the scorecards, are the managers using those?
+[00:04:03] Tanya Mercer: Some of them. That's actually the other thing I wanted to bring up.
+[00:04:08] Diego Alvarez: Go on.
+[00:04:09] Tanya Mercer: If I could get the BDC scorecard dashboard into Google Sheets automatically, my managers would actually look at it.
+[00:04:18] Diego Alvarez: So today you're pulling it manually?
+[00:04:20] Tanya Mercer: I export it every Monday and paste it into a sheet. It takes me about an hour and by Wednesday half of them haven't opened it.
+[00:04:32] Diego Alvarez: And if it just showed up in the sheet on its own, that would solve it?
+[00:04:39] Tanya Mercer: I think so. They live in Sheets. If it's already there when they sit down Monday morning, they'll use it.
+[00:04:49] Diego Alvarez: Let me ask around on that. I don't want to promise you a date I can't hold.
+[00:04:57] Tanya Mercer: That's all I'm asking.
+[00:04:59] Greg Hollis: While you're at it, is there anything on our side we're not using that we should be?
+[00:05:07] Diego Alvarez: Nothing that jumps out. Your tracking and the signals are set up the way I'd want them.
+[00:05:13] Greg Hollis: Good. I don't need another project right now.
+[00:05:18] Diego Alvarez: Understood. Let me recap what I'm taking away. One, I'll look at the conversion timing and tell you whether it's on our end or yours. Two, I'll ask about getting the scorecard into Sheets automatically and come back with an answer either way. Three, Greg, send me the Marchex one-pager.
+[00:05:36] Greg Hollis: I'll send it this afternoon.
+[00:05:39] Tanya Mercer: And can you loop me in on the conversion thing when you hear back? I'd rather not chase it.
+[00:05:47] Diego Alvarez: You'll be on it. I'll follow up by Friday either way, even if it's just to say I'm still digging.
+[00:05:56] Tanya Mercer: That works.
+[00:05:57] Greg Hollis: Same time in two weeks?
+[00:06:01] Diego Alvarez: Same time. Thanks, both.
+[00:06:03] Tanya Mercer: Thanks, Diego.
+[00:06:04] Greg Hollis: Take care.

@@ -1,0 +1,88 @@
+auto-transcript | audio_0930_harborfcu | duration 00:03:26 | speakers detected: 3
+
+Speaker 1  00:00:02
+hey tyler hey jason how's wednesday treating you both?
+
+Speaker 2  00:00:08
+Not bad Busy week, we're doing [inaudible] appreciation thing Saturday so everybody's a a little distracted
+
+Speaker 3  00:00:15
+so speak for yourself i've been chasing sync errors since seven this morning
+
+Speaker 1  00:00:25
+oh no what kind of sync errors [crosstalk]
+
+Speaker 3  00:00:29
+it's the sales force side every morning i get these automated error emails from invoca and it turns out the integration just stops writing call data to our custom objects whenever we make a field change or add a picklist value.
+
+Speaker 1  00:00:49
+so it's tied to schema changes?
+
+Speaker 3  00:00:52
+that's what it looks like we added a a couple picklist values to the call outcome field last week for the refinance campaign and the writes just... stopped. nothing in the object
+
+Speaker 2  00:01:05
+which means my team um is flying blind on those calls
+
+Speaker 1  00:01:09
+right now how many records are we talking roughly [crosstalk]
+
+Speaker 3  00:01:13
+hard to say exactly. the custom object normally picks up maybe four five hundred a day from the call activity, like and it's been empty since thursday [crosstalk]
+
+Speaker 1  00:01:26
+okay what's the error email actually say
+
+Speaker 3  00:01:28
+it's pretty generic just i mean something failed on the field mapping and to check the object configuration doesn't tell me which field
+
+Speaker 1  00:01:38
+got it can you forward me one of those emails? and maybe a screenshot of the object setup. i'll take it to the integrations team this feels like something they'll want to look at
+
+Speaker 3  00:01:52
+[inaudible] send it over after this
+
+Speaker 1  00:01:56
+perfect has anything else been off or is it just the one thing? tracking itself has
+
+Speaker 2  00:02:02
+been solid volumes are up actually we did about 31,000 calls in september, which is the highest we've had all year
+
+Speaker 1  00:02:10
+nice the refinance push driving that?
+
+Speaker 2  00:02:13
+Yeah and the auto loan spots Uh [inaudible] is still sending conversions fine uh, so that part's healthy
+
+Speaker 1  00:02:21
+good. how's the qm side holding up?
+
+Speaker 2  00:02:25
+Fine Compliance still has to review every scorecard change before we can touch it so uh, nothing moves fast but it's fine
+
+Speaker 1  00:02:34
+understood. same as always there
+
+Speaker 2  00:02:37
+uh yep.
+
+Speaker 1  00:02:38
+I mean okay one more thing Are you still down a person on the marketing ops side?
+
+Speaker 2  00:02:44
+we are i mean posting closes friday so hopefully someone starts in october. interviews have been rough.
+
+Speaker 1  00:02:52
+fingers crossed so do you want to do the next check-in in two weeks or push uh it out?
+
+Speaker 2  00:02:58
+two weeks is fine i'd rather keep it close until the sync thing is sorted
+
+Speaker 1  00:03:05
+makes sense i'll send the invite and tyler, once i hear back from the the integrations team i'll loop you in.
+
+Speaker 3  00:03:14
+sounds good. thanks aisha of course
+
+Speaker 1  00:03:21
+uh talk soon both

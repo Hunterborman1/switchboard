@@ -1,0 +1,333 @@
+WEBVTT
+
+1
+00:00:04.594 --> 00:00:07.688
+Speaker 1: okay we're recording hey nate how's it going?
+
+2
+00:00:08.052 --> 00:00:12.500
+Speaker 2: hey rachel good good busy week. open enrollment stuff, you know how it
+
+3
+00:00:12.500 --> 00:00:12.842
+Speaker 2: is
+
+4
+00:00:14.495 --> 00:00:17.773
+Speaker 1: yeah i so, bet. so this is our qvr for
+
+5
+00:00:17.773 --> 00:00:20.396
+Speaker 1: q3. i've got a deck but honestly i'd
+
+6
+00:00:20.396 --> 00:00:22.691
+Speaker 1: rather just talk through what you're seeing
+
+7
+00:00:22.691 --> 00:00:23.675
+Speaker 1: sound okay [crosstalk]
+
+8
+00:00:24.906 --> 00:00:29.217
+Speaker 2: yeah works for me i've got about forty minutes before my next thing
+
+9
+00:00:31.761 --> 00:00:34.394
+Speaker 1: perfect so overall call volume you guys
+
+10
+00:00:34.394 --> 00:00:37.403
+Speaker 1: were at about 47,000 calls last quarter uh
+
+11
+00:00:37.403 --> 00:00:40.787
+Speaker 1: across auto and home up maybe 6% from q2.
+
+12
+00:00:40.942 --> 00:00:44.811
+Speaker 2: does that track yeah, that sounds about right claims
+
+13
+00:00:44.811 --> 00:00:50.400
+Speaker 2: spiked after that storm system in early september like we had to pull
+
+14
+00:00:50.400 --> 00:00:54.699
+Speaker 2: four people off the sales queue to help with intake
+
+15
+00:00:55.453 --> 00:00:59.646
+Speaker 1: for like a week got it and the after-hours a
+
+16
+00:00:59.646 --> 00:01:04.259
+Speaker 1: i voice agent pilot, how's that going [inaudible] you started it
+
+17
+00:01:04.259 --> 00:01:05.097
+Speaker 1: in august
+
+18
+00:01:06.558 --> 00:01:09.445
+Speaker 2: it's fine. still just after-hours claims intake, like
+
+19
+00:01:09.445 --> 00:01:12.332
+Speaker 2: we said. it handles maybe 30% of those
+
+20
+00:01:12.332 --> 00:01:14.498
+Speaker 2: calls without a transfer. no complaints
+
+21
+00:01:14.031 --> 00:01:18.372
+Speaker 1: okay good i won't dig into that then what about
+
+22
+00:01:18.372 --> 00:01:21.844
+Speaker 1: q m? you're using the scorecards pretty heavily
+
+23
+00:01:21.844 --> 00:01:22.712
+Speaker 1: now right?
+
+24
+00:01:24.424 --> 00:01:27.318
+Speaker 2: we are, and that's actually something i wanted
+
+25
+00:01:27.318 --> 00:01:31.298
+Speaker 2: to bring up the scorecard [inaudible] a little rigid for us.
+
+26
+00:01:32.272 --> 00:01:34.836
+Speaker 1: Okay, you know tell me more
+
+27
+00:01:34.642 --> 00:01:37.992
+Speaker 2: so we score every call which is great but
+
+28
+00:01:37.992 --> 00:01:48.043
+Speaker 2: we can't really weight things the way we want like for a new agent, missing the required disclosure on a homeowners claim call is a big deal
+
+29
+00:01:48.043 --> 00:01:51.765
+Speaker 2: for somebody who's been here six years, it's still a
+
+30
+00:01:51.765 --> 00:01:55.116
+Speaker 2: miss but it it shouldn't tank their score the
+
+31
+00:01:55.116 --> 00:01:56.232
+Speaker 2: same way [crosstalk]
+
+32
+00:01:57.444 --> 00:02:00.104
+Speaker 1: so you want to weight criteria differently depending
+
+33
+00:02:00.104 --> 00:02:01.102
+Speaker 1: on tenure? [crosstalk]
+
+34
+00:02:02.222 --> 00:02:07.163
+Speaker 2: yeah. and honestly, by call type too an [inaudible] claim is not
+
+35
+00:02:07.163 --> 00:02:12.103
+Speaker 2: the same conversation as a total loss right i mean now it's
+
+36
+00:02:12.103 --> 00:02:15.809
+Speaker 2: one scorecard for everybody and it just doesn't fit
+
+37
+00:02:15.913 --> 00:02:19.363
+Speaker 1: okay so that's really two things custom criteria and then
+
+38
+00:02:19.363 --> 00:02:23.847
+Speaker 1: the weighting piece um let me write that down i'll take it to
+
+39
+00:02:23.847 --> 00:02:24.882
+Speaker 1: the product team
+
+40
+00:02:25.765 --> 00:02:30.034
+Speaker 2: Appreciate it It's not urgent urgent but it comes up
+
+41
+00:02:30.034 --> 00:02:34.730
+Speaker 2: in every coaching session. My supervisors are building spreadsheets to [inaudible]
+
+42
+00:02:34.730 --> 00:02:38.999
+Speaker 2: the scores manually, which kind of defeats the the purpose
+
+43
+00:02:39.603 --> 00:02:43.258
+Speaker 1: uh yeah uh that's not sustainable okay noted anything else on
+
+44
+00:02:43.258 --> 00:02:43.591
+Speaker 1: qm
+
+45
+00:02:44.134 --> 00:02:48.497
+Speaker 2: no the scoring itself is fine it's just the setup
+
+46
+00:02:49.803 --> 00:02:54.583
+Speaker 1: okay what about pre-sense you've had it on the genesys side for a
+
+47
+00:02:54.583 --> 00:02:55.318
+Speaker 1: while now
+
+48
+00:02:55.826 --> 00:02:58.524
+Speaker 2: so this is the one that's actually
+
+49
+00:02:58.524 --> 00:03:07.772
+Speaker 2: biting us when genesis transfers a call between queues or agent to agent the screen pop comes up blank for whoever picks it up
+
+50
+00:03:08.137 --> 00:03:10.457
+Speaker 1: blank as in no data at all
+
+51
+00:03:11.030 --> 00:03:16.306
+Speaker 2: Nothing No journey, no pages viewed nothing. So the second agent has
+
+52
+00:03:16.306 --> 00:03:19.823
+Speaker 2: to ask the caller to repeat everything. What
+
+53
+00:03:19.823 --> 00:03:25.098
+Speaker 2: were you looking at which page all of it It makes us
+
+54
+00:03:25.098 --> 00:03:27.736
+Speaker 2: look like we're not listening. [crosstalk]
+
+55
+00:03:38.214 --> 00:03:40.190
+Speaker 1: how often is this happening?
+
+56
+00:03:41.201 --> 00:03:45.988
+Speaker 2: it's not every transfer but but it's often enough that my team leads
+
+57
+00:03:45.988 --> 00:03:48.934
+Speaker 2: are telling agents to just assume it'll be
+
+58
+00:03:48.934 --> 00:03:51.880
+Speaker 2: blank which is a bad [inaudible] to build.
+
+59
+00:03:52.234 --> 00:03:55.753
+Speaker 1: okay and is this only on queue-to-queue or also
+
+60
+00:03:55.753 --> 00:03:57.317
+Speaker 1: on direct agent transfers
+
+61
+00:03:58.921 --> 00:04:01.923
+Speaker 2: both as [inaudible] as i can tell [inaudible]
+
+62
+00:04:01.923 --> 00:04:06.052
+Speaker 2: uh noticed it first on the claims queue overflow that's where
+
+63
+00:04:06.052 --> 00:04:09.430
+Speaker 2: it hurts most because those calls are already escalated
+
+64
+00:04:10.305 --> 00:04:14.198
+Speaker 1: okay i want to get a couple of examples
+
+65
+00:04:14.198 --> 00:04:18.522
+Speaker 1: with call ids so the team can look at the
+
+66
+00:04:18.522 --> 00:04:21.982
+Speaker 1: genesis side can you send me two or
+
+67
+00:04:21.982 --> 00:04:22.414
+Speaker 1: three?
+
+68
+00:04:22.168 --> 00:04:25.629
+Speaker 2: yeah i can pull those i'll get them to
+
+69
+00:04:25.629 --> 00:04:26.782
+Speaker 2: you by friday
+
+70
+00:04:28.009 --> 00:04:33.236
+Speaker 1: perfect. i'll open it up with support and loop you in um i'm
+
+71
+00:04:33.236 --> 00:04:36.452
+Speaker 1: not going to guess at what's causing it,
+
+72
+00:04:36.452 --> 00:04:38.864
+Speaker 1: that's above my pay grade [crosstalk]
+
+73
+00:04:39.421 --> 00:04:43.540
+Speaker 2: fair enough you know just don't let it sit for a
+
+74
+00:04:43.540 --> 00:04:45.412
+Speaker 2: month that's all i ask
+
+75
+00:04:45.788 --> 00:04:49.408
+Speaker 1: no, i'll push on it okay, other stuff sales
+
+76
+00:04:49.408 --> 00:04:53.430
+Speaker 1: force and google adds are both fine on your end?
+
+77
+00:04:52.910 --> 00:04:55.693
+Speaker 2: Yeah no issues there Adobe too. [crosstalk]
+
+78
+00:04:56.607 --> 00:05:00.116
+Speaker 1: good so next steps i'll take the q m scorecard
+
+79
+00:05:00.116 --> 00:05:04.677
+Speaker 1: feedback to product and i'll open the presence ticket once i i have
+
+80
+00:05:04.677 --> 00:05:07.835
+Speaker 1: your call examples anything you want me to add
+
+81
+00:05:07.835 --> 00:05:09.940
+Speaker 1: to the agenda for next time?
+
+82
+00:05:10.190 --> 00:05:12.340
+Speaker 2: no that covers it thanks rachel
+
+83
+00:05:13.238 --> 00:05:14.947
+Speaker 1: thanks nate talk soon.

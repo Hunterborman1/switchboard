@@ -1,0 +1,165 @@
+WEBVTT
+
+1
+00:00:07.928 --> 00:00:13.332
+Diego Alvarez: Hey Marisol, how's it going? Sorry we're doing this so late in the day.
+
+2
+00:00:13.983 --> 00:00:22.752
+Marisol Vega: No, it's fine. I'm still at the office. It's, what, 4:45 here? I've got a floor full of people dialing, so this is actually a break.
+
+3
+00:00:24.230 --> 00:00:37.039
+Diego Alvarez: Ha. Well, I I appreciate you making time. I know the escalation came through the other day, and I wanted to just talk it through with you rather than trade emails.
+
+4
+00:00:38.490 --> 00:00:44.211
+Marisol Vega: Yeah, good. Let me just... okay, I'm going to close my door so I can actually think.
+
+5
+00:00:44.860 --> 00:00:51.132
+Diego Alvarez: Take your time. How's the Austin office? Everyone back from Labor Day at this point?
+
+6
+00:00:52.201 --> 00:01:02.847
+Marisol Vega: Oh, mostly. We had a bunch of people out the first week of so, September, you know, so the queue got ugly, but we're caught up.
+
+7
+00:01:02.847 --> 00:01:13.084
+Marisol Vega: We brought on three new reps on the bilingual side, which helps. They're still in nesting, but by October they should be taking calls solo.
+
+8
+00:01:13.532 --> 00:01:21.929
+Diego Alvarez: Nice. And And how are the AI voice calls holding up with the extra volume lately? I saw your minutes tick up in August.
+
+9
+00:01:22.463 --> 00:01:37.862
+Marisol Vega: That's actually kind of what I want to talk about. So we're at, what, thirty-five hundred calls a month now across the three states, and a big chunk of those start with the voice agent and then get handed to a person.
+
+10
+00:01:37.862 --> 00:01:42.995
+Marisol Vega: And when it hands off, the stuff it already collected doesn't come with it.
+
+11
+00:01:43.907 --> 00:01:49.317
+Diego Alvarez: Okay, so the transfer itself is happening, but the customer has to start over.
+
+12
+00:01:50.251 --> 00:02:08.831
+Marisol Vega: They have to start over. The caller already told the agent their address, and half the time their account number or the policy number off the proposal, and then they get to a rep and the rep asks for all of it again.
+
+13
+00:02:08.831 --> 00:02:14.880
+Marisol Vega: Which, you can imagine how that lands with somebody who's already been on hold.
+
+14
+00:02:16.300 --> 00:02:19.139
+Diego Alvarez: Yeah, that's a bad first thirty seconds.
+
+15
+00:02:20.384 --> 00:02:33.783
+Marisol Vega: It's brutal. I've had two customers mention it in their post install survey, like, 'why did I have to give my information twice.' And And my reps are just like, eating the time on it.
+
+16
+00:02:33.783 --> 00:02:37.995
+Marisol Vega: Each one of those calls is a couple extra minutes minimum.
+
+17
+00:02:38.261 --> 00:02:44.595
+Diego Alvarez: Got it. Um, is it happening on every transfer, or is there a pattern, like certain hours, certain campaigns?
+
+18
+00:02:46.081 --> 00:02:56.905
+Marisol Vega: I don't have it broken down that far. I just know it's happening enough that my team leads brought it to me, and I told them I'd raise it.
+
+19
+00:02:56.905 --> 00:03:02.504
+Marisol Vega: I can have someone pull a handful of examples from this week if that helps.
+
+20
+00:03:02.704 --> 00:03:18.064
+Diego Alvarez: That would help a lot, actually. Just four or five call IDs where you saw it, with timestamps. Um, Let me take that back to the team, because I want them looking at the actual calls, not a description of them.
+
+21
+00:03:18.314 --> 00:03:24.188
+Marisol Vega: Okay. I'll get you those by Monday. How soon do you think we'd hear something?
+
+22
+00:03:25.599 --> 00:03:39.018
+Diego Alvarez: I don't want to guess at a timeline until I've talked to them. But I'll confirm Monday that I've got it in front of the right people, and I'll stay on it.
+
+23
+00:03:39.018 --> 00:03:41.534
+Diego Alvarez: This one I'd rather overcommunicate on.
+
+24
+00:03:41.798 --> 00:03:52.109
+Marisol Vega: Fine. The other thing, and this one's less loud but it's been bugging us for a while. The call conversions that go to Google Ads, they don't land same day.
+
+25
+00:03:52.109 --> 00:03:59.670
+Marisol Vega: It's one to three days later, and it comes in a clump, like five at once, then nothing, then a clump again.
+
+26
+00:04:00.258 --> 00:04:03.782
+Diego Alvarez: So the offline conversions are arriving in batches.
+
+27
+00:04:04.704 --> 00:04:17.481
+Marisol Vega: In batches. And our agency, they're the ones who flagged it. They asked me why conversions show up every few days instead of as they come in, because Smart Bidding is making decisions on data that's two days stale.
+
+28
+00:04:17.481 --> 00:04:21.084
+Marisol Vega: We're spending real money on those campaigns and the signal's late.
+
+29
+00:04:22.310 --> 00:04:27.901
+Diego Alvarez: Okay. You know, and this is across Google Ads and Meta, or just Google?
+
+30
+00:04:28.261 --> 00:04:35.461
+Marisol Vega: Google, mostly. That's where the agency watches it. I can't tell you on Meta with any confidence.
+
+31
+00:04:36.563 --> 00:04:46.365
+Diego Alvarez: Fair enough. Let me pull the delivery logs on the Google Ads side and see what the timing actually looks like from our end.
+
+32
+00:04:46.365 --> 00:04:52.083
+Diego Alvarez: Can I use you as the contact if I need something from your agency?
+
+33
+00:04:52.676 --> 00:04:59.714
+Marisol Vega: Yeah, but loop me in. They're good, but I don't want them hearing things before I do.
+
+34
+00:05:00.656 --> 00:05:06.266
+Diego Alvarez: Of course. Anything else that's giving you grief? Salesforce sync, anything on the tracking numbers?
+
+35
+00:05:06.987 --> 00:05:12.703
+Marisol Vega: No, those are fine. Salesforce is fine, tracking numbers are fine. It's just the two things.
+
+36
+00:05:13.811 --> 00:05:28.767
+Diego Alvarez: Good. Okay, one more question on the agent piece, and then I'll let you go. When the transfer happens to a rep, is the rep taking it in Salesforce, or are they in the dialer?
+
+37
+00:05:28.988 --> 00:05:32.544
+Marisol Vega: Uh, the dialer. They click into the call from there.
+
+38
+00:05:32.874 --> 00:05:42.675
+Diego Alvarez: Okay, that's useful. I'll include it. Alright, Marisol, I'll send you a recap tonight so it's in writing, and I'll ping you Monday with where it stands.
+
+39
+00:05:43.820 --> 00:05:51.224
+Marisol Vega: Sounds good. And hey, thanks for taking it seriously. I know it's a busy week for everyone.
+
+40
+00:05:52.225 --> 00:05:56.915
+Diego Alvarez: Of course. Go catch the end of your floor's shift. Talk Monday.
+
+41
+00:05:58.369 --> 00:05:59.777
+Marisol Vega: Yep. Talk Monday, Diego.

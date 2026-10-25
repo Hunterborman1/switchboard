@@ -1,0 +1,24 @@
+{
+  "fileId": "file_cedarridge_checkin_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "New-patient call conversions land in Google Ads two days late; implant campaigns have pulled back spend since mid-September.",
+      "quote": "Megan says new-patient call conversions are landing in Google Ads two days late, and their dental implant campaigns have pulled back spend since mid-September.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Wants to disable full transcripts per office and keep only redacted summaries, because front-desk staff can see them.",
+      "quote": "Heather asked for a way to turn off full transcripts for some offices and keep only redacted summaries, because front desk staff can see them.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

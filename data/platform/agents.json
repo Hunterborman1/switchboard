@@ -1,0 +1,444 @@
+{
+  "note": "Agent Ops registry seed: two agents. Signal Loop is the real agent in this repo (source live); the RFP & Security Questionnaire Responder is a simulated Gumloop agent. sim holds generator parameters for scripts/platform/simulate.ts and is never shown in the UI. Dates roll forward with the simulated window.",
+  "window": {
+    "from": "2026-09-14",
+    "to": "2026-10-24"
+  },
+  "agents": [
+    {
+      "record": {
+        "id": "agt_signal_loop",
+        "name": "Signal Loop",
+        "purpose": "Turns CSM customer calls into evidence-backed, routed product insight: redacts PII, extracts insights with verbatim quotes, grounds every quote in code, scores and routes each one to a named owner, and closes the loop back to the CSM when it ships.",
+        "department": "Customer Success",
+        "ownerId": "ppl_hunter",
+        "ownerName": "Hunter Borman",
+        "businessOwner": "Elena Vasquez (VP, Product)",
+        "builtWith": "Code",
+        "status": "production",
+        "dataAccess": [
+          "CSM call transcripts and notes (PII/PHI redacted before any model call)",
+          "Account tier, ARR band and renewal date",
+          "Jira, Slack and Linear (write; mock destinations in the demo)"
+        ],
+        "dataClassification": "confidential",
+        "baselineMinutesPerUnit": 18,
+        "unitLabel": "call processed",
+        "lastReview": "2026-10-12",
+        "reviewCadenceDays": 30,
+        "nextReview": "2026-11-11",
+        "version": "prompt v4 · 2026.10.21",
+        "launchedAt": "2026-09-14",
+        "standard": [
+          {
+            "key": "owner",
+            "label": "Named owner and business owner",
+            "passed": true,
+            "evidence": "Owner Hunter Borman (AI Operations); business owner Elena Vasquez (VP, Product)."
+          },
+          {
+            "key": "purpose",
+            "label": "Documented purpose and success metric",
+            "passed": true,
+            "evidence": "Success metric: CSM feedback reaching a named owner within one business day (target 90%)."
+          },
+          {
+            "key": "data_review",
+            "label": "Security & data review passed",
+            "passed": true,
+            "evidence": "Reviewed 2026-09-10 by Sofia Marino: redaction before model, provider data collection denied, no raw transcript leaves the Worker."
+          },
+          {
+            "key": "evals",
+            "label": "Eval suite with promotion gate",
+            "passed": true,
+            "evidence": "48 golden files across 5 mess levels; precision/recall per type; promotion gate blocked prompt v5 on level-5 recall."
+          },
+          {
+            "key": "logging",
+            "label": "Structured logs and traces reach Agent Ops",
+            "passed": true,
+            "evidence": "SDK reporter: http.request, step, ai.call, delivery and budget logs plus spans for every run (source: live)."
+          },
+          {
+            "key": "cost_cap",
+            "label": "Spend cap and per-run budget",
+            "passed": true,
+            "evidence": "$15 live-AI cap enforced in D1 before each run, provider-side key limit, per-run token cap; falls back to replay."
+          },
+          {
+            "key": "human_review",
+            "label": "Human review on high-stakes output",
+            "passed": true,
+            "evidence": "Confidence < 0.80, any churn risk and any sev-1 bug always go to the review queue."
+          },
+          {
+            "key": "rollback",
+            "label": "Rollback path and runbook",
+            "passed": true,
+            "evidence": "Prompt versions pinned per insight; previous Worker version one command away; runbook linked."
+          },
+          {
+            "key": "review_cadence",
+            "label": "Review cadence current",
+            "passed": true,
+            "evidence": "Monthly review."
+          }
+        ],
+        "source": "live",
+        "href": "/app"
+      },
+      "profile": {
+        "shortName": "Signal Loop",
+        "color": "#00A87F",
+        "successMetric": "Share of CSM-raised product feedback that reaches a named owner within one business day. Target 90% (today's baseline is an assumption: ~40%).",
+        "runbookUrl": "https://github.com/Hunterborman1/switchboard/blob/main/docs/RUNBOOK.md",
+        "monthlyBudgetUsd": 15,
+        "perRunCapUsd": 0.05,
+        "humanMinutesPerUnit": 1.5,
+        "integrations": [
+          "OpenRouter (2 models)",
+          "Workers AI embeddings",
+          "Vectorize",
+          "Jira",
+          "Slack",
+          "Linear"
+        ],
+        "slo": {
+          "runSuccess": 0.99,
+          "p95Ms": 900,
+          "grounding": 0.95,
+          "delivery": 0.995,
+          "costPerUnitUsd": 0.02
+        },
+        "securityReview": {
+          "date": "2026-09-10",
+          "reviewer": "Sofia Marino (Security & GRC)",
+          "outcome": "approved",
+          "scope": "Transcript handling, redaction, model provider data policy, access gate",
+          "conditions": []
+        },
+        "retiredAt": null,
+        "retiredReason": null,
+        "promotedAt": "2026-09-28"
+      },
+      "sim": {
+        "pool": {
+          "ids": [
+            "ppl_marcus",
+            "ppl_priya",
+            "ppl_diego",
+            "ppl_rachel",
+            "ppl_nina",
+            "ppl_omar"
+          ]
+        },
+        "adoption": {
+          "start": "2026-09-14",
+          "rampDays": 18,
+          "finalShare": 1
+        },
+        "activeDayProb": 0.42,
+        "sessionsPerActiveDay": 1.2,
+        "unitsPerSession": 1.1,
+        "automaticPerDay": 0,
+        "outcomes": {
+          "accepted": 0.58,
+          "edited": 0.24,
+          "rejected": 0.06,
+          "automatic": 0.12,
+          "failed": 0
+        },
+        "humanMinutes": {
+          "accepted": 1.2,
+          "edited": 4,
+          "rejected": 2,
+          "automatic": 0,
+          "failed": 0
+        },
+        "costPerUnit": 0.006,
+        "costJitter": 0.4,
+        "latencyMs": 260,
+        "latencySigma": 0.55,
+        "models": [
+          [
+            "deepseek/deepseek-v4.1-flash",
+            0.93
+          ],
+          [
+            "anthropic/claude-haiku-5.5",
+            0.07
+          ]
+        ],
+        "components": [
+          "api",
+          "workflow",
+          "ai",
+          "gate",
+          "delivery",
+          "budget"
+        ],
+        "steps": [
+          "ingest",
+          "normalize",
+          "redact",
+          "screen",
+          "extract",
+          "ground",
+          "score",
+          "theme",
+          "route",
+          "deliver"
+        ],
+        "grounding": true,
+        "delivery": [
+          "jira",
+          "slack",
+          "linear"
+        ],
+        "features": {
+          "page_view": 5,
+          "run_viewed": 3,
+          "review_action": 3,
+          "insight_opened": 2,
+          "theme_opened": 1,
+          "rule_changed": 0.2,
+          "notification_opened": 0.6,
+          "digest_opened": 0.5,
+          "search": 0.6
+        },
+        "incidents": [
+          {
+            "start": "2026-10-13T16:00:00Z",
+            "end": "2026-10-13T18:30:00Z",
+            "errorRate": 0.12,
+            "latencyMult": 2.2,
+            "fallbackRate": 0.6,
+            "note": "Primary model provider 503s; fallback to secondary"
+          }
+        ],
+        "adoptionDrop": null,
+        "costChange": null
+      }
+    },
+    {
+      "record": {
+        "id": "agt_rfp_responder",
+        "name": "RFP & Security Questionnaire Responder",
+        "purpose": "Drafts answers to RFPs and security questionnaires from the approved answer library, the SOC 2 report and product documentation, citing the source for every answer. The proposal team reviews and edits before anything is sent.",
+        "department": "Sales",
+        "ownerId": "ppl_ao_malik",
+        "ownerName": "Malik Johnson",
+        "businessOwner": "Chris Donovan (RVP, Enterprise Sales)",
+        "builtWith": "Gumloop",
+        "status": "production",
+        "dataAccess": [
+          "Approved answer library (Google Drive, read)",
+          "SOC 2 Type II report and trust-center documents",
+          "Product documentation"
+        ],
+        "dataClassification": "confidential",
+        "baselineMinutesPerUnit": 240,
+        "unitLabel": "questionnaire drafted",
+        "lastReview": "2026-09-19",
+        "reviewCadenceDays": 45,
+        "nextReview": "2026-11-03",
+        "version": "flow v12",
+        "launchedAt": "2026-08-17",
+        "standard": [
+          {
+            "key": "owner",
+            "label": "Named owner and business owner",
+            "passed": true,
+            "evidence": "Owner Malik Johnson (AI Operations); business owner Chris Donovan."
+          },
+          {
+            "key": "purpose",
+            "label": "Documented purpose and success metric",
+            "passed": true,
+            "evidence": "Success metric: hours from questionnaire received to first full draft (target < 1 business day)."
+          },
+          {
+            "key": "data_review",
+            "label": "Security & data review passed",
+            "passed": true,
+            "evidence": "Approved 2026-08-12 with conditions: SOC 2 report read-only, no customer data in prompts."
+          },
+          {
+            "key": "evals",
+            "label": "Eval suite with promotion gate",
+            "passed": false,
+            "evidence": "Spot-checks only. No regression set of past questionnaires; flow edits are not gated."
+          },
+          {
+            "key": "logging",
+            "label": "Structured logs and traces reach Agent Ops",
+            "passed": true,
+            "evidence": "Gumloop webhook forwards run logs and step spans to Agent Ops."
+          },
+          {
+            "key": "cost_cap",
+            "label": "Spend cap and per-run budget",
+            "passed": true,
+            "evidence": "$150/month Gumloop workspace cap; per-run cap $2.50."
+          },
+          {
+            "key": "human_review",
+            "label": "Human review on high-stakes output",
+            "passed": true,
+            "evidence": "Every draft is reviewed by the proposal manager; security answers by Security & GRC."
+          },
+          {
+            "key": "rollback",
+            "label": "Rollback path and runbook",
+            "passed": true,
+            "evidence": "Flow versions exported nightly; runbook covers reverting to v11."
+          },
+          {
+            "key": "review_cadence",
+            "label": "Review cadence current",
+            "passed": true,
+            "evidence": "Review every 45 days; production-readiness review held 2026-09-19."
+          }
+        ],
+        "source": "simulated",
+        "href": null
+      },
+      "profile": {
+        "shortName": "RFP Responder",
+        "color": "#5E74E3",
+        "successMetric": "Hours from questionnaire received to first full draft. Target under one business day (baseline 3–4 days).",
+        "runbookUrl": "https://wiki.invoca.example/ai-ops/runbooks/rfp-responder",
+        "monthlyBudgetUsd": 150,
+        "perRunCapUsd": 2.5,
+        "humanMinutesPerUnit": 50,
+        "integrations": [
+          "Gumloop",
+          "Google Drive",
+          "Loopio export",
+          "Slack"
+        ],
+        "slo": {
+          "runSuccess": 0.99,
+          "p95Ms": 120000,
+          "grounding": 0.95,
+          "delivery": null,
+          "costPerUnitUsd": 2.5
+        },
+        "securityReview": {
+          "date": "2026-08-12",
+          "reviewer": "Sofia Marino (Security & GRC)",
+          "outcome": "approved_with_conditions",
+          "scope": "Answer library, SOC 2 report access, model provider terms",
+          "conditions": [
+            "SOC 2 report read-only",
+            "No customer data in prompts"
+          ]
+        },
+        "retiredAt": null,
+        "retiredReason": null,
+        "promotedAt": "2026-09-19"
+      },
+      "sim": {
+        "pool": {
+          "ids": [
+            "ppl_ao_mike",
+            "ppl_ao_gabe",
+            "ppl_ao_ruth"
+          ]
+        },
+        "adoption": {
+          "start": "2026-09-14",
+          "rampDays": 7,
+          "finalShare": 1
+        },
+        "activeDayProb": 0.38,
+        "sessionsPerActiveDay": 1.1,
+        "unitsPerSession": 0.7,
+        "automaticPerDay": 0,
+        "outcomes": {
+          "accepted": 0.2,
+          "edited": 0.72,
+          "rejected": 0.08,
+          "automatic": 0,
+          "failed": 0
+        },
+        "humanMinutes": {
+          "accepted": 35,
+          "edited": 60,
+          "rejected": 30,
+          "automatic": 0,
+          "failed": 0
+        },
+        "costPerUnit": 2.2,
+        "costJitter": 0.5,
+        "latencyMs": 52000,
+        "latencySigma": 0.45,
+        "models": [
+          [
+            "anthropic/claude-sonnet-5.5",
+            0.8
+          ],
+          [
+            "openai/gpt-5.4-mini",
+            0.2
+          ]
+        ],
+        "components": [
+          "gumloop",
+          "ai",
+          "retrieval"
+        ],
+        "steps": [
+          "parse_questionnaire",
+          "retrieve_answers",
+          "draft",
+          "cite",
+          "assemble"
+        ],
+        "grounding": true,
+        "delivery": null,
+        "features": {
+          "agent_invoked": 1,
+          "export": 0.8,
+          "search": 1.2,
+          "page_view": 2
+        },
+        "incidents": [],
+        "adoptionDrop": null,
+        "costChange": null,
+        "pilotUntil": "2026-09-19"
+      }
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alr_hist_sl_fallback",
+      "agentId": "agt_signal_loop",
+      "at": "2026-10-13T16:12:00.000Z",
+      "severity": "warning",
+      "rule": "Model fallback rate > 20% over 15 min",
+      "expected": "≤ 20% of ai.calls on the secondary model",
+      "actual": "61% (primary provider returning 503)",
+      "status": "resolved",
+      "owner": "Hunter Borman",
+      "runbook": "https://github.com/Hunterborman1/switchboard/blob/main/docs/RUNBOOK.md#model-fallback",
+      "traceId": null,
+      "resolvedAt": "2026-10-13T18:31:00.000Z"
+    },
+    {
+      "id": "alr_hist_rfp_library",
+      "agentId": "agt_rfp_responder",
+      "at": "2026-10-22T13:00:00.000Z",
+      "severity": "warning",
+      "rule": "Answer library sync older than 7 days",
+      "expected": "Last sync ≤ 7 days ago",
+      "actual": "9 days (Drive connector token expired)",
+      "status": "open",
+      "owner": "Malik Johnson",
+      "runbook": "https://wiki.invoca.example/ai-ops/runbooks/rfp-responder#library-sync",
+      "traceId": null,
+      "resolvedAt": null
+    }
+  ]
+}

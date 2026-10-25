@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_106",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "Whether we can build our own criteria into the scorecards. Right now we're scoring against the standard set, and it mostly works, but there are things specific to us that just don't fit anywhere.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

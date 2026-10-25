@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_188",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "So the offline conversions, when a call comes in from a Google click, we're seeing them land in Google Ads a day to three days after the call.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+      "quote": "When the AI Voice Agent transfers to a live person, whatever it collected doesn't come with it.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

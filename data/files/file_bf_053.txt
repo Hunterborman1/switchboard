@@ -1,0 +1,92 @@
+Coastal Comfort Mattress escalation
+Thu, Sep 17, 2026, 3:00PM • 4:15
+
+Tom Lindqvist  0:03
+Hey Darnell, how's it going? How's Tampa treating you this week?
+
+Darnell Wright  0:08
+Hot, man. Real hot. Uh, we had a store event in Brandon on Saturday and I think I sweated through two shirts before noon.
+
+Tom Lindqvist  0:19
+Ha, that sounds about right for September. Did the event go okay?
+
+Darnell Wright  0:24
+Yeah, decent traffic. Anyway, I wanted to talk through something that's been bugging me on the AI side.
+
+Tom Lindqvist  0:32
+Okay, go ahead.
+
+Darnell Wright  0:33
+So when the AI Voice Agent hands a call to one of my people in Amazon Connect, the stuff it collected doesn't come with it. The caller already told the bot their order number, their name, what store, and then my agent picks up and has to ask all over again.
+
+Tom Lindqvist  0:57
+Does the agent see anything at all, uh, or is it a blank screen?
+
+Darnell Wright  1:04
+Blank, basically. Well, the phone number shows, that's it. So the caller's repeating themselves and you can hear it in their voice, like, didn't I just say this.
+
+Tom Lindqvist  1:14
+How long has that been happening?
+
+Darnell Wright  1:17
+Started noticing it maybe three weeks ago. It's not every transfer, but it's enough. Our CSAT on those transferred calls is sitting under 3.5, and the fully automated ones are up near 4.6. That gap is what's got my attention.
+
+Tom Lindqvist  1:34
+Yeah, that's a big spread. Let me pull up the account while we talk. Roughly how many transfers are we talking per day?
+
+Darnell Wright  1:43
+The bot handles store hours and order status, so most of it stays automated. Transfers are maybe 400 a day across the 64 showrooms, could be more on weekends.
+
+Tom Lindqvist  1:56
+And is it happening on specific intents, or across the board?
+
+Darnell Wright  2:02
+That's the thing, I can't tell yet. My supervisor over the Tampa queue, Renata, she started keeping a tally on a sticky note, which is not a system, I know.
+
+Tom Lindqvist  2:13
+It's a start though. You know, can she send me a few example calls with timestamps? I want to take those to the team so they can look at the transfer handoff.
+
+Darnell Wright  2:27
+Yeah, I'll get her to pull ten or so. Should I send them to you direct or through the portal?
+
+Tom Lindqvist  2:35
+Direct is fine, just include the call IDs. I'll open it up on my side and get you a case number today.
+
+Darnell Wright  2:43
+Appreciate it. It's not a screaming fire, but it's the kind of thing that erodes trust with my agents. They already side-eye the bot.
+
+Tom Lindqvist  2:53
+Understood. Anything else on the AI side, or is this the main one?
+
+Darnell Wright  2:59
+No, that's that's the one. The messaging agent's been fine, no complaints there.
+
+Tom Lindqvist  3:05
+Good. How are the other uh, numbers looking? Call volume overall?
+
+Darnell Wright  3:10
+We're tracking around 11,200 calls a month across the showrooms, up maybe six percent from the spring. Google Ads is still our biggest driver. PreSense is working the way it should.
+
+Tom Lindqvist  3:23
+Nice. And staffing, you holding steady?
+
+Darnell Wright  3:26
+Mostly. We lost a part-timer so, in the Orlando queue, so I'm covering shifts um, myself some nights. That's part of why this transfer thing is annoying me, I don't have bandwidth to chase it.
+
+Tom Lindqvist  3:40
+Makes sense. I mean, I'll do the chasing. Do you uh, want to grab 30 minutes next Wednesday to go over what the team finds?
+
+Darnell Wright  3:49
+Wednesday morning works, before the stores open. Say 9:30 Eastern.
+
+Tom Lindqvist  3:53
+Booked, I'll send the invite. And hey, tell Renata thanks for the sticky notes.
+
+Darnell Wright  3:59
+Ha, I will. She'll get a kick out of that. Alright Tom, appreciate you jumping on this.
+
+Tom Lindqvist  4:06
+Of course. Talk Wednesday. Stay cool out there.
+
+Darnell Wright  4:10
+No promises. Later.

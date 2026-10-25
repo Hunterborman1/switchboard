@@ -1,0 +1,32 @@
+{
+  "fileId": "file_atlas_renewal_eml",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Controller states they cannot renew on current terms and have requested a formal Marchex proposal.",
+      "quote": "We are not in a position to renew on the current terms, and we have asked Marchex for a formal proposal.",
+      "owner": "ppl_renee"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex's per-rooftop price is ~30% lower and includes call scoring.",
+      "quote": "Marchex's per-rooftop number is roughly 30% below what we pay you today, and it includes call scoring.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Appointment conversions still reach Google two days after the call.",
+      "quote": "the appointment conversions still aren't in google until two days later",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

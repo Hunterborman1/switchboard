@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_002",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "The Signal AI summaries. Our front-line folks, the BDC reps, the service advisors, they all say the same thing: they read the summary instead of listening to the whole recording. Saves them a ton of time on callbacks and dispatch.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "platform",
+      "severity": "medium",
+      "summary": "Named competitor Marchex being considered",
+      "quote": "Hey, before I forget, my VP of Finance asked me to take a hard look at the Marchex quote. I don't have the specifics in front of me, but they came in lower per rooftop.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

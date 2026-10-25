@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bf_174",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Finance and procurement, they push back on paying separately for every little thing. You know, PreSense, QM seats, AI Voice Agent minutes.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Customer links \"add-on pricing friction at renewal\" to the renewal decision.",
+      "quote": "It's the add-on pricing friction at renewal. That's what I keep hearing.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "platform",
+      "severity": "high",
+      "summary": "Marchex being considered as alternative",
+      "quote": "I'm looking at all our vendor spend, and my boss, the regional VP, is asking me point blank whether we should renew with Invoca or take a hard look at Marchex.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

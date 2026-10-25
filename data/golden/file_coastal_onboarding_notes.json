@@ -1,0 +1,24 @@
+{
+  "fileId": "file_coastal_onboarding_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "Wants the AI Messaging Agent follow-up text to include the nearest showroom address and hours based on caller ZIP.",
+      "quote": "Vanessa wants the AI Messaging Agent to send the nearest showroom's address and hours in the follow-up text, based on the caller's ZIP.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "ai_agents",
+      "severity": "low",
+      "summary": "AI Voice Agent resolves ~40% of order-status calls without transfer, ahead of target.",
+      "quote": "Darnell said the AI Voice Agent is now answering about 40% of order-status calls without a transfer, which is ahead of their target.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

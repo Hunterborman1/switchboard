@@ -1,0 +1,341 @@
+WEBVTT
+
+1
+00:00:05.471 --> 00:00:11.517
+Tom Lindqvist: Hey Dale, Becca, like, Ryan. Thanks for making time this afternoon. How's the week going out there?
+
+2
+00:00:12.100 --> 00:00:24.128
+Dale Henderson: Pretty good. Busy. Harvest is in full swing, so half the office is either talking about beans or trying to get out of the office to go look at beans.
+
+3
+00:00:25.296 --> 00:00:34.782
+Becca Lund: My brother started combining Tuesday. He sent me a picture at like six in the morning. I don't know what he wanted me to do about it.
+
+4
+00:00:35.252 --> 00:00:41.413
+Ryan Fischer: Yeah, my in-laws farm over by Hartford, so we're on standby for babysitting while they run.
+
+5
+00:00:42.778 --> 00:00:54.812
+Tom Lindqvist: That's the season. Okay, I've got us down for the quarterly review. I pulled the numbers for July through September. Want me to just walk through what I'm seeing, and you all jump in whenever?
+
+6
+00:00:55.180 --> 00:00:56.265
+Dale Henderson: Yeah, go ahead.
+
+7
+00:00:56.831 --> 00:01:05.159
+Tom Lindqvist: So call volume across tracking numbers was up about eleven percent quarter over quarter, which tracks with the new order flow going live in September.
+
+8
+00:01:05.159 --> 00:01:11.822
+Tom Lindqvist: Google Ads drove most of that. The one thing that stands out to me is the last week of September.
+
+9
+00:01:12.651 --> 00:01:13.451
+Becca Lund: The outage.
+
+10
+00:01:14.059 --> 00:01:19.679
+Tom Lindqvist: The outage. September twenty-ninth, right? I saw the spike. What did that look like from your side?
+
+11
+00:01:20.643 --> 00:01:30.694
+Becca Lund: So that that was a fiber cut over by the state line, took down a chunk of the network for most of the day.
+
+12
+00:01:30.694 --> 00:01:39.907
+Becca Lund: Our care queue normally runs maybe sixty, seventy calls a day. That day it was, I don't know, north of two thousand.
+
+13
+00:01:40.620 --> 00:01:44.454
+Ryan Fischer: It was a lot. Our status page got hammered too.
+
+14
+00:01:45.177 --> 00:01:56.787
+Becca Lund: During the outage on the twenty-ninth the voice agent took thousands of calls, which was great, but every one it passed to my team came over with no notes.
+
+15
+00:01:57.223 --> 00:02:07.820
+Tom Lindqvist: No notes. So the caller talks to the agent, the agent decides it needs a person, transfers, and the rep picks up with nothing on the screen?
+
+16
+00:02:08.505 --> 00:02:22.900
+Becca Lund: Nothing. No name, no account, no idea what they already said. So my reps are starting over from scratch with somebody who's already been on hold for ten minutes and is not happy.
+
+17
+00:02:24.364 --> 00:02:29.169
+Tom Lindqvist: How many of those transfers are we talking about that day?
+
+18
+00:02:29.856 --> 00:02:39.088
+Becca Lund: I'd have to pull it, but but a few hundred at least. The ones that stayed with the agent were fine, honestly.
+
+19
+00:02:39.088 --> 00:02:41.606
+Becca Lund: It was the handoffs that hurt.
+
+20
+00:02:42.002 --> 00:02:54.238
+Tom Lindqvist: Okay. Let me write that down and take it back to the team. Can you get me one or two call IDs from that day so I can hand over actual examples?
+
+21
+00:02:54.985 --> 00:02:57.704
+Becca Lund: Yeah, I can pull a couple this afternoon.
+
+22
+00:02:58.519 --> 00:03:08.662
+Tom Lindqvist: That's perfect. And you know, just so I'm clear, this is specifically the transfer into your contact center, not the agent's own calls.
+
+23
+00:03:09.018 --> 00:03:13.230
+Becca Lund: Right. The agent itself did its job. It's the handoff.
+
+24
+00:03:13.556 --> 00:03:17.488
+Tom Lindqvist: Got it. Okay, Ryan, you wanted to talk about the order flow.
+
+25
+00:03:17.818 --> 00:03:25.221
+Ryan Fischer: Yeah. So we rebuilt the whole thing as a single-page app, React, launched the second week of September. Generally it's been good.
+
+26
+00:03:25.221 --> 00:03:29.259
+Ryan Fischer: Faster, fewer drop-offs. But we noticed something in the tracking pretty quick.
+
+27
+00:03:29.573 --> 00:03:30.373
+Tom Lindqvist: What's that?
+
+28
+00:03:31.347 --> 00:03:38.631
+Ryan Fischer: the number swap stopped working on our order pages after we moved to the new React app
+
+29
+00:03:39.768 --> 00:03:41.092
+Tom Lindqvist: The dynamic number insertion.
+
+30
+00:03:41.480 --> 00:03:51.650
+Ryan Fischer: Yeah. On the marketing site it's fine, numbers swap like they always did. But once you're inside the order flow, it's the static number.
+
+31
+00:03:51.650 --> 00:03:57.583
+Ryan Fischer: So any call from that page attributes to the wrong thing, or to nothing.
+
+32
+00:03:58.313 --> 00:04:07.073
+Dale Henderson: Which matters because that's exactly where people call from. They get three steps in, something doesn't validate, they pick up the phone.
+
+33
+00:04:08.058 --> 00:04:10.784
+Tom Lindqvist: How long has it been like that?
+
+34
+00:04:11.545 --> 00:04:27.595
+Ryan Fischer: Since launch. We caught it maybe two weeks in. I assumed it was on our end, some lifecycle thing um, with the tag not firing on route changes, but I poked at it and couldn't pin it down.
+
+35
+00:04:28.374 --> 00:04:39.948
+Tom Lindqvist: Okay. So one, the tag needs to fire on route change, not just initial page load. Two, there may be something about how the number pool is being read in that context.
+
+36
+00:04:39.948 --> 00:04:51.160
+Tom Lindqvist: I I don't want to guess at it on the call. Can I get the URL pattern for one of those order pages, and roughly when the two weeks in was?
+
+37
+00:04:52.055 --> 00:04:56.813
+Ryan Fischer: Yeah, I'll send you a staging link and a prod link. Both reproduce.
+
+38
+00:04:57.976 --> 00:05:03.583
+Tom Lindqvist: Good. I'll get that in front of support today so it's not sitting over the weekend.
+
+39
+00:05:04.043 --> 00:05:04.843
+Dale Henderson: Appreciate that.
+
+40
+00:05:06.269 --> 00:05:11.092
+Tom Lindqvist: Dale, you had a a reporting thing on the list too.
+
+41
+00:05:11.944 --> 00:05:22.664
+Dale Henderson: Yeah. So every Monday I pull the weekly source report, by campaign, by channel, and I paste it into a deck for our VP and the regional managers.
+
+42
+00:05:22.664 --> 00:05:31.088
+Dale Henderson: It's not hard, it's just... every Monday, same thing. I mean, Download the CSV, clean it it up, um, paste it in.
+
+43
+00:05:31.741 --> 00:05:33.981
+Tom Lindqvist: How long does that take you?
+
+44
+00:05:34.936 --> 00:05:44.632
+Dale Henderson: Twenty minutes if nothing's weird. Forty if something's weird. And it's me doing it, which means if I'm traveling it doesn't happen.
+
+45
+00:05:45.703 --> 00:05:47.668
+Tom Lindqvist: And where does it end up?
+
+46
+00:05:48.982 --> 00:05:59.122
+Dale Henderson: Google Sheets. That's where the the deck pulls from. I'd love a way to get the weekly source report into Google Sheets without someone downloading it
+
+47
+00:05:59.420 --> 00:06:03.427
+Tom Lindqvist: So a scheduled push, or a live connection, straight into a sheet.
+
+48
+00:06:03.662 --> 00:06:09.689
+Dale Henderson: Either. I just don't want a um, human in the loop on a Tuesday morning.
+
+49
+00:06:10.535 --> 00:06:18.575
+Tom Lindqvist: Okay. I'll take that one back too. I know we talked about it briefly in July, so let me see where it sits.
+
+50
+00:06:18.888 --> 00:06:19.688
+Dale Henderson: Sure.
+
+51
+00:06:19.954 --> 00:06:25.915
+Tom Lindqvist: Anything else on the list before I run through the the rest of the metrics?
+
+52
+00:06:27.284 --> 00:06:29.393
+Becca Lund: No, I think that's the two.
+
+53
+00:06:30.702 --> 00:06:31.502
+Ryan Fischer: Yeah.
+
+54
+00:06:32.877 --> 00:06:41.980
+Tom Lindqvist: Okay. So the rest is pretty quiet. Call tracking attribution is holding steady, Google Ads conversions are flowing, Marketo's getting what it needs.
+
+55
+00:06:41.980 --> 00:06:44.750
+Tom Lindqvist: Anything on your end feeling off there?
+
+56
+00:06:44.994 --> 00:06:46.336
+Dale Henderson: No, that side's fine.
+
+57
+00:06:46.538 --> 00:06:50.881
+Tom Lindqvist: Good. And the agent's handling routine outage calls the way you wanted?
+
+58
+00:06:52.071 --> 00:06:59.899
+Becca Lund: Yeah, that part's working. People get the status message, so, they get the ETA, most of them hang up happy.
+
+59
+00:07:00.312 --> 00:07:02.718
+Tom Lindqvist: Good. You're at sixty seats, still, right?
+
+60
+00:07:03.424 --> 00:07:08.207
+Dale Henderson: Uh, Sixty-one as of last month. One new hire in care.
+
+61
+00:07:08.821 --> 00:07:17.245
+Tom Lindqvist: I'll note that. Renewal's October of next year, so we've got plenty of runway, but if the seat count keeps creeping I'd rather know early.
+
+62
+00:07:18.692 --> 00:07:22.647
+Dale Henderson: Probably one or two more before spring. Nothing dramatic.
+
+63
+00:07:23.641 --> 00:07:30.443
+Tom Lindqvist: Okay. Let me get through the rest and then we can get you out of here.
+
+64
+00:07:31.231 --> 00:07:37.346
+Ryan Fischer: Before you do, is the football game still on for tonight? I heard they moved it.
+
+65
+00:07:37.908 --> 00:07:41.811
+Becca Lund: Moved to seven. Homecoming, so they wanted the lights.
+
+66
+00:07:42.704 --> 00:07:47.847
+Ryan Fischer: Oh, that's why. My nephew's on the line, he's been talking about it all week.
+
+67
+00:07:48.591 --> 00:07:50.110
+Tom Lindqvist: Who are they playing?
+
+68
+00:07:50.472 --> 00:07:54.946
+Ryan Fischer: The team from over in Mitchell. Should be a good one. They're undefeated.
+
+69
+00:07:55.368 --> 00:07:56.536
+Becca Lund: So are we.
+
+70
+00:07:57.031 --> 00:07:58.347
+Ryan Fischer: We're four and three.
+
+71
+00:07:58.863 --> 00:07:59.663
+Becca Lund: In conference.
+
+72
+00:08:00.736 --> 00:08:01.536
+Ryan Fischer: Okay.
+
+73
+00:08:02.392 --> 00:08:12.707
+Tom Lindqvist: I'll leave that one alone. Okay, so to wrap the numbers. Volume up eleven percent, uh, agent handled the outage traffic, attribution's clean outside the order flow issue.
+
+74
+00:08:12.707 --> 00:08:20.812
+Tom Lindqvist: I've got three things: call IDs from Becca, the staging and prod links from Ryan, and the Google Sheets report for Dale.
+
+75
+00:08:21.523 --> 00:08:22.323
+Dale Henderson: That's right.
+
+76
+00:08:23.084 --> 00:08:32.226
+Tom Lindqvist: I'll send a follow-up today with those three items and who's on each. If the number swap thing comes back faster than I expect, I'll flag it.
+
+77
+00:08:33.231 --> 00:08:34.031
+Ryan Fischer: Sounds good.
+
+78
+00:08:35.095 --> 00:08:39.774
+Tom Lindqvist: Anything you want me to add or take off before I write it up?
+
+79
+00:08:41.165 --> 00:08:43.132
+Becca Lund: No, that that covers it.
+
+80
+00:08:43.907 --> 00:08:45.463
+Dale Henderson: Yeah, so, we're good.
+
+81
+00:08:46.608 --> 00:08:50.016
+Tom Lindqvist: Great. Then go enjoy the game. Good luck tonight, Ryan.
+
+82
+00:08:50.315 --> 00:08:53.346
+Ryan Fischer: Thanks. I'll be the one in the bad jacket.
+
+83
+00:08:53.698 --> 00:08:54.684
+Becca Lund: You always are.
+
+84
+00:08:55.203 --> 00:08:57.760
+Tom Lindqvist: Have a good weekend, everybody. Talk soon.
+
+85
+00:08:58.461 --> 00:09:00.140
+Dale Henderson: You too, Tom. Thanks.

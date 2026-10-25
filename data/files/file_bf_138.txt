@@ -1,0 +1,104 @@
+Meridian Health Partners check-in
+Thu, Sep 24, 2026, 8:45AM • 5:29
+
+Priya Raman  0:03
+Morning, Lauren. Morning, Sandra. How's Nashville treating you? I saw it was supposed to rain all week.
+
+Lauren Whitfield  0:10
+Oh, it's been gray since Monday. My daughter's soccer game got rained out Saturday, so we spent the morning at the pancake place instead. Not a bad trade.
+
+Sandra Pruitt  0:23
+I'll take the rain. It keeps everybody indoors and off the roads. Hi Priya.
+
+Priya Raman  0:29
+Ha. Um, okay, well, I've got a short list. I want to touch on volumes since the last time we talked, and then Sandra, you had something you wanted to to walk through?
+
+Sandra Pruitt  0:41
+I do, yeah. Let's get through the other stuff first, though. No rush.
+
+Priya Raman  0:47
+Perfect. Lauren, how are the call numbers looking? Last time we were around, what, forty-one thousand a month across the system?
+
+Lauren Whitfield  0:57
+We're at about forty-six five now. August was the high point. Some of that is the back-to-school physicals, some of it is just we added the two clinics out in Murfreesboro in July.
+
+Priya Raman  1:09
+Right, right. And those two are on the same central scheduling queue, or did they stand up their own?
+
+Lauren Whitfield  1:17
+Same queue. Which was the plan, but it took us about three weeks to get the routing right. I think we've got it now. Hold times are back under two minutes, mostly.
+
+Priya Raman  1:28
+Okay, good. Anything weird in the attribution side? The Google Ads piece?
+
+Lauren Whitfield  1:33
+No, that's been fine. The offline conversions are landing, the team isn't flagging anything.
+
+Priya Raman  1:40
+Great. And how's staffing? I know you had that open req on the scheduling side.
+
+Lauren Whitfield  1:46
+Filled it. She started two weeks ago. We're still down one on the overnight line, but that's been posted forever. It's a hard shift to fill.
+
+Priya Raman  1:55
+Yeah, I bet. Um, okay, Sandra. Floor's yours.
+
+Sandra Pruitt  1:58
+So. This is a request, not a complaint. We've been living with the redaction setup for a a while now and it works um, the way it works, but our privacy committee keeps asking me the same question and I don't have a good answer.
+
+Priya Raman  2:19
+Okay. What's the question?
+
+Sandra Pruitt  2:22
+It's about the AI summaries. If a patient gives their date of birth or an MRN on the call, that gets redacted in the transcript. Fine. But the summary that gets written and lands in the record, that's a paragraph of plain English about what the patient wanted, and I have no way to tell it to leave certain things out of it.
+
+Lauren Whitfield  2:48
+Which matters because the summaries are what people actually read. Nobody on my team is scrolling a full transcript.
+
+Sandra Pruitt  2:56
+Right. And to be fair, most of the time it's fine. But I sat in on a review two weeks ago and there was a summary that said something like, and I'm paraphrasing, so, patient with the diabetes follow-up called from the number ending in four-one-two-two.
+
+Priya Raman  3:16
+Hmm. So a partial identifier showing up in the narrative.
+
+Sandra Pruitt  3:21
+A partial identifier in a paragraph that gets shared more widely than a transcript does. And I can't configure that. I can't say, for this role, strip these patterns out of the summary before it's stored.
+
+Priya Raman  3:37
+And who would be doing the configuring? You You, or someone on the compliance side?
+
+Sandra Pruitt  3:44
+Me, ideally. But it needs to be role based. My analysts should see more than a front desk supervisor does. And every one of those changes has to be logged, because when the committee asks who turned something off in March, I need to show them.
+
+Priya Raman  4:05
+Got it. So the three pieces are: the same redaction controls extended to the summary, not just the transcript, per-role visibility, and like, an audit trail on the config itself.
+
+Sandra Pruitt  4:15
+Like, that's it. That's the whole ask.
+
+Priya Raman  4:18
+Okay. I don't want to guess at what's possible there. Um, Let me take it back to to I mean, the team with your example, because the summary case is the part I don't think they'd assume.
+
+Sandra Pruitt  4:33
+Please do. I can send you the redacted example if it helps.
+
+Priya Raman  4:39
+That would help a lot. So, Send it before Friday if you can, I've got the product sync Monday.
+
+Sandra Pruitt  4:47
+I'll dig it out this afternoon.
+
+Lauren Whitfield  4:50
+And Priya, while you've got that in front of them, the redaction thread is on our compliance agenda every quarter, so anything you can do to keep us ahead of it...
+
+Priya Raman  5:01
+Yep, understood. I'll loop back with whatever I hear. Anything else before I let you two go?
+
+Lauren Whitfield  5:09
+Nope. I've got a budget meeting in ten minutes, so honestly this was the calm part of my morning.
+
+Sandra Pruitt  5:19
+Same here. Thanks, Priya.
+
+Priya Raman  5:21
+Thanks both. Stay dry. Um, I'll send the recap this afternoon.

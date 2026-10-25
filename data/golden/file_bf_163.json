@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_163",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "medium",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "The dynamic number insertion only fires on that first page load. If somebody clicks through to the second step of the flow, the number on the page stops swapping.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,149 @@
+WEBVTT
+
+1
+00:00:06.488 --> 00:00:08.993
+Priya Raman: Hi Mark, how are you doing?
+
+2
+00:00:09.583 --> 00:00:12.712
+Mark Delgado: Hey Priya. Good, busy but good. How about you?
+
+3
+00:00:14.077 --> 00:00:22.491
+Priya Raman: Pretty good, thanks. Let me pull up the account while we talk. How have call volumes been looking this month?
+
+4
+00:00:23.254 --> 00:00:32.474
+Mark Delgado: Up a bit. We're running around 19,400 calls a month across the 38 clinics now, which is maybe six percent over August.
+
+5
+00:00:32.474 --> 00:00:34.569
+Mark Delgado: Scheduling's been the driver, mostly.
+
+6
+00:00:34.892 --> 00:00:44.773
+Priya Raman: That tracks with what I saw in the dashboard. Is central scheduling still the same group on Genesys, or did anything shift there?
+
+7
+00:00:45.883 --> 00:00:57.576
+Mark Delgado: Same group. We did move two of the float agents onto a permanent schedule, so coverage is a little steadier during the 11 to 1 lunch crunch.
+
+8
+00:00:57.984 --> 00:01:06.505
+Priya Raman: Good, that was the window we talked about last time. Anything else operational I should know about before we get into the agenda?
+
+9
+00:01:07.905 --> 00:01:16.854
+Mark Delgado: One thing. We're adding a clinic in Murfreesboro in January, so we'll need to get tracking numbers set up for them at some point.
+
+10
+00:01:16.854 --> 00:01:17.973
+Mark Delgado: Probably early December.
+
+11
+00:01:19.347 --> 00:01:28.317
+Priya Raman: Okay, noted. I'll put a placeholder on my calendar for early December and we can walk through the number provisioning then.
+
+12
+00:01:28.317 --> 00:01:30.880
+Priya Raman: Anything on your side that's blocked?
+
+13
+00:01:31.338 --> 00:01:35.603
+Mark Delgado: Nothing blocked, no. Honestly the day to day is fine.
+
+14
+00:01:36.172 --> 00:01:46.651
+Priya Raman: Great. I had two things from our last conversation, and one of them was about the QM scorecards. You mentioned you wanted to show me something.
+
+15
+00:01:47.604 --> 00:01:56.176
+Mark Delgado: Yeah, so this is the main thing I wanted to talk through. Our human QA team has a rubric they've used for years.
+
+16
+00:01:56.176 --> 00:02:04.003
+Mark Delgado: It has very specific language for the exact disclosures agents have to read, and it scores differently depending on call type.
+
+17
+00:02:04.256 --> 00:02:09.230
+Priya Raman: Okay. Can you say a little more about the call type part?
+
+18
+00:02:09.548 --> 00:02:17.841
+Mark Delgado: Sure. A new patient scheduling call is scored differently than a refill request or a billing question. Ten points on one, five on another.
+
+19
+00:02:17.841 --> 00:02:23.716
+Mark Delgado: And within each type certain criteria are weighted heavier. Right now we can't reproduce any of that.
+
+20
+00:02:24.665 --> 00:02:32.280
+Priya Raman: So what you're scoring against today, is it close to the human rubric, or is it a different set of questions entirely?
+
+21
+00:02:33.138 --> 00:02:45.661
+Mark Delgado: Different. It's directionally useful but the criteria don't line up, so when my QA lead Denise pulls a report the numbers don't match what her team is seeing in their own reviews.
+
+22
+00:02:45.661 --> 00:02:54.271
+Mark Delgado: We'd want to define our own criteria, our own weightings, and have it vary by call type. Essentially mirror their existing rubric.
+
+23
+00:02:54.841 --> 00:03:00.424
+Priya Raman: Got it. That makes sense. How many criteria do they have, roughly, and how many call types?
+
+24
+00:03:01.595 --> 00:03:07.573
+Mark Delgado: Four call types, and between eight and twelve criteria each. There's some overlap but not a lot.
+
+25
+00:03:07.869 --> 00:03:16.369
+Priya Raman: Okay. Let me write this up as a request and send it over with the details so the product team has the rubric shape.
+
+26
+00:03:16.369 --> 00:03:18.849
+Priya Raman: Can you send me the actual rubric?
+
+27
+00:03:19.488 --> 00:03:22.964
+Mark Delgado: Yeah, I'll get that to you tomorrow. It's a spreadsheet.
+
+28
+00:03:24.036 --> 00:03:30.875
+Priya Raman: Perfect. That'll help a lot. How urgent is it? Asking so I can flag it correctly.
+
+29
+00:03:32.362 --> 00:03:46.912
+Mark Delgado: Medium, I'd say. It's not breaking anything. It's just that we're doing double the work, running their rubric and then looking at ours, and it'd be nice to have one number leadership trusts whole.
+
+30
+00:03:47.841 --> 00:03:57.110
+Priya Raman: Understood. I'll get it in this week. Last thing on my list, and it's quick. How's the Salesforce Health Cloud sync been behaving?
+
+31
+00:03:57.883 --> 00:03:59.605
+Mark Delgado: Fine. No complaints there.
+
+32
+00:04:00.789 --> 00:04:02.469
+Priya Raman: Good. And Google Ads?
+
+33
+00:04:03.933 --> 00:04:04.733
+Mark Delgado: Also fine.
+
+34
+00:04:05.038 --> 00:04:09.774
+Priya Raman: Okay, that's the whole agenda. Anything you want to add before we wrap?
+
+35
+00:04:11.265 --> 00:04:14.401
+Mark Delgado: No, I think that's it. Thanks for the time.
+
+36
+00:04:14.663 --> 00:04:19.834
+Priya Raman: Of course. I'll send the write-up and the December calendar hold. Talk soon, Mark.
+
+37
+00:04:21.290 --> 00:04:23.059
+Mark Delgado: Sounds good. Bye, Priya.

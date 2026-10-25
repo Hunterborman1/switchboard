@@ -1,0 +1,161 @@
+WEBVTT
+
+1
+00:00:05.191 --> 00:00:12.071
+Tom Lindqvist: Hey Becca. How's it going up there? Getting any of that warm weather we had last week?
+
+2
+00:00:12.919 --> 00:00:22.654
+Becca Lund: Oh, hey Tom. It's, um, um, it's fine. We had a thunderstorm roll through Tuesday night and knocked out a couple of our towers, so it's been a week.
+
+3
+00:00:22.654 --> 00:00:23.661
+Becca Lund: But we're back.
+
+4
+00:00:25.104 --> 00:00:26.484
+Tom Lindqvist: Ouch. Everybody back online?
+
+5
+00:00:27.628 --> 00:00:39.864
+Becca Lund: Yeah, yeah. Jim and the field crew had it wrapped by Wednesday morning. I spent most of Tuesday on the phone with customers, so I'm a little behind on everything else.
+
+6
+00:00:40.212 --> 00:00:50.327
+Tom Lindqvist: Makes sense. I saw uh, the volume tick up on your side. Looks like you're tracking around 22 to 24 thousand calls a month now, is that about right?
+
+7
+00:00:51.553 --> 00:01:00.650
+Becca Lund: Right around there, um, yeah. We added the second market in Nebraska in August so that bumped us. Nothing dramatic, just steady.
+
+8
+00:01:01.343 --> 00:01:08.100
+Tom Lindqvist: Good. How are you staffing it? I know you were down a person or two earlier in the summer.
+
+9
+00:01:09.278 --> 00:01:17.130
+Becca Lund: We got one back. Dana's replacement starts the 12th, so that takes us to twelve on the care floor. Still like, hiring for nights.
+
+10
+00:01:17.130 --> 00:01:18.112
+Becca Lund: It's slow going.
+
+11
+00:01:18.718 --> 00:01:25.452
+Tom Lindqvist: Fair enough. Anything from the product side you want to put on my list while we're here?
+
+12
+00:01:26.429 --> 00:01:30.625
+Becca Lund: Actually, there is one thing that's been bugging me for a while.
+
+13
+00:01:32.059 --> 00:01:32.936
+Tom Lindqvist: Go ahead.
+
+14
+00:01:34.008 --> 00:01:43.642
+Becca Lund: So this is small compared to uh, everything else, but every Monday I pull the call data out into a CSV, right?
+
+15
+00:01:43.642 --> 00:01:50.648
+Becca Lund: And then I rebuild the same charts for my VP and a couple of the execs.
+
+16
+00:01:51.333 --> 00:02:04.842
+Becca Lund: It's an hour, maybe ninety minutes with the formatting. And if I'm out, nobody else does it. So the ask, and it's not urgent, is a way to have that dashboard land in my inbox or in Looker on a schedule.
+
+17
+00:02:04.842 --> 00:02:07.477
+Becca Lund: Like a weekly report that just shows up.
+
+18
+00:02:08.308 --> 00:02:15.507
+Tom Lindqvist: Got it. So instead of you pulling it, it pushes out. Where would it need to land? Looker? Sheets?
+
+19
+00:02:16.561 --> 00:02:25.351
+Becca Lund: Like, honestly either um, one. Looker would be ideal because that's where the execs look, but I'd take an email with a PDF.
+
+20
+00:02:25.351 --> 00:02:28.408
+Becca Lund: I just don't want to be the bottleneck.
+
+21
+00:02:28.840 --> 00:02:39.719
+Tom Lindqvist: Okay. Let me write that up and take it to the product team. I can't tell you when, but I'll get you an answer either way.
+
+22
+00:02:40.095 --> 00:02:42.774
+Becca Lund: That's all I ask. Low priority, I know.
+
+23
+00:02:43.760 --> 00:02:46.050
+Tom Lindqvist: Um, so noted. Like, Anything else?
+
+24
+00:02:47.338 --> 00:02:57.169
+Becca Lund: Yeah, um. More of a real problem. When the Voice Agent hands a call off to one of my people, the notes don't come with it.
+
+25
+00:02:58.405 --> 00:02:59.866
+Tom Lindqvist: The notes are empty?
+
+26
+00:03:01.037 --> 00:03:12.201
+Becca Lund: Completely blank. So the agent will have collected the account number, the address, what's going on, and then it goes to a live rep and all they see is the phone number.
+
+27
+00:03:12.201 --> 00:03:14.294
+Becca Lund: The caller has to start over.
+
+28
+00:03:15.656 --> 00:03:23.844
+Becca Lund: It's mostly outage calls, and we get a lot of those with the fiber. People are already annoyed. Starting over makes it worse.
+
+29
+00:03:24.146 --> 00:03:26.253
+Tom Lindqvist: How long has that been happening?
+
+30
+00:03:26.649 --> 00:03:39.085
+Becca Lund: Started after the order flow rebuild in September, I think. Cheryl noticed it first, and once she pointed it out we saw it was every transfer now, not just some.
+
+31
+00:03:40.320 --> 00:03:41.120
+Tom Lindqvist: Every one?
+
+32
+00:03:42.206 --> 00:03:49.067
+Becca Lund: Every one I've looked at. I don't have a count for you. I didn't want to overstate it.
+
+33
+00:03:50.100 --> 00:04:04.890
+Tom Lindqvist: No, that's helpful. Can you send me two or three call IDs? I'll get engineering on it. I can't fix it on this call, but but I'll own it and come back to you.
+
+34
+00:04:05.266 --> 00:04:07.694
+Becca Lund: I can do that this afternoon.
+
+35
+00:04:09.038 --> 00:04:14.151
+Tom Lindqvist: Perfect. Anything on the Google Ads or Marketo side while I have you?
+
+36
+00:04:15.216 --> 00:04:16.606
+Becca Lund: No, those are fine.
+
+37
+00:04:18.047 --> 00:04:32.012
+Tom Lindqvist: Good. And you're still a year out on renewal, so nothing to worry about there. I'll send a recap by end of day and let's grab thirty minutes in two weeks, say the 15th?
+
+38
+00:04:33.211 --> 00:04:36.155
+Becca Lund: The 15th works. Thanks, I mean, Tom.
+
+39
+00:04:36.702 --> 00:04:39.697
+Tom Lindqvist: Of course. Good luck with the night shift hiring.
+
+40
+00:04:40.261 --> 00:04:41.971
+Becca Lund: Ha. Uh, I'll need it.

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_121",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "like for a new agent, missing the required disclosure on a homeowners claim call is a big deal",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "when genesis transfers a call between queues or agent to agent the screen pop comes up blank for whoever picks it up",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

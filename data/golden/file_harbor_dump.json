@@ -1,0 +1,24 @@
+{
+  "fileId": "file_harbor_dump",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Salesforce mapping broke again on the Member Interaction object after adding a 'preferred branch' field.",
+      "quote": "tyler: mapping broke again on member interaction obj after they added 'preferred branch' field",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "QM separate line item at renewal is 'not what we were told in 2024'.",
+      "quote": "linda - qm line item at renewal = 'not what we were told in 2024",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,46 @@
+Keystone Mutual / Invoca | check-in | Tue, Sep 22, 2026
+
+[00:00:03] Rachel Okafor: Morning, Luis. How's the week going over there?
+[00:00:06] Luis Ortega: Morning, Rachel. Busy. Storm season, so claims are up. We're at about 4,100 calls a day through Genesys, which is a good 20 percent over August.
+[00:00:16] Rachel Okafor: That tracks with what I saw in the volume dashboard. Are you holding up on staffing?
+[00:00:22] Luis Ortega: Barely. We pulled four people off the auto team onto claims intake. Denise is running the schedule and she's basically begging for overtime approvals.
+[00:00:32] Rachel Okafor: Okay. And how's the after-hours pilot going? That was the thing I most wanted to hear about.
+[00:00:40] Luis Ortega: It's early, but the AI Voice Agent is picking up maybe 60 percent of the calls that used to hit voicemail, so that's the win we wanted. No complaints there.
+[00:00:52] Rachel Okafor: Good. Anything on PreSense or QM you want to flag while I've got you?
+[00:00:58] Luis Ortega: Actually, yeah, there is one thing, and it's been biting us for a couple weeks.
+[00:01:04] Rachel Okafor: Go ahead.
+[00:01:06] Luis Ortega: So when a call gets transferred in Genesys, either queue to queue or agent to agent, the screen pop comes up blank for whoever picks it up. The original agent sees everything fine. The receiving agent gets nothing.
+[00:01:22] Rachel Okafor: Blank as in no PreSense data at all, or blank as in fields showing empty?
+[00:01:29] Luis Ortega: No PreSense data. No pages viewed, no campaign, nothing. The agent has to ask the caller everything again from scratch.
+[00:01:38] Rachel Okafor: How often are we talking?
+[00:01:41] Luis Ortega: That's the thing. I had my team pull last Tuesday's transfers. We counted 84 transfers across the day, and 71 of them came in blank. So yeah, it's high. Call it 85 percent of transfers.
+[00:01:54] Rachel Okafor: Seventy-one of eighty-four. Okay, that's not a rounding error, that's most of them.
+[00:01:59] Luis Ortega: Right. And it's worse on the home side. Auto transfers seem to come through maybe half the time, but home is almost always empty.
+[00:02:09] Rachel Okafor: Interesting. Does it matter whether it's a warm transfer with the agent still on the line versus a straight queue transfer?
+[00:02:19] Luis Ortega: I don't have that broken out. I can get you that if it helps.
+[00:02:24] Rachel Okafor: It would. And one more, when did you first notice it? Anything change around then?
+[00:02:31] Luis Ortega: Early September, I think. I don't know of anything we changed on our end. Genesys config has been stable since June.
+[00:02:41] Rachel Okafor: Okay. I'm going to write this up and get it in front of our support team this morning, with the transfer counts and the Genesys details. Can you send me that Tuesday report, even if it's just a spreadsheet?
+[00:02:59] Luis Ortega: Yeah, I'll have Denise send it over today.
+[00:03:03] Rachel Okafor: Perfect. And Luis, I'm not going to guess at a fix on the call, I just want the team to have the specifics.
+[00:03:14] Luis Ortega: Understood. I mostly want to know if it's us or you, honestly.
+[00:03:20] Rachel Okafor: Fair. I'll push for a clear answer on that.
+[00:03:24] Luis Ortega: Appreciate it. Oh, and one small thing, our Adobe Analytics numbers for August look right, so no worries on that side.
+[00:03:33] Rachel Okafor: Good to hear. How about the Google Ads side? Still sending conversions?
+[00:03:39] Luis Ortega: Far as I know, yes. Nobody's said otherwise.
+[00:03:42] Rachel Okafor: Okay. One more logistics thing, QM scorecards. You're still on the same set from July, right?
+[00:03:49] Luis Ortega: Yes, no changes. The adjusters seem happy with them. Or at least nobody's complained to me.
+[00:03:56] Rachel Okafor: I'll take that. Do you want to do the QM review as part of our next call, or separately?
+[00:04:05] Luis Ortega: Separately, if we can. The next check-in is already going to be crowded if this transfer thing is still open.
+[00:04:13] Rachel Okafor: Makes sense. I'll send a separate invite for the first week of October. Same time?
+[00:04:19] Luis Ortega: Tuesday works. Not the 6th, I'm out that day.
+[00:04:24] Rachel Okafor: Noted. I'll do the 7th at 9:30, unless I hear otherwise.
+[00:04:28] Luis Ortega: Good.
+[00:04:30] Rachel Okafor: One tangent, did your team end up using the AI Messaging Agent on the abandoned quote follow-ups?
+[00:04:37] Luis Ortega: We turned it on for a small group in August. It's been fine, nothing to report. Marisol ran it.
+[00:04:45] Rachel Okafor: Great. I'll leave that alone then.
+[00:04:48] Luis Ortega: Yeah, focus on the transfer thing.
+[00:04:50] Rachel Okafor: Will do. So to recap on my side, I'm filing the PreSense blank screen pop today with your transfer counts, waiting on the Tuesday spreadsheet from Denise, and scheduling the QM review for the 7th. Anything else before I let you go?
+[00:05:05] Luis Ortega: No, that covers it. Thanks, Rachel.
+[00:05:09] Rachel Okafor: Thanks, Luis. Hang in there with the storm volume.
+[00:05:13] Luis Ortega: We'll survive. Talk soon.

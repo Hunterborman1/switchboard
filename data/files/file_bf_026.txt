@@ -1,0 +1,30 @@
+Brightline Home Services / Invoca | check-in | Fri, Sep 18, 2026
+
+[00:00:04] Marcus Bell: Morning, Carla. How's the week treating you down in Charlotte?
+[00:00:09] Carla Nguyen: Hey Marcus. Busy, but that's not new. We're still shaking out the new dispatch schedule with the third shift crew.
+[00:00:17] Marcus Bell: Third shift on dispatch? I didn't know you had one.
+[00:00:22] Carla Nguyen: We only had two people overnight before, and they were getting buried with the HVAC emergency calls. So we added a third.
+[00:00:32] Marcus Bell: Makes sense. How are the call volumes looking overall?
+[00:00:37] Carla Nguyen: Around 19,000 for August across the 14 branches. Google Ads is still the biggest driver for the HVAC side. Plumbing is mostly repeat and referral traffic.
+[00:00:48] Marcus Bell: And PreSense is still working the way you want on the screen pops?
+[00:00:54] Carla Nguyen: Yeah, that's been fine. Agents like seeing the page they came from before the call connects.
+[00:01:01] Marcus Bell: Good. I saw the Google Ads offline conversions are landing on schedule too, so Smart Bidding should be picking up the weekend leads. Anything look off there?
+[00:01:12] Carla Nguyen: No, that's fine. But I do have something that's been bugging me for a couple weeks.
+[00:01:18] Marcus Bell: Go ahead.
+[00:01:19] Carla Nguyen: The spam flagging in Signal AI is wrong on some of our overnight calls. It's tagging legitimate weekend and after-hours HVAC emergency calls as spam and pulling them out of the reporting, so our branch managers are seeing lower call counts than what actually came in. Two of those were real customers in Raleigh. One was a no-heat call at 2 a.m. and the guy booked a $1,400 job the next morning.
+[00:01:50] Marcus Bell: Ouch. How many calls are we talking about?
+[00:01:54] Carla Nguyen: I counted about 30 in the last two weeks, mostly between midnight and 5 a.m. on the weekends. It's not huge but it's the wrong calls to lose.
+[00:02:06] Marcus Bell: Got it. Can you send me a couple of those call IDs? I want to look at what signal fired and whether the after-hours rules are the driver.
+[00:02:18] Carla Nguyen: Yeah, I'll pull five or six and email them today.
+[00:02:22] Marcus Bell: Thanks. Anything else on your list?
+[00:02:26] Carla Nguyen: That's it on the platform side. We're still waiting on the new uniforms for the Raleigh team, but that's not your problem.
+[00:02:35] Marcus Bell: Fair enough. I'll leave that with you. How's the rest of the dispatch team holding up with the schedule change?
+[00:02:44] Carla Nguyen: Honestly, better than I expected. Two of the overnight folks came from the Charlotte branch, so they already knew the drill.
+[00:02:52] Marcus Bell: Good. Are you still doing the Tuesday ops review with the branch leads?
+[00:02:59] Carla Nguyen: Tuesdays, yeah. We push the previous week's numbers into that meeting, which is part of why the spam thing matters. If the counts are low, the leads ask questions.
+[00:03:13] Marcus Bell: Understood. I'll flag the timing.
+[00:03:15] Carla Nguyen: Appreciate it. Oh, and before I forget, can we move our next check-in? I have a vendor audit on the 2nd.
+[00:03:24] Marcus Bell: Sure. Second week of October? I'll send a couple of options.
+[00:03:29] Carla Nguyen: Perfect.
+[00:03:31] Marcus Bell: Alright, send me those call IDs when you can and I'll take a look with the team. Talk soon, Carla.
+[00:03:39] Carla Nguyen: Thanks, Marcus. Bye.

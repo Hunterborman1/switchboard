@@ -1,0 +1,169 @@
+auto-transcript | rec_20261014_sunpeak_checkin_raw | duration 00:07:11 | speakers detected: 3
+
+Speaker 1  00:00:04
+like hey cody hey marisol can you
+
+Speaker 2  00:00:09
+both hear me okay? uh yep loud and clear. well, as clear as a phone bridge gets i've got you on speaker in the conference room, so if i sound like i'm in a well, that's why
+
+Speaker 3  00:00:22
+hi diego sorry, i'm half in a spreadsheet end of quarter you know how it is
+
+Speaker 1  00:00:31
+no worries at all i know it's late in the day for you too. i figured we'd just do a quick check-in, see how things are going anything you want to put on my radar before the end of the year.
+
+Speaker 2  00:00:46
+i mean yeah so, uh couple things nothing on fire but the one that's been bugging me.. our google adds conversions are showing up like two days late and smart bidding is basically guessing. [crosstalk]
+
+Speaker 1  00:01:00
+okay two days late is that that like consistently two days or does it bounce around
+
+Speaker 2  00:01:07
+it bounces. sometimes it's a day, sometimes it's closer to three uh but it's never same day which is the part that kills me if the bid algorithm is working off stale data, it's optimizing toward whatever happened last week
+
+Speaker 3  00:01:22
+and and we're spending a lot right now. like a lot so a two-day lag on the conversion signal is real money
+
+Speaker 1  00:01:29
+yeah, i hear that let me ask a couple questions so i can take it back to the team properly when did you first notice it honestly probably mid-september i
+
+Speaker 2  00:01:40
+flagged it to myself thought maybe it was a reporting delay in the google ui, and then it kept happening
+
+Speaker 1  00:01:47
+okay. and is it it all campaigns or specific ones
+
+Speaker 2  00:01:51
+seems like all of them search, pmax the meta side too but meta's less of a problem because we're not leaning on it for bidding the
+
+Speaker 1  00:02:03
+same way got it and the conversions themselves, the counts, do those look right just late [crosstalk]
+
+Speaker 2  00:02:11
+counts look right just late so which is almost more annoying because everything reconciles eventually and then nobody believes me that it was a problem.
+
+Speaker 1  00:02:22
+no that's fair i'll pull the timestamps on a few of those and get it in front of the the team i don't want to guess at what's happening
+
+Speaker 2  00:02:33
+so appreciate it. and i'll be honest i've been getting sales calls. call rail keeps telling me they do same-day conversion sync which great cool, love that for them
+
+Speaker 3  00:02:43
+cody
+
+Speaker 2  00:02:46
+what i'm just saying i'm not going anywhere i just want the thing to work
+
+Speaker 1  00:02:53
+that's a totally reasonable ask i'd rather you tell me than not. i
+
+Speaker 2  00:02:58
+mean, yeah. i mean, the uh, tracking itself is fine numbers route, attribution looks sane it's just the handoff to google that's slow. [crosstalk]
+
+Speaker 1  00:03:08
+okay marisol how about on your side how's the floor doing?
+
+Speaker 3  00:03:15
+the floor is fine busy we hired two bilingual reps in phoenix they're ramping the thing i keep coming back to is the voice agent.
+
+Speaker 1  00:03:28
+okay
+
+Speaker 3  00:03:29
+the voice agent books the consult and then transfers to my closer with zero context so they're starting cold [crosstalk]
+
+Speaker 1  00:03:36
+zero context meaning what, exactly like the closer doesn't know what the caller already said?
+
+Speaker 3  00:03:42
+right the caller has already told so, the agent their address i mean, their roof type, whether they own or rent whether they've got a quote from somebody else uh and then it transfers and my rep is like hi how can i help you and the the customer is like i just told you
+
+Speaker 2  00:04:02
+it's a bad look. especially in spanish honestly. the bilingual callers are less forgiving about repeating themselves [crosstalk]
+
+Speaker 3  00:04:09
+yeah. and it's not every call maybe.. i don't know uh a third? when it transfers to a human the ones the agent handles end to end are
+
+Speaker 1  00:04:22
+fine. okay so um it's specifically i mean, the transfer moment
+
+Speaker 3  00:04:27
+specifically the transfer moment. yes
+
+Speaker 1  00:04:29
+got it i'm going to write that up can you send me one or two call ids where it happened? that'll help a lot
+
+Speaker 3  00:04:40
+yeah, i'll grab a couple from yesterday remind you know me if i don't send them by friday
+
+Speaker 1  00:04:48
+i i will like friday morning i'll nudge you
+
+Speaker 2  00:04:50
+speaking of phoenix did you all get hit by that hailstorm in san antonio last i mean, week?
+
+Speaker 1  00:04:57
+I mean Oh the one with the golf-ball sized stuff? Um, I saw it on the news. My cousin's in San Antonio she sent me a picture of her car. It looked like a a colander
+
+Speaker 2  00:05:13
+yeah, we had crews out there. actually funny enough that's a lead source for us hail damage roof gets inspected, roof needs replacing and while we're up there hey have you thought about solar
+
+Speaker 3  00:05:26
+cody calls it storm season pipeline
+
+Speaker 2  00:05:31
+um, i do it's a real [inaudible].
+
+Speaker 1  00:05:34
+i mean it makes sense. nothing like a natural disaster to move the funnel
+
+Speaker 2  00:05:40
+dark diego but accurate so anything else
+
+Speaker 1  00:05:43
+how are the other pieces feeling salesforce sync that side of things?
+
+Speaker 3  00:05:48
+that's that's fine. no issues there.
+
+Speaker 2  00:05:51
+yeah salesforce is fine signals are fine nothing to report.
+
+Speaker 1  00:05:57
+Good. And the messaging agent?
+
+Speaker 3  00:05:59
+It's fine. We use it for the no-show follow-ups it
+
+Speaker 1  00:06:04
+does its job okay so the two things i'm taking away are the google conversion timing and the transfer context on the voice agent.
+
+Speaker 2  00:06:15
+that's that's it two things. see we're easy
+
+Speaker 3  00:06:19
+we're not easy we just have two things. i'll take
+
+Speaker 1  00:06:23
+it. let me get both of those written up tonight while it's fresh. cody, can you send me a screenshot of where you're seeing the delay or the campaign names at least?
+
+Speaker 2  00:06:37
+yeah, i'll send you the campaign list it's like six or seven of them.
+
+Speaker 1  00:06:44
+perfect and marisol the call ids from yesterday
+
+Speaker 3  00:06:48
+will like, do.
+
+Speaker 1  00:06:51
+[inaudible] follow up by end of week either way even if it's just to say i've got it in the queue
+
+Speaker 2  00:07:01
+sounds good uh, thanks diego
+
+Speaker 3  00:07:03
+thanks talk soon
+
+Speaker 1  00:07:04
+thanks both. have a good rest of your day

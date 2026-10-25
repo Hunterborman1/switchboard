@@ -1,0 +1,104 @@
+Return-Path: <rachel.okafor@invoca.example>
+Received: from smtp-out.invoca.example (smtp-out.invoca.example [10.35.154.201])
+        by mx1.invoca.example with ESMTPS id 671411.3700
+        for <kate.morrison@invoca.example>; Thu, 22 Oct 2026 18:05:00 -0400
+MIME-Version: 1.0
+Date: Thu, 22 Oct 2026 18:05:00 -0400
+Message-ID: <CAbWqAf5pqx2Z1nVFtskCIqtYNTAaqz1edrnSh1e@mail.invoca.example>
+In-Reply-To: <CA33cbshmTsABk1jeyRN0ACCsBfQJAbfmC3f34kA@mail.invoca.example>
+References: <CAZfZ1lyl5BOPdebWa7tTzRNmfltbZIuYWXp1OiU@mail.invoca.example>
+        <CAO8XFwoB53Fml49B8RjtrDGaPoYgcpsAxHYon4N@mail.invoca.example>
+        <CAn6HBibKHtqxBrBQMge0sarouhAW61kgPELdmKb@mail.invoca.example>
+        <CA33cbshmTsABk1jeyRN0ACCsBfQJAbfmC3f34kA@mail.invoca.example>
+Subject: RE: QM pricing + next steps
+From: Rachel Okafor <rachel.okafor@invoca.example>
+To: Kate Morrison <kate.morrison@invoca.example>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+kate, forwarding the renewal thread from bluewater. gwen came back hard on the per-seat qm pricing. carol added an accuracy point on the medicare disclaimer. pasting the bit from the recording:
+
+Gwen Albright: so the number you like sent, that's per seat per month regardless of whether the agent takes ten calls or a hundred
+Rachel Okafor: uh that's the standard structure yes let me get kate on with us so we can talk through what flexibility looks like.
+Gwen Albright: please do i'd [inaudible] have that conversation now than in june.
+Carol Bennett: and i'll send over the disclaimer examples so it's not just me describing it
+
+---------- Forwarded message ---------
+From: Gwen Albright <gwen.albright@bluewaterins.example>
+Date: Thu, Oct 22, 2026 at 4:40 PM
+Subject: QM pricing + next steps
+To: Rachel Okafor <rachel.okafor@invoca.example>
+Cc: Carol Bennett <carol.bennett@bluewaterins.example>, Sanjay Iyer <sanjay.iyer@bluewaterins.example>
+
+Rachel,
+
+One more thing before you loop in pricing. We need a straight answer on whether a different structure is even possible. If we can't land on a structure that works, we'd scale back to call tracking only at renewal.
+
+That's not a threat, it's where the budget is. Call tracking does what we need, and PreSense is its own conversation with Derek. QM is the piece that has to earn its place.
+
+Gwen
+
+Gwen Albright
+Chief Operating Officer
+Bluewater Insurance Partners
+Hartford, CT
+
+This message and any attachments are confidential and intended only for the addressee. If you received it in error, please delete it and notify the sender.
+
+On Thu, Oct 22, 2026 at 3:40 PM Carol Bennett <carol.bennett@bluewaterins.example> wrote:
+> Rachel,
+>
+> Adding one thing from the pilot, separate from the pricing question.
+>
+> On the compliance side, the Medicare disclaimer check needs to match exact language, and today it doesn't. The scorecard flags calls where the agent said the disclaimer correctly but phrased the opening differently. We're getting false positives that Carol's team then has to review by hand, which defeats the point of scoring 100% of calls.
+>
+> I don't need an answer on this today. Just want it on the record before we talk structure.
+>
+> Carol
+>
+> Carol Bennett
+> Quality Assurance Manager
+> Bluewater Insurance Partners
+>
+> Confidentiality notice: This email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed.
+
+> On Thu, Oct 22, 2026 at 2:40 PM Gwen Albright <gwen.albright@bluewaterins.example> wrote:
+> > Rachel,
+> >
+> > I'll be direct. We cannot justify QM at a per-seat price for agents who work twelve hours a week. Half our Medicare agents are part time and seasonal, and a per-seat number means we're paying for seats that sit idle six months out of the year.
+> >
+> > Carol has been running the pilot with a small group. The scoring itself is useful for coaching. But the commercial model has to reflect how we actually staff.
+> >
+> > Sanjay can walk you through the seat math if that helps.
+> >
+> > Gwen
+> >
+> > Gwen Albright
+> > Chief Operating Officer
+> > Bluewater Insurance Partners
+> > Hartford, CT
+> >
+> > This message and any attachments are confidential and intended only for the addressee. If you received it in error, please delete it and notify the sender.
+
+> > On Thu, Oct 22, 2026 at 1:40 PM Rachel Okafor <rachel.okafor@invoca.example> wrote:
+> > > Hi Gwen,
+> > >
+> > > Thanks for the time on Tuesday. Following up on what we walked through for AI-Powered Quality Management.
+> > >
+> > > Two structures to consider:
+> > >
+> > > 1. Per-seat: billed on each QM seat. This is the standard model and lines up with how most of our insurance customers buy it.
+> > >
+> > > 2. Blended: a smaller seat block plus a usage component tied to scored call volume.
+> > >
+> > > Happy to put numbers on either one. If it helps, I can bring Kate from our pricing team onto the next call.
+> > >
+> > > Let me know what works.
+> > >
+> > > Best,
+> > > Rachel
+> > >
+> > > Rachel Okafor
+> > > Principal Customer Success Manager
+> > > Invoca
+> > > rachel.okafor@invoca.example

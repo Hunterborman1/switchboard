@@ -1,0 +1,27 @@
+Bluewater Insurance Partners / Invoca | exec sponsor | Tue, Oct 13, 2026
+
+[00:00:07] Rachel Okafor: Morning, Sanjay. How's it going out there in Hartford?
+[00:00:11] Sanjay Iyer: Morning, Rachel. Cold but fine. Busy week, open enrollment stuff starting to ramp.
+[00:00:18] Rachel Okafor: Yeah, that's what I figured. I saw the call volume tick up last week, looks like about 18 percent over the prior week.
+[00:00:28] Sanjay Iyer: That tracks. We're at maybe 41,000 calls a month now across the network, Medicare Advantage is most of it. P&C is steady, a little softer than we'd like.
+[00:00:39] Rachel Okafor: Got it. And how's the Genesys side holding up with the extra volume?
+[00:00:44] Sanjay Iyer: Fine, fine. No complaints there. We added six agents to the Hartford pod last month, so that helped. Still short two on the overnight shift.
+[00:00:54] Rachel Okafor: Okay. I wanted to spend most of this on the QM rollout since we're behind. Where does it stand?
+[00:01:02] Sanjay Iyer: Behind. We're at about 40 percent of where I thought we'd be. Denise has two of the pods trained, the other three are waiting. Honestly it's a bandwidth thing on our side, not yours.
+[00:01:16] Rachel Okafor: That's helpful to know. Do you want me to do a couple of shorter sessions with the remaining pods, like 30 minutes each, instead of the full training?
+[00:01:26] Sanjay Iyer: Maybe. Let me check with Denise on timing. She's out Thursday and Friday, so probably the week after next.
+[00:01:35] Rachel Okafor: Fine. I'll hold a placeholder for the 27th and we can move it.
+[00:01:41] Sanjay Iyer: Good. The other thing, and I'll be straight with you, is the billing. Finance has been on me about how everything is priced.
+[00:01:50] Rachel Okafor: Okay, tell me more.
+[00:01:52] Sanjay Iyer: So we pay for call tracking, and then Signal AI sits on top as its own add-on, and then PreSense is another add-on, and then the QM seats are per seat, and now the AI Voice Agent minutes are separate again. Procurement looks at that stack and says, why am I paying four times for one platform?
+[00:02:16] Rachel Okafor: That's fair feedback. Is this coming up now because of the renewal, or is it more of an ongoing thing?
+[00:02:25] Sanjay Iyer: More now. It's not due until July, but they're building the budget in Q1, so they want to understand the shape of it. And I'll be honest, if the add-on pricing keeps feeling like nickel and diming, we're going to have to look around before we commit. I'm not saying we're leaving, but I can't promise we won't shop it.
+[00:02:47] Rachel Okafor: Understood. Can I ask who else would be in that conversation, so I know who to keep informed?
+[00:02:54] Sanjay Iyer: Procurement is led by Frank, and Denise weighs in on the operational side. I'm the one who signs, but they both have a voice.
+[00:03:04] Rachel Okafor: Okay. Let me take that back and see what I can put together on the packaging side. I don't want to guess at numbers on this call.
+[00:03:15] Sanjay Iyer: That's fine. I'd rather you come back with something real than a promise.
+[00:03:22] Rachel Okafor: Agreed. Anything else on the list?
+[00:03:24] Sanjay Iyer: No, everything else is running. Attribution is clean, Salesforce is writing the call records the way we want, Google Ads is getting the conversions. No fires.
+[00:03:37] Rachel Okafor: Good. I'll send a short recap today with the training dates and I'll come back to you on the billing conversation by end of next week.
+[00:03:47] Sanjay Iyer: Sounds good. Thanks, Rachel.
+[00:03:50] Rachel Okafor: Thanks, Sanjay. Talk soon.

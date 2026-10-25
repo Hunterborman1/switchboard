@@ -1,0 +1,32 @@
+Cedar Ridge Dental Group / Invoca | check-in | Thu, Oct 15, 2026
+
+[00:00:02] Priya Raman: Hey Heather, how's it going?
+[00:00:05] Heather Collins: Good, good. Busy week. We had two practices short a front desk person, so I've been on the phones more than usual.
+[00:00:13] Priya Raman: Oh, that's a lot. Which ones?
+[00:00:16] Heather Collins: Meridian and the one over on Fairview. Meridian's fine now, but Fairview, we're still juggling. It's fine, just a lot of new-patient calls coming in.
+[00:00:27] Priya Raman: Makes sense. I pulled the numbers before the call. You're trending about 2,900 calls this month across the group, up from around 2,600 in September. New-patient calls are up too.
+[00:00:39] Heather Collins: Yeah, that tracks. We bumped the Google Ads budget in early October for the implant campaign. It's working, which is good and also a little terrifying.
+[00:00:50] Priya Raman: Ha. Well, the call volume is there. And I know you're using the call summaries a lot. Any feedback from the practices lately?
+[00:01:00] Heather Collins: Actually, yes. The front-line teams, especially the folks doing dispatch and the handoffs between scheduling and the clinical side, they've been saying the AI call summaries save them a ton of time on callbacks.
+[00:01:14] Priya Raman: Good to hear. Can you give me an example of how they're using them?
+[00:01:21] Heather Collins: Sure. Say a patient calls after hours and leaves a message about a broken crown. The dispatch person doesn't have to listen to the first minute of the call to figure out what's going on. They just read the summary, see it's urgent, and route it to the on-call dentist.
+[00:01:41] Priya Raman: That's a great use case. And the practice managers are reading them daily, right?
+[00:01:48] Heather Collins: Yes. Every morning they go through the summaries from the previous day. It's become part of the routine. They spot-check a few calls, but mostly they trust the summaries.
+[00:01:59] Priya Raman: Okay, I'll note that. Anything else on the summaries?
+[00:02:03] Heather Collins: No, that's the main thing. They're happy.
+[00:02:06] Priya Raman: Great. What about the Google Ads side? I saw the offline conversions are still flowing.
+[00:02:12] Heather Collins: Yeah, that's fine. We're seeing the conversions come in. The bidding seems to be doing its thing.
+[00:02:20] Priya Raman: And Meta?
+[00:02:21] Heather Collins: Meta's fine. We're running some brand awareness stuff there, nothing fancy.
+[00:02:27] Priya Raman: Okay. So no issues with tracking numbers or anything?
+[00:02:31] Heather Collins: Nope, all good. We added two new tracking numbers for the Boise North practice last month, and those are working.
+[00:02:39] Priya Raman: Perfect. I wanted to check in on renewal too. Your contract is up in April 2027, so we're a ways out, but I like to start early.
+[00:02:51] Heather Collins: Yeah, April. We'll probably want to talk about adding a practice or two by then. We're looking at a possible acquisition in Nampa.
+[00:03:01] Priya Raman: Good to know. I'll make a note. We can revisit seat counts and call volume in Q1.
+[00:03:07] Heather Collins: Sounds good. Oh, and before I forget, can you send me that summary of call volumes by practice from last month? I want to share it with our marketing person.
+[00:03:20] Priya Raman: Sure, I'll pull that together and email it over tomorrow.
+[00:03:25] Heather Collins: Thanks. And one more thing, the Signal AI stuff is working well. No complaints there.
+[00:03:31] Priya Raman: Good. I'll pass that along to the team. Anything else on your mind?
+[00:03:37] Heather Collins: No, I think that's it. Just trying to keep the ship sailing.
+[00:03:42] Priya Raman: I hear that. Well, I'll send the report and follow up next month. Thanks for the time, Heather.
+[00:03:49] Heather Collins: Thanks, Priya. Talk soon.

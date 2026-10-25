@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_026",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "The spam flagging in Signal AI is wrong on some of our overnight calls. It's tagging legitimate weekend and after-hours HVAC emergency calls as spam and pulling them out of the reporting, so our branch managers are seeing lower call counts than what actually came in.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

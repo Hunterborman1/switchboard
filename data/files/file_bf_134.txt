@@ -1,0 +1,95 @@
+Keystone Mutual check-in
+Tue, Oct 20, 2026, 12:15PM • 4:49
+
+Rachel Okafor  0:03
+Hey Luis, how's it going? Sorry I'm a couple minutes late, my last call ran over.
+
+Luis Ortega  0:10
+No worries at all. I was just finishing a sandwich, so the timing worked out. How are things on your end?
+
+Rachel Okafor  0:19
+Good, good. Busy week, but that's normal. How about you? Columbus getting cold yet?
+
+Luis Ortega  0:25
+Oh man, went from seventy to um, forty in like two days. My commute um, is dark both ways now, which is always a joy.
+
+Rachel Okafor  0:37
+Ha, yeah, same here. Okay, I know we mostly wanted to just check in, but before I forget, did the seat count for QM get updated on your side? I saw the invoice line and wanted to make sure it matches your roster.
+
+Luis Ortega  0:56
+Yeah, I think that went through. Let me look... hold on. Yeah, 420. That's what we landed on with the new hires in September.
+
+Rachel Okafor  1:05
+Perfect. And how are the new folks settling in? I know your team runs lean on the weekends.
+
+Luis Ortega  1:13
+Slowly. Two of them came from the auto side, so they're still learning home claims. It's a lot. But, you know, we're getting there.
+
+Rachel Okafor  1:24
+Makes sense. Anything you need from us on training or materials while they uh, ramp?
+
+Luis Ortega  1:30
+Not right now. I I think the bigger thing is just getting them comfortable with the tools. Which, actually, brings me to something.
+
+Rachel Okafor  1:41
+Go ahead.
+
+Luis Ortega  1:42
+So, the PreSense piece. When things are working the way they should, it's really good. Like, when someone's been on our site looking at a bundle quote and then calls in, the agent already knows what they were doing. And I'm seeing it in the numbers, our routed calls are closing better than the ones that come in cold. That's not nothing.
+
+Rachel Okafor  2:05
+That's really good to hear. Is that something you're seeing across the board or just certain queues?
+
+Luis Ortega  2:11
+Mostly the digital shoppers. The ones who came through the site versus, like, a mailer. So yeah, it's working.
+
+Rachel Okafor  2:18
+Good. And the reason I ask...
+
+Luis Ortega  2:21
+Yeah, no, so that's the good part. The other part is when a call gets transferred in Genesys. So if it goes from, say, intake to a specialist queue, or an agent transfers to a supervisor, the person picking it up, their screen just shows nothing. Blank PreSense panel.
+
+Rachel Okafor  2:41
+Blank as in no context at all, or blank as in it's loading and never populates?
+
+Luis Ortega  2:48
+Blank blank. No ad, no pages, nothing. The first agent saw it fine, but the second one gets an empty box. And it's happening enough that people are just ignoring the panel now, which is the opposite of what we want.
+
+Rachel Okafor  3:07
+Okay. When did you first notice it?
+
+Luis Ortega  3:11
+It started right after the Genesys update. Early October, the first weekend I think. So, we didn't put two and two together for a couple weeks, but looking back, like, that's when um, it started.
+
+Rachel Okafor  3:24
+Got it. And is it every transfer or just some?
+
+Luis Ortega  3:28
+Not every one. Maybe seven out of ten? Enough that it's a problem but not enough that it's obvious.
+
+Rachel Okafor  3:38
+Okay. Can you send me a couple of call IDs where it happened? I'll take it back to our team and we can look at what's different on those transfers.
+
+Luis Ortega  3:50
+Yeah, I can pull a few. I'll send them this afternoon.
+
+Rachel Okafor  3:56
+Great. Anything else on the Genesys side while we're here?
+
+Luis Ortega  4:01
+No, everything else is fine there. Oh, and the after-hours voice pilot, we're still running it on weekends. Volume's been light but steady.
+
+Rachel Okafor  4:11
+Good. We'll do a deeper look at that next month when we have more data. So, Any staffing updates I should know for the QBR?
+
+Luis Ortega  4:21
+Just the two new hires. Oh, and my director's out for a few weeks, so I might be the one presenting.
+
+Rachel Okafor  4:31
+Good to know. I'll send an agenda draft next week so you have time with it.
+
+Luis Ortega  4:37
+Perfect. Hey, thanks for jumping on. And sorry about the um, sandwich.
+
+Rachel Okafor  4:43
+Ha, no apology needed. Talk soon, Luis.

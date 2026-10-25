@@ -1,0 +1,169 @@
+WEBVTT
+
+1
+00:00:07.841 --> 00:00:12.926
+Tom Lindqvist: Hey Dale, hey Ryan. Thanks for making the time. How's Sioux Falls treating you today?
+
+2
+00:00:14.146 --> 00:00:18.384
+Dale Henderson: Cold, but we'll take it. Good to see you, Tom.
+
+3
+00:00:19.195 --> 00:00:25.541
+Ryan Fischer: Yeah, busy week. We're in the middle of some dev work, so forgive me if I'm half here.
+
+4
+00:00:26.146 --> 00:00:36.430
+Tom Lindqvist: No problem. I want to walk through the numbers first, then talk about the agent, and leave ten minutes for anything you want to flag.
+
+5
+00:00:37.769 --> 00:00:38.952
+Dale Henderson: Works for us.
+
+6
+00:00:39.412 --> 00:00:48.890
+Tom Lindqvist: So quarter over quarter, tracked calls are up 11 percent. About 9,400 last month, Google Ads driving a bit over half of that.
+
+7
+00:00:50.232 --> 00:00:57.708
+Dale Henderson: That tracks with what we're seeing on the media side. Google's been pushing more of the fiber campaigns.
+
+8
+00:00:58.097 --> 00:01:06.283
+Tom Lindqvist: And the AI Voice Agent, outage calls are holding around 800 a week. That's pretty consistent since the summer.
+
+9
+00:01:07.243 --> 00:01:15.454
+Ryan Fischer: Yeah, that number's been steady. After the storm in August, we just left the configuration where it was and never went back.
+
+10
+00:01:16.720 --> 00:01:20.456
+Tom Lindqvist: Makes sense. How's staffing on the contact center side?
+
+11
+00:01:20.718 --> 00:01:29.857
+Dale Henderson: We lost a rep in Rapid City last month, so we're running two short while we hire. Nadine's covering some of the overnight shift.
+
+12
+00:01:30.204 --> 00:01:35.498
+Tom Lindqvist: Got it. Anything you want me to look at while you're short-handed?
+
+13
+00:01:36.885 --> 00:01:42.412
+Dale Henderson: Not right now. Actually, the agent's been taking some of the pressure off.
+
+14
+00:01:43.867 --> 00:01:49.649
+Tom Lindqvist: Good to hear. Ryan, you mentioned you wanted to talk about something on the web side?
+
+15
+00:01:50.752 --> 00:01:58.232
+Ryan Fischer: Yeah. So we rebuilt the order flow as a single-page app back in September. Everything's client-side routed now.
+
+16
+00:01:59.069 --> 00:02:01.463
+Tom Lindqvist: Okay. And what are you seeing?
+
+17
+00:02:02.449 --> 00:02:12.312
+Ryan Fischer: The dynamic number insertion only fires on that first page load. If somebody clicks through to the second step of the flow, the number on the page stops swapping.
+
+18
+00:02:13.112 --> 00:02:17.082
+Tom Lindqvist: So the visitor's still seeing the tracking number from the entry page?
+
+19
+00:02:18.502 --> 00:02:31.063
+Ryan Fischer: Right. Which is fine if they came in on the same campaign, but if they land on one ad and then click a different offer, we're attributing the call to the wrong thing.
+
+20
+00:02:31.889 --> 00:02:40.907
+Dale Henderson: It's not breaking anything, but it's showing up in the reporting. We had a couple of fiber campaigns cross-attributing last month.
+
+21
+00:02:41.530 --> 00:02:44.942
+Tom Lindqvist: How many calls are we talking about? Ballpark.
+
+22
+00:02:46.356 --> 00:02:55.311
+Ryan Fischer: Maybe five, six percent of the calls that come through the order flow. Enough that I don't want to leave it.
+
+23
+00:02:55.813 --> 00:03:01.397
+Tom Lindqvist: Okay. So the route changes are happening after the tag's already run, and it's not re-evaluating.
+
+24
+00:03:01.898 --> 00:03:07.985
+Ryan Fischer: That's my read. I can send you the test page and the steps to reproduce.
+
+25
+00:03:09.277 --> 00:03:18.935
+Tom Lindqvist: Please do. I'll take it to our tracking team and see what they say. I don't want to guess at it on the call.
+
+26
+00:03:20.432 --> 00:03:24.486
+Ryan Fischer: Appreciate it. I'll have it over to you by tomorrow.
+
+27
+00:03:25.677 --> 00:03:35.180
+Dale Henderson: And just so we're clear, it's not urgent. It's a medium thing for us. We just want clean attribution before the spring campaigns.
+
+28
+00:03:36.222 --> 00:03:42.450
+Tom Lindqvist: Understood. Let me note the timeline. Spring is when you start pushing the new markets, right?
+
+29
+00:03:43.291 --> 00:03:48.381
+Dale Henderson: Yeah, we're looking at two new markets in Nebraska and Kansas. Probably March.
+
+30
+00:03:48.727 --> 00:03:52.883
+Tom Lindqvist: Okay, that gives us some room. Anything else on your list?
+
+31
+00:03:53.608 --> 00:03:59.778
+Dale Henderson: Not really. Marketo's been fine. We're not doing anything new with it this quarter.
+
+32
+00:04:00.839 --> 00:04:09.847
+Tom Lindqvist: Good. I'll check in on the tracking item as soon as I hear something. Do you want a follow-up call, or just email?
+
+33
+00:04:11.347 --> 00:04:15.604
+Dale Henderson: Email's fine. Ryan's the one who'll care about the details.
+
+34
+00:04:16.102 --> 00:04:17.981
+Ryan Fischer: Yeah, just loop me in.
+
+35
+00:04:18.997 --> 00:04:28.342
+Tom Lindqvist: Will do. One last thing: your renewal's next October, so we've got time, but I'll start pulling together a review for the spring.
+
+36
+00:04:28.576 --> 00:04:32.921
+Dale Henderson: Sounds good. Hey, random question, did you ever get that camping trip in?
+
+37
+00:04:34.250 --> 00:04:40.507
+Tom Lindqvist: Twice, actually. The Badlands in June and then a quick one up by Lead in August.
+
+38
+00:04:41.540 --> 00:04:47.270
+Dale Henderson: Nice. We did the Black Hills over Labor Day. Took the kids, it rained the whole time.
+
+39
+00:04:47.659 --> 00:04:48.459
+Ryan Fischer: Every time.
+
+40
+00:04:49.793 --> 00:04:56.166
+Tom Lindqvist: Ha. Okay, I'll send the notes and a summary by end of day tomorrow. Thanks again, both of you.
+
+41
+00:04:56.709 --> 00:04:58.215
+Dale Henderson: Thanks, Tom. Talk soon.
+
+42
+00:04:59.498 --> 00:05:00.614
+Ryan Fischer: Yep, take care.

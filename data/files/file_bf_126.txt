@@ -1,0 +1,119 @@
+Keystone Mutual check-in
+Fri, Oct 16, 2026, 9:45AM • 5:50
+
+Rachel Okafor  0:03
+Morning, both. How's the week going?
+
+Erin Walsh  0:07
+Busy. It's that time of year, you know, open enrollment for Medicare stuff, but we're good.
+
+Patricia Hale  0:15
+And it's Friday. So that's something.
+
+Rachel Okafor  0:18
+Ha, yes. Well, I wanted to check in you know, on a few things and see how the after-hours pilot is going.
+
+Patricia Hale  0:28
+The pilot is, um, it's going. We're seeing maybe sixty, seventy calls a night on the voice agent. Claims intake, mostly auto glass and some uh, water damage stuff.
+
+Erin Walsh  0:40
+Yeah, and the transfer rate to live agents is around thirty percent, which is about what we expected for the first month.
+
+Rachel Okafor  0:50
+That matches what I saw in the dashboard. Are the summaries landing in Salesforce okay?
+
+Erin Walsh  0:56
+Uh, they are. The claims team pulls them into the case record. No complaints there.
+
+Patricia Hale  1:03
+Actually, Rachel, can I bring something up? It's about the spam signals.
+
+Rachel Okafor  1:08
+Of course.
+
+Patricia Hale  1:09
+So we've got a situation where signal AI is marking legitimate calls as spam. And it's not a one-off. I'm talking about real customers who call us on a Saturday or Sunday, and they just vanish from the reporting.
+
+Erin Walsh  1:26
+It's mainly weekends. During the week it's maybe a handful a day, but Saturday and Sunday it spikes. Last Saturday we had, hold on, I wrote it down... forty-one calls flagged as spam that were actual claim intakes.
+
+Patricia Hale  1:41
+And these are people calling about a tree through their roof. Not robocalls. So when we look at the weekend numbers, they're understated. My team starts thinking volume dropped when actually we lost the the calls in the classification.
+
+Rachel Okafor  1:57
+Okay. So the calls come in, they get connected, the caller talks to an agent or the voice agent, but the signal tags them as spam?
+
+Patricia Hale  2:08
+Correct. The call is real, the transcript is real, but the signal says spam. So it drops out of the conversion reporting, and it drops out of the quality scoring too because we filter spam out of the QM sample.
+
+Erin Walsh  2:22
+Which means my weekly exec deck is wrong. I've been over-reporting the drop in weekend volume, and Patricia noticed before I did.
+
+Rachel Okafor  2:31
+How long has this been happening?
+
+Patricia Hale  2:35
+Honestly, I don't know exactly. I started digging maybe two weeks ago. But it could go back further. Erin, you said you saw something in September?
+
+Erin Walsh  2:45
+I saw a dip in weekend call counts the last week of September. I assumed it was just seasonality. Then Patricia asked me to pull the raw records and we found the spam flag on calls that had full transcripts and policy numbers in them.
+
+Rachel Okafor  3:05
+Do you have a couple of call IDs you can send me? I um, want to take this to the signal team and get it looked at properly. So, I'm not going to guess at what's happening.
+
+Patricia Hale  3:18
+Like, Erin, like, can you send those over after this?
+
+Erin Walsh  3:22
+Yeah, I'll pull five or six from last weekend. Including a couple that came through the voice agent and a couple that went to a live agent.
+
+Rachel Okafor  3:32
+Perfect. And if you can note the day and time for each, uh, that so, helps. Weekend pattern is a useful clue.
+
+Patricia Hale  3:42
+Will do. I just want it fixed before the holiday push. Thanksgiving weekend is our biggest after-hours volume of the year, and if half of those calls get buried as spam, we're flying blind.
+
+Rachel Okafor  3:54
+Understood. I'll open it with the signal team today and ask them to look at the weekend angle specifically. I'll come back to you with next steps, but I can't promise a date yet.
+
+Patricia Hale  4:09
+That's fine. Just keep us in the loop.
+
+Rachel Okafor  4:12
+I will. Switching gears a little, how's the Genesys side holding up with the extra after-hours you know, volume?
+
+Erin Walsh  4:22
+It's okay. We added six agents to the overnight queue last month, so the transfers are getting picked up faster. Average wait is under two minutes now.
+
+Patricia Hale  4:33
+Which is good because we were at like five minutes in August. That was rough.
+
+Rachel Okafor  4:40
+Nice improvement. And the PreSense screen pops, any issues with those on the overnight shift?
+
+Erin Walsh  4:46
+Um, no, they're working. The agents like seeing the web journey. It's, um, it's fine.
+
+Rachel Okafor  4:54
+Good. Anything else on the QM side? I know you're running scorecards on the claims team now.
+
+Patricia Hale  5:01
+It's fine. We're still calibrating with the supervisors, but no issues.
+
+Rachel Okafor  5:07
+Great. So next steps: Erin sends call IDs, I take the spam flagging to the signal team, and we'll regroup. Do you want to keep our regular check-in for two weeks from now, or wait until I have an update?
+
+Patricia Hale  5:22
+Let's keep the regular slot. Even if there's no update, I'd rather stay on the calendar.
+
+Rachel Okafor  5:29
+Sounds good. I'll send the invite for the 30th. And Patricia, good luck with the holiday planning.
+
+Patricia Hale  5:36
+Thanks. I'll need it. Talk soon, Rachel.
+
+Erin Walsh  5:40
+Bye, Rachel. I'll send those IDs in the next hour.
+
+Rachel Okafor  5:44
+Perfect. Thanks, both. Have a good weekend.

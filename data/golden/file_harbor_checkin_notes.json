@@ -1,0 +1,32 @@
+{
+  "fileId": "file_harbor_checkin_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Compliance wants a custom QM criterion that checks the Reg E dispute disclosure on card-dispute calls; standard templates cannot express it.",
+      "quote": "Denise wants a QM scorecard criterion that checks whether agents read the Reg E dispute disclosure on card dispute calls. The standard templates don't have anything close.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Member services team leads say AI call summaries have nearly eliminated callback prep.",
+      "quote": "Linda said the call summaries have cut callback prep for her team leads to almost nothing.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Marketing ops exports the weekly calls dashboard to CSV by hand; wants a scheduled export to Google Sheets.",
+      "quote": "Jason is still exporting the weekly calls dashboard to CSV by hand every Monday; he asked if we can schedule it straight into Google Sheets.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

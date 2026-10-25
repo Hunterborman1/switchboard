@@ -1,0 +1,377 @@
+WEBVTT
+
+1
+00:00:03.087 --> 00:00:05.683
+Speaker 1: morning luis how's friday treating you?
+
+2
+00:00:06.712 --> 00:00:11.790
+Speaker 2: hey rachel it's treating me like a friday i've got three things
+
+3
+00:00:11.790 --> 00:00:14.753
+Speaker 2: on fire and one of them is
+
+4
+00:00:14.753 --> 00:00:17.716
+Speaker 2: not actually on fire, so that's a
+
+5
+00:00:17.716 --> 00:00:18.139
+Speaker 2: win
+
+6
+00:00:19.216 --> 00:00:24.145
+Speaker 1: i'll take it how are the after-hours numbers looking on the voice
+
+7
+00:00:24.145 --> 00:00:25.378
+Speaker 1: agent pilot? so
+
+8
+00:00:25.413 --> 00:00:29.743
+Speaker 2: last week we [inaudible] 1,900 calls after hours total and the agent
+
+9
+00:00:29.743 --> 00:00:32.629
+Speaker 2: took around 1,100 of those transferred maybe 340
+
+10
+00:00:32.629 --> 00:00:35.515
+Speaker 2: to the on-call adjusters, and the rest were
+
+11
+00:00:35.515 --> 00:00:38.041
+Speaker 2: things like policy lookups and payment stuff
+
+12
+00:00:38.041 --> 00:00:39.484
+Speaker 2: no claim at all
+
+13
+00:00:41.237 --> 00:00:44.732
+Speaker 1: that's a decent share any pattern on the transfers
+
+14
+00:00:46.845 --> 00:00:49.316
+Speaker 2: mostly glass claims and a couple of
+
+15
+00:00:49.316 --> 00:00:51.786
+Speaker 2: total-loss things where the caller was pretty
+
+16
+00:00:51.786 --> 00:00:54.963
+Speaker 2: upset the agent did fine it just knew to
+
+17
+00:00:54.963 --> 00:00:55.668
+Speaker 2: hand off
+
+18
+00:00:56.220 --> 00:01:00.356
+Speaker 1: good and staffing are you still down a couple of people
+
+19
+00:01:00.356 --> 00:01:02.236
+Speaker 1: on the overnight desk [crosstalk]
+
+20
+00:01:04.329 --> 00:01:08.793
+Speaker 2: yeah we've been short two since the end of august we've
+
+21
+00:01:08.793 --> 00:01:12.039
+Speaker 2: got two new hires in training, they should
+
+22
+00:01:12.039 --> 00:01:16.098
+Speaker 2: be on the phones the first week of november. angela's
+
+23
+00:01:16.098 --> 00:01:19.344
+Speaker 2: been covering the gap, she's been great but
+
+24
+00:01:19.344 --> 00:01:22.185
+Speaker 2: you can only stretch people so far
+
+25
+00:01:23.169 --> 00:01:27.466
+Speaker 1: totally let me know if timing shifts on that and i can
+
+26
+00:01:27.466 --> 00:01:30.330
+Speaker 1: pull the volume trend for the overnight window
+
+27
+00:01:30.330 --> 00:01:32.836
+Speaker 1: so you can show the coverage case
+
+28
+00:01:33.236 --> 00:01:37.445
+Speaker 2: that'd help i'll ping you next week once i know where the
+
+29
+00:01:37.445 --> 00:01:38.146
+Speaker 2: training [inaudible]
+
+30
+00:01:44.596 --> 00:01:49.651
+Speaker 1: sounds good anything else on the account side you want to hit
+
+31
+00:01:49.651 --> 00:01:50.915
+Speaker 1: while we're here
+
+32
+00:01:53.264 --> 00:01:58.868
+Speaker 2: two things and then a third that's more of a wish list. which
+
+33
+00:01:58.868 --> 00:02:01.023
+Speaker 2: one do you [inaudible] first?
+
+34
+00:02:00.585 --> 00:02:02.240
+Speaker 1: start with the urgent one.
+
+35
+00:02:02.221 --> 00:02:13.116
+Speaker 2: okay so the presence pop since the genesys update in early october when a call gets transferred between queues the receiving agent gets a blank screen pop
+
+36
+00:02:13.116 --> 00:02:15.941
+Speaker 2: nothing there no journey, no pages viewed
+
+37
+00:02:15.941 --> 00:02:16.344
+Speaker 2: nothing
+
+38
+00:02:17.962 --> 00:02:21.424
+Speaker 1: blank as in empty panel or the pop doesn't fire
+
+39
+00:02:21.424 --> 00:02:22.116
+Speaker 1: at all
+
+40
+00:02:22.384 --> 00:02:26.011
+Speaker 2: the panel shows up it's just blank so the
+
+41
+00:02:26.011 --> 00:02:30.847
+Speaker 2: agent knows a call is coming but they've got zero context and
+
+42
+00:02:30.847 --> 00:02:35.683
+Speaker 2: it's not every transfer it's like i'd say seven out of ten.
+
+43
+00:02:37.611 --> 00:02:40.039
+Speaker 1: only on queue-to-queue or agent-to-agent too?
+
+44
+00:02:50.668 --> 00:02:56.380
+Speaker 2: both we saw it on a warm transfer from claims to roadside on
+
+45
+00:02:56.380 --> 00:03:01.213
+Speaker 2: tuesday the roadside um, guy darnell he was asking the caller
+
+46
+00:03:01.213 --> 00:03:03.849
+Speaker 2: to repeat everything not great [crosstalk]
+
+47
+00:03:05.009 --> 00:03:08.474
+Speaker 1: okay does it happen on the first queue only or
+
+48
+00:03:08.474 --> 00:03:10.206
+Speaker 1: also when it comes back?
+
+49
+00:03:10.050 --> 00:03:14.938
+Speaker 2: hmm. i think mostly on the the receiving side uh, i can pull
+
+50
+00:03:14.938 --> 00:03:17.947
+Speaker 2: a few examples with timestamps if that helps
+
+51
+00:03:18.818 --> 00:03:23.196
+Speaker 1: please do. send me three or four calls the genesis interaction ids and
+
+52
+00:03:23.196 --> 00:03:25.554
+Speaker 1: we'll take it to the team. i'll
+
+53
+00:03:25.554 --> 00:03:27.238
+Speaker 1: flag it as high. will
+
+54
+00:03:28.450 --> 00:03:32.461
+Speaker 2: do. i'll get that to you by end of day
+
+55
+00:03:34.133 --> 00:03:35.775
+Speaker 1: perfect. what's the second thing?
+
+56
+00:03:35.597 --> 00:03:40.349
+Speaker 2: this one's more of a request. on the qm side we want
+
+57
+00:03:40.349 --> 00:03:44.705
+Speaker 2: to build our own scorecard criteria instead of using the default
+
+58
+00:03:44.705 --> 00:03:45.101
+Speaker 2: set.
+
+59
+00:03:45.757 --> 00:03:49.503
+Speaker 1: define your own meaning what exactly? walk me through it
+
+60
+00:03:50.677 --> 00:04:01.030
+Speaker 2: so first the exact required disclosure language. we have a script that legal signed off on word for word and right now we can't score against that specific wording
+
+61
+00:04:01.030 --> 00:04:05.671
+Speaker 2: second we want different scoring by call type a claim intake call should
+
+62
+00:04:05.671 --> 00:04:10.312
+Speaker 2: be scored differently than a billing question right now it's one scorecard for
+
+63
+00:04:10.312 --> 00:04:10.669
+Speaker 2: everything.
+
+64
+00:04:15.485 --> 00:04:19.303
+Speaker 1: and um, weighting? you mentioned criteria yeah, weighting. the
+
+65
+00:04:20.566 --> 00:04:23.800
+Speaker 2: disclosure uh is pass or fail it shouldn't
+
+66
+00:04:23.800 --> 00:04:27.034
+Speaker 2: be one of ten equally weighted items if
+
+67
+00:04:27.034 --> 00:04:31.076
+Speaker 2: they miss the disclosure um that's a bigger deal than
+
+68
+00:04:31.076 --> 00:04:32.693
+Speaker 2: saying 'um' three times.
+
+69
+00:04:32.623 --> 00:04:35.679
+Speaker 1: got it so custom criteria, call-type specific
+
+70
+00:04:35.679 --> 00:04:38.735
+Speaker 1: scorecards and your own weighting that's three
+
+71
+00:04:38.735 --> 00:04:40.045
+Speaker 1: things in one
+
+72
+00:04:48.110 --> 00:04:50.663
+Speaker 2: it uh is. um, sorry. but they
+
+73
+00:04:50.663 --> 00:04:52.850
+Speaker 2: all kind of hang together [crosstalk]
+
+74
+00:04:52.941 --> 00:04:57.148
+Speaker 1: no that's fine i'll write it up. can you send me the
+
+75
+00:04:57.148 --> 00:04:59.953
+Speaker 1: disclosure language legal approved i want the exact
+
+76
+00:04:59.953 --> 00:05:03.459
+Speaker 1: text so i'm not paraphrasing when i take it over
+
+77
+00:05:03.978 --> 00:05:07.679
+Speaker 2: yes it's about a paragraph and a half i'll forward it
+
+78
+00:05:09.995 --> 00:05:14.079
+Speaker 1: um great and the third thing the wish i mean list?
+
+79
+00:05:15.229 --> 00:05:19.405
+Speaker 2: oh um that's that's just me wanting the overnight dashboard to
+
+80
+00:05:19.405 --> 00:05:23.202
+Speaker 2: default to central time instead of eastern not a real
+
+81
+00:05:23.202 --> 00:05:26.618
+Speaker 2: request i just complain about it every month [crosstalk]
+
+82
+00:05:27.236 --> 00:05:32.324
+Speaker 1: noted. i'll add it to the list of things you complain about.
+
+83
+00:05:34.601 --> 00:05:38.387
+Speaker 2: it's a a short list i mean very short
+
+84
+00:05:38.799 --> 00:05:43.194
+Speaker 1: sure it is. anything on the [inaudible] side or google adds
+
+85
+00:05:43.194 --> 00:05:45.191
+Speaker 1: you want to look at
+
+86
+00:05:57.999 --> 00:06:01.040
+Speaker 2: i mean, no, so those are fine.
+
+87
+00:06:01.040 --> 00:06:02.777
+Speaker 2: adobe [inaudible] issues there
+
+88
+00:06:04.804 --> 00:06:09.168
+Speaker 1: good so i'll take the pre-sense pop to the team today like
+
+89
+00:06:09.168 --> 00:06:13.168
+Speaker 1: and and the q.m scorecard stuff once i have the disclosure
+
+90
+00:06:13.168 --> 00:06:16.077
+Speaker 1: text i'll follow up by wednesday either way
+
+91
+00:06:16.077 --> 00:06:16.441
+Speaker 1: [crosstalk]
+
+92
+00:06:16.823 --> 00:06:17.809
+Speaker 2: perfect thanks rachel
+
+93
+00:06:18.678 --> 00:06:21.413
+Speaker 1: talk soon say hi to angela for me
+
+94
+00:06:21.284 --> 00:06:22.511
+Speaker 2: Will do Bye

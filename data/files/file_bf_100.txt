@@ -1,0 +1,125 @@
+Harbor Federal Credit Union check-in
+Wed, Oct 7, 2026, 11:30AM • 5:20
+
+Aisha Coleman  0:06
+Morning, both. How's Tacoma treating you? I saw it was raining sideways all weekend.
+
+Jason Park  0:12
+It always is. My kid's soccer game got moved to a gym, so I spent Saturday in a gym in Puyallup. Very glamorous.
+
+Tyler Reed  0:22
+Better than me, I was on call. We pushed a Salesforce release Saturday night, so I was up at six checking logs.
+
+Aisha Coleman  0:32
+Ouch. Did it go okay?
+
+Tyler Reed  0:35
+Mostly. That's actually part of why I wanted to be on this one.
+
+Aisha Coleman  0:41
+Um, okay, let's start there then. Before that, anything on volume? How's call traffic looking?
+
+Jason Park  0:48
+Steady. We're running about 18,000 calls a month through Invoca, maybe 19 on the mortgage side because of the the refi push. Up from around 16,000 in the spring.
+
+Aisha Coleman  1:01
+That tracks with what um, I'm seeing. Anything weird on attribution?
+
+Jason Park  1:06
+No, that's been fine. Google Ads offline conversions are landing, match rates are where they were.
+
+Aisha Coleman  1:14
+Good. And QM, are the scorecards still holding up with the new hires?
+
+Jason Park  1:19
+Yeah, fine. We added six agents uh, in September, so we're at forty-five seats now. Onboarding's just slow because compliance has to sign off on every scorecard change.
+
+Aisha Coleman  1:31
+Right, I remember that from last time.
+
+Jason Park  1:35
+It's not a blocker, it just means I have to plan two weeks ahead. Our compliance lead I mean, reviews everything, so I batch the changes.
+
+Tyler Reed  1:44
+Can I jump in on the Salesforce side?
+
+Aisha Coleman  1:48
+You know, Please.
+
+Tyler Reed  1:50
+So we've got the integration writing call records into Financial Services Cloud, and it's been working. But when I add a new picklist value or rename a field on the custom object, the integration kind of... stops writing to it.
+
+Aisha Coleman  2:04
+Stops writing to the field, or stops writing entirely?
+
+Tyler Reed  2:09
+The field. The call record still shows up. I mean, but the outcome, like whether it was an appointment or a servicing call, lands in the wrong field. It goes into the old one that I renamed, and the new one sits empty.
+
+Aisha Coleman  2:27
+So it's writing to the field that used to exist, not the one that exists now.
+
+Tyler Reed  2:35
+Yeah. And it's not every call. It's like it picks up the change slowly, and and then some calls in between get uh, filed under the wrong outcome. Last release it was about two days of calls.
+
+Aisha Coleman  2:49
+How many calls are we talking, roughly?
+
+Tyler Reed  2:53
+Couple hundred. Enough that the reporting on servicing outcomes was off for a week until I went back and fixed them by hand. Which I would rather not do again.
+
+Aisha Coleman  3:05
+Yeah, no. Okay. So So when you change a field label or a picklist value on the custom object, the mapping doesn't refresh on its own.
+
+Tyler Reed  3:15
+That's what it looks like. I don't know if it's the mapping or the sync or what, I just know the outcome goes to the wrong place for a while.
+
+Aisha Coleman  3:29
+Do you remember roughly when you last saw it? Was it the September release?
+
+Tyler Reed  3:34
+September nineteenth, I think. I can pull the exact date, I have the case notes.
+
+Aisha Coleman  3:41
+Send me the date and one example record, the one where the outcome landed wrong, and I'll take it to the integrations team. I don't want to guess at what's happening on our side.
+
+Tyler Reed  3:56
+I'll send it this afternoon.
+
+Aisha Coleman  4:00
+And is this blocking anything right now, or is it more of a when-it-happens thing?
+
+Tyler Reed  4:06
+When-it-happens. We froze the schema until the end of the the month, so nothing's changing. But I've got two more releases before year end and I'd like to know what to expect.
+
+Aisha Coleman  4:18
+Um, Makes sense. Let me get you an answer before you plan those.
+
+Jason Park  4:23
+And I'd add, from my side, the reporting we hand to the exec team pulls from that object. So if outcomes are landing wrong, like, the mortgage numbers look soft.
+
+Aisha Coleman  4:37
+Got it. Same thread, I'll loop both of you.
+
+Jason Park  4:42
+Appreciate it.
+
+Aisha Coleman  4:43
+Anything else before I let you go? I know you've got a hard stop.
+
+Jason Park  4:51
+No, that's the main thing. Oh, one logistics thing, can we move the November check-in up a week? I'm out the week of the ninth.
+
+Aisha Coleman  5:02
+Sure, I'll send a new invite. Second week instead?
+
+Jason Park  5:06
+That works.
+
+Aisha Coleman  5:07
+Alright. Tyler, send me that record, and Jason, I'll get the invite out today. Go enjoy the rain.
+
+Tyler Reed  5:15
+Thanks, Aisha.
+
+Jason Park  5:16
+Thanks. Talk soon.

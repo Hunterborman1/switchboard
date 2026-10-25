@@ -1,0 +1,169 @@
+WEBVTT
+
+1
+00:00:03.461 --> 00:00:11.116
+Tom Lindqvist: Hey Michelle, hey Brandon. Thanks for making time this afternoon. I know things have been busy on your side.
+
+2
+00:00:12.449 --> 00:00:20.621
+Michelle Tran: Hi Tom. Yeah, it's been a week. Brandon's joining because he's been hearing about this from his supervisors too.
+
+3
+00:00:21.361 --> 00:00:25.565
+Brandon Hughes: Morning, Tom. Or afternoon for you. Let's just get into it.
+
+4
+00:00:25.975 --> 00:00:35.685
+Tom Lindqvist: Of course. So I have the two escalations from earlier this quarter in my notes. Want to start with what's happening now, or walk me through the history first?
+
+5
+00:00:37.016 --> 00:00:48.816
+Michelle Tran: Let's do now. The issue is when Genesys transfers a call between queues or from one agent to another, the PreSense screen pop comes up blank for whoever receives it.
+
+6
+00:00:49.486 --> 00:00:56.920
+Tom Lindqvist: Blank meaning no digital journey data at all, or blank meaning the fields are there but empty?
+
+7
+00:00:57.158 --> 00:01:03.970
+Michelle Tran: Completely blank. White panel. The agent sees the caller's number and that's it. No pages viewed, no ad source, nothing.
+
+8
+00:01:04.324 --> 00:01:08.083
+Brandon Hughes: And this isn't every transfer. Michelle, what's the rough rate?
+
+9
+00:01:08.617 --> 00:01:19.514
+Michelle Tran: We tracked it for two weeks. About one in five transfers. So if a rep takes forty transferred calls a day, eight of them are flying blind.
+
+10
+00:01:19.862 --> 00:01:24.853
+Tom Lindqvist: Okay. And the first agent, the one who originally answered, they see the pop fine?
+
+11
+00:01:25.570 --> 00:01:36.026
+Michelle Tran: First agent is fine. It's only after the transfer fires. That's what makes it so frustrating, because the receiving agent is usually the one who needs the context most.
+
+12
+00:01:37.162 --> 00:01:40.483
+Tom Lindqvist: Got it. When did you first notice it?
+
+13
+00:01:41.209 --> 00:01:53.949
+Michelle Tran: Middle of July. We raised it with support, they asked for examples, we sent a batch. Then it went quiet for a few weeks and it came back in August, so we raised it again.
+
+14
+00:01:54.883 --> 00:02:04.158
+Brandon Hughes: And that's why I'm on the call. My supervisors are escalating it internally. They're the ones hearing it from the floor every day.
+
+15
+00:02:05.250 --> 00:02:11.400
+Tom Lindqvist: That's fair. Can you tell me which queues are involved? Is it specific ones or all of them?
+
+16
+00:02:11.657 --> 00:02:20.668
+Michelle Tran: Sales primarily. New activations and upgrades. We did see it once in retention but that was a single call, so I don't want to overstate it.
+
+17
+00:02:21.741 --> 00:02:31.022
+Tom Lindqvist: Understood. And the transfer, is it always agent to agent, or does it also happen when the IVR routes to a queue?
+
+18
+00:02:32.179 --> 00:02:38.313
+Michelle Tran: Agent to agent mostly. The queue transfers are less common but I've seen a couple.
+
+19
+00:02:38.951 --> 00:02:51.443
+Tom Lindqvist: Okay. What I'd like to do is get a few call IDs where the receiving agent saw the blank pop, plus the timestamps and the Genesys transfer events if you can pull them.
+
+20
+00:02:51.443 --> 00:02:55.985
+Tom Lindqvist: That'll let my team line up the PreSense delivery against the transfer.
+
+21
+00:02:56.960 --> 00:02:58.639
+Brandon Hughes: How many do you need?
+
+22
+00:02:59.472 --> 00:03:06.884
+Tom Lindqvist: Ten would be plenty. If you can get me ten from different days, that's better than fifty from one afternoon.
+
+23
+00:03:08.172 --> 00:03:15.368
+Michelle Tran: I can get you ten by Thursday. I'll have my lead pull them from the Genesys reporting side.
+
+24
+00:03:15.848 --> 00:03:23.760
+Tom Lindqvist: Perfect. And I'll open a case with our engineering team today and reference the two earlier tickets so they see the pattern.
+
+25
+00:03:24.518 --> 00:03:34.272
+Brandon Hughes: Appreciate that. One thing I want to flag, Tom. We're not asking for a fix on this call. We just need to know it's being looked at seriously.
+
+26
+00:03:34.641 --> 00:03:45.339
+Tom Lindqvist: I hear that. I can't give you a date today, but I can commit to a status update by end of next week, even if the update is just where it sits.
+
+27
+00:03:46.092 --> 00:03:51.392
+Michelle Tran: That would help. The silence in August was worse than the bug, honestly.
+
+28
+00:03:52.062 --> 00:03:57.947
+Tom Lindqvist: Noted. I'll own the updates. Now, separate topic, how are call volumes looking this month?
+
+29
+00:03:58.587 --> 00:04:08.112
+Michelle Tran: Up. We're averaging around 61,000 calls a month across all campaigns, which is about nine percent over August. Back to school promo is doing a lot of that.
+
+30
+00:04:09.086 --> 00:04:12.418
+Tom Lindqvist: Nice. Any change on the Google Ads side?
+
+31
+00:04:13.767 --> 00:04:18.816
+Michelle Tran: No, that's been steady. Offline conversions are flowing. Adobe Analytics is fine too.
+
+32
+00:04:19.704 --> 00:04:23.396
+Tom Lindqvist: Good. And how's the AI Voice Agent handling the after-hours queue?
+
+33
+00:04:23.727 --> 00:04:27.955
+Michelle Tran: It's fine. Same as last quarter. No complaints from the team.
+
+34
+00:04:28.381 --> 00:04:36.485
+Brandon Hughes: We did add six reps to the sales floor in September, so the transfer volume is only going up from here.
+
+35
+00:04:37.059 --> 00:04:43.529
+Tom Lindqvist: That's useful context. More transfers means more chances for this to show up, so the timing matters.
+
+36
+00:04:44.468 --> 00:04:50.185
+Michelle Tran: Exactly. And we're heading into Q4 hiring, so it's not going to slow down.
+
+37
+00:04:51.180 --> 00:05:02.436
+Tom Lindqvist: Okay. Let me recap what I'm taking away. Ten call examples by Thursday, I open the case today, and you get a status from me by end of next week.
+
+38
+00:05:02.821 --> 00:05:03.621
+Michelle Tran: That works.
+
+39
+00:05:04.725 --> 00:05:07.455
+Brandon Hughes: Same. Thanks for getting on this, Tom.
+
+40
+00:05:08.154 --> 00:05:15.774
+Tom Lindqvist: Thanks both. Michelle, send those IDs straight to me and I'll confirm when the case is in. Talk soon.
+
+41
+00:05:16.607 --> 00:05:17.775
+Michelle Tran: Will do. Bye.
+
+42
+00:05:19.195 --> 00:05:19.995
+Brandon Hughes: Take care.

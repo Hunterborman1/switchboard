@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_080",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "when someone's been on the site looking at rates and they call in we route them by that intent to our top closers, and giving the agent that page history right in the screen pop it's made a real difference",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

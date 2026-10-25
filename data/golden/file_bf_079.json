@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_079",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail is pitching same-day conversion sync to Google Ads, often with a lower quote.",
+      "quote": "CallRail sent me a quote last month, and it's noticeably lower than what we're paying you all.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

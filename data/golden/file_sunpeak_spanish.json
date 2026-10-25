@@ -1,0 +1,32 @@
+{
+  "fileId": "file_sunpeak_spanish",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Appointment-booked signal rarely fires on Spanish calls: only 9 of 50 reviewed were marked.",
+      "quote": "La señal de cita agendada casi nunca se activa en las llamadas en español; revisamos cincuenta y solo nueve estaban marcadas.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Needs custom signals in Spanish using their own phrases.",
+      "quote": "Necesitamos poder crear señales personalizadas en español, con nuestras propias frases.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "ai_agents",
+      "severity": "low",
+      "summary": "Customers love the Spanish AI Voice Agent; many do not realize it is not a person.",
+      "quote": "A los clientes les encanta el agente de voz en español; muchos ni se dan cuenta de que no es una persona.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

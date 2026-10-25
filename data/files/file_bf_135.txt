@@ -1,0 +1,88 @@
+auto-transcript | audio_0915_meridian | duration 00:05:05 | speakers detected: 2
+
+Speaker 1  00:00:03
+hey mark how's it going? i know you've got the tuesday rush happening
+
+Speaker 2  00:00:10
+yeah uh it's always something we're down a scheduler in the the franklin clinic so the queue's been ugly since friday but we're hanging in
+
+Speaker 1  00:00:20
+Oof Is that the the one off Cool Springs I remember they had the the remodel
+
+Speaker 2  00:00:27
+that's the one anyway, it's it's fine volumes are hovering around 11,200 calls a month across the 38 sites, so about the same as august
+
+Speaker 1  00:00:38
+maybe up two percent okay that tracks so with what i saw on the dashboard. anything on the genesis side i should know about? any routing changes?
+
+Speaker 2  00:00:49
+no, central scheduling is steady we did move the after-hours i v r menu [inaudible] a little but that's it
+
+Speaker 1  00:00:58
+uh got it so what's on your list today
+
+Speaker 2  00:01:03
+a few things first the good stuff because i don't want to start with the bad the a.i call summaries the front-line teams love them seriously. our referral coordinators used to spend uh i don't know twenty minutes a day just digging through recordings for callbacks now they just read the summary and call the patient back
+
+Speaker 1  00:01:26
+that's great to like, hear is it mostly the coordinators or the nurses too
+
+Speaker 2  00:01:33
+Both Even the dispatch folks for the mobile units. They pull up the summary before a handoff and they're not scrolling through a ten-minute call to find the address It's It's saving people real time So uh credit where it's due
+
+Speaker 1  00:01:50
+i'll pass that along now the bad?
+
+Speaker 2  00:01:54
+yeah so our salesforce admin, denise, she's been getting sync error emails every single morning like clockwork 7 like a.m the call data just stops writing to our custom objects whenever somebody on her team changes a field or a picklist value
+
+Speaker 1  00:02:11
+okay um so custom objects specifically not the
+
+Speaker 2  00:02:17
+standard call record correct standard stuff is fine it's the custom objects we built for the referral tracking i mean she adds a picklist value, and then nothing lands. she's been manually re-importing, which is i mean you know i mean not a long-term plan
+
+Speaker 1  00:02:34
+and this started when? recently
+
+Speaker 2  00:02:37
+Maybe three weeks ago? She changed the referral source picklist added a um couple of values and that's when it started I I don't know if it's the field name or the picklist she'd know better than me
+
+Speaker 1  00:02:52
+got it can you have her send me one of those error emails just forward it to me and i'll get our integration folks on it. i don't want to guess at it on this call.
+
+Speaker 2  00:03:09
+yeah like, i'll have her forward it today she'll be thrilled she's been asking me [inaudible] for a week
+
+Speaker 1  00:03:16
+sorry for the the delay okay what else?
+
+Speaker 2  00:03:21
+last one and this is more of a big-picture thing. on the redaction side since we're [inaudible] covered entity, we're getting pressure from compliance to be more granular right now it's kind of all or nothing they want to choose which identifiers get redacted in transcripts and summaries like date of birth member ids account numbers. different rules for different roles
+
+Speaker 1  00:03:45
+so configurable redaction, plus role-based access and an audit trail?
+
+Speaker 2  00:03:49
+exactly our privacy officer wants to show auditors who saw what right now we we can't really do that we have a baa, we're covered, i mean, but the internal controls aren't where they they want them
+
+Speaker 1  00:04:06
+that's a fair ask uh i i can't promise anything today but i can take it to product can you send um me a short write-up of what the compliance team is asking for? even a bullet list [crosstalk]
+
+Speaker 2  00:04:22
+yeah i'll put something together this week. i've got a meeting with them thursday anyway
+
+Speaker 1  00:04:28
+You know Perfect Anything else on Q.M. or pre-sense while we're here No so those
+
+Speaker 2  00:04:35
+are fine q.m. is doing its thing uh presence is doing its thing. nothing new
+
+Speaker 1  00:04:43
+good. i'll send a a recap email after this with the two action items and i'll check in on the salesforce thing once denise forwards that error.
+
+Speaker 2  00:04:54
+sounds good thanks priya
+
+Speaker 1  00:04:58
+uh thanks mark tell denise i owe her one

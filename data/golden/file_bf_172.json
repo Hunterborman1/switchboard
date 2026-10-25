@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_172",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "Diego flagged that Marchex is quoting lower per-rooftop pricing to dealer groups and bundling call scoring into its price, which is now part of the comparison his GM is running.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Brittany said finance and procurement are pushing back on paying separately for add-ons like PreSense, QM seats and AI Voice Agent minutes at renewal, and with a budget freeze next year flat spend is the best case.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,425 @@
+WEBVTT
+
+1
+00:00:05.389 --> 00:00:07.899
+Priya Raman: hey both how's monday going so far
+
+2
+00:00:09.256 --> 00:00:11.292
+Mark Delgado: it's monday so you know
+
+3
+00:00:11.974 --> 00:00:16.378
+Kevin Osei: we survived the weekend that's that's the bar right now
+
+4
+00:00:17.948 --> 00:00:20.915
+Priya Raman: ha i mean, fair i had you down
+
+5
+00:00:20.915 --> 00:00:23.882
+Priya Raman: for a check-in, so nothing formal just wanted
+
+6
+00:00:23.882 --> 00:00:27.591
+Priya Raman: to see how things are running and if anything's shifted
+
+7
+00:00:27.591 --> 00:00:29.075
+Priya Raman: since we last talked
+
+8
+00:00:29.355 --> 00:00:31.752
+Mark Delgado: mostly steady on our end call volume's
+
+9
+00:00:31.752 --> 00:00:32.437
+Mark Delgado: where we'd
+
+10
+00:00:33.384 --> 00:00:37.584
+Priya Raman: expect for october. um, good and kevin anything new on the marketing
+
+11
+00:00:37.584 --> 00:00:37.934
+Priya Raman: side
+
+12
+00:00:39.920 --> 00:00:42.770
+Kevin Osei: uh yeah, two things [inaudible] is a
+
+13
+00:00:42.770 --> 00:00:48.064
+Kevin Osei: genuine problem one is more of a hmm, i mean a process thing
+
+14
+00:00:48.064 --> 00:00:49.693
+Kevin Osei: we're still figuring out
+
+15
+00:00:50.062 --> 00:00:52.190
+Priya Raman: okay start with the problem
+
+16
+00:00:52.466 --> 00:00:55.160
+Kevin Osei: so we've been leaning harder on referral tracking
+
+17
+00:00:55.160 --> 00:00:58.864
+Kevin Osei: this quarter nashville market especially and the numbers we're pulling don't
+
+18
+00:00:58.864 --> 00:01:01.221
+Kevin Osei: match what the clinics are telling us
+
+19
+00:01:03.181 --> 00:01:04.053
+Priya Raman: mismatch how?
+
+20
+00:01:04.648 --> 00:01:08.477
+Kevin Osei: like, a patient calls in says dr so-and-so referred me
+
+21
+00:01:08.477 --> 00:01:13.455
+Kevin Osei: scheduler logs it, but when i look at the call record in sales
+
+22
+00:01:13.455 --> 00:01:17.284
+Kevin Osei: force the referral source just isn't there. half the time
+
+23
+00:01:17.284 --> 00:01:18.050
+Kevin Osei: it's inconsistent
+
+24
+00:01:18.522 --> 00:01:21.869
+Priya Raman: does it show in invoca and drop on the way
+
+25
+00:01:21.869 --> 00:01:24.212
+Priya Raman: over, or is it missing on both
+
+26
+00:01:24.212 --> 00:01:24.546
+Priya Raman: sides?
+
+27
+00:01:25.651 --> 00:01:30.837
+Kevin Osei: that's the thing you know it's fine in invoka. the signal fires the
+
+28
+00:01:30.837 --> 00:01:40.410
+Kevin Osei: transcript's clean it's all there but the salesforce health cloud sync keeps failing on our custom referral object so the referral source is blank
+
+29
+00:01:41.525 --> 00:01:43.738
+Priya Raman: okay when did that start [crosstalk]
+
+30
+00:01:45.021 --> 00:01:48.073
+Kevin Osei: mm, i want to say late september? we noticed
+
+31
+00:01:48.073 --> 00:01:50.786
+Kevin Osei: it maybe two weeks ago but i don't
+
+32
+00:01:50.786 --> 00:01:52.482
+Kevin Osei: have a a hard date
+
+33
+00:01:52.311 --> 00:01:55.094
+Priya Raman: and is it every referral call or intermittent?
+
+34
+00:01:56.168 --> 00:01:58.632
+Kevin Osei: intermittent. which is the worst kind, obviously.
+
+35
+00:02:00.185 --> 00:02:03.983
+Mark Delgado: from my side it looks intermittent too the schedulers will say
+
+36
+00:02:03.983 --> 00:02:06.746
+Mark Delgado: they tagged it, and then someone in the
+
+37
+00:02:06.746 --> 00:02:09.508
+Mark Delgado: clinic pulls the the record and it's empty
+
+38
+00:02:08.552 --> 00:02:11.210
+Priya Raman: okay so do me a favor uh,
+
+39
+00:02:11.210 --> 00:02:15.007
+Priya Raman: can you grab me two or three specific call ids
+
+40
+00:02:15.007 --> 00:02:18.804
+Priya Raman: where it happened? even just one recent one and and
+
+41
+00:02:18.804 --> 00:02:21.842
+Priya Raman: i mean, one from september if you have
+
+42
+00:02:21.842 --> 00:02:22.221
+Priya Raman: it.
+
+43
+00:02:23.923 --> 00:02:26.819
+Kevin Osei: yeah i can pull those this afternoon
+
+44
+00:02:26.697 --> 00:02:32.151
+Priya Raman: Perfect Uh and I'll take it to our integrations team with the call
+
+45
+00:02:32.151 --> 00:02:36.346
+Priya Raman: IDs and so the object name, and we'll figure out
+
+46
+00:02:36.346 --> 00:02:39.702
+Priya Raman: what's happening. I'm not going to guess at
+
+47
+00:02:39.702 --> 00:02:41.800
+Priya Raman: it on the the call
+
+48
+00:02:42.905 --> 00:02:45.349
+Kevin Osei: appreciate that you know i've been staring
+
+49
+00:02:45.349 --> 00:02:48.142
+Kevin Osei: at this for two weeks and getting nowhere
+
+50
+00:02:48.376 --> 00:02:51.940
+Priya Raman: yeah that's what i'm here for okay. what's the
+
+51
+00:02:51.940 --> 00:02:53.919
+Priya Raman: other thing the process one?
+
+52
+00:02:55.312 --> 00:02:59.633
+Mark Delgado: so so this is newer. we rolled out a telehealth scheduling
+
+53
+00:02:59.633 --> 00:03:04.347
+Mark Delgado: policy a a couple weeks ago, system wide basically every scheduler is
+
+54
+00:03:04.347 --> 00:03:08.669
+Mark Delgado: supposed uh to offer telehealth as an option for follow-ups and
+
+55
+00:03:08.695 --> 00:03:12.325
+Priya Raman: certain visit types. offer it verbally, um or just have
+
+56
+00:03:12.325 --> 00:03:13.051
+Priya Raman: it available
+
+57
+00:03:13.631 --> 00:03:17.077
+Mark Delgado: verbally they have to say it that's the whole point
+
+58
+00:03:17.077 --> 00:03:21.558
+Mark Delgado: of the policy patients don't know it's an option unless we tell them
+
+59
+00:03:23.271 --> 00:03:26.180
+Priya Raman: got it it and how's adoption [inaudible]
+
+60
+00:03:27.979 --> 00:03:32.024
+Mark Delgado: inconsistent the [inaudible] managers are telling me some teams do it every
+
+61
+00:03:32.024 --> 00:03:34.721
+Mark Delgado: time and some teams basically never and i
+
+62
+00:03:34.721 --> 00:03:38.091
+Mark Delgado: have no way to see that at scale right now.
+
+63
+00:03:38.437 --> 00:03:41.918
+Priya Raman: like so you want a way to measure it.
+
+64
+00:03:42.688 --> 00:03:49.816
+Mark Delgado: right i'd like qm to flag when a scheduler doesn't offer the telehealth option, that's a new policy for us.
+
+65
+00:03:49.816 --> 00:03:50.172
+Mark Delgado: [crosstalk]
+
+66
+00:03:50.658 --> 00:03:54.529
+Priya Raman: okay when you say flag what does that look like in
+
+67
+00:03:54.529 --> 00:03:56.992
+Priya Raman: your head? a scorecard item a coaching
+
+68
+00:03:56.992 --> 00:03:59.455
+Priya Raman: moment something that lands on a report
+
+69
+00:04:00.520 --> 00:04:04.611
+Mark Delgado: um honestly, all three eventually but if i had to pick
+
+70
+00:04:04.611 --> 00:04:07.587
+Mark Delgado: one to start, a scorecard item so it
+
+71
+00:04:07.587 --> 00:04:09.819
+Mark Delgado: shows up in the coaching view.
+
+72
+00:04:09.741 --> 00:04:13.840
+Priya Raman: that's helpful. can i ask is this a hard requirement per
+
+73
+00:04:13.840 --> 00:04:17.939
+Priya Raman: call or does it depend on the visit type because that
+
+74
+00:04:17.939 --> 00:04:20.174
+Priya Raman: changes how we'd phrase the criteria
+
+75
+00:04:22.242 --> 00:04:25.529
+Mark Delgado: depends on the visit type which yeah i know
+
+76
+00:04:25.529 --> 00:04:26.990
+Mark Delgado: that makes it harder
+
+77
+00:04:28.016 --> 00:04:32.435
+Priya Raman: a little do you have the list of visit types written down
+
+78
+00:04:32.435 --> 00:04:32.803
+Priya Raman: somewhere?
+
+79
+00:04:32.679 --> 00:04:35.641
+Mark Delgado: i have a pdf i can send it over
+
+80
+00:04:36.310 --> 00:04:39.314
+Priya Raman: send it. i'll bring it to the
+
+81
+00:04:39.314 --> 00:04:44.463
+Priya Raman: qm team so we can talk about what's actually doable and and
+
+82
+00:04:44.463 --> 00:04:48.754
+Priya Raman: what the timeline looks like i don't want to promise
+
+83
+00:04:48.754 --> 00:04:51.757
+Priya Raman: you a date on the the call
+
+84
+00:04:53.515 --> 00:04:56.859
+Mark Delgado: that's fine i'd rather you tell me what's
+
+85
+00:04:56.859 --> 00:05:00.621
+Mark Delgado: real than tell me what i want to hear
+
+86
+00:05:00.856 --> 00:05:03.191
+Priya Raman: yeah same page. okay so one thing
+
+87
+00:05:03.191 --> 00:05:06.527
+Priya Raman: for the integrations team one thing for the qm team
+
+88
+00:05:07.769 --> 00:05:09.453
+Kevin Osei: that's a full priya
+
+89
+00:05:10.306 --> 00:05:12.296
+Priya Raman: it's a monday uh kevin
+
+90
+00:05:14.178 --> 00:05:14.978
+Mark Delgado: ha
+
+91
+00:05:15.241 --> 00:05:20.697
+Priya Raman: Anything else on the marketing side Google ads the offline conversions all that
+
+92
+00:05:20.697 --> 00:05:21.536
+Priya Raman: still behaving
+
+93
+00:05:21.622 --> 00:05:23.132
+Kevin Osei: yeah that's fine no
+
+94
+00:05:23.943 --> 00:05:27.214
+Priya Raman: issues good and the presence screen pops for your
+
+95
+00:05:27.214 --> 00:05:29.031
+Priya Raman: schedulers anything coming up there
+
+96
+00:05:31.062 --> 00:05:32.754
+Mark Delgado: no that's been fine
+
+97
+00:05:32.662 --> 00:05:35.881
+Priya Raman: uh okay. then i'll let you both go kevin
+
+98
+00:05:35.881 --> 00:05:38.742
+Priya Raman: call ids when you can. [inaudible], the pdf.
+
+99
+00:05:39.750 --> 00:05:40.550
+Mark Delgado: will do.
+
+100
+00:05:41.317 --> 00:05:44.841
+Kevin Osei: i'll get them over after my eleven o'clock perfect
+
+101
+00:05:45.399 --> 00:05:49.483
+Priya Raman: if you can't find a september one, the recent one's
+
+102
+00:05:49.483 --> 00:05:49.891
+Priya Raman: fine
+
+103
+00:05:50.622 --> 00:05:51.422
+Kevin Osei: got it
+
+104
+00:05:52.489 --> 00:05:53.845
+Priya Raman: Thanks both Talk soon
+
+105
+00:05:55.253 --> 00:05:56.133
+Mark Delgado: thanks priya
+
+106
+00:05:56.681 --> 00:05:57.481
+Kevin Osei: bye

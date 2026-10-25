@@ -1,0 +1,32 @@
+{
+  "fileId": "file_evergreen_renewal_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Owner finds the renewal price hard to justify for six locations; asks for a smaller package without Signal AI.",
+      "quote": "Kyle said the renewal number is hard to justify for six locations, and asked whether there is a smaller package without Signal AI.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "call_tracking",
+      "severity": "medium",
+      "summary": "Has a CallTrackingMetrics quote at roughly half the price and will show it to the owner.",
+      "quote": "Ashley has a CallTrackingMetrics quote for roughly half our price and said she would at least have to show it to Kyle.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Google Ads conversions for booked calls arriving a day or two late over recent weeks.",
+      "quote": "Ashley also noticed Google Ads conversions for booked calls showing up a day or two late over the last few weeks.",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

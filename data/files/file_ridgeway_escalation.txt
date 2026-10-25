@@ -1,0 +1,47 @@
+Ridgeway Motor Group / Invoca | escalation | Tue, Oct 20, 2026
+
+[00:00:03] Diego Alvarez: Morning everyone. Thanks for making time. Frank, Brittany, I've got Derek here from our support escalations team.
+[00:00:10] Derek Shaw: Morning. I've read the ticket notes, so I have some background, but I'd rather hear it from you directly.
+[00:00:17] Frank DeLuca: Appreciate you both getting on. Let's cut to it, because I've got a store to run.
+[00:00:24] Brittany Sawyer: So, quick version. Our Google Ads call conversions have been at least two days behind since the middle of September. Our cost per appointment is up about forty percent.
+[00:00:35] Frank DeLuca: Forty percent. On a budget that size, that's real money every week.
+[00:00:40] Derek Shaw: Okay. When you say two days behind, is that the timestamp on the conversion in Google Ads versus when the call happened here?
+[00:00:51] Brittany Sawyer: Right. Our BDC marks the appointment in Salesforce, and the call itself was two days earlier. So Google's seeing the conversion late, and Smart Bidding is reacting late.
+[00:01:03] Derek Shaw: Got it. And that's your whole paid search budget, or a subset of campaigns?
+[00:01:09] Brittany Sawyer: Seven campaigns, basically everything with a tracking number. It's not one bad campaign.
+[00:01:14] Diego Alvarez: Did the delay start all at once, or creep up on you?
+[00:01:19] Brittany Sawyer: Creep. First it was a few hours off, then a day, now it's two plus. The week of September 14th is when I first flagged it internally.
+[00:01:33] Frank DeLuca: And it's still going. That's the part that burns me.
+[00:01:37] Derek Shaw: Can you walk me through what happens on your end between the call and the conversion landing in Google Ads?
+[00:01:45] Brittany Sawyer: The call comes in, it shows up as a call activity in Salesforce on the lead, our BDC marks the appointment outcome, and that outcome is what we're sending to Google as the offline conversion.
+[00:01:57] Derek Shaw: Thanks. And who made the connection between the call and the lead on the Salesforce side, was that you?
+[00:02:05] Brittany Sawyer: I set up the mapping back in March with help from your team, and it worked fine through the summer.
+[00:02:15] Derek Shaw: Okay. And you haven't changed the Salesforce side recently, no new fields or workflows?
+[00:02:22] Brittany Sawyer: Not that I know of. I can pull a change log if that helps.
+[00:02:28] Derek Shaw: Please. Send it to me directly. And the timestamps you're seeing, are those from the Google Ads UI or from a report?
+[00:02:38] Brittany Sawyer: Both, actually. I pulled the conversion report and cross-checked against the UI. Same delay.
+[00:02:44] Diego Alvarez: And nothing's changed on the Google Ads side, no new conversion actions or account changes?
+[00:02:50] Brittany Sawyer: Our marketing coordinator handles that. I'll confirm with him today, but he says he hasn't touched anything.
+[00:02:58] Frank DeLuca: Let me jump in here, because I want to be straight with you. I came in as GM in August, and I inherited a stack of vendor contracts I didn't sign.
+[00:03:12] Diego Alvarez: Understood.
+[00:03:13] Frank DeLuca: Marchex says they'll match whatever we're paying and throw in the first three months free.
+[00:03:19] Diego Alvarez: Okay. I'd rather hear that now than later, so thank you for saying it.
+[00:03:25] Frank DeLuca: I'd rather not switch. It's work for my team. But I've got thirty days to show my owner this is fixed, or I'm moving us to Marchex. That's not a negotiating tactic.
+[00:03:37] Derek Shaw: Fair enough. What would good look like for you in thirty days?
+[00:03:42] Frank DeLuca: Conversions landing same day. Not perfect, same day. If I can't tell my owner the numbers are clean by then, I'm done defending it.
+[00:03:52] Brittany Sawyer: Same day would get us back to where we were in July.
+[00:03:58] Derek Shaw: Give me the change log, the conversion report export, and a handful of example calls with the lead IDs. I'll take it to the team that owns the sending pipeline.
+[00:04:11] Brittany Sawyer: I can have all of that over by end of day.
+[00:04:16] Derek Shaw: Then you'll hear from me tomorrow, one way or the other. If I don't have a root cause yet, I'll tell you exactly what we've ruled out and what we're testing next.
+[00:04:30] Frank DeLuca: A daily note beats a status update a week out, I'll tell you that.
+[00:04:36] Diego Alvarez: I'll coordinate on my side so Derek has whatever he needs from your account, and I'll join the next update.
+[00:04:45] Frank DeLuca: Fine. And just so nobody's surprised, I've asked my controller to put together a comparison sheet this week. That's due diligence, not a decision.
+[00:04:53] Diego Alvarez: That's your call to make. Our job right now is to get you an answer on this.
+[00:05:00] Derek Shaw: One more question, Brittany. When the conversion finally lands, does the original call timestamp stay intact, or does it get rewritten to the send date?
+[00:05:13] Brittany Sawyer: The timestamp on the call is fine. It's the arrival in Google that's late.
+[00:05:20] Derek Shaw: Good, that narrows it. I'll stop guessing until I see the data.
+[00:05:26] Frank DeLuca: Then let's not burn more time on this call. Brittany, get him the files.
+[00:05:33] Brittany Sawyer: On it.
+[00:05:35] Diego Alvarez: Thanks, both. Derek, I'll set up the shared folder after this.
+[00:05:41] Derek Shaw: Sounds good. Frank, Brittany, talk tomorrow.
+[00:05:44] Frank DeLuca: Tomorrow. Thanks.

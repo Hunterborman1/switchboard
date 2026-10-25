@@ -1,0 +1,31 @@
+Ridgeway Motor Group / Invoca | check-in | Thu, Oct 22, 2026
+
+[00:00:04] Diego Alvarez: Hey Brittany, how's it going? Thanks for making time this afternoon.
+[00:00:10] Brittany Sawyer: Hey Diego. It's going okay. Busy as usual. We're getting into truck month stuff, so the phones are pretty loud.
+[00:00:18] Diego Alvarez: Yeah, I bet. How are the seven rooftops looking volume wise? I saw the account was trending up a bit last month.
+[00:00:28] Brittany Sawyer: We did right around 11,400 calls across the group in September. Tulsa and Broken Arrow are carrying most of it, and the two smaller stores are flat. October is tracking close to that so far.
+[00:00:41] Diego Alvarez: That's good to hear. And you're still running the BDC out of Tulsa for all the stores, right?
+[00:00:50] Brittany Sawyer: Yeah. We had two reps leave in September, so we're down to nine agents plus me. We finally filled one of the spots, she starts Monday, so we're doing training again.
+[00:01:04] Diego Alvarez: Got it. Do you want me to do a refresher for the new hire on the Invoca side? It can be pretty quick, just how the signals show up in the call list.
+[00:01:18] Brittany Sawyer: Maybe in a couple weeks once she's through the basics. I'll send you some dates. Actually, one thing I do want to talk about, and it's the reason I asked for this call.
+[00:01:30] Diego Alvarez: Sure, go ahead.
+[00:01:31] Brittany Sawyer: So the offline conversions we push into Google Ads, they're landing one to three days after the call, sometimes it's two days, sometimes it's three. We're feeding Smart Bidding late, and it's making the bidding act on days that look like they had no conversions at all.
+[00:01:51] Diego Alvarez: Okay. Is it every call, or is it certain campaigns?
+[00:01:55] Brittany Sawyer: It feels like all of them, but I notice it most on the service and the used-vehicle campaigns. We've been pulling back on spend automatically, and then the next week the conversions show up and the day already looked dead.
+[00:02:09] Diego Alvarez: When did you first notice the delay?
+[00:02:12] Brittany Sawyer: Maybe three weeks ago? We had a Monday where Google showed almost nothing from the weekend, which never happens. Then Wednesday everything from Saturday and Sunday dropped in at once.
+[00:02:24] Diego Alvarez: And is it showing up in the Google Ads side as the conversion date being the call date, or the upload date?
+[00:02:33] Brittany Sawyer: The upload date. That's the part that's messing us up, because Smart Bidding thinks the weekend had no conversions. It's not just reporting, it's changing what we spend.
+[00:02:44] Diego Alvarez: Okay. I want to write this up so the team can look at the timing on the Google Ads connection. Can you leave it with me and I'll follow up by Tuesday?
+[00:02:57] Brittany Sawyer: Yeah, that works. Do you need examples?
+[00:03:00] Diego Alvarez: If you can grab two or three call IDs from that weekend and the matching Google Ads timestamps, that would help a lot.
+[00:03:09] Brittany Sawyer: I can pull those. I'll email them over tomorrow morning.
+[00:03:14] Diego Alvarez: Perfect. Anything else on the Invoca side giving you trouble?
+[00:03:19] Brittany Sawyer: No, the signals and the tracking are fine. We're not using much past the basics right now anyway with the new GM settling in.
+[00:03:29] Diego Alvarez: How's that going, if you don't mind me asking?
+[00:03:33] Brittany Sawyer: He's only been here since August, so he's still asking a lot of questions. He wants to see everything tied to spend, which is fair.
+[00:03:44] Diego Alvarez: Makes sense. We can put something together for him later if that's useful.
+[00:03:50] Brittany Sawyer: Maybe. Let me get through the next few weeks first. Oh, and we're doing a hiring event at the Tulsa store on the 7th, so the phones might be weird that day.
+[00:04:02] Diego Alvarez: Good to know. I'll make a note. So I'll send you a recap today, and I'll have an update on the Google Ads timing by Tuesday.
+[00:04:14] Brittany Sawyer: Sounds good. Thanks Diego.
+[00:04:16] Diego Alvarez: Thanks Brittany. Talk soon.

@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bf_157",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "When Genesys moves a call between queues or from one agent to another, the screen pop lands on the receiving agent's desktop but it's blank.",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "She's been asking whether we can push those dashboards to Looker on a schedule instead, or Google Sheets, or whatever BI tool, so nobody is exporting by hand.",
+      "owner": "ppl_nina"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "Customer links \"presense data missing on genesys transfers\" to the renewal decision.",
+      "quote": "If the picture on transfers doesn't change, I have to be honest, that's a scope conversation. We'd either trim what we run or drop something, and PreSense is the piece that's in the crosshairs",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

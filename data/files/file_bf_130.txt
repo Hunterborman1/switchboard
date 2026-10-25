@@ -1,0 +1,32 @@
+keystone mutual / invoca sync notes
+wed 10/21, 10:45am ct
+
+Attendees: Nate Simmons (Dir, Contact Center Ops), Luis Ortega (Claims Ops Mgr), me
+
+Quick round of intros, then Nate gave volume picture. Sept: ~63k inbound calls total across claims, policy service, roadside. After-hours claims (the AI Voice Agent pilot window) ran ~2,900 calls last month, up from ~2,100 in August. Nate said the pilot cohort is 6pm-8am plus weekends, agent xfer rate still sitting around 22%, he wants that down but not the priority today.
+
+staffing tangent: they have a genesys scheduling refresh in november, luis said two team leads are out the first week so they're shifting some after-hours coverage. not an invoca thing, just context on why they're heads-down.
+
+nate flagging the salesforce piece. his words, roughly:
+
+"So our admin, Denise, she's getting these sync error emails every morning now, like clockwork. What I'm seeing is when she changes a field on a custom object, or touches a picklist value, the call data just stops writing to our custom objects. The standard stuff lands fine, it's the custom objects that go quiet. She's had to go back & re-check mappings twice this week."
+
+i asked which custom objects and what changed. nate: the claims intake object & the policy escalation object. denise added a picklist value on one & renamed a fild on the other, last friday. he's going to send me the error email text & the object names.
+
+transcript fragment nate pasted from a monday call:
+"...no, the record's not there, I don't see the call on the claim... yeah that's the third one today..."
+
+Luis: "From my side the Genesys screens are popping & the transcripts are landing, so the agents aren't blocked. It's the downstream reporting that's off b/c those custom object writes aren't happening."
+
+my follow-ups:
+- get error email text + custom object names from nate
+- Escalate to support as high severity, reference custom object write failure tied to field/picklist changes
+- Ask Denise for timestamp when it started (Fri?)
+
+Other business:
+- qm scorecard review scheduled nov 4, 2pm ct, 30 min. luis pulling 3 sample calls.
+- Adobe Analytics: fine, no issues, they're not touching it this quarter.
+- google ads offline conversions: fine, running as usual.
+- Renewal 9/30/27, noting for my own calendar, no action.
+
+Next sync: Wed 11/4 after the scorecard review.

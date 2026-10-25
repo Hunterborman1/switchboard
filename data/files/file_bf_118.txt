@@ -1,0 +1,134 @@
+Keystone Mutual check-in
+Mon, Sep 28, 2026, 4:30PM • 6:07
+
+Rachel Okafor  0:02
+Hey Erin, how's it going? Sorry I'm a couple minutes late, the call before this one ran long.
+
+Erin Walsh  0:09
+No worries, I was just finishing a granola bar. Mondays, you know?
+
+Rachel Okafor  0:15
+Ha, yeah. How was the weekend? Did you end up doing that race thing?
+
+Erin Walsh  0:20
+Oh, the 5k? It was cold. You know, Columbus in late September, should've known. My knees are still mad at me.
+
+Rachel Okafor  0:29
+That's more than I did. Okay, so I had a few things on my list but mostly wanted to check in before quarter end. How are things looking on your side?
+
+Erin Walsh  0:43
+Busy. Um, the big thing for us right now is the after-hours claims pilot. We're a few weeks in on AI Voice Agent, and honestly it's been fine. No drama.
+
+Rachel Okafor  0:57
+Good to hear. What kind of volume are you seeing on that after-hours line?
+
+Erin Walsh  1:02
+So claims intake after hours, so basically 6pm to 8am plus weekends, we're averaging right around 1,100 calls a month. Maybe 70 a night? It goes up when there's weather.
+
+Rachel Okafor  1:13
+And how much of that is the voice agent handling versus transferring to a person?
+
+Erin Walsh  1:20
+Right now it's handling maybe a third end to end. So, the rest it collects the basics and hands off to the on-call adjuster. Which is what we wanted for the pilot.
+
+Rachel Okafor  1:35
+Okay. And on the Genesys side, any changes to the routing flow since we last talked?
+
+Erin Walsh  1:42
+Not really. Though, um, heads up, we're down two people on the claims ops team. Dana's out on leave until January, so if things are slow to get back to you, that's why.
+
+Rachel Okafor  1:55
+Totally fine. Who's covering while she's out?
+
+Erin Walsh  1:57
+Marcus picked up most of it. He's been in the Invoca stuff for a year, so he knows his way around the platform.
+
+Rachel Okafor  2:07
+Okay, good. If it's helpful I can send him the same weekly recap I send you, just so nothing falls through.
+
+Erin Walsh  2:16
+Yeah, that'd be great. He's copied on everything anyway.
+
+Rachel Okafor  2:20
+Done. Now, the reason I wanted to grab time this week, I'm doing my prep for our Q4 review and I want to make sure I'm telling the right story. Anything that's been working well that you'd want me to highlight?
+
+Erin Walsh  2:35
+Hm. The thing I keep coming back to is PreSense.
+
+Rachel Okafor  2:40
+Okay, tell me more.
+
+Erin Walsh  2:43
+So, the digital shoppers who call in, the ones who've been on the site comparing quotes, um, when the agent picks up and already has the page they were on and what they were looking at, it just changes the call.
+
+Rachel Okafor  3:01
+Changes it how?
+
+Erin Walsh  3:03
+Well, they're not spending the first two minutes doing the whole 'what were you looking at' dance. The agent opens with the actual thing. And I pulled the numbers last week because I didn't believe it, but, uh, average handle time on those calls is down about 40 seconds versus the ones where PreSense doesn't fire.
+
+Rachel Okafor  3:24
+Forty seconds, that's a lot across the volume you're running.
+
+Erin Walsh  3:29
+Right? And more of them are converting, which is the part my boss cares about. Fewer of them bail before the quote's even done.
+
+Rachel Okafor  3:38
+Hold on, let me write this down. So the routing and the context together, you'd say that's the driver?
+
+Erin Walsh  3:45
+I think so, yeah. When it routes to the right queue with the context attached, the agent isn't guessing. They start with context, so the call closes faster. Honestly it's the thing I'd put on the slide.
+
+Rachel Okafor  4:00
+Okay. Can I ask, is that most of your digital-shopper traffic or a slice of it?
+
+Erin Walsh  4:07
+Slice. Maybe 25 percent of the sales calls. We've only got it on the the auto quote flows, not home yet.
+
+Rachel Okafor  4:15
+Got it. I'll keep the framing tight to auto, then. Do you have the handle time pull handy or should I ask Marcus?
+
+Erin Walsh  4:25
+I'll send it over. It's a spreadsheet, nothing fancy.
+
+Rachel Okafor  4:29
+Perfect. Anything else, or is that the headline?
+
+Erin Walsh  4:32
+That's the headline. The rest, the call tracking and attribution stuff, that's all humming along. No issues there.
+
+Rachel Okafor  4:40
+Good. And QM, still fine?
+
+Erin Walsh  4:43
+Yep. Uh, no complaints.
+
+Rachel Okafor  4:45
+Okay. So for the review, I'll build the PreSense section around the auto quote flows and the the handle time numbers, and I'll leave room for Marcus to add anything. Does the week of the 19th work? I'd need your deck inputs by that Friday.
+
+Erin Walsh  5:05
+The 19th... that's fine. Though can we do 2pm instead of earlier? I've got a standing thing at 11.
+
+Rachel Okafor  5:13
+So, 2pm works. So, I'll send the invite and a short outline so you're not staring at a blank page.
+
+Erin Walsh  5:21
+Appreciate that. Oh, one more thing, are you guys doing anything different for open enrollment season? Our call volume historically spikes in November.
+
+Rachel Okafor  5:31
+Nothing you need to worry about on your end. If you want, I can pull your November volumes from last year so you can plan staffing.
+
+Erin Walsh  5:43
+That'd be helpful, yeah. Last year we got caught flat-footed.
+
+Rachel Okafor  5:47
+I'll have that to you by Wednesday. Okay, I think that's everything on my list. Anything you need from me before we hop?
+
+Erin Walsh  5:57
+Nope. Thanks Rachel, this was quick.
+
+Rachel Okafor  6:00
+Anytime. Go ice those knees.
+
+Erin Walsh  6:03
+Ha. Talk soon.

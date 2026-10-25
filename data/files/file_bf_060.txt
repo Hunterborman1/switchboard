@@ -1,0 +1,77 @@
+Coastal Comfort Mattress escalation
+Mon, Oct 5, 2026, 8:45AM • 3:39
+
+Tom Lindqvist  0:03
+Morning, Julie. How's Tampa treating you? Still humid?
+
+Julie Hammond  0:07
+Oh, you you know, it's October and it's still ninety degrees. I'm over it.
+
+Tom Lindqvist  0:13
+Ha. Like, yeah, I've got the AC running at home still. Anyway, so, what's going on?
+
+Julie Hammond  0:20
+So, uh, this is kind of why I wanted to get on the phone. We've so, had something come up with the voice agent that I think is, um, pretty urgent.
+
+Tom Lindqvist  0:35
+Okay, tell me.
+
+Julie Hammond  0:37
+When the AI Voice Agent transfers a caller to one of our live folks in Amazon Connect, the stuff it collected doesn't come through. So the agent picks up and has no idea what the caller already told the bot. They have to start over. Name, order number, all of it.
+
+Tom Lindqvist  0:57
+So the transfer note is coming in blank, basically.
+
+Julie Hammond  1:01
+Blank. Yeah. And I'll give you an example. Saturday morning, a lady called about a delivery window, spent, I I want to say a minute and a half with the agent, gave her order number, her zip, everything. Transfers over. And our person in the call center asks her for the order number again. She was... she was not happy.
+
+Tom Lindqvist  1:23
+Yikes. How long has this been happening?
+
+Julie Hammond  1:26
+Honestly, we think a couple of weeks. It got noticed because, you know, the agents started complaining. Our team lead over in the call center, Denise, she's the one who flagged it. She pulled a few recordings and showed me.
+
+Tom Lindqvist  1:44
+Okay. And is it every transfer, or is it specific to certain call types? Like order status versus store hours?
+
+Julie Hammond  1:52
+That's the thing, we're not totally sure. It seems like most of them. Like, the store-hours ones usually don't transfer, so...
+
+Tom Lindqvist  1:59
+Right, yeah. So it's the order-status and delivery ones you know, mostly.
+
+Julie Hammond  2:05
+Mostly, yeah. I don't have a a clean count yet. I can get you you a list of examples if that helps.
+
+Tom Lindqvist  2:13
+That would help a lot, yeah. Dates, like, times, maybe the caller's number for a couple of them, so we can pull the recordings on our side.
+
+Julie Hammond  2:23
+Okay. I can probably get that to you by tomorrow. I've got a showroom walkthrough this afternoon in Sarasota, so it might be end of day.
+
+Tom Lindqvist  2:34
+No rush, tomorrow's fine. Let me get this in front of our support team today and I'll own the follow-up. Can I use you as the contact?
+
+Julie Hammond  2:44
+Yeah, me or Denise. Either like, one.
+
+Tom Lindqvist  2:47
+Perfect. Separately, real quick, your call volume's been trending up, right? I saw we're past 11,000 a month now.
+
+Julie Hammond  2:56
+Yeah, we added four showrooms since spring, so that tracks. We're hiring two more in the call center just to keep up.
+
+Tom Lindqvist  3:05
+Good problem to have. And the Google Ads side, that's all fine?
+
+Julie Hammond  3:10
+Fine as far as I know. Nothing new there.
+
+Tom Lindqvist  3:14
+Okay. Alright, so I'll log this, loop in support, and come back to you once I've got a a case number and a next step. Probably by end of day.
+
+Julie Hammond  3:27
+That works. Thanks, Tom. And hey, sorry to start your Monday with this.
+
+Tom Lindqvist  3:33
+It's what I'm here for. Go enjoy Sarasota. Talk soon.

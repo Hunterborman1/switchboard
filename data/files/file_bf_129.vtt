@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:02.132 --> 00:00:04.976
+Rachel Okafor: Morning, Nate. Morning, Luis. How's the drive in?
+
+2
+00:00:06.402 --> 00:00:10.815
+Nate Simmons: Not bad. 315 was actually moving today, so I'll take it.
+
+3
+00:00:11.210 --> 00:00:17.398
+Luis Ortega: Yeah, I came in early to get ahead of the queue. Mondays are always a mess.
+
+4
+00:00:18.342 --> 00:00:29.225
+Rachel Okafor: Okay so I had us down for a working session on the after-hours pilot, but I know you two had something else you wanted to get into.
+
+5
+00:00:30.093 --> 00:00:37.171
+Nate Simmons: Yeah, let's start there, then hit uh, the pilot. Luis, you want to take the first one?
+
+6
+00:00:38.337 --> 00:00:47.797
+Luis Ortega: Sure. So we've been running the AI summaries on the claims calls for about six weeks now, and our compliance group got a look at some of them.
+
+7
+00:00:48.909 --> 00:00:49.709
+Rachel Okafor: Okay.
+
+8
+00:00:51.042 --> 00:01:03.364
+Luis Ortega: And And the thing they flagged is that the summary will just say things like the caller's policy number, or a claim number, or a date of birth, right there in the recap.
+
+9
+00:01:03.588 --> 00:01:11.701
+Rachel Okafor: Got it. So the transcript redaction we have in place, that's working, it's the summary that's carrying it through.
+
+10
+00:01:12.316 --> 00:01:25.494
+Luis Ortega: Right. I mean, the transcript side is fine. But the summary is what our adjusters read first, and it's what gets attached in Salesforce when we push the record over.
+
+11
+00:01:26.408 --> 00:01:35.991
+Nate Simmons: And that's the part that worries me. If an adjuster opens that summary and the claim number's sitting in the text, that's a different exposure than the full transcript.
+
+12
+00:01:36.692 --> 00:01:40.369
+Rachel Okafor: So walk me through what compliance actually asked for.
+
+13
+00:01:41.137 --> 00:01:52.110
+Luis Ortega: They want the redaction to be configurable on our side. We decide what counts as an identifier, and it applies to the summaries, not just the transcript.
+
+14
+00:01:52.110 --> 00:02:00.239
+Luis Ortega: And then role-based access on top of that, so a claims rep sees one version and an adjuster sees another.
+
+15
+00:02:00.751 --> 00:02:03.573
+Rachel Okafor: Uh, and audit on who viewed what.
+
+16
+00:02:04.556 --> 00:02:14.576
+Luis Ortega: Yeah, they want the audit trail. You know, if someone views an unredacted version, that gets logged. That's not optional for us, honestly.
+
+17
+00:02:14.898 --> 00:02:22.058
+Nate Simmons: It's the same reason we do it everywhere else. We're a carrier, we get examined on this stuff.
+
+18
+00:02:22.729 --> 00:02:30.153
+Rachel Okafor: Uh, how are you handling the summaries today? Are people just eyeballing them before they go anywhere?
+
+19
+00:02:30.839 --> 00:02:40.759
+Luis Ortega: Yeah, and that doesn't scale. We're doing around 9,500 claims calls a a you know, month across the team and I can't have somebody reading every summary.
+
+20
+00:02:41.294 --> 00:02:49.038
+Rachel Okafor: Okay. So if I'm hearing you right, the ask is: configurable redaction that covers AI summaries, plus role-based access, plus an audit log.
+
+21
+00:02:49.038 --> 00:02:52.069
+Rachel Okafor: On the summary side specifically, not just the transcript.
+
+22
+00:02:52.975 --> 00:02:54.427
+Luis Ortega: That's exactly it it.
+
+23
+00:02:55.860 --> 00:03:06.885
+Rachel Okafor: Alright. I don't want to give you a yes on I mean, anything today, but I can take that to the product team and get a read on what's possible and what isn't.
+
+24
+00:03:06.885 --> 00:03:11.562
+Rachel Okafor: Can I get a couple of examples from you, redacted, that I can attach?
+
+25
+00:03:12.669 --> 00:03:17.253
+Luis Ortega: Yeah, I'll pull three or four from last week and send them your way.
+
+26
+00:03:17.535 --> 00:03:21.422
+Nate Simmons: Just make sure they're scrubbed before they go out.
+
+27
+00:03:22.449 --> 00:03:23.249
+Luis Ortega: Obviously.
+
+28
+00:03:24.524 --> 00:03:28.251
+Rachel Okafor: Okay, moving on. The after-hours pilot. Where are we?
+
+29
+00:03:28.686 --> 00:03:40.278
+Nate Simmons: It's going alright. We've got it taking after-hours claims intake, six to eight at night and weekends. It's handing maybe forty-some calls a week to a live agent, the rest it handles.
+
+30
+00:03:41.269 --> 00:03:44.314
+Rachel Okafor: And Genesys is routing those handoffs cleanly?
+
+31
+00:03:45.278 --> 00:03:49.325
+Nate Simmons: Far as I know, yeah. No complaints from the floor.
+
+32
+00:03:50.390 --> 00:03:55.522
+Rachel Okafor: Good. And I saw the volume numbers on the tracking side looked normal last month.
+
+33
+00:03:55.769 --> 00:04:05.221
+Luis Ortega: Yeah, steady. We're transitioning two folks off the overnight queue next month, so that's part of why we want the pilot to hold up.
+
+34
+00:04:06.576 --> 00:04:19.231
+Rachel Okafor: Makes sense. I'll put a check-in you know, on the calendar for early November, and I'll come back to you on the redaction ask either way, uh, even if it's a no.
+
+35
+00:04:19.691 --> 00:04:27.031
+Nate Simmons: Sounds good. And hey, tell your team thanks for the quick turnaround on the last report, that was helpful.
+
+36
+00:04:28.298 --> 00:04:31.986
+Rachel Okafor: Like, I will. Have a good one, you two.

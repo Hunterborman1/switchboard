@@ -1,0 +1,97 @@
+auto-transcript | keystone-claims-escalation-raw-transcript | duration 00:06:27 | speakers detected: 4
+
+Speaker 1  00:00:04
+okay, we're recording luis nate thanks for making uh time i've got ben here he's our pm for the ai agents ben, this is about the claims handoffs from the voice agent pilot
+
+Speaker 2  00:00:17
+hey both you know good to meet you i've read the notes rachel passed along but i'd rather hear it straight from you
+
+Speaker 3  00:00:28
+sure. so short version, the voice agent hands off claims and the adjuster gets nothing no policy number, no description of the loss nothing they're starting from scratch on every single one
+
+Speaker 2  00:00:43
+okay. when you say handoff is that the agent transferring to a live person in genesis
+
+Speaker 3  00:00:50
+yeah after hours, someone calls in about a fender bender or a a burst pipe, the agent takes the info, then it says it's transferring them. and then my adjuster picks up and has to ask everything again um it's i mean, it's embarrassing
+
+Speaker 4  00:01:06
+and uh just so it's on the table, like this is the same pattern we've got on the the other side the pre sense pop is still blank on the queue transfers which so, i know you you know.
+
+Speaker 1  00:01:23
+yeah we've got that logged nate different path but same symptom, uh blank screen on the transfer
+
+Speaker 2  00:01:30
+okay so let me make sure i'm separating the two luis on the claims side the agent collects maybe a description a policy number if the caller has it and then transfers are you seeing any of that data in salesforce after the call? [crosstalk]
+
+Speaker 3  00:01:47
+the call record shows up the transcript's there but the fields we care about loss description, you know [inaudible] number, callback number those are empty so the record exists and it's useless
+
+Speaker 2  00:02:02
+and is the transfer a blind transfer or a warm one? does the agent stay on the line and and brief the adjuster or does it just drop them into the queue?
+
+Speaker 3  00:02:15
+it drops them i mean sometimes the caller says the agent said it would transfer them and then there's just silence and then [inaudible] person uh, so blind i guess nobody's briefing anybody
+
+Speaker 4  00:02:28
+Which is also what we see uh on the pre sense side. The caller's journey the pages they looked at the ad they clicked none of it shows up on the screen pop when it comes through a transfer On a direct inbound it's fine. It's specifically the transferred ones.
+
+Speaker 2  00:02:46
+okay that's helpful. two things i want to pin down first on the claims calls are those calls landing in a specific queue after hours or is it a general claims line?
+
+Speaker 3  00:03:00
+after hours it's a single queue claims intake during the day we've got separate queues by line of business auto property the pilot is only running after hours right now
+
+Speaker 2  00:03:13
+got it and and when the agent collects the loss description is that happening in a structured way like it's asking specific questions or is
+
+Speaker 3  00:03:21
+it more freeform? it asks it's got a script like it asks what happened when where is anyone hurt so the the data is being said out loud it's just not going anywhere
+
+Speaker 2  00:03:36
+right. and and do you know if the agent is supposed to be writing those to sales force before the transfer or is it writing them at the end of the call?
+
+Speaker 3  00:03:48
+i have no idea i'm you know the claims guy i don't know how it's wired i just know what my adjusters see which is a blank screen and a caller who's already annoyed [crosstalk]
+
+Speaker 4  00:04:04
+from our side the integration is set up to write the call record when the call ends uh but if the transfer happens mid-call the record for the original call might not be the one the adjuster's looking at that's my guess, anyway i'm not the engineer
+
+Speaker 2  00:04:23
+that's a good lead actually i want to to look at whether the the transfer is creating a new call leg and and whether the data is attached to the wrong one can you get me a couple of call ids from last week? ones where the adjuster got nothing
+
+Speaker 3  00:04:43
+um yeah i can pull five or six i'll send them to rachel
+
+Speaker 1  00:04:49
+perfect and nate, on the presense side is it the same queue or a different one
+
+Speaker 4  00:04:55
+different that's service calls, billing questions general. but the pattern's identical. direct inbound, the pop is full transferred um it's empty so whatever's happening it's not unique to the voice agent
+
+Speaker 2  00:05:09
+that's actually useful because if it's the same [inaudible] it might be i mean one thing in the transfer handling rather than two separate [inaudible] take both back to my team
+
+Speaker 3  00:05:23
+i mean, how long are we talking? because i've got adjusters who are already skeptical of this thing and every blank screen makes it harder for me to keep the pilot going i don't want
+
+Speaker 2  00:05:38
+to give you a number i can't stand behind let me get the call ids reproduce it, um and i'll come back to you with what i find and a real timeline probably early next week.
+
+Speaker 3  00:05:52
+okay early next week works just you know, don't leave me hanging
+
+Speaker 1  00:05:58
+we won't i'll set up a check-in for tuesday and [inaudible] have something concrete by then.
+
+Speaker 4  00:06:07
+like, and if it helps i can get you um the genesis interaction ids for a few of the transferred service calls too.
+
+Speaker 2  00:06:16
+that would help a lot thanks.
+
+Speaker 3  00:06:18
+alright i'll send what i've got this afternoon
+
+Speaker 1  00:06:22
+great thanks both talk tuesday.

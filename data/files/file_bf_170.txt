@@ -1,0 +1,38 @@
+Ridgeway Motor Group / Invoca | check-in | Mon, Sep 21, 2026
+
+[00:00:05] Diego Alvarez: Hey Mike, how's it going?
+[00:00:09] Mike Castillo: Hey Diego. Doing alright, busy Monday. How about you?
+[00:00:13] Diego Alvarez: Same here. I've got a few accounts stacked up this afternoon, so this is a nice break. Anything new on your end before we get into it?
+[00:00:23] Mike Castillo: Mostly the usual. We're at about 4,100 calls across the seven stores this month, which is up maybe 6 percent from August. The Tulsa and Broken Arrow stores are carrying most of it.
+[00:00:36] Diego Alvarez: That tracks with what I saw when I pulled the account earlier. Are you still running the same tracking numbers per campaign, or did anything shift when the new GM came in?
+[00:00:48] Mike Castillo: Numbers are the same. But that's kind of why I wanted to talk today. There's something the team keeps running into.
+[00:00:56] Diego Alvarez: Go ahead.
+[00:00:58] Mike Castillo: So the offline call conversions we push to Google Ads, they're landing one to three days after the call. We're feeding Smart Bidding data that's already stale, and it's making the bid decisions worse, not better.
+[00:01:13] Diego Alvarez: One to three days. Is that consistent, or does it bounce around?
+[00:01:18] Mike Castillo: It bounces. Some come through same day, but a lot of them sit for two or three days. Our BDC is logging outcomes in Salesforce same day, so the delay isn't on our side.
+[00:01:34] Diego Alvarez: And you're seeing this across all campaigns or just certain ones?
+[00:01:40] Mike Castillo: Mostly the ones with higher volume. The Fort Smith store's lead gen campaign is the worst. We actually moved that one to manual bidding last week just to stop the bleeding.
+[00:01:52] Diego Alvarez: Okay, so manual bidding is the stopgap for now. Who made that call?
+[00:01:59] Mike Castillo: I did. The new GM, Roger, wasn't thrilled about it, but he understood. He's been asking a lot of questions about the whole setup since he started in August.
+[00:02:11] Diego Alvarez: That's fair. New GM, new set of eyes. How's he settling in?
+[00:02:15] Mike Castillo: He's alright. Sharp guy. He came from a group down in Texas, so he's used to a different stack. He's been looking at Marchex, mostly comparing pricing.
+[00:02:25] Diego Alvarez: Understood. I'm not going to get into a comparison today, but I'd like to understand what's driving that. Is it the billing, the reporting, something else?
+[00:02:35] Mike Castillo: Honestly, the bidding thing is part of it. If our conversions aren't flowing fast enough, it makes the whole platform look like it's not pulling its weight.
+[00:02:45] Diego Alvarez: That makes sense. Let me ask a couple of things so I can take this back to the right people. When did you first notice the lag?
+[00:02:56] Mike Castillo: Probably three or four weeks ago. It got worse when we bumped up spend in September.
+[00:03:02] Diego Alvarez: Got it. And is this only on the Google Ads side, or are you seeing it in Salesforce too?
+[00:03:11] Mike Castillo: Salesforce is fine. Leads are showing up same day. It's just the conversion push to Google.
+[00:03:18] Diego Alvarez: Okay. I want to get the specific campaign IDs and a couple of call examples where the delay was longest. Can you send those over?
+[00:03:29] Mike Castillo: Yeah, I can pull that together. Probably by tomorrow morning.
+[00:03:33] Diego Alvarez: Perfect. I'll open this up on my end and get it in front of the team that owns the Google Ads integration. I can't promise a fix timeline today, but I'll make sure it's in the queue with the right priority.
+[00:03:48] Mike Castillo: Appreciate that. One other thing, and this is minor. We're down a BDC rep in Oklahoma City, so call handling there is thin. If you see a dip in answered rates, that's why.
+[00:04:02] Diego Alvarez: Good to know. Do you want me to keep an eye on that store specifically for the next few weeks?
+[00:04:10] Mike Castillo: That'd help. Just so we don't get surprised at month end.
+[00:04:15] Diego Alvarez: Done. Anything else on the Signal AI side while we're here?
+[00:04:21] Mike Castillo: No, that's been fine. The appointment booked signal is still matching up with what the BDC logs, so no complaints there.
+[00:04:28] Diego Alvarez: Good. I'll leave that alone then. Let me get the ticket going today and I'll follow up with you Thursday or Friday once I have an update.
+[00:04:39] Mike Castillo: Thursday works. I'll have the campaign list to you in the morning.
+[00:04:45] Diego Alvarez: Sounds good. Hey, before I let you go, are you still doing the Friday ride-alongs with the sales team?
+[00:04:54] Mike Castillo: Every other week. It's the only way I get out of the office. Roger's actually tagging along this Friday.
+[00:05:02] Diego Alvarez: Nice. Good luck with that. Talk Thursday.
+[00:05:05] Mike Castillo: Thanks Diego. Talk then.

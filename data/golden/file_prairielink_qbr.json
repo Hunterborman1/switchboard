@@ -1,0 +1,32 @@
+{
+  "fileId": "file_prairielink_qbr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "During the outage the voice agent passed calls to care with no notes.",
+      "quote": "During the outage on the twenty-ninth the voice agent took thousands of calls, which was great, but every one it passed to my team came over with no notes.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "medium",
+      "summary": "Number swap stopped working on order pages after the move to the React app.",
+      "quote": "the number swap stopped working on our order pages after we moved to the new React app",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Wants the weekly source report delivered into Google Sheets automatically.",
+      "quote": "I'd love a way to get the weekly source report into Google Sheets without someone downloading it",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

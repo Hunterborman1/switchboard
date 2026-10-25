@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_178",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Like, why are we paying separately for PreSense, and the QM seats, and then AI Voice Agent minutes on top of that.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

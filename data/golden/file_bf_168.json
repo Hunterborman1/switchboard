@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_168",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "Brittany said Marchex is quoting dealer groups a lower number per rooftop than what we pay, sometimes with the call scoring thrown in, and they're offering a couple of free months to get a group like ours to switch.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

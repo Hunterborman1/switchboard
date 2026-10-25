@@ -1,0 +1,39 @@
+Bluewater Insurance Partners / Invoca | check-in | Fri, Oct 9, 2026
+
+[00:00:05] Rachel Okafor: Hey Peter, good morning. How's everything going up in Hartford?
+[00:00:10] Peter Lang: Morning Rachel. It's going okay, busy as usual. We've got the fall Medicare push so the phones are nonstop.
+[00:00:19] Rachel Okafor: I bet. What are you seeing volume wise on the call side this month?
+[00:00:26] Peter Lang: We're pacing around 42,000 calls across the network for September, which is up maybe 11% over August. The P&C side is steady, but Medicare Advantage is where the spike is.
+[00:00:38] Rachel Okafor: That tracks with what I'd expect for open enrollment ramp. Any staffing changes I should know about so I can line up training if needed?
+[00:00:47] Peter Lang: Yeah, we added six agents on the Genesys side last week, and two more start Monday. That's part of why I wanted to talk today.
+[00:00:58] Rachel Okafor: Good to know. Let's make sure they're set up in QM before the next scorecard cycle. How's the QM rollout going overall?
+[00:01:08] Peter Lang: Honestly, it's behind. We're only scoring about 30% of calls right now because we haven't finished calibrating the scorecards for the new Medicare scripts.
+[00:01:18] Rachel Okafor: Okay, that's helpful. Do you want me to bring in our QM enablement person to help with calibration, or is the hold up more on your side?
+[00:01:29] Peter Lang: It's mostly us. We need to get sign off from compliance on the wording, and they've been buried. But if you have a template for how other agencies structure their Medicare scorecards, that would speed things up.
+[00:01:42] Rachel Okafor: I can pull something together. I'll send it over by Tuesday so you have it before your compliance meeting.
+[00:01:49] Peter Lang: That works.
+[00:01:51] Rachel Okafor: So beyond QM, is anything else on your mind? I know you mentioned something about integrations when we scheduled this.
+[00:01:58] Peter Lang: Yeah, there's a Salesforce issue that's been bugging us. It's not urgent, but it's messing with our reporting.
+[00:02:06] Rachel Okafor: Tell me more.
+[00:02:09] Peter Lang: So the integration writes call data into our custom objects fine most of the time. But when we change a field or add a new picklist value, it starts dropping the call outcome into the wrong field on the custom object.
+[00:02:26] Rachel Okafor: Wrong field meaning it lands somewhere it shouldn't, or it just doesn't map at all?
+[00:02:32] Peter Lang: It lands in the wrong field. We have a custom object for call dispositions, and we added a new picklist value last month for 'policy inquiry'. After that, calls that should be tagged as 'quote given' started showing up under 'policy inquiry'. It's throwing off our dashboards.
+[00:02:50] Rachel Okafor: Got it. So the mapping isn't respecting the updated picklist. Does it happen right after the change, or does it take a while to show up?
+[00:03:01] Peter Lang: Right after. The first call we ran through after the change went to the wrong field. We caught it because our ops lead, Debra, flagged the numbers.
+[00:03:12] Rachel Okafor: Okay. And is this only on that one custom object, or have you seen it elsewhere?
+[00:03:19] Peter Lang: So far just that one, but we're about to add another picklist for 'renewal discussion', and I'm worried it'll happen again.
+[00:03:26] Rachel Okafor: Makes sense. Let me take this back to our integrations team. Can you send me the object name and the field API names when you get a chance? That'll help them reproduce it.
+[00:03:39] Peter Lang: Yeah, I can do that this afternoon.
+[00:03:42] Rachel Okafor: Great. And just to set expectations, I can't fix it on this call, but I'll get it in front of the right folks and keep you posted on what they find.
+[00:03:56] Peter Lang: Appreciate it. It's not breaking anything critical, more of a nuisance for reporting.
+[00:04:01] Rachel Okafor: Understood. How's PreSense working out with the new agents? I know that was a big part of the Genesys setup.
+[00:04:08] Peter Lang: It's fine. The screen pops are showing up, agents seem to like seeing the web journey. No complaints there.
+[00:04:16] Rachel Okafor: Good. And call tracking and Signal AI are chugging along as usual?
+[00:04:20] Peter Lang: Yeah, no issues. Signals are classifying the Medicare calls pretty well, we're seeing a lot of 'appointment booked' signals.
+[00:04:30] Rachel Okafor: That's what we like to hear. Anything else on the account side? I saw your renewal is coming up next summer.
+[00:04:38] Peter Lang: Yeah, July. We'll probably start talking about it in the spring. No concerns right now.
+[00:04:45] Rachel Okafor: Perfect. So to recap, I'll send the QM scorecard template by Tuesday, you'll send me the Salesforce object details this afternoon, and I'll follow up on the integration bug once I hear back.
+[00:04:58] Peter Lang: Sounds good. Oh, and one more thing. Can we move our next check-in to the 23rd? I'm out the week of the 19th.
+[00:05:08] Rachel Okafor: The 23rd at 8:30 works for me. I'll send an updated invite.
+[00:05:13] Peter Lang: Great. Thanks Rachel.
+[00:05:16] Rachel Okafor: Thanks Peter. Talk soon.

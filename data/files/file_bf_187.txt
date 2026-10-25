@@ -1,0 +1,43 @@
+SunPeak Solar / Invoca | QBR | Wed, Sep 23, 2026
+
+[00:00:04] Diego Alvarez: Hey Marisol, hey Hector. How's the week going over there?
+[00:00:08] Marisol Vega: Busy. Busy good. We're in the middle of onboarding four new reps on the bilingual side and Q4 pipeline is already stacking up.
+[00:00:19] Hector Ruiz: Yeah, and the phones have not slowed down at all. We're probably running about 2,400 to 2,600 inbound calls a week right now across the three states.
+[00:00:30] Diego Alvarez: 2,400 a week. That's up from the 2,100 we talked about last quarter, right?
+[00:00:36] Hector Ruiz: Roughly, yeah. Texas is the bulk of it. Arizona is steady, Florida is starting to climb now that hurricane season is quieting down.
+[00:00:45] Diego Alvarez: Makes sense. Let me pull up the account while we talk. I want to walk through the numbers first and then leave time for anything you two want to flag.
+[00:00:57] Marisol Vega: Sounds good.
+[00:00:58] Diego Alvarez: So since June, call volume is up 18 percent. Signal AI is tagging about 31 percent as quote requested, which tracks with what you told me your internal benchmark was.
+[00:01:10] Marisol Vega: That's about right. Appointment booked signals look solid too.
+[00:01:14] Diego Alvarez: Good. AI Voice Agent handled a little over 9,000 calls in the quarter, and about 60 percent of those ended without a transfer, which is right in the range you wanted.
+[00:01:26] Hector Ruiz: The after-hours stuff has been the biggest win for us. Those calls used to just go to voicemail.
+[00:01:35] Diego Alvarez: How's the Salesforce side looking for you all?
+[00:01:39] Marisol Vega: Fine. Call records are landing where we expect them. No issues there.
+[00:01:43] Diego Alvarez: Okay. Before we get into the rest, anything you want to raise about the tools?
+[00:01:51] Marisol Vega: Two things, both medium-sized but worth talking about.
+[00:01:54] Diego Alvarez: Go ahead.
+[00:01:56] Marisol Vega: First one is the AI Voice Agent handoff. When it transfers to a live agent, whatever it collected from the caller doesn't show up on our end.
+[00:02:08] Hector Ruiz: Right. So the caller already gave their name, their address, sometimes the utility provider, and then the agent picks up and has nothing.
+[00:02:16] Marisol Vega: And the agents have stopped trusting it. They just start from scratch and make the customer repeat everything, which is exactly what we were trying to avoid.
+[00:02:28] Diego Alvarez: When did you first notice that?
+[00:02:30] Marisol Vega: Early August, I think. It was sporadic at first and now it feels like every transfer.
+[00:02:39] Diego Alvarez: Is it both languages or more one than the other?
+[00:02:43] Hector Ruiz: Hector's team sees it on Spanish calls constantly. I'd say it's happening on almost all of them.
+[00:02:51] Diego Alvarez: Okay. Can you send me two or three call IDs where it happened? I'll take it to the team.
+[00:03:00] Marisol Vega: I'll have Hector pull a few from yesterday.
+[00:03:04] Hector Ruiz: Yeah, I can get those over by tomorrow morning.
+[00:03:08] Diego Alvarez: Perfect. What's the second thing?
+[00:03:10] Marisol Vega: The Google Ads conversions. We compared the call dates to the conversion date column in Google Ads and there's a two to three day gap.
+[00:03:21] Marisol Vega: Some of them are showing up a full three days after the call, so Smart Bidding is optimizing on incomplete data the whole time.
+[00:03:32] Diego Alvarez: And you're seeing this across campaigns or just certain ones?
+[00:03:37] Marisol Vega: Mostly our Texas campaigns. The Meta side we haven't dug into yet.
+[00:03:42] Diego Alvarez: Okay. I'll get the specifics from you and take both of these back. I don't want to guess at what's happening.
+[00:03:52] Marisol Vega: Appreciate that. The ramp is at five percent and we just want the numbers we're feeding Google to be right.
+[00:04:02] Diego Alvarez: Understood. Anything else on your list?
+[00:04:05] Hector Ruiz: Not really. Tracking and the messaging piece are both doing what we need.
+[00:04:11] Marisol Vega: Same here.
+[00:04:13] Diego Alvarez: Good. Last thing, renewal is coming up at the end of November. I'll send over the summary and we can get a short call on the calendar once I have updates on those two items.
+[00:04:28] Marisol Vega: Works for us. Send whatever times work and we'll grab one.
+[00:04:34] Diego Alvarez: Will do. Thanks both, talk soon.
+[00:04:37] Hector Ruiz: Thanks Diego.
+[00:04:39] Marisol Vega: Bye.

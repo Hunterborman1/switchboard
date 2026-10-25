@@ -1,0 +1,39 @@
+Harbor FCU / Aisha Coleman / notes / Fri Oct 2, 2026 3:30 PM
+
+30 min with Jason Park, Marketing Operations Manager. He was in the Tacoma office, said the rain finally stopped.
+
+volumes, sept:
+- total calls 11,840, roughly flat vs aug
+- ~62% still to the member services line, rest to lending & the branch locator numbers
+- Google Ads oflfine conversions went out fine, no gaps he could see
+
+Jason: headcount update, two new reps on the lending queue started Monday, so QM seat count may go to 47 in Q1. Nothing to do now, just a heads up.
+
+then he brought up salesforce. pasted this from his scratch pad while we were talking:
+
+"new value 'Home Equity - HELOC' added to the Call_Disposition picklist on Tue. Since then no call records writing to the custom object at all. Worked Mon. Nothing changed on our side except that picklist value."
+
+He said: "So the Salesforce piece, what we're seeing is when we add a value to a picklist on the call object, records just stop writing to the custom objects, & the only thing that moved this week was that new HELOC value." Their admin pulled the integration logs and saw the writes land normally on Monday, then nothing after the picklist change.
+
+severity: medium for them. nothing member-facing, but the lending team uses those custom object records for follow-up lists, so a week of missing calls is a week they can't work.
+
+asked him to grab the sf record ids for two calls that didn't write (one tue, one wed) & send me the picklist screenshot. i'll take it to the integrations team, no promises on timing yet. he's fine keeping it on email rather than opening anything.
+
+Compliance note: their compliance team reveiws every QM scorecard change before it goes live. They're mid-cycle on a scorecard tweak, Jason thinks the review finishes end of next week. Not blocking anything.
+
+transcript fragment from a call i pulled up mid-meeting, one of theirs:
+agent: thanks for calling harbor federal...
+Member: yeah I'm calling about the auto loan payoff, I got the letter
+Agent: okay, let me get your member number...
+
+Other stuff:
+- renewal feb 28, 2027, way out, he's not thinking about it yet
+- signal ai, qm scoring itself, all fine per jason
+- he asked who to email about invoice copy, told him to loop me
+
+to-dos:
+- jason: 2 record ids + picklist screenshot, by mon oct 5
+- me: open with integrations team once i have those
+- me: check the q1 seat bump w/ the qm side so pricing lines up before renewal paperwork
+
+next call: fri oct 16, same time.

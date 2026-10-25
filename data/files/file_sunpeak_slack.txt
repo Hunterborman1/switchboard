@@ -1,0 +1,29 @@
+Slack export · #deal-sunpeak-renewal
+Exported 10/20/2026 12:06 PM · 20 messages
+
+[10/20/2026 11:20 AM] diego.alvarez: kicking off the renewal debrief here. call ran long, amanda, marisol & cody from sunpeak. quick heads up: this is the renewal call from yesterday, not the qbr. qbr is still on the calendar for nov 5.
+[10/20/2026 11:22 AM] diego.alvarez: amanda wants the voice agent pricing restructured or she's capping the whole deal at 200k
+    ↳ [10/20/2026 11:24 AM] chris.donovan: so that's a 68k gap. what's driving it, seat count or the usage line?
+    ↳ [10/20/2026 11:26 AM] diego.alvarez: usage. they're at 70 seats & not moving off that. the agent minutes are what she keeps pointing at. said the math doesn't work for 3 markets when they're only staffing the voice agent in TX rn.
+[10/20/2026 11:29 AM] kate.morrison: what term are they asking for? one year or are they open to 24?
+    ↳ [10/20/2026 11:31 AM] diego.alvarez: they'll do 24 if the number works. amanda said she'd sign a two-year today at 200. i don't think she moves off that without something on the agent side.
+[10/20/2026 11:33 AM] chris.donovan: ok. i'll pull the deal desk sheet together. kate, can we mdel a usage tier reset instead of a flat discount? feels cleaner than cutting list.
+    ↳ [10/20/2026 11:35 AM] kate.morrison: can do. send me the current agent minute run rate & their commit from last year & i'll have two options by thursday.
+[10/20/2026 11:38 AM] diego.alvarez: sending now. also fyi cody forwarded callrail's same-day sync one-pager to marisol & their CEO
+    ↳ [10/20/2026 11:40 AM] jordan.reyes: :eyes: when did that land?
+    ↳ [10/20/2026 11:42 AM] diego.alvarez: cody mentioned it on the call, said marisol got it last week. he didn't say who sent it originally. i've got the one-pager jordan, want me to forward it?
+    ↳ [10/20/2026 11:44 AM] jordan.reyes: yes pls. send it to me & i'll get the counter sheet updated. same-day sync is their whole pitch rn so i want to see how they're framing it.
+[10/20/2026 11:47 AM] diego.alvarez: on it. also pasting the three lines from the recording where cody gets into the google ads stuff, since that's the part that matters for the counter:
+  
+  cody: "the conversions are still a day or two late in google ads and that's honestly what's killing us"
+  
+  cody: "we're bidding blind for 24 hours, so by the time the conversion shows up the auction's already moved"
+  
+  cody: "marisol keeps asking me why our cost per lead on meta looks fine & google looks terrible, and it's the same lag"
+[10/20/2026 11:50 AM] chris.donovan: that's the real thing then. pricing is the ask, the lag is the why. did you commit to anything on the call?
+    ↳ [10/20/2026 11:52 AM] diego.alvarez: no. i said i'd take it back & come with a proposal. didn't promise a date.
+    ↳ [10/20/2026 11:54 AM] chris.donovan: good. don't put a number in writing until kate's options are back. i'll loop in the pricing call for thursday.
+[10/20/2026 11:56 AM] kate.morrison: :+1: & if they push on the 200 number on the call, stall. tell them we're working the agent side.
+[10/20/2026 11:59 AM] diego.alvarez: will do. one more thing, amanda asked if we can get the proposal before their board meeting on the 29th. i told her i'd try but no promises.
+    ↳ [10/20/2026 12:01 PM] chris.donovan: 29th is tight but doable. thursday options, friday internal, monday to them. put it on my calendar.
+[10/20/2026 12:03 PM] diego.alvarez: done. thx all.

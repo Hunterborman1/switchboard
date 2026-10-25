@@ -1,0 +1,32 @@
+{
+  "fileId": "file_evergreen_qbr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Saturday-morning termite calls mislabeled as spam.",
+      "quote": "Saturday mornings, when people call about termites, a bunch of those get marked as spam and they're real",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail claims same-day Google Ads sync; owner is interested.",
+      "quote": "CallRail called me again. They say their Google Ads sync is same-day, and I'll be honest, that got my attention.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Marketing manager reads call summaries first thing every morning.",
+      "quote": "the call summaries are the first thing I read every morning, they save me so much time",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

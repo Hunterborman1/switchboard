@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_005",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "Marchex. And the thing that keeps catching my CFO's eye is that their per-rooftop number already includes call scoring, so on paper it's roughly a thirty percent gap at our current rooftop count.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

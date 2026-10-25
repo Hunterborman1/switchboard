@@ -1,0 +1,109 @@
+auto-transcript | audio_1014_evergreen | duration 00:04:41 | speakers detected: 3
+
+Speaker 1  00:00:03
+um okay, [inaudible] you both kyle, like ashley thanks for hopping on. what's going on? [crosstalk]
+
+Speaker 2  00:00:09
+it's the google ad thing it's been driving me up the wall for about three weeks now.
+
+Speaker 1  00:00:14
+okay walk me through it
+
+Speaker 2  00:00:17
+so a call comes in we book the job, and the conversion shows up in google ads.. eventually but it's one to three days after the call sometimes two sometimes three i haven't nailed down the pattern
+
+Speaker 1  00:00:32
+uh, and that's the offline conversion [inaudible] the click id
+
+Speaker 2  00:00:37
+yeah it's there [inaudible] late so smart bidding is out there making daily budget decisions on three-day-old information we bid up on mondays and the calls that actually came from monday aren't even showing yet
+
+Speaker 3  00:00:49
+right and i can't tell if tuesday was a bad day or just a day that hasn't reported yet exactly i can't make
+
+Speaker 2  00:00:59
+a call on spend when the scoreboard lags. that's the the whole problem.
+
+Speaker 1  00:01:06
+so when you look at um a week back a month back the numbers line up
+
+Speaker 3  00:01:12
+they line you know up it all lands eventually. it's the timing that kills us
+
+Speaker 2  00:01:19
+i don't need it perfect i need it the same day if i'm going to move budget around i have to know what yesterday did
+
+Speaker 1  00:01:28
+got it. is this all campaigns or is it it worse on some it's been
+
+Speaker 3  00:01:35
+consistent across the board for us termite lawn the mosquito stuff in the spring all of it
+
+Speaker 1  00:01:42
+okay and just so i've got it like, is it it the the same delay you you saw before or did something shift?
+
+Speaker 2  00:01:51
+it's been like this since we turned on the conversion import i just didn't have the budget room to care until now
+
+Speaker 1  00:02:00
+that's fair. can uh you send me a couple of specific calls that took three days i want to take that to the team with
+
+Speaker 2  00:02:10
+real examples ashley can pull those she's got the tracking numbers mapped.
+
+Speaker 3  00:02:16
+i can send you three or four from last week want the ones that booked or just any call?
+
+Speaker 1  00:02:24
+uh booked ideally that's the conversion side.
+
+Speaker 3  00:02:36
+okay. i'll get that over today oh and while i've got you, we're at about 2,100 calls this month across the six locations so that's up maybe 8% from september
+
+Speaker 1  00:02:50
+Nice That's the fall push
+
+Speaker 3  00:02:54
+partly we've also got a new dispatcher starting monday uh so i'm training and pulling reports at the same time. fun week.
+
+Speaker 2  00:03:03
+she's being polite it's it's chaos [crosstalk]
+
+Speaker 3  00:03:06
+it's fine anyway the other piece, and i i hate to even bring it up but a call rail rep keeps emailing me about same-day sync to google ads. same-day and the quote is lower than what we pay
+
+Speaker 1  00:03:22
+How often is she emailing
+
+Speaker 3  00:03:26
+every couple weeks i mean, i've been ignoring them so but the same-day thing is hard to ignore when kyle's asking me why our conversions are uh late
+
+Speaker 2  00:03:35
+i'm not you know looking to switch over a sync delay but if it's same-day somewhere else and it's cheaper..
+
+Speaker 1  00:03:45
+i hear that um, let me get the examples and i'll pull in the team on the timing side i'm not going to promise you a date on this call [crosstalk]
+
+Speaker 2  00:03:58
+that's fine. uh i [inaudible] to know it's being looked at
+
+Speaker 1  00:04:05
+uh it will be. ashley, um, send those call ids when you can kyle i'll follow up friday either way even if it's just to say where [inaudible].
+
+Speaker 2  00:04:14
+friday works hey one quick thing did you get the invite for the november review?
+
+Speaker 1  00:04:21
+i did i need to accept it tuesday the 10th uh right?
+
+Speaker 3  00:04:27
+yeah 2pm eastern. i'll re-send it to make sure [crosstalk]
+
+Speaker 1  00:04:30
+perfect okay so i'll let you both go uh talk friday
+
+Speaker 2  00:04:35
+thanks marcus
+
+Speaker 3  00:04:36
+thanks. sending those calls in a bit

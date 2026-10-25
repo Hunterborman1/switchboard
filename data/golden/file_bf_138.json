@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_138",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "But the summary that gets written and lands in the record, that's a paragraph of plain English about what the patient wanted, and I have no way to tell it to leave certain things out of it.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

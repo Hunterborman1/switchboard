@@ -1,0 +1,106 @@
+auto-transcript | rec_20261009_evergreen_raw | duration 00:04:36 | speakers detected: 3
+
+Speaker 1  00:00:02
+hey kyle hey ashley how's it going?
+
+Speaker 2  00:00:05
+good good busy tick season never really ends down here he's not
+
+Speaker 3  00:00:11
+kidding. we're still running spring campaigns in october because the weather won't cooperate
+
+Speaker 1  00:00:17
+ha i bet well, i i wanted to check in see how things are looking on your end. volumes been steady?
+
+Speaker 3  00:00:24
+yeah actually up a bit we did about 2,100 calls last month across the six locations which is maybe 10% over august
+
+Speaker 2  00:00:33
+most of that's the raleigh and durham offices uh the fayetteville one is still slow i think we need another tech down there
+
+Speaker 3  00:00:43
+uh, we're interviewing so it's on the list. anyway, the call tracking stuff is fine numbers are working tracking's accurate
+
+Speaker 1  00:01:03
+good to hear anything else on the call tracking side that's been a pain?
+
+Speaker 2  00:01:08
+like, honestly, the tracking itself is fine. but i've got a problem with the google adds side the offline conversions um, they're showing up way late
+
+Speaker 1  00:01:21
+late how?
+
+Speaker 2  00:01:21
+One to three days after the call sometimes more We had a call on Monday, conversion didn't hit Google until Wednesday night By then smart betting's you know, already made decisions without it
+
+Speaker 3  00:01:36
+and it's not a one-off. it's every day. so google sees these days with zero conversions and thinks our ads aren't working so it pulls back spend.
+
+Speaker 2  00:01:46
+Right Then we underbid we get fewer calls, and the the whole thing spirals. I've been watching it for two weeks. It's costing us
+
+Speaker 1  00:01:56
+okay so the conversions are delayed, and you're seeing smart betting react to that how are you tracking that [inaudible] pulling back
+
+Speaker 2  00:02:07
+just looking at the google ad dashboard impression share drops on days with no conversions then it recovers once the late ones come in but by then we've missed the opportunity [crosstalk]
+
+Speaker 3  00:02:21
+uh we're not big enough to absorb that kind of fluctuation every dollar counts
+
+Speaker 1  00:02:28
+got it. and um this is specifically the offline conversions from invoke a to google ads, right? not any other integration?
+
+Speaker 2  00:02:37
+yeah just that everything else is fine. um, the signals are working uh we're getting appointment booked and quote given no complaints there
+
+Speaker 3  00:02:45
+the signals are actually really helpful for our follow-up but yeah the google thing is the headache.
+
+Speaker 1  00:02:51
+okay so so when you say one to three days is it consistent? like always at least a a day?
+
+Speaker 2  00:03:00
+always at least a day. sometimes two i've seen three once it's not instant like we were told
+
+Speaker 1  00:03:09
+alright i'm going to take this back to the the team so can you send me a couple of examples? uh call ids or timestamps, and the corresponding google ad conversion times
+
+Speaker 2  00:03:22
+like, yeah ashley can pull that.
+
+Speaker 3  00:03:26
+i'll put together a spreadsheet maybe five or six calls from last week.
+
+Speaker 1  00:03:32
+perfect and is this happening for all campaigns or just specific ones?
+
+Speaker 2  00:03:37
+all of them as far as i can tell we've got four main campaigns same thing [inaudible] each
+
+Speaker 1  00:03:45
+okay i'll dig into it it anything else going on? how's the new location in cary coming along?
+
+Speaker 2  00:03:53
+slow. permitting is a nightmare but we're hoping to open by december
+
+Speaker 3  00:03:59
+like we'll need to set up tracking numbers for that one too but that's a january problem [crosstalk]
+
+Speaker 1  00:04:07
+no rush just [inaudible] know when you're ready and and how's the team holding up? [crosstalk]
+
+Speaker 2  00:04:13
+stretched thin, but that's that's
+
+Speaker 1  00:04:15
+home services we'll survive. alright i'll follow up on the google ad thing once i [inaudible] those examples should be early next week.
+
+Speaker 2  00:04:26
+Sounds good Thanks Marcus
+
+Speaker 3  00:04:28
+i'll send that spreadsheet this afternoon
+
+Speaker 1  00:04:32
+great talk soon

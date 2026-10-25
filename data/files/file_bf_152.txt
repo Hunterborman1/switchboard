@@ -1,0 +1,73 @@
+auto-transcript | rec_20260930_northwind_raw | duration 00:03:53 | speakers detected: 3
+
+Speaker 1  00:00:05
+hey brandon hey michelle how's the week going over there? [crosstalk]
+
+Speaker 2  00:00:21
+hey tom busy but good we're in the middle of q4 planning so you know how that goes.
+
+Speaker 3  00:00:30
+Yeah and we just had a couple of folks out on the sales floor, so I've been covering some shifts It's been a little chaotic
+
+Speaker 1  00:00:40
+got it well i wanted to check in on presence and see how things are looking and also talk about volumes if you have a a minute
+
+Speaker 2  00:00:53
+volumes are up we're seeing about 12,000 calls a week now through the tracking numbers, like, up from maybe 10,500 last month.
+
+Speaker 3  00:01:03
+yeah the fiber promo is driving a lot of that. and the screen pops are mostly working but..
+
+Speaker 2  00:01:11
+but we hit um, something with the transfers. when genesis moves a call between queues or to another agent the pre sense screen pop comes up blank for the person who gets it it.
+
+Speaker 1  00:01:27
+okay so the pop itself is empty no journey data at all
+
+Speaker 2  00:01:32
+Right We tested a batch of 50 transfers last week and 38 of them arrived blank That's a big deal for the sales team because they're picking up cold
+
+Speaker 3  00:01:43
+it's not every time you know but it's enough that the agents are starting to not trust it they just ask the caller everything again
+
+Speaker 1  00:01:55
+okay that's helpful can you send me the specifics? like which queues and maybe a few call ids
+
+Speaker 2  00:02:05
+yeah so i'll pull those it's mostly the sales queue and the retention queue. michelle, you have the call ids from friday
+
+Speaker 3  00:02:15
+i do i'll forward them after this
+
+Speaker 1  00:02:18
+perfect and just so i'm clear this is when genesis does the transfer, um not when the caller dials directly into a different number [crosstalk]
+
+Speaker 2  00:02:29
+correct direct calls are fine it's the internal transfers. [crosstalk]
+
+Speaker 1  00:02:33
+got it i'll take this back to the the team and see what we can find um anything else on your end?
+
+Speaker 3  00:02:56
+no that's the main thing the rest is fine we're actually hiring two more agents next month, so that'll help with coverage.
+
+Speaker 1  00:03:05
+so, nice and are you still using the ai voice agent for after-hours?
+
+Speaker 2  00:03:11
+yeah, that's been fine no issues there
+
+Speaker 1  00:03:14
+good i i also wanted to remind you that your renewal is coming up in march you know, but we can talk about that later. no rush.
+
+Speaker 2  00:03:27
+okay sounds good i mean we'll probably want to review everything a month or two before.
+
+Speaker 1  00:03:36
+absolutely i'll set up a call for i mean early next year and i'll dig into the transfer issue and get back to you by end of week
+
+Speaker 3  00:03:47
+thanks tom appreciate it
+
+Speaker 1  00:03:48
+no problem talk soon.

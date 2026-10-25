@@ -1,0 +1,241 @@
+WEBVTT
+
+1
+00:00:05.752 --> 00:00:11.693
+Tom Lindqvist: Hey Vanessa, hey Darnell. Thanks for making the time. How's the week going down there in Tampa?
+
+2
+00:00:12.427 --> 00:00:18.161
+Vanessa Grant: Busy. We're already in holiday prep mode, so this is a good break, honestly.
+
+3
+00:00:19.461 --> 00:00:23.405
+Darnell Wright: Same here. Call volume's been climbing for a couple weeks already.
+
+4
+00:00:24.027 --> 00:00:34.409
+Tom Lindqvist: That tracks with what I saw in the numbers. Q3 showroom calls were up about 18 percent over Q2. Anything driving that beyond seasonality?
+
+5
+00:00:35.408 --> 00:00:43.764
+Vanessa Grant: A lot of it is the fall promotion, plus we've been running more Meta campaigns than we did in the spring.
+
+6
+00:00:43.764 --> 00:00:44.560
+Vanessa Grant: Google too.
+
+7
+00:00:44.792 --> 00:00:51.862
+Tom Lindqvist: And the AI Voice Agent is handling a lot of the after-hours and store-hours volume now, right?
+
+8
+00:00:53.261 --> 00:01:01.838
+Darnell Wright: Yeah. Containment's been trending up every month since we turned it on. Order status calls and store hours are the bulk of it.
+
+9
+00:01:02.540 --> 00:01:07.899
+Tom Lindqvist: What's the split look like between order status and store hours these days?
+
+10
+00:01:08.516 --> 00:01:15.121
+Darnell Wright: Roughly two to one, order status. Though store hours spikes on weekends when people are out driving around.
+
+11
+00:01:16.213 --> 00:01:22.479
+Vanessa Grant: And it's been a relief for the stores, honestly. The front desk used to get buried in those calls.
+
+12
+00:01:23.340 --> 00:01:34.287
+Tom Lindqvist: Good. Now, I want to spend most of today on a few things: the Q3 recap, then the Amazon Connect piece Darnell flagged, and then planning for the holiday window.
+
+13
+00:01:34.287 --> 00:01:35.017
+Tom Lindqvist: Sound okay?
+
+14
+00:01:35.471 --> 00:01:36.749
+Vanessa Grant: Works for me.
+
+15
+00:01:38.120 --> 00:01:39.763
+Darnell Wright: Yeah, let's do it.
+
+16
+00:01:40.515 --> 00:01:49.222
+Tom Lindqvist: So, top line. Call tracking attributed about 41,000 calls to campaigns in Q3. Google Ads offline conversions went over fine, and Meta matched well.
+
+17
+00:01:49.222 --> 00:01:51.399
+Tom Lindqvist: Nothing broke on the integrations side.
+
+18
+00:01:52.555 --> 00:01:54.537
+Vanessa Grant: Good. And the PreSense results?
+
+19
+00:01:54.933 --> 00:01:58.855
+Tom Lindqvist: That's the part I wanted you to talk about, actually.
+
+20
+00:02:00.178 --> 00:02:10.532
+Vanessa Grant: PreSense has been the surprise of the year. Agents can see which mattress the person was looking at, and close rates on those calls are up.
+
+21
+00:02:10.944 --> 00:02:11.805
+Tom Lindqvist: Up meaningfully?
+
+22
+00:02:13.115 --> 00:02:19.344
+Vanessa Grant: A few points, which on our volume is real money. The agents love it. They're not guessing anymore.
+
+23
+00:02:20.050 --> 00:02:26.704
+Darnell Wright: My team asks for it on every call now. If a screen pop doesn't show, they notice.
+
+24
+00:02:27.034 --> 00:02:32.952
+Tom Lindqvist: That's great to hear. Did you roll it out to all 64 showrooms or just the pilot group?
+
+25
+00:02:33.532 --> 00:02:40.708
+Vanessa Grant: All of them, as of mid-September. Took a couple of weeks to train everyone but it stuck.
+
+26
+00:02:41.961 --> 00:02:47.105
+Tom Lindqvist: Okay. Darnell, you wanted to raise something on the contact center side?
+
+27
+00:02:47.563 --> 00:03:05.180
+Darnell Wright: Yeah. It's the handoff from the voice agent into Amazon Connect. When the voice agent transfers to a person in Amazon Connect, the agent sees nothing. No order number, no reason for the call. The customer has to start over.
+
+28
+00:03:06.559 --> 00:03:11.802
+Tom Lindqvist: So the context the voice agent collected doesn't carry over into the agent's screen?
+
+29
+00:03:12.549 --> 00:03:20.811
+Darnell Wright: Right. The customer already told the bot they're calling about an order, gave the order number, and then the live agent asks for it again.
+
+30
+00:03:20.811 --> 00:03:22.133
+Darnell Wright: It's a bad look.
+
+31
+00:03:23.186 --> 00:03:24.941
+Tom Lindqvist: How often is it happening?
+
+32
+00:03:25.763 --> 00:03:32.530
+Darnell Wright: Every transfer. It's not intermittent. Maybe 400 transfers a week right now, and it'll be more in November.
+
+33
+00:03:33.546 --> 00:03:44.802
+Tom Lindqvist: Got it. Let me ask a couple of questions so I can take this back accurately. Is the transfer landing in a specific queue, or does it route by intent?
+
+34
+00:03:45.527 --> 00:03:50.925
+Darnell Wright: By intent. Order status goes to one queue, everything else goes to the general line.
+
+35
+00:03:52.072 --> 00:03:58.153
+Tom Lindqvist: And the agents are all in Amazon Connect, no other desktop in front of them?
+
+36
+00:03:59.457 --> 00:04:00.857
+Darnell Wright: Just Connect. That's it.
+
+37
+00:04:01.348 --> 00:04:11.479
+Tom Lindqvist: Okay. I don't want to guess at this on the call. Let me take it to the team and come back with what's possible and what it would take.
+
+38
+00:04:12.586 --> 00:04:17.755
+Darnell Wright: That's all I'm asking. I just want it on the radar before the holiday rush.
+
+39
+00:04:19.229 --> 00:04:26.595
+Tom Lindqvist: It is now. I'll follow up by end of next week, even if the answer is just an update.
+
+40
+00:04:26.937 --> 00:04:27.808
+Vanessa Grant: Appreciate that.
+
+41
+00:04:28.946 --> 00:04:32.568
+Tom Lindqvist: Anything else on your list before we talk holiday planning?
+
+42
+00:04:32.867 --> 00:04:42.543
+Vanessa Grant: One thing, and it's more of a heads up. CallRail reached out to our CMO directly. I'm not worried, but you should know they're circling.
+
+43
+00:04:43.414 --> 00:04:44.214
+Tom Lindqvist: How recent?
+
+44
+00:04:45.636 --> 00:04:53.595
+Vanessa Grant: Last week. Some email about our call tracking setup. Our CMO forwarded it to me and asked if we were happy.
+
+45
+00:04:54.275 --> 00:04:56.436
+Tom Lindqvist: And you told him you are?
+
+46
+00:04:57.728 --> 00:05:02.805
+Vanessa Grant: I told him about PreSense and the containment numbers. That ended the conversation.
+
+47
+00:05:03.655 --> 00:05:09.103
+Tom Lindqvist: Okay. I won't make a thing of it, but thank you for telling me.
+
+48
+00:05:10.050 --> 00:05:13.570
+Vanessa Grant: Of course. I'd rather you hear it from me.
+
+49
+00:05:14.668 --> 00:05:18.383
+Tom Lindqvist: So, holiday planning. What does the promo calendar look like?
+
+50
+00:05:19.763 --> 00:05:26.042
+Vanessa Grant: Black Friday promo starts the 20th of November, runs through Cyber Monday, then a second wave mid-December.
+
+51
+00:05:26.289 --> 00:05:35.355
+Darnell Wright: We're staffing up the contact center the week before, so the voice agent is going to carry a lot of the early overflow.
+
+52
+00:05:36.762 --> 00:05:45.480
+Tom Lindqvist: Do you want me to set up a check-in the week of the 16th, just to make sure nothing's wobbling during the surge?
+
+53
+00:05:46.937 --> 00:05:48.658
+Darnell Wright: Yeah, that would help.
+
+54
+00:05:49.694 --> 00:05:57.873
+Vanessa Grant: Please. And can you pull the Q3 numbers into a one-pager for me before then? I want to bring it to our exec meeting.
+
+55
+00:05:58.837 --> 00:06:01.301
+Tom Lindqvist: I'll have it to you by Monday.
+
+56
+00:06:01.787 --> 00:06:02.587
+Vanessa Grant: Perfect.
+
+57
+00:06:03.392 --> 00:06:14.078
+Tom Lindqvist: Okay, I think that's everything on my end. I'll send the recap today, and I'll have the Amazon Connect item in front of the right people this week.
+
+58
+00:06:14.313 --> 00:06:15.113
+Darnell Wright: Thanks, Tom.
+
+59
+00:06:15.632 --> 00:06:16.759
+Vanessa Grant: Thanks. Talk soon.
+
+60
+00:06:18.113 --> 00:06:20.963
+Tom Lindqvist: Talk soon, both. Have a good one.

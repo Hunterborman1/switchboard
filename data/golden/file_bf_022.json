@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_022",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "So we pay for call tracking, and then Signal AI sits on top as its own add-on, and then PreSense is another add-on, and then the QM seats are per seat, and now the AI Voice Agent minutes are separate again.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Customer links \"add-on pricing friction at renewal\" to the renewal decision.",
+      "quote": "And I'll be honest, if the add-on pricing keeps feeling like nickel and diming, we're going to have to look around before we commit.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

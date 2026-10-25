@@ -1,0 +1,125 @@
+Northwind Telecom escalation
+Mon, Sep 21, 2026, 9:15AM • 5:19
+
+Tom Lindqvist  0:06
+Hey Brandon, Owen. Thanks for making time this morning. How was the weekend?
+
+Brandon Hughes  0:12
+Not bad. Took the kids up to Estes Park on Saturday, weather was perfect.
+
+Owen Price  0:18
+I was on a soccer field most of Saturday, so, so, you you know. Survived.
+
+Tom Lindqvist  0:24
+Ha. Okay, well, I know you both flagged something you wanted to walk through, so I'm happy to start wherever makes sense.
+
+Brandon Hughes  0:33
+Yeah, let's do the Signal AI thing um, first because it's been bugging me for a couple weeks now.
+
+Tom Lindqvist  0:41
+Go ahead.
+
+Brandon Hughes  0:42
+So the spam signal is tagging calls as spam that are not spam. Like, real customers calling in. And when that happens they drop out of our reporting, so our weekend and after-hours numbers look way lower than they actually are.
+
+Tom Lindqvist  0:59
+Okay. How did you first notice it?
+
+Brandon Hughes  1:03
+Our VP of sales, her name is Renee, she pulled the Sunday numbers for the wireless side and said they looked off. So I went in and listened to a sample of calls that were tagged spam, I want to say about forty of them from the last two weekends, and honestly most of them were real people. People asking about plans, one guy trying to upgrade, somebody checking on a repair ticket.
+
+Owen Price  1:29
+And these are calls that would normally count toward our Google Ads conversions, right?
+
+Brandon Hughes  1:35
+That's the thing. If they're marked spam, they don't flow through as conversions, so we're feeding Google less data than we should be.
+
+Tom Lindqvist  1:44
+Got it. Can you you tell me roughly what percentage of the spam-tagged calls you listened to turned out to be legit?
+
+Brandon Hughes  1:52
+I'd say, uh, maybe thirty of the forty. Something like that. It's not a small slice.
+
+Tom Lindqvist  1:59
+And is this concentrated on a particular number or campaign, or is it across the board?
+
+Brandon Hughes  2:06
+Seems like it's the after-hours line mostly. Weekends and anything past like eight at night. Weekday daytime looks normal.
+
+Owen Price  2:14
+Which is exactly when we get a lot of our rural fiber inquiries, because those folks are working during the day.
+
+Tom Lindqvist  2:24
+Okay. So let me make sure I've got it. Signal AI is flagging a chunk of your legitimate weekend and after-hours callers as spam, and because they're tagged spam they're falling out of reporting and not counting as conversions. Is that right?
+
+Brandon Hughes  2:39
+Yeah. That's it exactly.
+
+Tom Lindqvist  2:42
+Okay. I don't want to guess at what's driving it. Can you send me a handful of call IDs, maybe ten or fifteen from that sample you listened to, so I can get it in front of the team with something concrete?
+
+Brandon Hughes  3:00
+Yeah, I can pull those today. I'll send them over this afternoon.
+
+Tom Lindqvist  3:06
+Perfect. And how long has this been going on, best you can tell?
+
+Brandon Hughes  3:12
+Probably three, four weeks. It kind of crept up on us.
+
+Tom Lindqvist  3:17
+Okay, that helps. I'll get it logged with the severity it deserves and come back to you with next steps.
+
+Owen Price  3:25
+Appreciate it. Meanwhile, the rest of the setup has been solid, the Genesys screen pops are working the way we want, no complaints there.
+
+Tom Lindqvist  3:36
+Good to hear. Like, Anything else on the tracking side while we're here?
+
+Owen Price  3:42
+No, that side's fine.
+
+Tom Lindqvist  3:46
+Okay. While I've got you, how are volumes looking this month? We're heading into your busy stretch, right?
+
+Owen Price  3:53
+Yeah, we're tracking around forty-two thousand calls for September, um, which is up maybe nine percent from August. Football season always bumps the wireless side.
+
+Brandon Hughes  4:02
+And we've got two new hires starting on the sales floor next Monday, so we'll be adding seats. I'll send you the names for provisioning.
+
+Tom Lindqvist  4:14
+Great, send those whenever and I'll get them set up before Monday.
+
+Brandon Hughes  4:20
+Will do.
+
+Owen Price  4:22
+Oh, one other thing, unrelated. Are you still doing that quarterly business review in October, or did we move it?
+
+Tom Lindqvist  4:30
+Still October. I was going to propose the week of the twelfth, does that work for you two?
+
+Owen Price  4:38
+That week's I mean, good for me. Brandon?
+
+Brandon Hughes  4:41
+I've got a board thing on the fourteenth but otherwise open. Send an invite and I'll make it work.
+
+Tom Lindqvist  4:49
+Will do. And I'll have the spam signal stuff in motion well before then either way.
+
+Brandon Hughes  4:56
+Good. Because I'd rather not be explaining to Renee again why Sunday's numbers look soft.
+
+Tom Lindqvist  5:03
+Understood. Call IDs this afternoon, and I'll follow up once I've got something back from the team.
+
+Brandon Hughes  5:10
+Sounds good, Tom.
+
+Owen Price  5:12
+Thanks. Talk soon.
+
+Tom Lindqvist  5:13
+Thanks both. Enjoy the rest of your Monday.

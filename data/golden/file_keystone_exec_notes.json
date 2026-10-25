@@ -1,0 +1,32 @@
+{
+  "fileId": "file_keystone_exec_notes",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense screen pop is blank for the second agent when Genesys transfers a call from the sales queue to the service queue.",
+      "quote": "When a call transfers from the sales queue to the service queue in Genesys, the PreSense screen pop on the second agent is blank.",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "AI Voice Agent hands off after-hours claims calls without the policy number or loss details it collected, so agents re-ask.",
+      "quote": "Nate said Luis's claims team gets AI Voice Agent handoffs on after-hours claims without the policy number or loss details it already collected, so adjusters ask again.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "Executive sponsor credits PreSense routing for a 9-point lift in bind rate on paid search calls.",
+      "quote": "Patricia called out PreSense routing as the main reason bind rate on paid search calls is up 9 points since spring.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

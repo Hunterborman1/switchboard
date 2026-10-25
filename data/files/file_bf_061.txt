@@ -1,0 +1,98 @@
+Coastal Comfort Mattress check-in
+Wed, Oct 14, 2026, 12:45PM • 4:46
+
+Tom Lindqvist  0:02
+Hey Vanessa, Julie. How's Tampa treating you? Still hot down there?
+
+Vanessa Grant  0:08
+Oh, it's brutal. I walked from the parking garage to the building and I think I lost five pounds.
+
+Julie Hammond  0:16
+And half the office is out this week, so so it's been quiet on our side.
+
+Tom Lindqvist  0:24
+Ha, I bet. Well, I saw the volume ticked up a bit last month. Um, You're uh, at what, around 46,000 calls total across the 64 showrooms?
+
+Vanessa Grant  0:35
+Yeah, 46,300. We're up about 11% from August. Part of that is um, the AI Voice Agent taking a lot more store-hours and order-status calls. We went from 5% containment to almost 20% in six weeks.
+
+Tom Lindqvist  0:50
+That's a big jump. Is that mostly after hours or during the day too?
+
+Julie Hammond  0:57
+Both, but the after-hours transfer rate to Amazon Connect is way down. We used to have someone on till 9 PM for the Florida stores, and now we only have two people on the late shift.
+
+Tom Lindqvist  1:11
+Good, good. And that's helping the queue, uh, I assume?
+
+Julie Hammond  1:16
+Yeah, wait times during peak are down maybe 40 seconds on average. Nothing crazy but noticeable.
+
+Tom Lindqvist  1:23
+Nice. Okay, so I know you wanted to talk about a couple things. What's on your list?
+
+Vanessa Grant  1:31
+Well, um, one thing that's been bugging me. Every Monday, Julie or someone on her team pulls the previous week's dashboard data out of Invoca as a CSV, then manually pastes it into Looker for the exec report.
+
+Tom Lindqvist  1:45
+Uh, okay.
+
+Vanessa Grant  1:46
+It's not a disaster, uh, but it takes 45 minutes. And the numbers are always a day behind because of when the export runs. I'd love it if we could just... have the dashboard metrics delivered automatically.
+
+Tom Lindqvist  2:02
+Delivered how? Like a scheduled email, or something else?
+
+Vanessa Grant  2:06
+No, to Looker. Or Google Sheets, or honestly any BI tool. Something where we can hit an API endpoint and pull the numbers on a schedule. We have a data team that builds all our exec dashboards off the Looker instance, and this is the one thing they can't get programmatically.
+
+Julie Hammond  2:28
+Like, yeah, I'm the one doing the export right now. It's fine for now, but as we add more campaigns, it's not going to scale.
+
+Tom Lindqvist  2:39
+Got it it. So the ask is an API for dashboard metrics, so you can pull them into Looker or Sheets on a schedule and kill the manual export.
+
+Vanessa Grant  2:52
+So, Exactly. That would save us hours a month and let the data team own it instead of Julie.
+
+Tom Lindqvist  3:00
+Okay, that makes sense. I can take that back to product. I don't know what the roadmap looks like for that area, but but I'll log it properly. Can you send me a quick note after this with the specific dashboards you'd want? Just so I'm not guessing.
+
+Vanessa Grant  3:19
+Yes, I'll send it this afternoon.
+
+Tom Lindqvist  3:22
+Perfect. Anything else?
+
+Julie Hammond  3:23
+Not really. PreSense is working the way it should, Google Ads is fine, Meta is fine. We're actually seeing better match rates on the offline conversions since we switched the GCLID handling in September.
+
+Tom Lindqvist  3:38
+Nice, that's good to hear.
+
+Vanessa Grant  3:40
+Oh, one other thing, totally unrelated. We're doing a big anniversary sale the first week of November. Should I let you know just in case we need extra support on the tagging side?
+
+Tom Lindqvist  3:53
+Yeah, definitely. Send me the dates and I'll make sure nothing blocks you. Do you expect the same volume or higher?
+
+Vanessa Grant  4:03
+Probably 30 to 40 percent higher for that week. It's our biggest of the quarter.
+
+Tom Lindqvist  4:10
+Okay, I'll flag it internally. And I'll also check that your Amazon Connect flows are ready for the burst. Last time we had a small hiccup with the queue overflow.
+
+Julie Hammond  4:22
+Yeah, that was fixed, but good to double check.
+
+Tom Lindqvist  4:26
+Alright. So I'll follow up on the API idea, and you'll send me the dashboard list and the sale dates. Anything else before we wrap?
+
+Vanessa Grant  4:37
+Nope, we're good. Thanks Tom.
+
+Julie Hammond  4:39
+Thanks Tom.
+
+Tom Lindqvist  4:42
+Thanks, both. Talk soon.

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_coastal_transfers_eml",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "In all 12 example transfers, the receiving agent saw no order number and no reason for the call.",
+      "quote": "In all 12 examples below, the agent receiving the transfer saw no order number and no reason for the call.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Wants a scheduled export of the voice agent containment report to Google Sheets.",
+      "quote": "julie also asked (again) for a scheduled export of the voice agent containment report to sheets",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

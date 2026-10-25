@@ -1,0 +1,109 @@
+WEBVTT
+
+1
+00:00:04.696 --> 00:00:07.960
+Marcus Bell: Morning, Dana. How's the weather down in Charlotte?
+
+2
+00:00:08.174 --> 00:00:16.288
+Dana Ortiz: Uh, Hey Marcus. Muggy. We're supposed to get thunderstorms this afternoon, so half the branches are already prepping for storm calls.
+
+3
+00:00:16.548 --> 00:00:19.967
+Marcus Bell: That time of year. How's volume looking overall?
+
+4
+00:00:21.128 --> 00:00:29.495
+Dana Ortiz: Like, Up. September we ran about 11,400 calls uh, across the 14 branches, and October's pacing maybe 8 percent above that.
+
+5
+00:00:29.495 --> 00:00:31.885
+Dana Ortiz: HVAC is carrying most of it.
+
+6
+00:00:32.369 --> 00:00:36.970
+Marcus Bell: Nice. And Smart Bidding is still pulling off the offline conversions?
+
+7
+00:00:37.389 --> 00:00:40.218
+Dana Ortiz: Yeah, that's been steady. No complaints there.
+
+8
+00:00:41.072 --> 00:00:44.460
+Marcus Bell: Good. Anything on the team side I should know about?
+
+9
+00:00:45.065 --> 00:00:56.331
+Dana Ortiz: We had a couple folks leave the contact center, so we're down two agents until the new hires finish training. It's fine, just means longer holds on Mondays.
+
+10
+00:00:57.465 --> 00:01:01.354
+Marcus Bell: Got it. Like, okay, so what's on your list today?
+
+11
+00:01:02.629 --> 00:01:13.248
+Dana Ortiz: One thing that's been bugging me. The spam detection in Signal AI is flagging way too many real callers, and it's almost always the weekend ones.
+
+12
+00:01:13.806 --> 00:01:14.606
+Marcus Bell: Weekend specifically?
+
+13
+00:01:15.085 --> 00:01:27.146
+Dana Ortiz: Yeah. Saturday and Sunday. I mean, Someone calls at 8 PM on a Sunday about no heat, gets tagged as spam, and then that call just disappears from my weekend reporting.
+
+14
+00:01:27.931 --> 00:01:34.132
+Marcus Bell: So legitimate after-hours calls are getting pulled out of the numbers you you look at.
+
+15
+00:01:35.613 --> 00:01:45.437
+Dana Ortiz: Exactly. And And weekend calls are the worst because that's when we get the emergency stuff. You know, my branch managers are looking at reports that don't match reality.
+
+16
+00:01:45.799 --> 00:01:47.918
+Marcus Bell: How long has this been happening?
+
+17
+00:01:49.334 --> 00:02:01.494
+Dana Ortiz: A few weeks, maybe since early September. I first noticed when our Dallas I mean, branch showed zero weekend calls two weeks in a row, which is impossible.
+
+18
+00:02:02.784 --> 00:02:08.355
+Marcus Bell: Okay. Can you send me a couple of those call IDs or the dates and branches?
+
+19
+00:02:08.576 --> 00:02:13.734
+Dana Ortiz: I can uh, pull a list. I'll have my ops lead send it over.
+
+20
+00:02:14.168 --> 00:02:27.837
+Marcus Bell: Perfect. I'll take it to the product team, see what's going on with the spam logic for after-hours. I can't promise a timeline, but I'll come back to you with what I find.
+
+21
+00:02:28.757 --> 00:02:33.702
+Dana Ortiz: Like, that works. It's not breaking anything, it's just making my reports lie to me.
+
+22
+00:02:34.007 --> 00:02:35.090
+Marcus Bell: Understood. Anything else?
+
+23
+00:02:35.433 --> 00:02:41.714
+Dana Ortiz: No, PreSense is fine, the agents like seeing the web journey like, before they pick up. That's been good.
+
+24
+00:02:43.020 --> 00:02:54.181
+Marcus Bell: Great. I'll also check on that training schedule for the new agents, make sure they get the call flow refresher. Want to aim for a follow-up in two weeks?
+
+25
+00:02:54.913 --> 00:02:56.570
+Dana Ortiz: Two weeks works. Same time?
+
+26
+00:02:57.137 --> 00:03:01.760
+Marcus Bell: Same time. I'll send an invite. And stay dry this afternoon.
+
+27
+00:03:03.041 --> 00:03:05.169
+Dana Ortiz: Ha, I'll try. Talk soon, Marcus.

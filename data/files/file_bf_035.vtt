@@ -1,0 +1,173 @@
+WEBVTT
+
+1
+00:00:06.686 --> 00:00:09.144
+Marcus Bell: Morning, both. How's Thursday treating you?
+
+2
+00:00:09.371 --> 00:00:14.036
+Dana Ortiz: Morning. Busy. We're heading into furnace season, so it's all hands.
+
+3
+00:00:15.354 --> 00:00:18.844
+Priyanka Shah: Hi Marcus. I've got coffee, so I'm ready.
+
+4
+00:00:19.231 --> 00:00:23.624
+Marcus Bell: Good. Before we get into anything, how are volumes looking?
+
+5
+00:00:24.897 --> 00:00:32.260
+Priyanka Shah: Calls are up about 18 percent over September. Last week we were around 9,400 tracked calls across the 14 branches.
+
+6
+00:00:32.613 --> 00:00:37.138
+Marcus Bell: That's a jump. Is that the paid search push for heating tune-ups?
+
+7
+00:00:38.063 --> 00:00:44.313
+Priyanka Shah: Yeah, plus two new branches in Greenville and Gastonia came onto the tracking numbers this month.
+
+8
+00:00:44.936 --> 00:00:54.852
+Dana Ortiz: And we've got a staffing thing on top of it. We're down two dispatchers in Charlotte, so hold times are longer than I'd like.
+
+9
+00:00:55.246 --> 00:00:58.529
+Marcus Bell: Okay. How's PreSense holding up with the longer queues?
+
+10
+00:00:58.998 --> 00:01:04.557
+Dana Ortiz: Fine. Agents still get the screen pop before they pick up. No complaints there.
+
+11
+00:01:04.882 --> 00:01:09.023
+Marcus Bell: Good. And the signals side? Appointment booked, quote given, that set.
+
+12
+00:01:09.496 --> 00:01:14.301
+Priyanka Shah: Working like it always does. We haven't touched the scorecards since July.
+
+13
+00:01:14.869 --> 00:01:19.465
+Marcus Bell: Alright. Anything you want to put in front of me today?
+
+14
+00:01:20.563 --> 00:01:27.427
+Dana Ortiz: There is one thing, and it's been nagging at us for a couple of weeks now.
+
+15
+00:01:28.069 --> 00:01:28.869
+Marcus Bell: Go ahead.
+
+16
+00:01:30.122 --> 00:01:38.688
+Dana Ortiz: The calls that Invoca sends over to Google Ads as offline conversions, they're landing one to three days after the call.
+
+17
+00:01:38.688 --> 00:01:43.990
+Dana Ortiz: So Smart Bidding is looking at partial numbers for most of the week.
+
+18
+00:01:45.082 --> 00:01:50.665
+Marcus Bell: One to three days from when the call happens to when Google shows it?
+
+19
+00:01:50.996 --> 00:01:59.526
+Dana Ortiz: Right. We can see the call in Invoca, then it's a day or two later before it shows in Google Ads.
+
+20
+00:01:59.526 --> 00:02:01.963
+Dana Ortiz: Sometimes three if it's a weekend.
+
+21
+00:02:03.425 --> 00:02:05.014
+Marcus Bell: Who caught it first?
+
+22
+00:02:06.045 --> 00:02:14.208
+Dana Ortiz: I did, actually. I pull the weekly numbers Monday morning for the leadership call, and our cost per booked job looked off.
+
+23
+00:02:14.208 --> 00:02:16.064
+Dana Ortiz: Then Priyanka dug into it.
+
+24
+00:02:16.394 --> 00:02:27.028
+Priyanka Shah: I lined up the export dates against the call dates. About 40 percent of calls from any given day don't show in Google until two days later.
+
+25
+00:02:28.437 --> 00:02:33.797
+Marcus Bell: And this is the GCLID match, so it's tied to the ad click.
+
+26
+00:02:34.555 --> 00:02:39.320
+Priyanka Shah: Yeah. The conversions do get there, they just get there late.
+
+27
+00:02:40.301 --> 00:02:45.587
+Marcus Bell: Got it. Does it affect both the HVAC and the plumbing campaigns?
+
+28
+00:02:46.772 --> 00:02:51.592
+Dana Ortiz: As far as we can tell, yes. It's not one campaign.
+
+29
+00:02:52.133 --> 00:02:54.866
+Marcus Bell: Okay. How long has this been going on?
+
+30
+00:02:55.096 --> 00:03:02.862
+Priyanka Shah: Three weeks at least. I went back through September and it's there too, just less obvious because volumes were lower.
+
+31
+00:03:03.522 --> 00:03:14.827
+Marcus Bell: Understood. I want to get the exact campaign IDs and a few call examples from you so I can take it to the team with something concrete.
+
+32
+00:03:14.827 --> 00:03:16.921
+Marcus Bell: Can you pull that today?
+
+33
+00:03:17.537 --> 00:03:24.024
+Priyanka Shah: Yes. I'll send a sheet with call IDs, timestamps and when each one landed in Google.
+
+34
+00:03:25.408 --> 00:03:33.738
+Marcus Bell: Perfect. I'm not going to guess at what's causing it from here. I'll open it up and come back to you with what I hear.
+
+35
+00:03:34.081 --> 00:03:48.254
+Dana Ortiz: That's all I want. We're not changing anything on our end, the bids are what they are, but I can't defend the numbers to our CFO if they're built on half a week of data.
+
+36
+00:03:49.629 --> 00:03:53.871
+Marcus Bell: Makes sense. Anything else on the Meta side while we're here?
+
+37
+00:03:54.795 --> 00:03:56.459
+Priyanka Shah: Meta's been quiet. No issues.
+
+38
+00:03:57.026 --> 00:04:09.381
+Marcus Bell: Okay. One more thing, and this is just scheduling. I'd like to do a quick PreSense review with your contact center leads before the holidays, maybe the first week of November.
+
+39
+00:04:10.316 --> 00:04:18.275
+Dana Ortiz: That works. I'll get our contact center manager on the invite. She's the one who cares about it most.
+
+40
+00:04:18.994 --> 00:04:26.139
+Marcus Bell: Great. So, the conversion timing sheet today, and I'll follow up once I've talked to the team.
+
+41
+00:04:26.759 --> 00:04:29.413
+Priyanka Shah: I'll send it within the hour. Thanks, Marcus.
+
+42
+00:04:30.440 --> 00:04:33.064
+Marcus Bell: Thanks both. Good luck with furnace season.
+
+43
+00:04:33.441 --> 00:04:35.127
+Dana Ortiz: We'll need it. Talk soon.

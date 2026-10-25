@@ -1,0 +1,18 @@
+Slack export · #ext-sunpeak-invoca (Slack Connect: shared with SunPeak Solar)
+Exported 10/5/2026 10:11 AM · 15 messages
+
+[10/5/2026 9:45 AM] diego.alvarez: morning! quick sync before the 11am? amanda & marisol are both on so we can cover the renewal pricing stuff & the q4 stuff
+[10/5/2026 9:47 AM] amanda.pierce: morning diego. finance angle first: procurement flaged the add-on line items again. for 2027 they want one bundled number that covers call tracking, signal ai and the voice agent minutes, not presense & qm priced separately on top. that split is the friction
+[10/5/2026 9:48 AM] marisol.vega: the team is also asking what happens to the per-seat QM number if we grow the floor in AZ next year. if that's another line item convo every time, it's going to be a headache
+[10/5/2026 9:50 AM] diego.alvarez: got it. let me write this down properly. is the ask a flat annual number regardless of seats, or just one invoice?
+[10/5/2026 9:51 AM] amanda.pierce: one number. we can flex seats internally, procurement just doesn't want to re-approve a new line item every time we add headcount
+[10/5/2026 9:53 AM] diego.alvarez: understood. i'll take the bundling ask to our pricing team this week & get you something concrete before the renewal window opens
+[10/5/2026 9:55 AM] marisol.vega: also fyi we've had a couple of inbound calls from other vendors lately. nothing signed, but with the pricing thing sitting open it's coming up in leadership meetings
+[10/5/2026 9:57 AM] diego.alvarez: appreciate you saying that. i'd rather know now. is it mostly about cost, or something else pulling them in?
+[10/5/2026 9:58 AM] marisol.vega: cost & the bundling. if that's resolved i don't see it going anywhere
+[10/5/2026 10:01 AM] diego.alvarez: ok, i'll keep you posted. separate thing: our internal call volume report for sept shows you at just under 14,000 calls across the three states, up about 6% from august. mostly google ads
+[10/5/2026 10:02 AM] amanda.pierce: that tracks w/ what we're seeing on spend
+[10/5/2026 10:04 AM] diego.alvarez: one more: can we move our next check-in to the 21st instead of the 14th? i have a conflict that week
+[10/5/2026 10:05 AM] amanda.pierce: 21st works, 10am central
+[10/5/2026 10:06 AM] marisol.vega: works for me too
+[10/5/2026 10:08 AM] diego.alvarez: great. i'll send the invite and a short recap of the pricing ask so we're aligned internally before i bring it to my team

@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:03.493 --> 00:00:10.873
+Rachel Okafor: Hey Luis, I mean, how are you? Sorry we're doing this on a Tuesday afternoon, I know claims is slammed.
+
+2
+00:00:11.699 --> 00:00:17.798
+Luis Ortega: No, it's fine. I mean, it's not fine, but, you know. How's your week?
+
+3
+00:00:18.905 --> 00:00:28.169
+Rachel Okafor: Busy. My kid started soccer so I'm living out of my car. Anyway. You flagged something for me, so let's get into it.
+
+4
+00:00:29.134 --> 00:00:44.519
+Luis Ortega: Yeah. So short version, PreSense is dropping the ball on transfers. When a call gets moved between queues in Genesys, or agent to agent, the screen pop comes up blank for whoever picks it up.
+
+5
+00:00:45.651 --> 00:00:50.898
+Rachel Okafor: Blank meaning no journey data at all, or blank meaning it loads and it's empty fields?
+
+6
+00:00:52.229 --> 00:00:59.677
+Luis Ortega: Nothing. White box. The agent sees the caller's number and that's it. No ad, no pages, no product.
+
+7
+00:01:00.161 --> 00:01:03.894
+Rachel Okafor: Okay. And this is on transfers specifically, not new inbound?
+
+8
+00:01:05.216 --> 00:01:16.033
+Luis Ortega: Right, new calls are fine. It's the handoffs. Our auto claims queue hands off to total loss maybe, or a bilingual agent picks it up, something like that that.
+
+9
+00:01:16.333 --> 00:01:19.888
+Rachel Okafor: Got it. How long has this been going on?
+
+10
+00:01:20.258 --> 00:01:29.837
+Luis Ortega: Uh, honestly not sure when it started. We noticed it because one of my supervisors was doing a side-by-side and the agent had zero context.
+
+11
+00:01:29.837 --> 00:01:39.033
+Luis Ortega: So I had them pull last Thursday, and we went through 40 transfers, and 17 of them came up blank. So, what, 42 percent?
+
+12
+00:01:40.288 --> 00:01:47.896
+Rachel Okafor: Forty, yeah. Okay, that's that's a lot. Does it matter which queue, or is it across the board?
+
+13
+00:01:48.843 --> 00:01:57.751
+Luis Ortega: Seems across the board. Home claims too. And it's not the same agents every time, we checked that, it's random as far as I can tell.
+
+14
+00:01:58.513 --> 00:02:06.764
+Rachel Okafor: Can you send me those uh, 40 call IDs? Even the ones that worked? I want to take it to our engineering team with examples.
+
+15
+00:02:07.816 --> 00:02:13.067
+Luis Ortega: Yeah, I'll have the supervisor export them. Give me till tomorrow morning.
+
+16
+00:02:13.341 --> 00:02:27.440
+Rachel Okafor: Perfect. And Luis, I'm not going to guess at a cause on this call, I'd just be making it up. So, Let me get it in front of the right people and come back to you with a real answer.
+
+17
+00:02:28.872 --> 00:02:34.881
+Luis Ortega: Um, that's all I want. I don't need a fix today, I need to know somebody's on it.
+
+18
+00:02:35.413 --> 00:02:42.108
+Rachel Okafor: You'll have that by end of week. Separately, how's the after-hours pilot looking? The voice agent on claims intake.
+
+19
+00:02:42.982 --> 00:02:52.735
+Luis Ortega: It's doing its job. Uh, Picked up 611 calls last month after hours, and most of them are just FNOL basics or people checking a claim status.
+
+20
+00:02:53.693 --> 00:02:55.835
+Rachel Okafor: Nice. And the messaging follow-up?
+
+21
+00:02:56.642 --> 00:03:06.475
+Luis Ortega: Fine. No drama there. Actually, are we still on for the QBR the first week of October? Uh, I've got a conflict the 2nd.
+
+22
+00:03:06.848 --> 00:03:10.875
+Rachel Okafor: We can do the 6th or 7th. I'll send options.
+
+23
+00:03:12.243 --> 00:03:22.856
+Luis Ortega: Do the 7th. Also, one staffing thing, we're adding I mean, about 20 agents in November for the home side, so my seat count may bump.
+
+24
+00:03:23.259 --> 00:03:30.176
+Rachel Okafor: Good to know, I'll note it. Nothing else from me. Send those call IDs and I'll run it down.
+
+25
+00:03:31.326 --> 00:03:35.194
+Luis Ortega: Will do. Hey, tell your kid good luck with soccer.
+
+26
+00:03:36.585 --> 00:03:39.073
+Rachel Okafor: Ha, I will. Talk soon, Luis.

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_175",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "I've had two other dealer groups in the area tell me Marchex is quoting them a lower per-rooftop number than what we're paying, and some of those packages come with call scoring built in.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "medium",
+      "summary": "Export timeout error",
+      "quote": "export failed: timeout after 30s. pls try again or contact support",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

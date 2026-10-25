@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_115",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "Our conversion on those routed calls is up close to eleven percent since we turned it on for the auto campaigns.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

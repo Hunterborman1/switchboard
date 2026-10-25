@@ -1,0 +1,94 @@
+auto-transcript | audio_1021_meridian | duration 00:05:13 | speakers detected: 2
+
+Speaker 1  00:00:06
+hey lauren how's it going? i know you had that staffing thing this morning
+
+Speaker 2  00:00:13
+ugh don't remind me. two of my schedulers called out so i was on the phones until like 11 but but we're surviving. how are you?
+
+Speaker 1  00:00:24
+good good busy week but good so i wanted to do a working session on the q m scorecards and then touch on the redaction item from legal does that still work? [crosstalk]
+
+Speaker 2  00:00:40
+yeah, redaction is still on the list legal keeps asking so before we get into that can i just say something about the summaries?
+
+Speaker 1  00:00:50
+of course
+
+Speaker 2  00:00:51
+so my front-line teams, the ones doing callbacks and dispatch they've actually been saying the a i call summaries are saving them a ton of time like they don't have to listen to the whole call before calling a patient back [crosstalk]
+
+Speaker 1  00:01:10
+oh that's great to hear which teams specifically?
+
+Speaker 2  00:01:14
+the central scheduling folks mostly um and a couple of the clinic leads. they trust it enough that they'll just read the summary and go that's the part that surprised me. usually they're skeptical of anything automated.
+
+Speaker 1  00:01:29
+That's a good sign Is it accurate on the handoffs too Like when a call gets transferred to a nurse?
+
+Speaker 2  00:01:37
+Yeah that's where it helps most honestly. The handoff notes used to be a mess Um, now they they just paste the uh, summary It's not perfect but um it's close enough
+
+Speaker 1  00:01:49
+okay i'll note that that. now the redaction thing..
+
+Speaker 2  00:01:54
+right so so legal finished their review of the baa last week, and they came back with a question i can't answer they want to know if we can configure what gets redacted in transcripts and summaries not just have one blanket setting
+
+Speaker 1  00:02:14
+configurable how like by identifier type?
+
+Speaker 2  00:02:18
+exactly they want to say, redact ssns and dates of birth like but keep phone numbers you know or the reverse depending on the role and they want role-based access so a a scheduler doesn't see the same thing a compliance officer does plus an audit trail of [inaudible] what
+
+Speaker 1  00:02:38
+okay, so configurable redaction, uh, role-based access um and audit. that's three things. is this blocking anything right now?
+
+Speaker 2  00:02:45
+not blocking but legal won't sign off on expanding qm to the remaining 12 clinics until they get an answer so it's it's kind of a gate.
+
+Speaker 1  00:02:56
+got it i [inaudible] want to promise anything on the call but i can take this back to the product team and get you a real answer can i ask is this coming from a specific regulation or just their general risk posture?
+
+Speaker 2  00:03:16
+both honestly they cited hippa but also just said it's best practice for regulated vendors. i think they're being [inaudible] we're expanding.
+
+Speaker 1  00:03:26
+that makes sense. i'll write it up today and follow up by friday anything else on
+
+Speaker 2  00:03:34
+the the [inaudible] side? no you know that's the main one. the baa itself is fine, it's just this one gap
+
+Speaker 1  00:03:44
+Okay Let's look at um, the scorecards How's the QM rollout going with the 12 clinics that are live
+
+Speaker 2  00:03:52
+it's going. the the scorecards themselves are [inaudible] still tweaking [inaudible]. my qa lead thinks we're scoring too harshly on the greeting.
+
+Speaker 1  00:04:02
+yeah, that's common you can adjust the weight in the [inaudible] or we can look at it together next time. [crosstalk]
+
+Speaker 2  00:04:08
+let's do it it next time. i don't have the bandwidth today
+
+Speaker 1  00:04:15
+Fair And how are call volumes looking this month? Anything unusual
+
+Speaker 2  00:04:30
+up about 8 percent from september mostly flu season stuff the nashville clinics are getting slammed nothing we can't handle uh, just more volume okay
+
+Speaker 1  00:04:41
+and genesis is still routing fine no changes on your end
+
+Speaker 2  00:04:46
+genesis is fine we did add two new skills for the pediatric lines last week, you know but that's it
+
+Speaker 1  00:04:55
+uh good so to recap i'll take the redaction ask to product and get back to you by friday. and we'll look at the greeting weight next session. [crosstalk]
+
+Speaker 2  00:05:05
+you know sounds good thanks priya [crosstalk]
+
+Speaker 1  00:05:08
+thanks lauren talk soon

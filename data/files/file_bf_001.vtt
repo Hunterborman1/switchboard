@@ -1,0 +1,189 @@
+WEBVTT
+
+1
+00:00:04.721 --> 00:00:15.231
+Diego Alvarez: Hey Greg, hey Steve. How's it going? Sorry, I had to hop off a call with another account, so if my brain's half here for a second, that's why.
+
+2
+00:00:15.654 --> 00:00:20.353
+Greg Hollis: No worries. We're good. Well, busy. It's end of quarter, so everybody's running around.
+
+3
+00:00:20.842 --> 00:00:29.384
+Steve Kowalski: Yeah, and it's still a hundred and two degrees out, so nobody wants to be outside. How's things on your end?
+
+4
+00:00:30.512 --> 00:00:41.771
+Diego Alvarez: Good, good. Busy too. I was just looking at your account before this, actually. Volumes look solid. Um, you guys were up around 6 percent on tracked calls month over month.
+
+5
+00:00:42.078 --> 00:00:46.209
+Greg Hollis: That tracks. September's been strong, um, especially the service side.
+
+6
+00:00:46.881 --> 00:00:59.791
+Steve Kowalski: Yeah, service is up. We had two advisors out at the Tempe store for most of the month, so the calls were still coming in, we just had fewer people to answer them.
+
+7
+00:01:00.928 --> 00:01:03.979
+Diego Alvarez: Are you back to full staff now?
+
+8
+00:01:04.246 --> 00:01:11.319
+Steve Kowalski: Almost. One's back next week, the other one's out through the first week of October. So we're getting there.
+
+9
+00:01:12.738 --> 00:01:21.030
+Diego Alvarez: Got it. Okay, so I know you had something you wanted to walk through, Greg. What did you want to cover so, today?
+
+10
+00:01:22.101 --> 00:01:43.303
+Greg Hollis: Yeah. So this is more of an ask than a problem, honestly. Our marketing ops person, Renee, she pulls the call data out of Invoca every Monday morning. Manually. She logs in, sets the date range, exports the CSV, then loads it into Looker for our weekly rooftop review.
+
+11
+00:01:43.857 --> 00:01:44.657
+Diego Alvarez: Okay.
+
+12
+00:01:45.997 --> 00:02:00.557
+Greg Hollis: And it's fine, it works. But it's a a person doing a thing a robot should do. What we'd really want is for that dashboard to just show up, on a schedule, in Looker.
+
+13
+00:02:00.557 --> 00:02:13.403
+Greg Hollis: Or honestly Google Sheets would be fine for some of the rooftop managers. Or whatever BI tool. I mean, the point is we shouldn't be hand-carrying the file every week.
+
+14
+00:02:14.542 --> 00:02:18.737
+Diego Alvarez: So it's less about the data and more about the delivery mechanism.
+
+15
+00:02:19.282 --> 00:02:27.740
+Greg Hollis: Right. The data's good. We just want it pushed instead of pulled, on a schedule. Monday morning, it's there, nobody touches it.
+
+16
+00:02:28.376 --> 00:02:39.646
+Steve Kowalski: I'll second that, because half the time the numbers I I mean, get on Monday are Thursday's numbers, because something came up Friday and nobody ran the export.
+
+17
+00:02:40.426 --> 00:02:42.270
+Greg Hollis: That's a people problem, Steve.
+
+18
+00:02:42.632 --> 00:02:46.071
+Steve Kowalski: It's a people problem that a schedule would fix.
+
+19
+00:02:46.750 --> 00:03:01.386
+Diego Alvarez: Okay, that's helpful, and it's specific. Let me write this down so I get it right. Scheduled delivery of dashboards to Looker, Sheets, you know, or a BI tool, um, instead of manual CSV exports.
+
+20
+00:03:01.386 --> 00:03:07.241
+Diego Alvarez: Is it just the call data, or are there other fields you're pulling in?
+
+21
+00:03:08.404 --> 00:03:14.714
+Greg Hollis: Right now it's call counts by rooftop, by campaign, and the signal outcomes. Appointment booked, that kind of thing.
+
+22
+00:03:16.016 --> 00:03:21.861
+Diego Alvarez: Okay. And is it all 22 rooftops that get reviewed, or is it a subset?
+
+23
+00:03:22.076 --> 00:03:26.658
+Greg Hollis: All 22. We do a Monday review with the GMs, so it's everybody.
+
+24
+00:03:27.947 --> 00:03:38.984
+Diego Alvarez: Got it. I can't promise anything on the uh, roadmap from this call, but I'll take it to the product team with your name on it.
+
+25
+00:03:38.984 --> 00:03:47.050
+Diego Alvarez: Can I follow up with you and Renee in a couple weeks once I've had a chance to ask?
+
+26
+00:03:48.159 --> 00:03:49.394
+Greg Hollis: Yeah, that works.
+
+27
+00:03:50.636 --> 00:03:58.272
+Steve Kowalski: Quick thing while we're here. The signals have been fine. No issues. Uh, We're using the appointment booked one pretty heavily now.
+
+28
+00:03:59.589 --> 00:04:03.781
+Diego Alvarez: Good, glad to hear it. Anything else on your list?
+
+29
+00:04:04.158 --> 00:04:08.363
+Greg Hollis: No, that was the main one. Otherwise we're in good shape.
+
+30
+00:04:09.063 --> 00:04:18.027
+Diego Alvarez: Okay. So on my side, um, I want to get the Q4 business review on the calendar. Last year we did it the second week of November.
+
+31
+00:04:18.027 --> 00:04:22.343
+Diego Alvarez: Does that still work, or is that too close to the holiday stuff?
+
+32
+00:04:22.929 --> 00:04:25.998
+Greg Hollis: Second week is fine. Just not the Monday.
+
+33
+00:04:27.172 --> 00:04:30.892
+Steve Kowalski: Yeah, Mondays are the review call, so we're all in that.
+
+34
+00:04:32.272 --> 00:04:38.902
+Diego Alvarez: Noted. I'll send a couple of options for Tuesday or Wednesday and you can pick.
+
+35
+00:04:39.830 --> 00:04:40.630
+Greg Hollis: Perfect.
+
+36
+00:04:41.665 --> 00:04:59.605
+Diego Alvarez: And then the other thing, and I know this is a ways out, but but your renewal is December 1. I don't need to talk about it today, but I want to make sure we've got time to sit down before then, outside of the review.
+
+37
+00:04:59.856 --> 00:05:07.186
+Greg Hollis: Yeah, we should do that. Our procurement folks will want to look at everything anyway. Let's plan on late October.
+
+38
+00:05:07.617 --> 00:05:14.091
+Diego Alvarez: Works for me. I'll put a placeholder on the calendar for the last week of October.
+
+39
+00:05:15.055 --> 00:05:21.010
+Steve Kowalski: Hey, one other thing. You guys are at that conference in Vegas next month, right? The automotive one?
+
+40
+00:05:22.055 --> 00:05:31.593
+Diego Alvarez: I think a few folks I mean, from our team are going, yeah. I'm not, uh, but I can find out who is.
+
+41
+00:05:32.465 --> 00:05:36.822
+Steve Kowalski: No big deal. I'll be there Tuesday and Wednesday, just figured I'd ask.
+
+42
+00:05:38.084 --> 00:05:46.611
+Diego Alvarez: I'll check and let you know. Okay, so I've got the dashboard delivery ask, I mean, the Q4 review timing, and the October renewal conversation.
+
+43
+00:05:46.611 --> 00:05:47.634
+Diego Alvarez: Anything I'm missing?
+
+44
+00:05:48.447 --> 00:05:50.083
+Greg Hollis: That's it. Thanks, Diego.
+
+45
+00:05:50.498 --> 00:05:53.824
+Steve Kowalski: Yeah, thanks. Good luck with the rest of your day.
+
+46
+00:05:55.058 --> 00:06:00.417
+Diego Alvarez: You too, guys. I'll send the follow-up email this afternoon. Stay cool out there.
+
+47
+00:06:00.800 --> 00:06:01.912
+Greg Hollis: Ha, we'll try.

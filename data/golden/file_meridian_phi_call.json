@@ -1,0 +1,30 @@
+{
+  "fileId": "file_meridian_phi_call",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "critical",
+      "summary": "Spoken dates of birth and MRNs pass through transcripts unredacted while card numbers are masked.",
+      "quote": "Spoken dates of birth and MRNs are coming through in the transcripts completely unredacted. Card numbers get masked, but those don't.",
+      "owner": "ppl_derek"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Wants to choose which identifiers are redacted and lock the setting against regional admins.",
+      "quote": "We need to be able to choose which identifiers get redacted, and lock that setting so a regional admin can't turn it off.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": [
+    "Margaret Ellison",
+    "March 14, 1958",
+    "4471229083",
+    "(615) 555-0148",
+    "2218 Belmont Boulevard"
+  ]
+}

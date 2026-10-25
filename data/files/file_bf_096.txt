@@ -1,0 +1,80 @@
+Harbor Federal Credit Union exec sponsor
+Fri, Oct 2, 2026, 10:00AM • 3:48
+
+Linda Sorensen  0:04
+Morning, Aisha. How's the weather down in... where are you again?
+
+Aisha Coleman  0:08
+Denver. It's actually snowing already, which feels early even for us.
+
+Linda Sorensen  0:13
+Oh wow. Tacoma's just gray. My daughter lives in Boulder, she said the same thing.
+
+Aisha Coleman  0:20
+Yeah, it's coming down. Okay, so I know you wanted to talk about a few things. So, Should we start with volumes?
+
+Linda Sorensen  0:31
+Sure. September uh, was, I mean, um, about 18,400 calls. Down a little from August, but that's seasonal.
+
+Aisha Coleman  0:37
+That tracks with what I'm seeing. Anything spike on the lending side?
+
+Linda Sorensen  0:42
+Auto loan inquiries, yeah. And the IVR routing is holding up. We had one staffing thing, Dana's out on leave until November, so we're short a supervisor on the card services queue.
+
+Aisha Coleman  0:56
+Got it. Do you need help pulling any reports while she's gone? I can send a QM summary to whoever's covering.
+
+Linda Sorensen  1:06
+That'd be great. Rosa's covering. She's new to the scorecard side, so a walkthrough might help.
+
+Aisha Coleman  1:12
+I'll set that up. Now, you mentioned you wanted to talk about the renewal, um, or at least the budget side.
+
+Linda Sorensen  1:20
+Right. So So, this is coming from finance and procurement, not just me. We're fine with the core call tracking. But they keep asking why everything else is a separate line item. PreSense, the QM seats, the AI Voice minutes, and now they're looking at Signal AI and saying, 'Wait, this is another add-on on top of call tracking?'
+
+Aisha Coleman  1:47
+Okay, so it's the stacking of add-ons that's the issue, you know, not any one price?
+
+Linda Sorensen  1:54
+Yeah. It's not that any single thing is outrageous. It's that every time we want to do something new, it's a new SKU. Procurement sees five lines and they start asking if we're paying twice for the same thing.
+
+Aisha Coleman  2:12
+Um, that's helpful. I can't change how things are packaged, but I can get you a one-page breakdown of what each piece does so they can see they're not overlapping.
+
+Linda Sorensen  2:23
+That would help. And I should say, compliance is also watching. Every time we tweak a QM scorecard, they want to review it. So anything that looks like a new line item, they flag it.
+
+Aisha Coleman  2:37
+Understood. Let me pull that together and send it to you and Rosa. Anything else on the Salesforce side?
+
+Linda Sorensen  2:45
+No, that's fine. Call records are writing to Financial Services Cloud like they should.
+
+Aisha Coleman  2:51
+Good. And Google Ads offline conversions?
+
+Linda Sorensen  2:54
+Also fine. No complaints there.
+
+Aisha Coleman  2:58
+Okay. Um, so I'll send the breakdown, and I'll also loop in a quick session for Rosa on the scorecards. Does next Wednesday work?
+
+Linda Sorensen  3:09
+Uh, Let me check with Rosa, but Wednesday you know, afternoon is usually open.
+
+Aisha Coleman  3:17
+Perfect. I'll send a hold for 2pm Pacific.
+
+Linda Sorensen  3:21
+Great. Oh, and before I forget, the holiday schedule. We're closed the 23rd and 26th for Thanksgiving, so call volumes will drop.
+
+Aisha Coleman  3:31
+Noted. I'll flag that on our side so so nobody panics about a dip.
+
+Linda Sorensen  3:38
+Appreciate it. And hey, good luck with the snow.
+
+Aisha Coleman  3:42
+Thanks, I'll need it. Talk soon, Linda.

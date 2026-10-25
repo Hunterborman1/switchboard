@@ -1,0 +1,32 @@
+{
+  "fileId": "file_brightline_dispatch_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Late-night calls getting marked as spam though they are real jobs.",
+      "quote": "a lot of the late-night calls are getting marked spam and my guys are like that was a real job",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Summaries are a lifesaver for the night dispatcher.",
+      "quote": "the summaries are honestly a lifesaver for the night dispatcher",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Wants the call summary to show the service address first.",
+      "quote": "can the summary show the address first before anything else? that's what dispatch needs",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

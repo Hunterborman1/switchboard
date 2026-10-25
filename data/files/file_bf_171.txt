@@ -1,0 +1,113 @@
+Ridgeway Motor Group escalation
+Fri, Oct 2, 2026, 9:15AM • 5:40
+
+Diego Alvarez  0:07
+Like, Morning, I mean, Frank. Morning, Mike. How was the weekend? That storm roll through Tulsa?
+
+Frank DeLuca  0:14
+Yeah, knocked a sign down at the Broken Arrow store. Nothing serious. Trees everywhere though.
+
+Mike Castillo  0:20
+My power was out Saturday night. Kids thought it was camping. So we're a little punchy this morning.
+
+Diego Alvarez  0:28
+Ha. Well, I appreciate you both making the time. Mike, you'd flagged on the last check-in you wanted to get Frank in the room. So here um, we are. What's on your mind?
+
+Frank DeLuca  0:43
+I'll just say it it. I came in in August. Before um, that I was at a group down in Texas, six rooftops, we we ran Marchex. So I know that world. Last week Marchex came through and pitched us here, all seven stores.
+
+Diego Alvarez  0:59
+Okay. And what did they put in front of you?
+
+Frank DeLuca  1:03
+Marchex quoted a lower per-rooftop price than what we're paying you guys, and the way they laid it out, the call scoring piece was bundled in. For seven stores that gap adds up.
+
+Diego Alvarez  1:19
+Um, Understood. I'm not going to react to their number on this call, I want to pull our current contracting and seats and get it in front of the right person. Can I ask how deep the conversation went? Was it a proposal on paper?
+
+Frank DeLuca  1:38
+One-pager. Per-rooftop line item. I told them we'd look at it, that's all. I'm not out shopping, but I'm new and I have to be able to say I looked.
+
+Mike Castillo  1:51
+And Frank's not wrong that it's a real number. But from my side the thing I'd hate to lose is the the Google Ads side. Every BDC lead we get, the call fires back as an offline conversion with the GCLID. If that goes away our Smart Bidding like, is blind.
+
+Frank DeLuca  2:13
+Right, and I don't want to relitigate uh, that. I just want the price question on the table.
+
+Diego Alvarez  2:21
+It's on the table. What I don't want to do is give you a half answer today. Let me ask, when they say bundled, did they say what triggers scoring on a call? Because ours runs off signals, and that's tied to how your campaigns are tagged.
+
+Frank DeLuca  2:43
+I didn't get that far into it. Honestly the meeting was twenty minutes.
+
+Mike Castillo  2:49
+Twenty minutes and a one-pager. That tells you something, Frank.
+
+Frank DeLuca  2:53
+It tells me they want the meeting.
+
+Diego Alvarez  2:56
+Okay. So let me get the pricing piece written up. Frank, can you send me that one-pager? I won't share it outside Invoca, it just helps me make sure I'm comparing the same thing.
+
+Frank DeLuca  3:11
+Yeah, I can forward it.
+
+Diego Alvarez  3:13
+Appreciate it. Switching gears a little. Mike, how are the stores tracking on volume? Last I had you around eleven thousand calls a month across the group.
+
+Mike Castillo  3:24
+Closer to twelve two now. Tulsa and the Rogers store are up, Owasso's flat. We hired two BDC reps in so, September so that's part of it.
+
+Diego Alvarez  3:36
+Good problem. Any trouble with the routing since you added the new numbers for the Owasso service drive?
+
+Mike Castillo  3:44
+No, that's been fine. Went in clean.
+
+Diego Alvarez  3:47
+Great. And the Salesforce side, leads landing okay?
+
+Mike Castillo  3:51
+Yeah, BDC leads are writing over. No complaints there.
+
+Frank DeLuca  3:56
+Sorry, one thing before we move on. On the pricing, our renewal's not until the end of January. I don't want this to sit until December.
+
+Diego Alvarez  4:07
+It won't. Here's what I'll do. I'll get the current per-rooftop breakdown and your seat count together and have an answer for you within two weeks. Not a maybe, an actual response.
+
+Frank DeLuca  4:19
+Two weeks is fine. You know, I just want to know where we stand before budget season.
+
+Diego Alvarez  4:26
+Understood. And Frank, since you're new to the account, would it help to walk through how the call attribution is wired into your Google campaigns? Not a pitch, just so you know what's running.
+
+Frank DeLuca  4:39
+Yeah, so, I'd take that. Mike can drive the screen.
+
+Mike Castillo  4:44
+Sure. Maybe next week?
+
+Diego Alvarez  4:46
+I'll send time options for Tuesday or Wednesday. Speaking of which, I'm out Thursday and Friday, my kid has a tournament out in Branson, so if you need anything those days, copy the support line.
+
+Frank DeLuca  5:01
+Good luck with that. What sport?
+
+Diego Alvarez  5:04
+Softball. She's twelve, they play four games in two days, it's a lot of sunflower seeds.
+
+Mike Castillo  5:10
+Been there.
+
+Diego Alvarez  5:12
+So recap from my end. Frank sends me the Marchex one-pager. I come back within two weeks with our current pricing and seats. We set a session to walk through the Google Ads call conversion setup. Anything I'm missing?
+
+Frank DeLuca  5:28
+No, that covers it.
+
+Mike Castillo  5:30
+That's it.
+
+Diego Alvarez  5:33
+Okay. Thanks for being straight with me, Frank. Talk soon.

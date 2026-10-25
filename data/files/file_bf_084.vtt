@@ -1,0 +1,177 @@
+WEBVTT
+
+1
+00:00:05.860 --> 00:00:09.006
+Aisha Coleman: Hi Monica, hi Stacy. Can you hear me okay?
+
+2
+00:00:10.075 --> 00:00:13.558
+Monica Chen: We can. Good to hear from you, Aisha.
+
+3
+00:00:14.104 --> 00:00:22.932
+Aisha Coleman: How's everything on the lending floor this week? I saw a slight dip in total calls last Tuesday but it bounced back.
+
+4
+00:00:23.552 --> 00:00:34.169
+Monica Chen: Yeah, that was our own doing. We had a team training on the new ARM products that morning, so the floor was thin until about 11.
+
+5
+00:00:34.912 --> 00:00:42.876
+Stacy Klein: Plus two of the loan officers were out. Reggie had a family thing and Tom was at a closing.
+
+6
+00:00:43.078 --> 00:00:49.617
+Aisha Coleman: Makes sense. Volume looks healthy otherwise. You're pacing around 14,200 calls for September, which is up roughly 6% over August.
+
+7
+00:00:50.517 --> 00:00:57.527
+Monica Chen: That tracks. We added four loan officers last month too, so I'd expect that to keep climbing into Q4.
+
+8
+00:00:58.212 --> 00:01:01.936
+Aisha Coleman: Good. And PreSense is still routing by intent without issues?
+
+9
+00:01:02.301 --> 00:01:04.018
+Monica Chen: Fine. No complaints there.
+
+10
+00:01:04.1000 --> 00:01:09.683
+Aisha Coleman: Great. Stacy, you had a couple of things you wanted to walk through?
+
+11
+00:01:10.321 --> 00:01:19.273
+Stacy Klein: I do. Both are things I've been collecting since the summer, and I finally have enough examples to describe them properly.
+
+12
+00:01:20.580 --> 00:01:21.380
+Aisha Coleman: Go ahead.
+
+13
+00:01:22.539 --> 00:01:30.475
+Stacy Klein: First one is on the Signal AI side. Because we're regulated, anything a transcript or an AI summary exposes has to be controlled.
+
+14
+00:01:30.475 --> 00:01:35.995
+Stacy Klein: Right now the redaction we get is not configurable at the level our compliance team wants.
+
+15
+00:01:36.591 --> 00:01:39.953
+Aisha Coleman: What do you mean when you say the level?
+
+16
+00:01:40.157 --> 00:02:03.534
+Stacy Klein: We need to pick which identifiers get masked, and we need it driven by role. A loan officer shouldn't see a full Social Security number on a transcript, but someone in compliance reviewing a complaint should be able to unmask it, and that unmask action needs to land in an audit log showing who viewed what and when.
+
+17
+00:02:03.928 --> 00:02:09.592
+Aisha Coleman: So configurable redaction plus role-based access plus an audit trail of transcript views.
+
+18
+00:02:10.275 --> 00:02:18.928
+Stacy Klein: Exactly. Our examiner asked me in July how we'd prove who had seen a given transcript, and I did not have a good answer.
+
+19
+00:02:19.597 --> 00:02:31.115
+Aisha Coleman: Okay. That's clear. I'll write it up with your compliance angle and take it to the product team. Can you send me one redacted example and one that should have been redacted but wasn't?
+
+20
+00:02:31.343 --> 00:02:36.135
+Stacy Klein: I can. I'll pull two from September and send them this afternoon.
+
+21
+00:02:37.217 --> 00:02:39.315
+Aisha Coleman: Perfect. What's the second one?
+
+22
+00:02:40.369 --> 00:02:49.864
+Stacy Klein: The Salesforce integration. When we change a field on the Loan Application object, or add a picklist value, the call data stops writing to the custom object.
+
+23
+00:02:51.306 --> 00:02:53.928
+Monica Chen: That's the one that bit us in August.
+
+24
+00:02:54.836 --> 00:03:06.926
+Stacy Klein: Right. We added a 'Property Type' picklist value for condos, and calls just stopped landing on the object. No error on our side, nothing in the call record, just silence.
+
+25
+00:03:08.365 --> 00:03:10.357
+Aisha Coleman: How did you catch it?
+
+26
+00:03:11.280 --> 00:03:21.329
+Stacy Klein: Reggie noticed his call notes weren't showing up on his applications. Took us about a day and a half to figure out it was the mapping.
+
+27
+00:03:21.329 --> 00:03:31.764
+Stacy Klein: And once we refreshed the sandbox in September we had to rebuild the whole mapping from scratch, which is a lot of manual work for one person.
+
+28
+00:03:32.528 --> 00:03:37.016
+Aisha Coleman: So the change itself and the sandbox refresh both break the mapping.
+
+29
+00:03:38.166 --> 00:03:38.966
+Stacy Klein: Yes.
+
+30
+00:03:40.201 --> 00:03:45.043
+Aisha Coleman: Does it recover on its own, or do you have to intervene every time?
+
+31
+00:03:46.140 --> 00:03:47.618
+Stacy Klein: We intervene. Every time.
+
+32
+00:03:48.763 --> 00:03:56.145
+Aisha Coleman: Okay. Send me the ticket numbers and the dates, and I'll attach them. Anything else broken, or is that it?
+
+33
+00:03:56.792 --> 00:03:57.592
+Stacy Klein: That's it.
+
+34
+00:03:58.163 --> 00:04:07.475
+Monica Chen: Quality Management is working fine for us, for what it's worth. We're scoring about 4,000 calls a month now, which is more than we did in the spring.
+
+35
+00:04:07.475 --> 00:04:11.134
+Monica Chen: The loan officers grumble about it, but they grumble about everything.
+
+36
+00:04:11.593 --> 00:04:15.067
+Aisha Coleman: Understood. Anything you want me to look at there?
+
+37
+00:04:15.819 --> 00:04:17.145
+Monica Chen: No, we're good.
+
+38
+00:04:17.744 --> 00:04:31.416
+Aisha Coleman: Then let me get both of these written up. I'll have the Signal AI item in front of the product team by Wednesday, and I'll keep you posted on what they say.
+
+39
+00:04:31.885 --> 00:04:36.413
+Stacy Klein: That works. I'll send the examples and the ticket numbers today.
+
+40
+00:04:36.897 --> 00:04:49.362
+Aisha Coleman: One more thing before we go. Your renewal is next April. Do you want to put a business review on the calendar for January, so we're not doing it at the last minute?
+
+41
+00:04:50.137 --> 00:04:53.102
+Monica Chen: January is good. Maybe the second week?
+
+42
+00:04:54.488 --> 00:04:56.635
+Aisha Coleman: I'll send a couple of options.
+
+43
+00:04:58.069 --> 00:04:58.869
+Monica Chen: Thanks, Aisha.
+
+44
+00:04:59.387 --> 00:05:00.816
+Aisha Coleman: Thanks both. Talk soon.

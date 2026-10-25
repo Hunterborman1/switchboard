@@ -1,0 +1,94 @@
+auto-transcript | audio_1002_harborfcu | duration 00:04:09 | speakers detected: 3
+
+Speaker 1  00:00:03
+morning! i mean, how's tacoma? is the rain back
+
+Speaker 2  00:00:06
+yet? so, it never left. i mean so, we're good i've got the sales force stuff up linda should be jumping on any second. she was finishing something with the branch team
+
+Speaker 1  00:00:20
+no problem before she gets here, how'd the call volumes land for september?
+
+Speaker 2  00:00:26
+little over 48,000 inbound for the month. up maybe six percent from august which you know the auto loan campaign did that member services is carrying most of it.
+
+Speaker 3  00:00:38
+uh, sorry, sorry i'm here what'd i miss?
+
+Speaker 1  00:00:40
+just september numbers. tyler says 48k and change
+
+Speaker 3  00:00:45
+yeah and we're short two reps on the card services queue so the hold times [inaudible] ugly. um that's a november problem, not today
+
+Speaker 2  00:00:56
+so the thing i actually wanted to bring up the summaries the a i call summaries from the signals.
+
+Speaker 1  00:01:04
+okay like tell me more
+
+Speaker 2  00:01:06
+so our front-line supes, they use them constantly now. like, for callbacks, for the handoffs to the loan officers dispatch stuff. one of the team leads told me she stopped pulling recordings for most of her coaching because the summary tells her what happened in fifteen seconds instead of her sitting through eleven minutes
+
+Speaker 1  00:01:25
+so the managers are reading the summaries instead of listening to the whole recording.
+
+Speaker 2  00:01:31
+right, exactly. and it's not just her. you know it's spread, um kind of on its own nobody told them to do it.
+
+Speaker 1  00:01:41
+how many supervisors are we talking roughly [crosstalk]
+
+Speaker 2  00:01:44
+six you know, seven on the member experience side. maybe a couple more on the lending side i'd have to
+
+Speaker 3  00:01:53
+check. it's a real time saver i'll say that i was skeptical when we turned it on because half these tools overpromise but but the managers trust it enough to act on it which is the part that matters
+
+Speaker 1  00:02:08
+that's that's good to hear i'll pass that along to the team they like hearing when it lands with the front line [crosstalk]
+
+Speaker 3  00:02:16
+please do half of what we bought this for was so people weren't drowning in recordings
+
+Speaker 1  00:02:23
+okay so what did you want to work through today, uh, the qm scorecard thing
+
+Speaker 2  00:02:29
+yeah. so we want to add two behaviors to the member services scorecard one around the verification language one around hold etiquette but compliance has to sign off on any scorecard change every single one, so i can't just push it live right you
+
+Speaker 1  00:02:45
+know what do you need from me for that review
+
+Speaker 2  00:02:52
+Honestly maybe just a summary of how the scoring works so I can hand it to to them in plain English They're not going to read a help article
+
+Speaker 1  00:03:03
+um i can put something together let me take that back and get you [inaudible] maybe [inaudible] wednesday
+
+Speaker 3  00:03:11
+That would help a lot Their whole thing is they want to know exactly what the score means before they bless it it
+
+Speaker 1  00:03:22
+understood. anything else on the list
+
+Speaker 2  00:03:24
+no, that's the main one. oh one thing the google adds offline conversions those are still flowing fine no issues there.
+
+Speaker 3  00:03:34
+and sales force is fine it's just me who's slow in it like that's a me problem ha. so well when's
+
+Speaker 1  00:03:43
+a good time for the next one? i know you've got the compliance cycle coming up.
+
+Speaker 2  00:03:50
+let's do two weeks? same time i'll send the invite. [crosstalk]
+
+Speaker 1  00:03:55
+works and i'll have the one-pager to um you before then
+
+Speaker 3  00:04:01
+perfect thanks aisha
+
+Speaker 1  00:04:03
+uh, thanks both uh talk soon
