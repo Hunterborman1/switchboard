@@ -6,17 +6,18 @@ import { tourAnchor } from '../../tour/anchors';
 import { Button } from '../../system/components/primitives/Button.jsx';
 import { Select } from '../../system/components/forms/Select.jsx';
 import { Callout } from '../../system/components/blocks/Callout.jsx';
-import { MetricStrip } from '../../system/components/blocks/MetricStrip.jsx';
 import { Avatar } from '../../system/components/primitives/Avatar.jsx';
 import { EmptyState } from '../../uis/EmptyState';
 import { RelativeTime } from '../../uis/RelativeTime';
 import { SegmentedControl } from '../../uis/SegmentedControl';
+import { KpiStrip } from '../../uis/StatTile';
 import { ListSkeleton, PageHeaderSkeleton, SkeletonSurface, TilesSkeleton } from '../../uis/Skeleton';
 import { StatusChip, type StatusTone } from '../../uis/StatusChip';
 import { useInsightDetail, useNotifications } from '../api/hooks';
 import { AppPageHeader, ErrorState, Panel, SeverityTag, TypeTag, useCopy } from '../components/ui';
 import { IconCopy, IconCheck, IconMail } from '../components/icons';
 import { useWorldIndex } from '../lib/world';
+import { dateShort } from '../lib/labels';
 import { track } from '../telemetry';
 import styles from './loop/Loop.module.css';
 
@@ -93,10 +94,11 @@ export default function LoopPage() {
     <div className="sl-page">
       <AppPageHeader
         title="CSM loop"
+        subtitle="What happened to the feedback each CSM sent in"
         dataAsOf={notifications.dataAsOf}
         actions={
           <label className={styles.csmPicker}>
-            <span className="sl-eyebrow">CSM</span>
+            <span className={styles.csmLabel}>CSM</span>
             <Select
               size="sm"
               aria-label="Choose a CSM"
@@ -120,30 +122,29 @@ export default function LoopPage() {
           <section className={styles.hero} aria-label="This week">
             <Avatar initials={csm?.initials ?? '?'} size="lg" />
             <div className={styles.heroText}>
-              <span className="sl-eyebrow">{csm?.name ?? 'CSM'} · last 7 days</span>
+              <span className={styles.heroMeta}>{csm?.name ?? 'CSM'} · last 7 days</span>
               <p className={styles.headline}>
                 <strong className="sl-num">{stats.landed}</strong> of your insights landed this week ·{' '}
                 <strong className="sl-num">{stats.shipped}</strong> shipped
               </p>
-              <p className="sl-p">Every routed item comes back to you with its status. You stay the advocate; the system does the follow-up admin.</p>
+              <p className={styles.heroSub}>Every item you send comes back to you with its status. You stay the customer’s advocate; Signal Loop does the chasing.</p>
             </div>
           </section>
 
-          <div className={styles.kpis}>
-            <MetricStrip
-              minItemWidth={180}
-              aria-label="CSM loop metrics"
+          <div>
+            <KpiStrip
+              label="CSM loop metrics"
               items={[
-                { label: 'Reached an owner', value: stats.landed, unit: 'insights', sub: 'distinct insights routed or acknowledged, last 7 days' },
-                { label: 'Acknowledged', value: `${stats.acknowledged} / ${stats.landed}`, sub: 'owners who replied, of those that landed' },
-                { label: 'Shipped', value: stats.shipped, unit: stats.shipped === 1 ? 'change' : 'changes', sub: 'shipped this week; customer note drafted' },
-                { label: 'Follow-up admin saved', value: `~${(stats.landed + stats.shipped) * MINUTES_PER_ITEM}`, unit: 'min', sub: `estimate · ~${MINUTES_PER_ITEM} min per item`, accent: 'var(--cn-warning-txt)' },
+                { label: 'Reached an owner', value: stats.landed, unit: stats.landed === 1 ? 'insight' : 'insights', sub: 'Sent to an owner in the last 7 days' },
+                { label: 'Acknowledged', value: `${stats.acknowledged} of ${stats.landed}`, sub: 'Owners who replied' },
+                { label: 'Shipped', value: stats.shipped, unit: stats.shipped === 1 ? 'change' : 'changes', sub: 'A customer note is drafted for each' },
+                { label: 'Follow-up time saved', value: `about ${(stats.landed + stats.shipped) * MINUTES_PER_ITEM}`, unit: 'min', sub: `Estimate, at ${MINUTES_PER_ITEM} minutes per item` },
               ]}
             />
           </div>
-          <Callout tone="warning" title="That last number is an estimate">
-            ~{MINUTES_PER_ITEM} minutes per item to write it up, find the right owner and chase its status is a labelled assumption. The discovery-week time study replaces it with measured
-            numbers before anyone reports it.
+          <Callout tone="neutral" title="Time saved is an estimate">
+            It assumes {MINUTES_PER_ITEM} minutes per item to write it up, find the right owner and chase its status. A time study in the first week replaces this with measured numbers
+            before anyone reports it.
           </Callout>
 
           <div className={styles.split}>
@@ -160,7 +161,7 @@ export default function LoopPage() {
                   options={[
                     { value: 'all', label: `All · ${all.length}` },
                     { value: 'routed', label: `Routed · ${all.filter((n) => n.kind === 'routed').length}` },
-                    { value: 'acknowledged', label: `Ack · ${all.filter((n) => n.kind === 'acknowledged').length}` },
+                    { value: 'acknowledged', label: `Acknowledged · ${all.filter((n) => n.kind === 'acknowledged').length}` },
                     { value: 'shipped', label: `Shipped · ${all.filter((n) => n.kind === 'shipped').length}` },
                   ]}
                   onChange={(v) => setParam('kind', v === 'all' ? null : v)}
@@ -257,7 +258,7 @@ function NotificationDetail({ n }: { n: Notification | null }) {
             {quote ? <blockquote className="sl-quote">{quote}</blockquote> : null}
             {acct ? (
               <span className="sl-meta">
-                {acct.name} · {acct.tier} · renews {acct.renewalDate}
+                {acct.name} · {acct.tier} · renews {dateShort(acct.renewalDate)}
               </span>
             ) : null}
           </div>
@@ -274,7 +275,7 @@ function NotificationDetail({ n }: { n: Notification | null }) {
                 </span>
                 <span className={styles.noteMeta}>
                   <span className="sl-strong">Draft note to the customer</span>
-                  <span className="sl-caption">Drafted from the shipped ticket · edit before sending · nothing is sent automatically</span>
+                  <span className="sl-caption">Drafted from the shipped ticket. Edit it before sending; nothing is sent automatically.</span>
                 </span>
                 <Button size="sm" variant={copied ? 'secondary' : 'primary'} onClick={() => copy(n.draftCustomerNote ?? '')} aria-live="polite">
                   <span className="sl-row-nowrap" style={{ gap: 6 }}>

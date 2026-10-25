@@ -89,7 +89,7 @@ export default function DestinationsPage() {
       if (res.data.notification) {
         toast({ tone: 'success', title: state === 'shipped' ? 'Shipped · CSM notified' : 'Owner picked it up · CSM notified', body: res.data.notification.title });
       } else {
-        toast({ tone: 'info', title: `${d.receipt ?? 'Ticket'} → ${state.replace('_', ' ')}` });
+        toast({ tone: 'info', title: `${d.receipt ?? 'Ticket'} moved to ${state.replace('_', ' ')}` });
       }
       invalidate('deliveries', 'notifications', 'insight/');
     } catch (err) {
@@ -124,9 +124,9 @@ export default function DestinationsPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Destinations" dataAsOf={dataAsOf} />
+      <AppPageHeader title="Destinations" subtitle="What owners see in the tools they already use." dataAsOf={dataAsOf} />
       <p className={styles.intro}>
-        Where routed insights land, rendered from the real delivery payloads. These are look-alike previews of the tools owners already use; every one carries the verbatim quote and links back to its provenance.
+        Each preview is built from the real delivery and mirrors Jira, Slack, Linear and email. Every one carries the customer’s exact words and a link back to where they came from.
       </p>
       <nav className={styles.jump} aria-label="Jump to a destination">
         {SECTIONS.map((s) => (
@@ -196,7 +196,7 @@ export default function DestinationsPage() {
                               <span className="sl-ellipsis">{String(d.payload.account ?? d.destination)}</span>
                               {d.ticketState ? (
                                 <StatusChip size="sm" tone={d.ticketState === 'shipped' ? 'success' : d.ticketState === 'in_progress' ? 'info' : 'neutral'}>
-                                  {d.ticketState.replace('_', ' ')}
+                                  {d.ticketState === 'in_progress' ? 'In progress' : d.ticketState.charAt(0).toUpperCase() + d.ticketState.slice(1)}
                                 </StatusChip>
                               ) : (
                                 <RelativeTime value={d.createdAt} />

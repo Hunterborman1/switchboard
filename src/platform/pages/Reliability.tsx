@@ -9,7 +9,9 @@ import * as f from '../lib/format';
 import { Bars, Legend, Lines } from '../ui/charts';
 import { IconTrace } from '../ui/icons';
 import { RunbookLink } from './RunbookLink';
-import { AlertPill, BudgetBar, Callout, Empty, ErrorState, ModelName, PageHead, PageSkeleton, Panel, Seg, SloPill, SourceChip, Table } from '../ui/kit';
+import { AboutNote, AlertPill, BudgetBar, Empty, ErrorState, ModelName, PageHead, PageSkeleton, Panel, Seg, SloPill, Table } from '../ui/kit';
+import { InfoTip } from '../ui/InfoTip';
+import { AREA_LABEL } from './Logs';
 
 function sloValue(s: Slo): string {
   if (s.actual == null) return '—';
@@ -18,36 +20,52 @@ function sloValue(s: Slo): string {
   return f.pct(s.actual, 2);
 }
 function sloTarget(s: Slo): string {
-  if (s.key === 'p95_latency') return `≤ ${f.ms(s.target)}`;
-  if (s.key === 'cost_per_unit') return `≤ ${f.money(s.target, { precise: true })}`;
-  return `≥ ${f.pct(s.target, s.target >= 0.99 ? 1 : 0)}`;
+  if (s.key === 'p95_latency') return `${f.ms(s.target)} or less`;
+  if (s.key === 'cost_per_unit') return `${f.money(s.target, { precise: true })} or less`;
+  return `${f.pct(s.target, s.target >= 0.99 ? 1 : 0)} or more`;
+}
+
+/** Plain names for each service target; the precise objective stays one hover away. */
+const SLO_COPY: Record<string, { label: string; help: string }> = {
+  run_success: { label: 'Runs that finish', help: 'Share of runs that finished with an output instead of failing.' },
+  p95_latency: { label: 'Response time', help: 'How long requests take. Measured at the 95th percentile: 95 of every 100 requests finish within this time.' },
+  grounding: { label: 'Answers backed by a source', help: 'Share of quotes and answers that can be traced to the source material they came from.' },
+  delivery_success: { label: 'Deliveries that succeed', help: 'Share of messages and updates delivered to their destination without failing.' },
+  cost_per_unit: { label: 'Cost per task', help: 'Average AI cost of one task over the window.' },
+};
+export const sloLabel = (s: Slo) => SLO_COPY[s.key]?.label ?? s.label;
+function windowText(w: string): string {
+  const m = /^(\d+)\s*d(ays?)?$/.exec(w.trim());
+  return m ? `last ${m[1]} days` : w;
 }
 
 export function SloCards({ slos, names }: { slos: Slo[]; names?: Record<string, string> }) {
-  if (!slos.length) return <Empty title="No SLOs defined" />;
+  if (!slos.length) return <Empty title="No service targets defined" />;
   return (
     <div className="ao-slos" {...tourAnchor('ops.slos')}>
       {slos.map((s) => (
         <article key={`${s.agentId}-${s.key}`} className={`ao-slo ${s.status}`} data-slo={s.key} data-status={s.status}>
           <div className="ao-slo-top">
             <div>
-              <h3>{s.label}</h3>
+              <h3>
+                {sloLabel(s)}
+                <InfoTip label={sloLabel(s)}>
+                  {SLO_COPY[s.key]?.help ?? s.label} Objective: {s.objective}.
+                </InfoTip>
+              </h3>
               <small>
-                {names ? `${names[s.agentId] ?? s.agentId} · ` : ''}
-                {s.objective}
+                {names ? `${names[s.agentId] ?? s.agentId} · ` : ''}Target {sloTarget(s)}
               </small>
             </div>
             <SloPill value={s.status} />
           </div>
           <div className="ao-slo-val">
             <b>{sloValue(s)}</b>
-            <span>
-              target {sloTarget(s)} · {s.window}
-            </span>
+            <span>{windowText(String(s.window))}</span>
           </div>
           <BudgetBar slo={s} />
-          <small className="ao-muted" style={{ fontSize: 'var(--fs-micro)' }}>
-            {s.denominator != null ? (s.numerator != null ? `${f.int(s.numerator)} of ${f.int(s.denominator)} good` : `over ${f.int(s.denominator)} units`) : 'No events in the window'}
+          <small className="ao-muted" style={{ fontSize: 12 }}>
+            {s.denominator != null ? (s.numerator != null ? `${f.int(s.numerator)} of ${f.int(s.denominator)} on target` : `Across ${f.int(s.denominator)} tasks`) : 'Nothing to measure in this window'}
           </small>
         </article>
       ))}
@@ -59,7 +77,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
   const { timezone } = useTimezone();
   const [busy, setBusy] = useState<string | null>(null);
   const [local, setLocal] = useState<Record<string, 'acknowledged'>>({});
-  if (!alerts.length) return <div style={{ padding: 18 }}><Empty title="No alerts">No rule is firing and there are no past incidents in the window.</Empty></div>;
+  if (!alerts.length) return <div style={{ padding: 20 }}><Empty title="No alerts">No rule is firing and there were no incidents in this window.</Empty></div>;
   return (
     <div className="ao-alerts" {...tourAnchor('ops.alerts')} id="alerts">
       {alerts.map((a) => {
@@ -73,7 +91,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
                 <span className="ao-tag" style={{ textTransform: 'capitalize' }}>
                   {a.severity}
                 </span>
-                <b>{a.rule}</b>
+                <b>{a.rule.replace(/^SLO breached/, 'Service target missed')}</b>
                 {names ? <span className="ao-muted">· {names[a.agentId] ?? a.agentId}</span> : null}
               </div>
               <div className="ao-alert-kv">
@@ -98,7 +116,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
             <div className="ao-alert-act">
               {a.traceId ? (
                 <Link className="ao-btn sm" to={`/ops/traces/${a.traceId}`}>
-                  <IconTrace /> Trace
+                  <IconTrace /> View trace
                 </Link>
               ) : null}
               <RunbookLink url={a.runbook} />
@@ -121,7 +139,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
                   {busy === a.id ? 'Acknowledging…' : 'Acknowledge'}
                 </button>
               ) : status === 'acknowledged' ? (
-                <span className="ao-muted" style={{ fontSize: 'var(--fs-caption)', maxWidth: 180 }}>
+                <span className="ao-muted" style={{ fontSize: 13, maxWidth: 200 }}>
                   Acknowledged in your workspace; resolves when the rule stops firing.
                 </span>
               ) : null}
@@ -163,7 +181,7 @@ export function Reliability() {
     .filter((b) => b.kind === 'latency')
     .map((b) => {
       const row = hourly.find((h) => h.hour === b.hour);
-      return row && row.p95 != null ? { x: row.label, y: row.p95, label: 'p95 over target' } : null;
+      return row && row.p95 != null ? { x: row.label, y: row.p95, label: 'Over target' } : null;
     })
     .filter((x): x is { x: string; y: number; label: string } => !!x);
   const errBreaches = d.breaches.filter((b) => b.kind === 'errors').length;
@@ -174,10 +192,9 @@ export function Reliability() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Observe"
         title="Reliability"
-        sub="SLOs with error budgets, request and latency trends with breach markers, model and component health, and the alert list. Acknowledging an alert is not resolving it."
-        meta={<span>Data as of {f.ago(obs.dataAsOf)} · SLO window 28 days</span>}
+        sub="Whether each agent is meeting its service targets, how fast and error-free it is, and which alerts need an owner."
+        meta={<span>Updated {f.ago(obs.dataAsOf)} · targets measured over the last 28 days</span>}
         actions={
           <>
             <select className="ao-select" aria-label="Agent" value={agentId || 'all'} onChange={(e) => set('agentId', e.target.value === SIGNAL_LOOP_AGENT_ID ? '' : e.target.value)}>
@@ -188,21 +205,26 @@ export function Reliability() {
                 </option>
               ))}
             </select>
-            <Seg label="Chart window" value={range} onChange={(v) => set('range', v === '6w' ? '' : v)} options={[{ value: '6w', label: '6 weeks · daily' }, { value: '7d', label: '7 days · hourly' }]} />
+            <Seg label="Chart window" value={range} onChange={(v) => set('range', v === '6w' ? '' : v)} options={[{ value: '6w', label: '6 weeks, daily' }, { value: '7d', label: '7 days, hourly' }]} />
           </>
         }
       />
 
-      <Panel title="Service level objectives" source={src} sub="Error budget = the share of the window allowed to miss the objective. “At risk” means under 25% of it is left.">
+      <Panel
+        title="Service targets"
+        source={src}
+        sub="Each target allows a small share of misses over 28 days (its error budget). “At risk” means less than a quarter of that allowance is left."
+        help="Service targets are the reliability promises each agent is held to (often called SLOs). The error budget is how many misses the target still allows before it is broken."
+      >
         <SloCards slos={d.slos} names={agentId ? undefined : names} />
       </Panel>
 
       <div className="ao-grid g-2">
-        <Panel title={`Requests and errors per ${bucket}`} source={src} sub={errBreaches ? `${errBreaches} ${bucket}${errBreaches === 1 ? '' : 's'} above the 5% error-rate rule.` : 'Errors in red. No bucket above the 5% error-rate rule.'}>
+        <Panel title={`Requests and errors per ${bucket}`} source={src} sub={errBreaches ? `${errBreaches} ${bucket}${errBreaches === 1 ? '' : 's'} had more than 5% errors.` : `No ${bucket} had more than 5% errors.`}>
           <Legend
             series={[
-              { key: 'ok', label: 'Requests OK', color: 'var(--ao-indigo)' },
-              { key: 'err', label: 'Errors', color: '#CF2519' },
+              { key: 'ok', label: 'Succeeded', color: '#2F5DB8' },
+              { key: 'err', label: 'Errors', color: '#B42318' },
             ]}
           />
           <Bars
@@ -210,49 +232,50 @@ export function Reliability() {
             x="label"
             y="ok"
             errorKey="errors"
-            color="#5E74E3"
+            color="#2F5DB8"
             height={210}
             yFormat={(v) => String(v)}
             tipTitle={(r) => String(r.label)}
             tipRows={(r) => [
               { label: 'Requests', value: f.int(Number(r.requests)) },
-              { label: 'Errors', value: f.int(Number(r.errors)), color: '#CF2519' },
+              { label: 'Errors', value: f.int(Number(r.errors)), color: '#B42318' },
               { label: 'AI calls', value: f.int(Number(r.aiCalls)) },
-              { label: 'Fallbacks', value: f.int(Number(r.fallbacks)) },
+              { label: 'Used backup model', value: f.int(Number(r.fallbacks)) },
             ]}
             ariaLabel={`Requests and errors per ${bucket}`}
           />
         </Panel>
         <Panel
-          title={`Latency per ${bucket}`}
+          title={`Response time per ${bucket}`}
           source={src}
-          sub={d.p95TargetMs ? `Red line: the ${f.ms(d.p95TargetMs)} p95 objective. Red dots: ${bucket}s over it. Empty ${bucket}s are gaps.` : 'Select one agent to see its p95 objective and breach markers. Empty buckets are gaps, not zero.'}
+          sub={d.p95TargetMs ? `Dashed red line: the ${f.ms(d.p95TargetMs)} target. Red dots: ${bucket}s that missed it.` : 'Select one agent to see its target. A gap means no requests, not zero.'}
+          help="Typical is the median request. Slowest 5% is the 95th percentile: 95 of every 100 requests finish within it."
         >
           <Legend
             series={[
-              { key: 'p50', label: 'p50', color: '#8C9BE8' },
-              { key: 'p95', label: 'p95', color: '#102A56' },
+              { key: 'p50', label: 'Typical', color: '#3E8E9E' },
+              { key: 'p95', label: 'Slowest 5%', color: '#2F5DB8' },
             ]}
           />
           <Lines
             data={hourly}
             x="label"
             series={[
-              { key: 'p50', label: 'p50', color: '#8C9BE8' },
-              { key: 'p95', label: 'p95', color: '#102A56' },
+              { key: 'p50', label: 'Typical', color: '#3E8E9E' },
+              { key: 'p95', label: 'Slowest 5%', color: '#2F5DB8' },
             ]}
             height={210}
             yFormat={(v) => (v >= 1000 ? `${Math.round(v / 1000)}s` : `${v}ms`)}
             tipTitle={(r) => String(r.label)}
             tipValue={(_, v) => f.ms(v)}
-            target={d.p95TargetMs ? { value: d.p95TargetMs, label: `p95 target ${f.ms(d.p95TargetMs)}` } : null}
+            target={d.p95TargetMs ? { value: d.p95TargetMs, label: `Target ${f.ms(d.p95TargetMs)}` } : null}
             breaches={breaches}
-            ariaLabel={`p50 and p95 latency per ${bucket}`}
+            ariaLabel={`Typical and slowest-5% response time per ${bucket}`}
           />
         </Panel>
       </div>
 
-      <Panel title="Alerts" sub="Rule, expected versus actual, owner and runbook. Open → acknowledged (someone is on it) → resolved (the rule stopped firing)." flush>
+      <Panel title="Alerts" sub="Open, then acknowledged when an owner is on it, then resolved when the rule stops firing. Acknowledging is not resolving." flush>
         <AlertList alerts={d.alerts} names={agentId ? undefined : names} />
       </Panel>
 
@@ -262,43 +285,44 @@ export function Reliability() {
             <Table
               caption="Models"
               compact
+              className="ao-fit-wide"
               rows={d.models}
               rowKey={(r) => r.model}
               defaultSort={{ key: 'calls', dir: 'desc' }}
               cols={[
-                { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <ModelName id={r.model} names={agentId ? undefined : names} /> },
+                { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <span style={{ whiteSpace: 'nowrap' }}><ModelName id={r.model} names={agentId ? undefined : names} /></span> },
                 { key: 'calls', header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
-                { key: 'share', mobileHide: true, header: 'Share', num: true, sort: (r) => r.share, render: (r) => f.pct(r.share) },
-                { key: 'fail', mobileHide: true, header: 'Failures', num: true, sort: (r) => r.failures, render: (r) => <span style={{ color: r.failures ? 'var(--cn-danger-txt)' : undefined }}>{f.int(r.failures)}</span> },
-                { key: 'p50', mobileHide: true, header: 'p50', num: true, sort: (r) => r.p50Ms, render: (r) => f.ms(r.p50Ms) },
+                { key: 'share', mobileHide: true, wideHide: true, header: 'Share', num: true, sort: (r) => r.share, render: (r) => f.pct(r.share) },
+                { key: 'fail', mobileHide: true, header: 'Failures', num: true, sort: (r) => r.failures, render: (r) => <span style={{ color: r.failures ? 'var(--ao-danger)' : undefined }}>{f.int(r.failures)}</span> },
+                { key: 'p50', mobileHide: true, wideHide: true, header: 'Typical time', help: 'Median time per call: half of calls are faster.', num: true, sort: (r) => r.p50Ms, render: (r) => f.ms(r.p50Ms) },
                 { key: 'cost', header: 'Cost', num: true, sort: (r) => r.costUsd, render: (r) => f.money(r.costUsd) },
               ]}
             />
           ) : (
-            <div style={{ padding: 18 }}>
+            <div style={{ padding: 20 }}>
               <Empty title="No AI calls in this window" />
             </div>
           )}
         </Panel>
-        <Panel title="Components" source={src} sub="Log events, errors and p95 duration by component." flush>
+        <Panel title="Areas" source={src} sub="Log lines, errors and slowest-5% time by part of the system." flush>
           <Table
-            caption="Components"
+            caption="Areas"
             compact
             rows={d.components}
             rowKey={(r) => r.component}
             defaultSort={{ key: 'events', dir: 'desc' }}
             cols={[
-              { key: 'c', header: 'Component', sort: (r) => r.component, render: (r) => <Link className="row-link" to={`/ops/logs?component=${r.component}${agentId ? `&agentId=${agentId}` : ''}`}>{r.component}</Link> },
-              { key: 'events', header: 'Events', num: true, sort: (r) => r.events, render: (r) => f.int(r.events) },
-              { key: 'errors', header: 'Errors', num: true, sort: (r) => r.errors, render: (r) => <span style={{ color: r.errors ? 'var(--cn-danger-txt)' : undefined }}>{f.int(r.errors)}</span> },
-              { key: 'p95', header: 'p95', num: true, sort: (r) => r.p95Ms, render: (r) => f.ms(r.p95Ms) },
+              { key: 'c', header: 'Area', sort: (r) => r.component, render: (r) => <Link className="row-link" to={`/ops/logs?component=${r.component}${agentId ? `&agentId=${agentId}` : ''}`}>{AREA_LABEL[r.component] ?? r.component}</Link> },
+              { key: 'events', header: 'Log lines', num: true, sort: (r) => r.events, render: (r) => f.int(r.events) },
+              { key: 'errors', header: 'Errors', num: true, sort: (r) => r.errors, render: (r) => <span style={{ color: r.errors ? 'var(--ao-danger)' : undefined }}>{f.int(r.errors)}</span> },
+              { key: 'p95', header: 'Slowest 5%', help: '95 of every 100 log lines in this area finished within this time.', num: true, sort: (r) => r.p95Ms, render: (r) => f.ms(r.p95Ms) },
             ]}
           />
         </Panel>
       </div>
-      <Callout tone="indigo">
-        <SourceChip source="live" /> rows come from Signal Loop as it runs here; everything else is the simulated six-week history. Production would ship the same events over OTLP to the team’s tracing backend; Agent Ops keeps the agent-level rollups.
-      </Callout>
+      <AboutNote>
+        Signal Loop’s numbers are live from this demo; everything else is the simulated six-week history. In production the same events would also go to the team’s tracing tool, with Agent Ops keeping the per-agent summaries.
+      </AboutNote>
     </div>
   );
 }

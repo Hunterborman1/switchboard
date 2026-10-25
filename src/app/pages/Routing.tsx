@@ -25,12 +25,14 @@ import styles from './routing/routing.module.css';
 
 const CHANNELS: Channel[] = ['slack', 'jira', 'linear', 'email_digest', 'triage'];
 
+const ARR_BAND_LABEL: Record<string, string> = { '<50k': 'under $50k', '50k-250k': '$50k–$250k', '250k-1m': '$250k–$1M', '>1m': 'over $1M' };
+
 export function describeMatch(r: RoutingRule): string {
   const parts: string[] = [];
-  parts.push(r.match.types ? r.match.types.map((t) => TYPE_LABEL[t].toLowerCase()).join(' / ') : 'any type');
+  parts.push(r.match.types ? r.match.types.map((t) => TYPE_LABEL[t]).join(' or ') : 'Any type');
   if (r.match.areas) parts.push(r.match.areas.map((a) => AREA_SHORT[a]).join(' / '));
-  if (r.match.minSeverity) parts.push(`severity ≥ ${SEVERITY_LABEL[r.match.minSeverity].toLowerCase()}`);
-  if (r.match.arrBands) parts.push(`ARR ${r.match.arrBands.join(', ')}`);
+  if (r.match.minSeverity) parts.push(r.match.minSeverity === 'critical' ? 'critical only' : `${SEVERITY_LABEL[r.match.minSeverity].toLowerCase()} severity or above`);
+  if (r.match.arrBands) parts.push(`ARR ${r.match.arrBands.map((b) => ARR_BAND_LABEL[b] ?? b).join(' or ')}`);
   return parts.join(' · ');
 }
 
@@ -92,7 +94,7 @@ export default function RoutingPage() {
       });
       emit({ name: 'rule.changed', ruleId: rule.id });
       track('rule_changed', { ruleId: rule.id, ownerId: draft.ownerId, channel: draft.channel, enabled: draft.enabled });
-      toast({ tone: 'success', title: 'Override saved in your workspace', body: `${rule.name} → ${world.personName(draft.ownerId)} (${CHANNEL_LABEL[draft.channel]}). Other viewers still see the baseline.` });
+      toast({ tone: 'success', title: 'Override saved in your workspace', body: `${rule.name} now goes to ${world.personName(draft.ownerId)} in ${CHANNEL_LABEL[draft.channel]}. Other viewers still see the original rule.` });
       setJustSaved(rule.id);
       window.setTimeout(() => setJustSaved((x) => (x === rule.id ? null : x)), 1700);
       invalidate(keys.rules, 'routing/preview');
@@ -104,7 +106,7 @@ export default function RoutingPage() {
   };
 
   const ownerOptions = useMemo(
-    () => world.people.filter((p) => p.role !== 'csm').map((p) => ({ value: p.id, label: `${p.name} · ${p.title}` })),
+    () => world.people.filter((p) => p.role !== 'csm').map((p) => ({ value: p.id, label: p.name })),
     [world.people],
   );
 
@@ -133,7 +135,7 @@ export default function RoutingPage() {
     ) },
     { key: 'owner', header: 'Owner', sortable: true, sortValue: (d) => world.personName(d.ownerId), render: (d) => world.personName(d.ownerId) },
     { key: 'status', header: 'Status', sortable: true, sortValue: (d) => d.status, render: (d) => (
-      <StatusChip tone={DELIVERY_TONE[d.status]}>{d.status}{d.attempts.length > 1 ? ` · ${d.attempts.length} attempts` : ''}</StatusChip>
+      <StatusChip tone={DELIVERY_TONE[d.status]}>{d.status.charAt(0).toUpperCase() + d.status.slice(1)}{d.attempts.length > 1 ? ` · ${d.attempts.length} attempts` : ''}</StatusChip>
     ) },
     { key: 'receipt', header: 'Receipt', render: (d) => (d.receipt ? <MonoId value={d.receipt} keep={10} /> : <span className="sl-subtle">—</span>) },
     { key: 'at', header: 'When', sortable: true, sortValue: (d) => d.createdAt, render: (d) => <RelativeTime value={d.createdAt} /> },
@@ -142,7 +144,7 @@ export default function RoutingPage() {
   if (rulesQ.error && !rulesQ.data) {
     return (
       <div className="sl-page">
-        <AppPageHeader title="Routing" dataAsOf={rulesQ.dataAsOf} />
+        <AppPageHeader title="Routing" subtitle="Who receives each insight, and in which tool." dataAsOf={rulesQ.dataAsOf} />
         <ErrorState error={rulesQ.error} onRetry={rulesQ.refresh} what="routing rules" />
       </div>
     );
@@ -150,11 +152,11 @@ export default function RoutingPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Routing" dataAsOf={rulesQ.dataAsOf} />
+      <AppPageHeader title="Routing" subtitle="Who receives each insight, and in which tool." dataAsOf={rulesQ.dataAsOf} />
 
       <Panel
         title="Rules"
-        sub="Routing is decided by this table, never by the prompt. Lowest priority number wins; anything unmatched goes to triage. Edits are saved as overrides in your workspace."
+        sub="These rules decide the owner, not the AI. The first matching rule (lowest priority number) wins, and anything unmatched goes to the triage queue. Your edits only change your workspace."
         actions={dirtyCount ? <StatusChip tone="warning">{dirtyCount} unsaved</StatusChip> : null}
         flush
         anchor={tourAnchor('routing.rules')}
@@ -172,7 +174,7 @@ export default function RoutingPage() {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th scope="col">Rule · match</th>
+                  <th scope="col">Rule</th>
                   <th scope="col">Owner</th>
                   <th scope="col">Channel</th>
                   <th scope="col">Destination</th>
@@ -197,21 +199,22 @@ export default function RoutingPage() {
                       data-rule-id={rule.id}
                       data-override={isOverride ? 'true' : undefined}
                     >
-                      <td style={{ minWidth: 240 }}>
+                      <td className={styles.ruleCell}>
                         <div className={styles.ruleName}>
                           {rule.name} {isOverride ? <span className={styles.override}>Your override</span> : null}
                         </div>
                         <div className={styles.ruleMatch}>{describeMatch(rule)}</div>
                       </td>
-                      <td data-label="Owner">
+                      <td data-label="Owner" className={styles.ownerCell}>
                         <Select
                           size="sm"
                           aria-label={`Owner for ${rule.name}`}
                           value={d.ownerId}
                           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => edit(rule, { ownerId: e.target.value })}
                           options={ownerOptions.some((o) => o.value === d.ownerId) ? ownerOptions : [{ value: d.ownerId, label: world.personName(d.ownerId) }, ...ownerOptions]}
-                          style={{ width: 250 }}
+                          style={{ width: '100%' }}
                         />
+                        <div className={styles.ownerRole}>{world.people.find((p) => p.id === d.ownerId)?.title ?? ''}</div>
                       </td>
                       <td data-label="Channel">
                         <Select
@@ -220,16 +223,16 @@ export default function RoutingPage() {
                           value={d.channel}
                           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => edit(rule, { channel: e.target.value as Channel })}
                           options={CHANNELS.map((c) => ({ value: c, label: CHANNEL_LABEL[c] }))}
-                          style={{ width: 140 }}
+                          style={{ width: 128 }}
                         />
                       </td>
-                      <td data-label="Destination">
+                      <td data-label="Destination" className={styles.destCell}>
                         <Input
                           size="sm"
                           aria-label={`Destination for ${rule.name}`}
                           value={d.destination}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => edit(rule, { destination: e.target.value })}
-                          style={{ width: 180 }}
+                          style={{ width: '100%' }}
                         />
                       </td>
                       <td data-label="Priority">
@@ -258,7 +261,7 @@ export default function RoutingPage() {
                               </Button>
                             </>
                           ) : (
-                            justSaved === rule.id ? <span className="sl-caption" role="status">Saved ✓</span> : null
+                            justSaved === rule.id ? <span className="sl-caption" role="status">Saved</span> : null
                           )}
                         </div>
                       </td>
@@ -276,7 +279,7 @@ export default function RoutingPage() {
         sub={
           dirtyCount
             ? `Previewing ${dirtyCount} unsaved change${dirtyCount === 1 ? '' : 's'} against every insight in your workspace`
-            : 'Type → product area → owner, for every routed or pending insight under the current rules'
+            : 'Every routed or pending insight, from type to product area to owner, under the current rules'
         }
         anchor={tourAnchor('routing.sankey')}
       >
@@ -285,7 +288,7 @@ export default function RoutingPage() {
 
       <Panel
         title="Delivery log"
-        sub={deliveries.length ? `${deliveries.length} deliveries · ${deliveries.filter((d) => d.attempts.length > 1).length} needed a retry · expand a row for its attempt timeline` : 'Receipts from Slack, Jira, Linear and the digest'}
+        sub={deliveries.length ? `${deliveries.length} deliveries, ${deliveries.filter((d) => d.attempts.length > 1).length} needed a retry. Expand a row to see each attempt.` : 'Receipts from Slack, Jira, Linear and the digest'}
         flush
         anchor={tourAnchor('routing.deliveries')}
       >
@@ -317,7 +320,7 @@ export default function RoutingPage() {
                   <ul style={{ margin: 0, paddingLeft: 18 }} className="sl-meta">
                     {d.attempts.map((a, i) => (
                       <li key={i}>
-                        Attempt {i + 1}: {a.ok ? 'ok' : 'failed'} · {a.ms} ms · {a.note} · <RelativeTime value={a.at} />
+                        Attempt {i + 1}: {a.ok ? 'succeeded' : 'failed'} · {a.ms} ms · {a.note} · <RelativeTime value={a.at} />
                       </li>
                     ))}
                   </ul>
@@ -361,8 +364,8 @@ function RoutingSankey({ flows, loading, personName }: { flows: { type: InsightT
     const areas = [...new Set(flows.map((f) => f.area))].sort();
     const owners = [...new Set(flows.map((f) => f.ownerId))].sort((a, b) => personName(a).localeCompare(personName(b)));
     types.forEach((t) => node(`t:${t}`, { name: TYPE_LABEL[t], kind: 'type', key: t, color: TYPE_COLOR[t] }));
-    areas.forEach((a) => node(`a:${a}`, { name: AREA_SHORT[a as keyof typeof AREA_SHORT] ?? a, kind: 'area', key: a, color: 'var(--cn-neutral)' }));
-    owners.forEach((o) => node(`o:${o}`, { name: personName(o), kind: 'owner', key: o, color: 'var(--cn-green-deep)' }));
+    areas.forEach((a) => node(`a:${a}`, { name: AREA_SHORT[a as keyof typeof AREA_SHORT] ?? a, kind: 'area', key: a, color: 'var(--text-tertiary)' }));
+    owners.forEach((o) => node(`o:${o}`, { name: personName(o), kind: 'owner', key: o, color: 'var(--text)' }));
     const l1 = new Map<string, number>();
     const l2 = new Map<string, number>();
     for (const f of flows) {
@@ -416,7 +419,7 @@ function RoutingSankey({ flows, loading, personName }: { flows: { type: InsightT
             link={<SankeyLink nodes={data.nodes} />}
           >
             <Tooltip
-              contentStyle={{ borderRadius: 6, border: '1px solid var(--cn-border)', boxShadow: 'var(--shadow-md)', fontSize: 12 }}
+              contentStyle={{ borderRadius: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-2)', fontSize: 12 }}
               formatter={(v) => [`${String(v)} insights`, '']}
             />
           </Sankey>
@@ -426,7 +429,7 @@ function RoutingSankey({ flows, loading, personName }: { flows: { type: InsightT
         {[...new Set((flows ?? []).map((f) => f.type))].sort().map((t) => (
           <TypeTag key={t} type={t} />
         ))}
-        <span className="sl-caption">· width = number of insights ({data.total} total) · <Link to="/app/insights">open the records →</Link></span>
+        <span className="sl-caption">Line width shows the number of insights ({data.total} in total). <Link to="/app/insights" className="sl-linkbtn">Open the insights</Link></span>
       </div>
       </div>
     </div>
@@ -451,7 +454,7 @@ function FlowList({ flows, personName }: { flows: { type: InsightType; area: str
         <li key={owner} className={styles.flowRow}>
           <div className={styles.flowHead}>
             <span className="sl-strong">{personName(owner)}</span>
-            <span className="sl-mono sl-meta">{r.total} · {Math.round((r.total / Math.max(total, 1)) * 100)}% of {total}</span>
+            <span className="sl-num sl-meta">{r.total} · {Math.round((r.total / Math.max(total, 1)) * 100)}% of {total}</span>
           </div>
           <div className={styles.flowBar} aria-hidden="true">
             {[...r.types.entries()].map(([t, n]) => (
@@ -493,7 +496,7 @@ function SankeyNode(props: NodeRenderProps & { nodes: SNode[] }) {
         style={{ transition: 'y 600ms var(--ease-out)', paintOrder: 'stroke', stroke: 'var(--cn-white)', strokeWidth: n.kind === 'area' ? 3 : 0 }}
       >
         {n.name}
-        <tspan fill="var(--cn-ink-3-txt)" fontFamily="var(--font-mono)" fontSize={11}>{`  ${payload?.value ?? ''}`}</tspan>
+        <tspan fill="var(--text-tertiary)" fontSize={12}>{`  ${payload?.value ?? ''}`}</tspan>
       </text>
     </g>
   );
@@ -516,18 +519,18 @@ function SankeyLink(props: LinkRenderProps & { nodes: SNode[] }) {
   const [hover, setHover] = useState(false);
   const srcName = payload?.source?.name;
   const src = nodes.find((n) => n.name === srcName);
-  const color = src?.kind === 'type' ? src.color : 'var(--cn-green)';
+  const color = src?.kind === 'type' ? src.color : 'var(--text-tertiary)';
   const d = `M${sourceX},${sourceY} C${sourceControlX},${sourceY} ${targetControlX},${targetY} ${targetX},${targetY}`;
   return (
     <path
       d={d}
       fill="none"
       stroke={color}
-      strokeOpacity={hover ? 0.55 : 0.28}
+      strokeOpacity={hover ? 0.45 : 0.2}
       strokeWidth={Math.max(linkWidth, 1)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ transition: 'd 600ms var(--ease-out), stroke-width 600ms var(--ease-out), stroke-opacity 150ms' }}
+      style={{ transition: 'd 600ms var(--ease-out), stroke-width 600ms var(--ease-out), stroke-opacity 120ms' }}
     />
   );
 }

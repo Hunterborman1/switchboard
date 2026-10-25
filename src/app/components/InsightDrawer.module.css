@@ -8,7 +8,7 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(10, 35, 30, 0.32) !important;
+  background: rgba(17, 22, 20, 0.45) !important;
   cursor: default !important;
   animation: fade var(--dur-base) var(--ease-out) both;
 }
@@ -19,11 +19,12 @@
   display: flex;
   flex-direction: column;
   background: var(--cn-white);
-  box-shadow: var(--shadow-drawer);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-2);
   animation: slide var(--dur-slow) var(--ease-out) both;
 }
 @keyframes slide {
-  from { transform: translateX(28px); opacity: 0.4; }
+  from { transform: translateX(8px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
 @keyframes fade {
@@ -36,7 +37,7 @@
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-5);
-  border-bottom: 1px solid var(--cn-border);
+  border-bottom: 1px solid var(--border);
 }
 .body {
   flex: 1;
@@ -49,10 +50,11 @@
 }
 .title {
   margin: 0;
-  font-size: var(--fs-heading);
-  font-weight: var(--fw-regular);
-  line-height: var(--lh-snug);
-  color: var(--cn-off-black);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 28px;
+  color: var(--text);
 }
 .section {
   display: flex;
@@ -64,11 +66,9 @@
 }
 .h3 {
   margin: 0;
-  font-size: var(--fs-micro);
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--text-subtle);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
 }
 .kv {
   margin: 0;
@@ -77,22 +77,24 @@
   gap: var(--sp-3);
 }
 .kv dt {
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 12px;
+  color: var(--text-tertiary);
 }
 .kv dd {
   margin: 2px 0 0;
-  font-size: var(--fs-title);
-  color: var(--cn-off-black);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 .delivery {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--cn-border);
-  border-radius: var(--radius-md);
-  background: var(--cn-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
 }
 .attempts {
   list-style: none;
@@ -110,9 +112,9 @@
 .ok, .fail {
   width: 7px;
   height: 7px;
-  border-radius: 999px;
+  border-radius: 2px;
   flex: none;
-  background: var(--cn-success);
+  background: var(--success);
 }
 .fail { background: var(--cn-danger); }
 .reviews {
@@ -141,9 +143,9 @@
   gap: var(--sp-2);
 }
 .diffRow dt {
-  color: var(--text-subtle);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-transform: capitalize;
 }
 .diffRow dd {
   margin: 0;
@@ -166,12 +168,15 @@
 .reason {
   margin: 0;
   font-size: var(--fs-meta);
-  color: var(--text-muted);
-  font-style: italic;
+  color: var(--text-secondary);
 }
 @media (max-width: 560px) {
   .body { padding: var(--sp-4); }
   .head { padding-inline: var(--sp-4); }
   .kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .title { font-size: var(--fs-title-lg); }
+  .title { font-size: 17px; line-height: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation-name: fade; }
 }

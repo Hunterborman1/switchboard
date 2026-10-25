@@ -142,6 +142,13 @@ export const useToast = () => useContext(ToastCtx);
 
 // ---------------------------------------------------------------- budget pill + header
 
+function shortUsd(usd: number): string {
+  if (Number.isInteger(usd)) return `$${usd.toLocaleString('en-US')}`;
+  if (Math.abs(usd) < 0.01) return 'under 1¢';
+  return `$${usd.toFixed(2)}`;
+}
+
+/** The live-AI budget as plain text with a thin flat meter: "Live AI · $0.07 of $15 used". */
 export function BudgetPill({ compact = false }: { compact?: boolean }) {
   const { data } = useSession();
   const b = data?.budget;
@@ -149,8 +156,8 @@ export function BudgetPill({ compact = false }: { compact?: boolean }) {
   const label = !b ? 'Checking budget…' : live ? 'Live AI' : 'Replay mode';
   const detail = b
     ? live
-      ? `Live AI on: ${money(b.spentUsd, { precise: true })} of ${money(b.limitUsd, { precise: true })} viewer budget used · ${b.liveRuns.toLocaleString()} live runs. New runs call the real models.`
-      : `Live AI budget reached (${money(b.spentUsd, { precise: true })} of ${money(b.limitUsd, { precise: true })}). Runs replay a recorded live run at real speed; custom uploads are paused.`
+      ? `Live AI is on: ${money(b.spentUsd, { precise: true })} of the ${money(b.limitUsd, { precise: true })} viewer budget used across ${b.liveRuns.toLocaleString()} live runs. New runs call the real models.`
+      : `The live AI budget is used up (${money(b.spentUsd, { precise: true })} of ${money(b.limitUsd, { precise: true })}). Runs now replay a recorded live run at real speed, and custom uploads are paused.`
     : 'Reading the session…';
   const pct = b ? Math.min(1, b.spentUsd / Math.max(b.limitUsd, 0.0001)) : 0;
   return (
@@ -161,17 +168,19 @@ export function BudgetPill({ compact = false }: { compact?: boolean }) {
         aria-label={detail}
         {...tourAnchor('budget.pill')}
       >
-        <span className="sl-budget-dot" aria-hidden="true" />
-        <span className="sl-budget-label">{label}</span>
+        <span className="sl-budget-text">
+          <span className="sl-budget-label">{label}</span>
+          {!compact && b ? (
+            <span className="sl-budget-amt">
+              {' · '}
+              {shortUsd(b.spentUsd)} of {shortUsd(b.limitUsd)} used
+            </span>
+          ) : null}
+        </span>
         {!compact && b ? (
-          <>
-            <span className="sl-budget-track" aria-hidden="true">
-              <span style={{ width: `${(pct * 100).toFixed(1)}%` }} />
-            </span>
-            <span className="sl-budget-amt sl-mono">
-              {money(b.spentUsd, { precise: true })} / {money(b.limitUsd, { precise: true })}
-            </span>
-          </>
+          <span className="sl-budget-track" aria-hidden="true">
+            <span style={{ width: `${Math.max(pct * 100, pct > 0 ? 2 : 0).toFixed(1)}%` }} />
+          </span>
         ) : null}
       </span>
     </Hint>
@@ -180,18 +189,20 @@ export function BudgetPill({ compact = false }: { compact?: boolean }) {
 
 export function AppPageHeader({
   title,
+  subtitle,
   dataAsOf,
   breadcrumbs,
   actions,
 }: {
   title: string;
+  subtitle?: ReactNode;
   dataAsOf: string | null;
   breadcrumbs?: Breadcrumb[];
   actions?: ReactNode;
 }) {
   useDocumentTitle(title);
   return (
-    <PageHeader title={title} dataAsOf={dataAsOf} breadcrumbs={breadcrumbs}>
+    <PageHeader title={title} subtitle={subtitle} dataAsOf={dataAsOf} breadcrumbs={breadcrumbs}>
       {actions}
       <BudgetPill />
     </PageHeader>

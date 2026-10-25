@@ -4,7 +4,7 @@ import type { OverviewX } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { IconArrowRight, IconPrint } from '../ui/icons';
-import { ErrorState, PageSkeleton, SourceChip } from '../ui/kit';
+import { AgentStatus, ErrorState, PageSkeleton } from '../ui/kit';
 
 /** One-click, print-friendly summary for leadership. Sentences are templated from the numbers (no LLM). */
 export function ExecSummary() {
@@ -39,12 +39,12 @@ export function ExecSummary() {
   return (
     <div className="ao-page">
       <div className="ao-noprint" style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-        <Link to="/ops" className="ao-link">
+        <Link to="/ops" className="ao-link" style={{ fontWeight: 500 }}>
           ← Back to the overview
         </Link>
         <div style={{ display: 'flex', gap: 8 }}>
           <Link to="/ops/agents" className="ao-btn">
-            Registry <IconArrowRight size={13} />
+            Agent registry <IconArrowRight size={13} />
           </Link>
           <button type="button" className="ao-btn primary" onClick={() => window.print()}>
             <IconPrint /> Print or save as PDF
@@ -59,7 +59,6 @@ export function ExecSummary() {
             <span>
               {f.range(d.range.from, d.range.to)} · prepared {f.dayYear(ov.dataAsOf)}
             </span>
-            <SourceChip source="mixed" />
           </div>
         </header>
         <div className="lede" data-testid="exec-summary">
@@ -69,21 +68,21 @@ export function ExecSummary() {
         </div>
         <div className="ao-exec-kpis">
           <div>
-            <span>Hours returned</span>
-            <b>~{f.int(t.hoursReturned)} h</b>
+            <span>Hours saved</span>
+            <b>{f.int(t.hoursReturned)} h</b>
           </div>
           <div>
             <span>Estimated value</span>
-            <b>{f.money(t.valueUsd, { est: true })}</b>
+            <b>{f.compactMoney(t.valueUsd)}</b>
           </div>
           <div>
             <span>AI cost</span>
             <b>{f.money(t.aiCostUsd)}</b>
           </div>
           <div>
-            <span>Weekly active</span>
+            <span>Weekly active users</span>
             <b>
-              {d.wau.current} <small style={{ fontSize: 13, color: 'var(--cn-ink-3-txt)' }}>of {t.activeUsers}</small>
+              {d.wau.current} <small style={{ fontSize: 14, fontWeight: 500, letterSpacing: 0, color: 'var(--ao-text-3)' }}>of {t.activeUsers}</small>
             </b>
           </div>
         </div>
@@ -94,29 +93,31 @@ export function ExecSummary() {
             <tr>
               <th scope="col">Agent</th>
               <th scope="col">Status</th>
-              <th className="num" scope="col">Work units</th>
-              <th className="num" scope="col">Hours</th>
-              <th className="num" scope="col">AI cost</th>
-              <th className="num" scope="col">Users</th>
+              <th className="num ao-hide-sm" scope="col">Tasks</th>
+              <th className="num" scope="col">Hours saved</th>
+              <th className="num ao-hide-sm" scope="col">AI cost</th>
+              <th className="num ao-hide-sm" scope="col">People</th>
             </tr>
           </thead>
           <tbody>
             {d.agentRows.map((a) => (
               <tr key={a.agentId}>
                 <td>{a.name}</td>
-                <td style={{ textTransform: 'capitalize' }}>{a.status.replace('_', ' ')}</td>
-                <td className="num">{f.int(a.workUnits)}</td>
+                <td>
+                  <AgentStatus value={a.status} />
+                </td>
+                <td className="num ao-hide-sm">{f.int(a.workUnits)}</td>
                 <td className="num">{f.hours(a.hoursReturned)}</td>
-                <td className="num">{f.money(a.aiCostUsd)}</td>
-                <td className="num">{f.int(a.activeUsers)}</td>
+                <td className="num ao-hide-sm">{f.money(a.aiCostUsd)}</td>
+                <td className="num ao-hide-sm">{f.int(a.activeUsers)}</td>
               </tr>
             ))}
           </tbody>
         </table>
         </div>
         <footer>
-          Estimates, not billing data. Hours use registered per-task baselines (assumptions until a 2-week time study); value uses a loaded cost of ${d.assumptions.loadedHourlyUsd}/hour. Six weeks of org history are simulated for this demo; Signal Loop’s runs and the
-          people using the demo are live. Generated from the numbers by template, not written by a model.
+          Estimates, not billing data. Hours saved use the registered time each task takes by hand (assumptions until a 2-week time study); value uses a loaded cost of ${d.assumptions.loadedHourlyUsd} an hour. Six weeks of
+          history are simulated for this demo; Signal Loop’s runs and the people using the demo are live. These sentences are generated from the numbers by a template, not written by an AI model.
         </footer>
       </article>
     </div>

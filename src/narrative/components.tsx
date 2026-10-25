@@ -1,39 +1,32 @@
 /**
- * Signal Loop Narrative · components. Small, composable, editorial.
+ * Signal Loop Narrative · components. Small, flat, composable (docs/DESIGN.md).
  * See ./README.md for the token + component reference.
  */
 import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCalm, useCountUp } from './hooks';
-import { reveal, revealReduced, stagger } from './motion';
+import { DUR, EASE, reveal, revealReduced, stagger } from './motion';
+import { ProductMark } from '../uis/ProductSwitcher';
 
 const cx = (...c: Array<string | false | null | undefined>) => c.filter(Boolean).join(' ');
 
 // ---------------------------------------------------------------- brand
 
-export function LoopGlyph({ size = 22, live = false }: { size?: number; live?: boolean }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="rgb(242 245 228 / 0.28)" strokeWidth="1.4" />
-      <path d="M12 2a10 10 0 0 1 9.6 7.2" stroke="#8EE58E" strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="21.6" cy="9.2" r="1.7" fill="#8EE58E">
-        {live && <animate attributeName="opacity" values="1;0.35;1" dur="2.4s" repeatCount="indefinite" />}
-      </circle>
-      <path d="M7 12h1.6M10 9v6M13 7.5v9M16 10.5v3" stroke="#F2F5E4" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
+/** The Signal Loop mark: a flat accent tile with four waveform bars. */
+export function LoopGlyph({ size = 24 }: { size?: number; live?: boolean }) {
+  return <ProductMark product="signal-loop" size={size} />;
 }
 
-export function Mark({ sub = 'prepared for Invoca', href }: { sub?: string; href?: string }) {
+export function Mark({ sub, href, size = 24 }: { sub?: string; href?: string; size?: number }) {
   const inner = (
     <>
-      <LoopGlyph />
-      <b>Signal Loop</b>
-      {sub && <span>· {sub}</span>}
+      <LoopGlyph size={size} />
+      <span className="n-mark__name">Signal Loop</span>
+      {sub && <span className="n-mark__sub">{sub}</span>}
     </>
   );
   return href ? (
-    <a className="n-mark" href={href}>
+    <a className="n-mark" href={href} aria-label="Signal Loop home">
       {inner}
     </a>
   ) : (
@@ -41,25 +34,17 @@ export function Mark({ sub = 'prepared for Invoca', href }: { sub?: string; href
   );
 }
 
-// ---------------------------------------------------------------- backdrop
-
-export function Backdrop({ grain = true }: { grain?: boolean }) {
-  return (
-    <>
-      <div className="n-light" aria-hidden="true" />
-      <div className="n-vignette" aria-hidden="true" />
-      {grain && <div className="n-grain" aria-hidden="true" />}
-    </>
-  );
+/** Kept for call sites from the dark theme: the light theme has no backdrop. */
+export function Backdrop(_props: { grain?: boolean }) {
+  return null;
 }
 
 // ---------------------------------------------------------------- type
 
-export function Eyebrow({ num, children, rule = true }: { num?: string; children: ReactNode; rule?: boolean }) {
+export function Eyebrow({ num, children }: { num?: string; children: ReactNode; rule?: boolean }) {
   return (
     <p className="n-eyebrow">
       {num && <span className="n-eyebrow__num">{num}</span>}
-      {num && rule && <span className="n-eyebrow__rule" aria-hidden="true" />}
       <span>{children}</span>
     </p>
   );
@@ -87,7 +72,29 @@ export function Kicker({ children }: { children: ReactNode }) {
   return <p className="n-kicker">{children}</p>;
 }
 
-/** Blur-reveal wrapper; children with <Reveal.Item> stagger in. */
+/** Scene head: one headline and one supporting line, cross-fading when `k` changes. */
+export function SceneHead({ k, title, line, size = 'md' }: { k?: string | number; title: ReactNode; line?: ReactNode; size?: DisplaySize }) {
+  const calm = useCalm();
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={k ?? 'head'}
+        className="n-head"
+        initial={calm ? { opacity: 0 } : { opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, transition: { duration: calm ? 0 : DUR.ui * 0.6, ease: [0.4, 0, 1, 1] } }}
+        transition={{ duration: calm ? 0 : DUR.ui, ease: EASE }}
+      >
+        <Display size={size} as="h2">
+          {title}
+        </Display>
+        {line && <Lede>{line}</Lede>}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+/** Fade-up wrapper; children with <Reveal.Item> follow one after another. */
 export function Reveal({ children, delay = 0, each, className, style, as = 'div' }: { children: ReactNode; delay?: number; each?: number; className?: string; style?: CSSProperties; as?: 'div' | 'section' | 'ul' }) {
   const calm = useCalm();
   const M = as === 'section' ? motion.section : as === 'ul' ? motion.ul : motion.div;
@@ -139,13 +146,8 @@ export function Callout({ children, tone, style }: { children: ReactNode; tone?:
   );
 }
 
-export function Chip({ children, tone, dot }: { children: ReactNode; tone?: 'accent' | 'indigo' | 'danger' | 'amber'; dot?: boolean }) {
-  return (
-    <span className={cx('n-chip', tone && `n-chip--${tone}`)}>
-      {dot && <span className="n-chip__dot" aria-hidden="true" />}
-      {children}
-    </span>
-  );
+export function Chip({ children, tone }: { children: ReactNode; tone?: 'accent' | 'indigo' | 'danger' | 'amber'; dot?: boolean }) {
+  return <span className={cx('n-chip', tone && `n-chip--${tone}`)}>{children}</span>;
 }
 
 export function Divider({ vertical }: { vertical?: boolean }) {
@@ -169,6 +171,14 @@ export function Arrow({ dir = 'right' }: { dir?: 'right' | 'left' | 'up' }) {
   return (
     <svg className="n-btn__arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ transform: `rotate(${r}deg)` }}>
       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Check({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -199,9 +209,9 @@ export function Progress({ value, label }: { value: number; label?: string }) {
 export function Beats({ count, current }: { count: number; current: number }) {
   if (count <= 1) return null;
   return (
-    <span className="n-beats" aria-label={`Beat ${current + 1} of ${count}`}>
+    <span className="n-beats" aria-label={`Step ${current + 1} of ${count}`}>
       {Array.from({ length: count }, (_, i) => (
-        <span key={i} className="n-beats__dot" data-on={i <= current} data-current={i === current} />
+        <span key={i} className="n-beats__dot" data-on={i <= current} />
       ))}
     </span>
   );
@@ -220,52 +230,47 @@ export type Persona = {
   emotional?: string;
 };
 
+/** The job on the front; click (or Enter) to reveal struggles and success. 180 ms crossfade, no flip. */
 export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; flipped: boolean; onFlip: () => void }) {
   const calm = useCalm();
+  const fade = { duration: calm ? 0 : DUR.ui, ease: EASE };
   return (
-    <button className="n-persona" onClick={onFlip} aria-pressed={flipped} aria-label={`${persona.role}: ${flipped ? 'showing job, struggles and success' : 'flip to see the job to be done'}`} data-no-advance>
-      <motion.div className="n-persona__inner" animate={{ rotateY: flipped ? 180 : 0 }} transition={calm ? { duration: 0 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
-        <div className="n-persona__face n-persona__face--front" aria-hidden={flipped}>
-          <div className="n-persona__glyph">{persona.glyph}</div>
-          <div style={{ marginTop: 'auto', display: 'grid', gap: 10 }}>
-            <p className="n-persona__role">{persona.role}</p>
-            <p className="n-persona__who">{persona.who}</p>
-          </div>
-          <Divider />
-          <p className="n-persona__job" style={{ color: 'var(--n-ink-2)' }}>
-            <span className="n-label" style={{ display: 'block', marginBottom: 6 }}>When…</span>
-            {persona.job.when}
-          </p>
-          <div className="n-persona__foot">
-            <span className="n-label">Job to be done</span>
-            <span className="n-keys">
-              <span>Flip</span>
-              <Arrow />
-            </span>
-          </div>
-        </div>
-        <div className="n-persona__face n-persona__face--back" aria-hidden={!flipped}>
-          <span className="n-label" style={{ color: 'var(--n-accent)' }}>{persona.role}</span>
-          <p className="n-persona__job">
-            When {persona.job.when}, I want <b>{persona.job.want}</b>, so I can {persona.job.so}.
-          </p>
-          <div className="n-persona__section">
-            <span className="n-label">Struggles today</span>
-            {persona.struggles.map((s) => (
-              <p key={s}>— {s}</p>
-            ))}
-          </div>
-          <div className="n-persona__section">
-            <span className="n-label">Success looks like</span>
-            <p style={{ color: 'var(--n-ink)' }}>{persona.success}</p>
-          </div>
-          {persona.emotional && (
-            <p className="n-kicker" style={{ fontSize: '1.15rem', marginTop: 'auto' }}>
-              “{persona.emotional}”
-            </p>
+    <button className="n-persona" onClick={onFlip} aria-pressed={flipped} aria-label={`${persona.role}: ${flipped ? 'showing struggles and success. Select to go back to the job' : 'showing the job. Select to see what gets in the way'}`} data-no-advance>
+      <div className="n-persona__head">
+        <div className="n-persona__glyph">{persona.glyph}</div>
+        <p className="n-persona__role">{persona.role}</p>
+        <p className="n-persona__who">{persona.who}</p>
+      </div>
+      <div className="n-persona__panes">
+        <AnimatePresence initial={false}>
+          {!flipped ? (
+            <motion.div key="front" className="n-persona__pane" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+              <p className="n-persona__job">
+                When {persona.job.when}, I want <b>{persona.job.want}</b>, so I can {persona.job.so}.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div key="back" className="n-persona__pane" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+              <div className="n-persona__section">
+                <span className="n-label">What gets in the way today</span>
+                <ul>
+                  {persona.struggles.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="n-persona__section">
+                <span className="n-label">Success looks like</span>
+                <p className="n-persona__success">{persona.success}</p>
+              </div>
+            </motion.div>
           )}
-        </div>
-      </motion.div>
+        </AnimatePresence>
+      </div>
+      <div className="n-persona__foot">
+        <span>{flipped ? 'Today' : 'The job'}</span>
+        <span>{flipped ? 'Back to the job' : 'What gets in the way'}</span>
+      </div>
     </button>
   );
 }

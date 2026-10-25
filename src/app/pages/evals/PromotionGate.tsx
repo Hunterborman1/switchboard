@@ -49,14 +49,14 @@ export function PromotionGate({ candidate, current }: { candidate: EvalRun; curr
     <div className={styles.gate}>
       <div className="sl-spread">
         <div>
-          <span className="sl-eyebrow">Promotion gate</span>
+          <span className={styles.compareLabel}>Go-live check</span>
           <p className="sl-p">
-            Promote <span className="sl-mono">{candidate.promptVersion}</span> over <span className="sl-mono">{current.promptVersion}</span>? Every rule must pass; the gate cannot be overridden from the UI.
+            Replace <span className="sl-mono">{current.promptVersion}</span> with <span className="sl-mono">{candidate.promptVersion}</span>? Every rule must pass, and nobody can override the check from here.
           </p>
         </div>
         <span {...tourAnchor('evals.promote')} style={{ display: 'inline-flex' }}>
           <Button iconLeft={phase === 'done' ? 'refresh' : 'play'} onClick={run} loading={phase === 'checking'} disabled={phase === 'checking'}>
-            {phase === 'idle' ? `Promote ${candidate.promptVersion.split('@')[1] ?? candidate.promptVersion}` : phase === 'checking' ? 'Checking the gate…' : 'Run the gate again'}
+            {phase === 'idle' ? `Promote ${candidate.promptVersion.split('@')[1] ?? candidate.promptVersion}` : phase === 'checking' ? 'Checking…' : 'Run the check again'}
           </Button>
         </span>
       </div>

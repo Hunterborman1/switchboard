@@ -11,19 +11,19 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   'cold-open': {
     time: '0:30',
     say: [
-      'This is a thirteen-minute slice of a QBR. Somewhere in it is a roadmap decision, and today it probably never reaches the person who makes it.',
+      'This is a thirteen-minute QBR. Twenty seconds of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.',
       'Invoca turns calls into signals for its customers. I built the same loop for Invoca’s own customer calls, and then I built the platform I’d use to operate it.',
     ],
-    click: ['→ once to resolve the waveform into the headline.'],
+    click: ['→ once: the highlighted moment becomes what Signal Loop makes of it.'],
   },
   'black-hole': {
     time: '1:15',
     say: [
       'Customers tell CSMs exactly what to build: what’s broken, what’s missing, what a competitor just offered.',
-      'Most of it ends up in a notes field, a Slack thread or someone’s memory.',
-      '“4 of 10” is an assumption, and it says so on screen. The first thing I’d do in the job is a 2-week time study with two CSMs to replace it with a real number.',
+      'Follow 100 pieces of it: 72 written down, 55 shared beyond the CSM, 40 reach someone who can act. The rest is in a notes field, a Slack thread or someone’s memory.',
+      '“40 of 100” is an assumption, and it says so on screen. The first thing I’d do in the job is a 2-week time study with two CSMs to replace it with a real number.',
     ],
-    click: ['→ to beat 2 (the void), → to beat 3 (the assumption label).'],
+    click: ['→ to step 2 (the handoffs fill in), → to step 3 (the total and the assumption label).'],
   },
   why: {
     time: '0:35',
@@ -40,7 +40,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
       'The CSM wants it captured without retyping. The PM wants evidence with ARR attached. The VP wants the cross-account view before the renewal, not after. Sales, competitive and support want it in their channel the same day.',
       'The job that matters most is the emotional one: be the advocate, not the stenographer. If the system doesn’t make CSMs look good, they stop feeding it.',
     ],
-    click: ['Flip all four cards (click or Enter on each).', '→ to reveal the emotional job.'],
+    click: ['Open all four cards (click or Enter on each) to show what gets in the way.', '→ to bring up the emotional job as the headline.'],
   },
   states: {
     time: '2:10',
@@ -50,7 +50,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
       'The future state seals each leak with a system: capture from the call, quote verbatim, ground in code, route by rule, theme by similarity.',
       'And then the loop closes: when it ships, the CSM hears first, with a drafted note for the customer.',
     ],
-    click: ['→ three times: leaks, morph, loop closes.'],
+    click: ['→ three times: leaks appear, Signal Loop seals them, the loop closes.'],
   },
   ch1: {
     time: '1:30',
@@ -78,7 +78,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
       'Approve one with A. Edit one with E. The edit is saved as labelled data with a before/after diff, which is how the next prompt gets better.',
       'If there’s time, try another file: the injection one or the PHI-heavy call.',
     ],
-    click: ['Press A on the first item.', 'Press E on another; the callout follows the form. Change the type or severity (Save stays disabled until a field changes), then Save edit & route.', 'Continue, or “Try another file”.'],
+    click: ['Press A on the first item.', 'Press E on another; the callout follows the form. Change the type or severity (Save stays disabled until a field changes), then Save edit & route.', 'Next, or “Try another file”.'],
   },
   ch4: {
     time: '1:20',
@@ -178,7 +178,7 @@ export const STEP_NOTES: Record<string, string> = {
   'ch2.clean': 'Clean notes are the baseline. Offer the messy one if there’s time.',
   'ch3.approve': 'Press A. That routes it, with an audit row.',
   'ch3.edit': 'Press E, change a field, Save edit & route. The correction becomes an eval case.',
-  'ch3.fork': 'Offer one more file if we’re ahead of time; otherwise Continue.',
+  'ch3.fork': 'Offer one more file if we’re ahead of time; otherwise Next.',
   'ch4.rule': 'Route pricing objections over $250k ARR to the VP. No prompt changed.',
   'ch4.sankey': 'If they changed the rule: point at the flow moving, workspace-only. If not: this is where today’s rules send them.',
   'ch5.intro': 'Anecdote vs pattern. Read the theme name and account count off the callout; it is the highlighted card. Open it.',

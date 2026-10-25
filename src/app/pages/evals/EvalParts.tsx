@@ -13,13 +13,13 @@ export function PassChip({ m }: { m: Metric | null }) {
   if (p == null) {
     return (
       <StatusChip tone="neutral" size="sm">
-        no threshold
+        No target
       </StatusChip>
     );
   }
   return (
     <StatusChip tone={p ? 'success' : 'danger'} size="sm">
-      {p ? 'pass' : 'below threshold'}
+      {p ? 'Pass' : 'Below target'}
     </StatusChip>
   );
 }
@@ -75,7 +75,7 @@ export function TypeBars({ run }: { run: EvalRun }) {
           <i className={styles.legendU} /> Under target
         </span>
         <span>
-          <i className={styles.legendTarget} /> Pooled gate level ({(pT * 100).toFixed(0)}% / {(rT * 100).toFixed(0)}%), reference only
+          <i className={styles.legendTarget} /> Overall target ({(pT * 100).toFixed(0)}% precision, {(rT * 100).toFixed(0)}% recall)
         </span>
       </div>
       {INSIGHT_TYPES.map((t) => {
@@ -93,9 +93,9 @@ export function TypeBars({ run }: { run: EvalRun }) {
         );
       })}
       <p className="sl-caption" data-testid="type-gate-note">
-        The promotion gate checks pooled precision (≥ {(pT * 100).toFixed(0)}%) and recall (≥ {(rT * 100).toFixed(0)}%) across all types, not each type. Per-type numbers are reported against those levels as targets.
+        A new prompt only goes live if precision is at least {(pT * 100).toFixed(0)}% and recall at least {(rT * 100).toFixed(0)}% across all types combined. Each type is shown against those same targets for reference.
         {under.length
-          ? ` Under target today: ${under.map((t) => TYPE_LABEL[t].toLowerCase()).join(', ')}. Churn risk is always human-reviewed; next is per-type auto-route thresholds and more labelled examples for these types.`
+          ? ` Below target today: ${under.map((t) => TYPE_LABEL[t].toLowerCase()).join(', ')}. Churn risk is always checked by a person; next up are per-type thresholds and more labelled examples for these types.`
           : ''}
       </p>
     </div>
@@ -106,7 +106,7 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
   return (
     <div className="sl-scroll-x">
       <table className={styles.heat}>
-        <caption className="sl-sr-only">Precision and recall per mess level</caption>
+        <caption className="sl-sr-only">Precision and recall by how messy the file is</caption>
         <thead>
           <tr>
             <th scope="col" />
@@ -114,8 +114,8 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
               <th key={l.n} scope="col">
                 <Hint label={l.hint}>
                   <span tabIndex={0} className={styles.heatHead}>
-                    <span className="sl-mono">L{l.n}</span>
                     <span>{l.label}</span>
+                    <span>Level {l.n}</span>
                   </span>
                 </Hint>
               </th>
@@ -135,11 +135,11 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
                 return (
                   <td key={l.n} className={p === false ? styles.cellFail : p ? styles.cellPass : ''}>
                     <span className={styles.cellPct}>{m?.value == null ? '—' : metricPct(m)}</span>
-                    <span className={styles.cellDen}>{m?.numerator != null ? `${m.numerator} / ${m.denominator}` : 'no data'}</span>
+                    <span className={styles.cellDen}>{m?.numerator != null ? `${m.numerator} / ${m.denominator}` : 'No data'}</span>
                     <span className={styles.cellBar} aria-hidden="true">
                       <span style={{ width: `${((m?.value ?? 0) * 100).toFixed(1)}%` }} />
                     </span>
-                    {p === false ? <span className="sl-sr-only">below threshold</span> : null}
+                    {p === false ? <span className="sl-sr-only">below target</span> : null}
                   </td>
                 );
               })}
@@ -148,7 +148,7 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
         </tbody>
       </table>
       <p className="sl-caption" style={{ marginTop: 8 }}>
-        Precision is matched insights over everything extracted at that level; recall is planted insights found. Only level-5 recall has its own gate rule, so only it is tinted (green passes, red does not). Each level has 8 golden files.
+        Precision: how much of what the AI found was right. Recall: how many of the planted insights it found. Cells with their own go-live rule are coloured: green passes, red does not. Each level has 8 labelled files.
       </p>
     </div>
   );
@@ -160,13 +160,13 @@ export function MetricCard({ m, title, note }: { m: Metric | null; title: string
     // A count with no denominator (quotes dropped by grounding): show the count, never a %.
     return (
       <div className={styles.metricCard}>
-        <span className="sl-eyebrow">{title}</span>
+        <span className={styles.metricTitle}>{title}</span>
         <span className={styles.metricTop}>
           <span className={styles.metricBig}>{m.numerator}</span>
           <PassChip m={m} />
         </span>
         <span className="sl-meta">
-          {m.numerator} {unitFor(m.key)} across the golden set
+          {m.numerator} {unitFor(m.key)} across the test files
         </span>
         <span className="sl-caption">{note}</span>
       </div>
@@ -174,16 +174,17 @@ export function MetricCard({ m, title, note }: { m: Metric | null; title: string
   }
   return (
     <div className={`${styles.metricCard} ${passed(m) === false ? styles.metricFail : ''}`}>
-      <span className="sl-eyebrow">{title}</span>
+      <span className={styles.metricTitle}>{title}</span>
       <span className={styles.metricTop}>
         <span className={styles.metricBig}>{m?.value == null ? '—' : metricPct(m, m.value === 0 || m.value === 1 ? 0 : 1)}</span>
         <PassChip m={m} />
       </span>
       <span className="sl-meta">
-        {m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit={unitFor(m.key)} /> : 'not measured'}
+        {m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit={unitFor(m.key)} /> : 'Not measured'}
       </span>
       <span className="sl-caption">
-        {m ? `${thresholdLabel(m)}${lower ? ' (lower is better)' : ''}` : ''} · {note}
+        {note}
+        {m && m.threshold != null ? `. Target ${thresholdLabel(m)}${lower ? ', lower is better' : ''}.` : '.'}
       </span>
     </div>
   );

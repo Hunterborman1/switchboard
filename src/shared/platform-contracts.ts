@@ -263,7 +263,8 @@ export type ObservabilityReport = {
  *   GET  /agents                        (AgentRecord & { impact: AgentImpact })[]
  *   GET  /agents/:id                    { agent; impact; slos; alerts; changelog: ChangeEntry[] }
  *   GET  /usage?agentId&source          UsageReport
- *   GET  /logs?agentId&level&component&traceId&runId&q&cursor   { rows: LogEntry[]; nextCursor: string|null }
+ *   GET  /logs?agentId&level&component&traceId&runId&q&source&web&cursor   { rows: LogEntry[]; nextCursor; total }
+ *                                       (routine web requests only with web=1, a trace/run filter or component=api)
  *   GET  /traces/:traceId               { spans: Span[]; logs: LogEntry[] }
  *   GET  /observability?agentId         ObservabilityReport
  *   GET  /standard                      { checks; matrix: { agentId; checks: StandardCheck[] }[] }

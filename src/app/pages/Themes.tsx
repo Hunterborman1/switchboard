@@ -108,7 +108,7 @@ export default function ThemesPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Themes" dataAsOf={dataAsOf} />
+      <AppPageHeader title="Themes" subtitle="Similar feedback from different customers, grouped into one story." dataAsOf={dataAsOf} />
       <div className={styles.toolbar}>
         <div className={styles.filters} role="group" aria-label="Filter themes">
           <SearchInput
@@ -126,7 +126,7 @@ export default function ThemesPage() {
         </div>
         {data ? (
           <span className={styles.summary}>
-            {rows.length === total ? `${total} themes` : `${rows.length} of ${total} themes`} · membership is deterministic (embeddings); a model only names them
+            {rows.length === total ? `${total} themes` : `${rows.length} of ${total} themes`}
           </span>
         ) : null}
       </div>
@@ -137,9 +137,9 @@ export default function ThemesPage() {
         <ThemesSkeleton />
       ) : rows.length === 0 ? (
         filtered ? (
-          <EmptyState variant="no-data" title="No themes match these filters" description="Clear a filter to see more. Filters live in the URL, so this view is shareable." />
+          <EmptyState variant="no-data" title="No themes match these filters" description="Clear a filter to see more. Filters are saved in the link, so you can share this view." />
         ) : (
-          <EmptyState variant="not-yet-collected" title="No themes yet" description="Themes form once two or more grounded insights land near each other. Run a call from New call to start one." />
+          <EmptyState variant="not-yet-collected" title="No themes yet" description="A theme forms once two or more similar insights arrive. Run a call from New call to start one." />
         )
       ) : (
         <div className={styles.grid} {...tourAnchor('themes.list')}>
@@ -172,7 +172,7 @@ function ThemeCard({ theme: t }: { theme: Theme }) {
       <div className={styles.spark}>
         <Sparkline values={values} width={150} height={28} label={`${t.name} insights per week, last 8 weeks`} bucketLabels={t.weekly.map((w) => w.week)} />
         <span className={styles.sparkLabel}>
-          {last} this week · {delta > 0 ? `▲ ${delta}` : delta < 0 ? `▼ ${Math.abs(delta)}` : 'flat'} vs last
+          {last} this week{delta > 0 ? `, up ${delta}` : delta < 0 ? `, down ${Math.abs(delta)}` : ', same as last week'}
         </span>
       </div>
       <div className={styles.stats}>

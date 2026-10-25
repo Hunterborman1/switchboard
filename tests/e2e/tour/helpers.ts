@@ -79,7 +79,7 @@ export async function pickAndRun(page: Page, branch: string) {
 }
 
 /**
- * Drive the tour forward until `until` matches the current step: presses Continue / Skip
+ * Drive the tour forward until `until` matches the current step: presses Next / Skip
  * in the callout, or performs the product action an event step is waiting on.
  */
 export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: string[]; max?: number } = {}) {
@@ -90,7 +90,7 @@ export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: str
     if (until.test(step)) return seen;
     const c = callout(page);
     await c.waitFor({ state: 'visible', timeout: 15_000 });
-    const choice = c.getByRole('button', { name: /^Continue/ });
+    const choice = c.getByRole('button', { name: /^Next/ });
     const skip = c.getByRole('button', { name: /^Skip/ });
     // dispatch directly: the callout may still be gliding after its target while the run view animates
     // Bounded: a button re-rendered between the check and the click must not hang the test until

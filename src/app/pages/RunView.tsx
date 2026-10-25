@@ -33,13 +33,14 @@ import { PipelineGraph } from './run/PipelineGraph';
 import { DroppedCard, InsightCard, ScreenCard, TracePanel, type DroppedItem } from './run/RunParts';
 import { Transcript, type Highlight } from './run/Transcript';
 import { useReveal } from './run/useReveal';
+import { friendlyModel, plainSummary } from './run/modelName';
 import styles from './run/RunView.module.css';
 
 const MODE_REASON: Record<string, string> = {
-  budget_reached: 'The $15 live-AI viewer budget is used up, so this run replays a recorded live execution of the same file at real speed: the actual steps, outputs and timings.',
-  live_failed: 'The live model call failed or ran slow, so the system fell back to a recorded live execution of this file instead of failing.',
-  live_disabled: 'Live AI is switched off for this workspace, so this replays a recorded live execution of the same file at real speed.',
-  seed: 'Seeded history: recorded from a live run during setup, replayed from its real run_steps rows.',
+  budget_reached: 'The $15 live AI budget is used up, so this run plays back a recorded live run of the same file at real speed: the actual steps, results and timings.',
+  live_failed: 'The live AI call failed or was too slow, so Signal Loop played back a recorded live run of this file instead of failing.',
+  live_disabled: 'Live AI is switched off for this workspace, so this plays back a recorded live run of the same file at real speed.',
+  seed: 'Sample history: recorded from a live run during setup and played back from its saved steps.',
 };
 
 function formatFormat(filename: string): string {
@@ -61,7 +62,9 @@ export default function RunViewPage() {
   const world = useWorldIndex();
   const themes = useThemes();
   const reveal = useReveal(data, pace, reduced);
-  const { label: modelLabel, rewrite: rewriteModels } = useModelLabels();
+  const models = useModelLabels();
+  const modelLabel = (id: string | null | undefined) => friendlyModel(models.label(id));
+  const rewriteModels = (text: string) => plainSummary(friendlyModel(models.rewrite(text))) ?? text;
 
   const [selected, setSelected] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ insightId: string; n: number } | null>(null);
@@ -201,6 +204,7 @@ export default function RunViewPage() {
     <div className="sl-page">
       <AppPageHeader
         title={run.callId ? `Run · ${run.callId}` : 'Run'}
+        subtitle="One conversation, step by step: what was found, checked and sent"
         dataAsOf={dataAsOf}
         breadcrumbs={[{ label: 'Runs', href: '/app/runs' }, { label: run.filename }]}
       />
@@ -208,7 +212,7 @@ export default function RunViewPage() {
       {/* ------------------------------------------------ header + pipeline */}
       <section className={styles.top} aria-label="Pipeline">
         <div className={styles.topHead}>
-          <FileGlyph format={formatFormat(run.filename)} size={38} />
+          <FileGlyph format={formatFormat(run.filename)} size={32} />
           <div className={styles.topTitle}>
             <h2 className={styles.fileName} title={run.filename}>
               {run.filename}
@@ -222,25 +226,23 @@ export default function RunViewPage() {
                 </>
               ) : null}
               <span aria-hidden="true">·</span>
-              <span className="sl-subtle">run</span> <MonoId value={run.id} keep={6} />
+              <span>
+                Started <RelativeTime value={run.createdAt} />
+              </span>
               <span aria-hidden="true">·</span>
-              <span className="sl-subtle">sha256</span> <MonoId value={run.sha256} keep={6} />
-              <span aria-hidden="true">·</span>
-              <span className="sl-subtle">
-                started <RelativeTime value={run.createdAt} />
+              <span className="sl-subtle" title={`File fingerprint (SHA-256) ${run.sha256}`}>
+                Run <MonoId value={run.id} keep={6} />
               </span>
             </div>
           </div>
           <div className={styles.topBadges}>
-            <Hint label={run.mode === 'live' ? 'This run called the real models (fast tier + independent fallback) through the gated, budgeted runtime key.' : MODE_REASON[run.modeReason ?? ''] ?? 'Replays a recorded live execution of the same file at real speed.'}>
+            <Hint label={run.mode === 'live' ? 'This run called the real AI models: the main model, with a backup model from a different provider as a second opinion. It counts against the shared budget.' : MODE_REASON[run.modeReason ?? ''] ?? 'Plays back a recorded live run of the same file at real speed.'}>
               <span className={`${styles.mode} ${run.mode === 'live' ? styles.modeLive : styles.modeReplay}`} tabIndex={0}>
-                <span className={styles.modeDot} aria-hidden="true" />
-                {earlier ? (run.mode === 'live' ? 'Earlier live run, replayed' : 'Earlier run (a replay)') : run.mode === 'live' ? 'Live' : 'Replay of a recorded live run'}
+                {earlier ? (run.mode === 'live' ? 'Earlier live run, replayed' : 'Earlier run (a replay)') : run.mode === 'live' ? 'Live' : 'Replay'}
               </span>
             </Hint>
             <StatusChip
               tone={run.status === 'failed' ? 'danger' : !reveal.finished ? 'info' : run.status === 'awaiting_review' ? 'warning' : run.actionable === false ? 'neutral' : 'success'}
-              pulse={!reveal.finished}
               size="md"
             >
               {!reveal.finished ? 'Running' : run.status === 'awaiting_review' ? 'Awaiting review' : run.status === 'failed' ? 'Failed' : run.actionable === false ? 'Nothing actionable' : 'Completed'}
@@ -254,7 +256,7 @@ export default function RunViewPage() {
         <PipelineGraph steps={reveal.steps} selected={pickedStep} onSelect={(k) => setPickedStep((p) => (p === k ? null : k))} pace={pace} reduced={reduced} />
 
         <div className={styles.stepStrip} aria-live="polite">
-          <span className={styles.stepStripNum}>{STEP_KEYS.indexOf(detailKey) + 1}/10</span>
+          <span className={styles.stepStripNum}>{STEP_KEYS.indexOf(detailKey) + 1} of 10</span>
           <span className={styles.stepStripName}>{STEP_LABELS[detailKey]}</span>
           <span className={styles.stepStripText}>
             {detailStep.display === 'pending' ? STEP_HELP[detailKey] : detailStep.display === 'running' ? `${STEP_HELP[detailKey]}` : (detailStep.summary ? rewriteModels(detailStep.summary) : STEP_HELP[detailKey])}
@@ -262,13 +264,13 @@ export default function RunViewPage() {
           <span className={styles.stepStripFacts}>
             {detailStep.display !== 'pending' && detailStep.display !== 'running' ? (
               <>
-                {detailStep.model ? <span>{modelLabel(detailStep.model)}</span> : <span className="sl-subtle">code, no model</span>}
-                {detailStep.tokensIn != null ? <span className="sl-mono">{(detailStep.tokensIn + (detailStep.tokensOut ?? 0)).toLocaleString()} tok</span> : null}
-                {detailStep.costUsd != null ? <span className="sl-mono">{money(detailStep.costUsd, { precise: true })}</span> : null}
-                <span className="sl-mono">{ms(detailStep.durationMs)}</span>
+                {detailStep.model ? <span>{modelLabel(detailStep.model)}</span> : <span>No AI used</span>}
+                {detailStep.tokensIn != null ? <span>{(detailStep.tokensIn + (detailStep.tokensOut ?? 0)).toLocaleString()} tokens</span> : null}
+                {detailStep.costUsd != null ? <span>{money(detailStep.costUsd, { precise: true })}</span> : null}
+                <span>{ms(detailStep.durationMs)}</span>
               </>
             ) : detailStep.display === 'running' ? (
-              <span className={styles.working}>working…</span>
+              <span className={styles.working}>Working…</span>
             ) : null}
           </span>
         </div>
@@ -278,22 +280,22 @@ export default function RunViewPage() {
             stages={[
               { key: 'queued', label: 'Queued', at: run.createdAt },
               { key: 'processing', label: 'Processing' },
-              { key: 'gated', label: 'Grounded & gated' },
-              { key: 'routed', label: 'Routed & delivered' },
+              { key: 'gated', label: 'Checked and scored' },
+              { key: 'routed', label: 'Sent to owners' },
             ]}
             current={lifecycleCurrent}
             terminal={terminal}
           />
           <div className={styles.liveCost}>
             <span className={styles.liveCostLabel}>AI cost so far</span>
-            <strong className="sl-mono">{money(shownCost, { precise: true })}</strong>
+            <strong>{money(shownCost, { precise: true })}</strong>
           </div>
         </div>
       </section>
 
       {failedStep && reveal.finished ? (
-        <Banner tone="danger" title={`Run failed at ${STEP_LABELS[failedStep.key]}`} action={<Link to="/app/health">Dead-letter queue</Link>}>
-          {(failedStep.summary ? rewriteModels(failedStep.summary) : null) ?? 'A step failed after its retries. A partial failure reads as a failure: nothing from this run was routed.'}
+        <Banner tone="danger" title={`Run failed at ${STEP_LABELS[failedStep.key]}`} action={<Link to="/app/health">Failed deliveries</Link>}>
+          {(failedStep.summary ? rewriteModels(failedStep.summary) : null) ?? 'A step failed after retrying. Nothing from this run was sent anywhere.'}
         </Banner>
       ) : null}
       {earlier ? (
@@ -308,12 +310,12 @@ export default function RunViewPage() {
             ) : undefined
           }
         >
-          You already ran this file, so this reopens that run (started <RelativeTime value={run.createdAt} />). Nothing new is executing; the steps, timings and costs are the ones recorded then.
+          You already ran this file, so this reopens that run (started <RelativeTime value={run.createdAt} />). Nothing new is running; the steps, timings and costs are the ones recorded then.
         </Banner>
       ) : null}
       {duplicateOf ? (
-        <Banner tone="info" title="Duplicate upload: skipped at ingest" action={<Link to={`/app/runs/${duplicateOf}`}>Open the original run</Link>}>
-          This file's SHA-256 matches an earlier upload, so the pipeline did no further work and spent nothing.
+        <Banner tone="info" title="Duplicate upload: not processed again" action={<Link to={`/app/runs/${duplicateOf}`}>Open the original run</Link>}>
+          This file is identical to an earlier upload, so Signal Loop did no further work and spent nothing.
         </Banner>
       ) : null}
 
@@ -329,7 +331,7 @@ export default function RunViewPage() {
             focus={focus}
             onSelectInsight={selectFromTranscript}
             pending={!redactDone || data.turns.length === 0 && !reveal.finished}
-            pendingLabel={reveal.revealed < 2 ? 'Parsing speakers and turns…' : 'Redacting personal data before any model sees it…'}
+            pendingLabel={reveal.revealed < 2 ? 'Reading speakers and lines…' : 'Hiding personal details before any AI sees the text…'}
           />
         </div>
 
@@ -342,23 +344,23 @@ export default function RunViewPage() {
               <span className={styles.insightsCount}>
                 {!extractDone
                   ? reveal.activeIdx === STEP_KEYS.indexOf('extract')
-                    ? 'extracting…'
-                    : 'appear after the extract step'
-                  : `${visibleKept.length} kept${groundDone ? ` · ${dropped.length} dropped` : ''}${scoreDone ? ` · ${autoN} auto-routed · ${reviewN} to review` : ''}`}
+                    ? 'Extracting…'
+                    : 'Appear after the Extract step'
+                  : `${visibleKept.length} kept${groundDone ? ` · ${dropped.length} dropped` : ''}${scoreDone ? ` · ${autoN} sent automatically · ${reviewN} to review` : ''}`}
               </span>
             </header>
 
             {negative ? (
-              <motion.div initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+              <motion.div initial={reduced ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
                 <EmptyState
                   variant="no-data"
                   icon="✓"
                   title="Nothing actionable"
-                  description="Screened as a friendly check-in with no feedback, requests, objections or risks. No insights were created and nothing was routed. The system doesn't invent work."
+                  description="A friendly check-in with no feedback, requests, objections or risks. No insights were created and nothing was sent. Signal Loop doesn't invent work."
                 />
               </motion.div>
             ) : duplicateOf ? (
-              <EmptyState variant="no-data" title="No new insights" description="The original run already produced and routed this call's insights." />
+              <EmptyState variant="no-data" title="No new insights" description="The original run already found and sent this call's insights." />
             ) : !extractDone ? (
               <div className={styles.pendingCards} aria-hidden="true">
                 {[0, 1, 2].map((i) => (
@@ -370,7 +372,7 @@ export default function RunViewPage() {
                 ))}
               </div>
             ) : visibleKept.length === 0 && dropped.length === 0 ? (
-              <EmptyState variant="no-data" title="No insights in this call" description="The extract step returned an empty list: nothing in this conversation met the taxonomy." />
+              <EmptyState variant="no-data" title="No insights in this call" description="Nothing in this conversation matched a feedback type Signal Loop tracks." />
             ) : (
               <div className={styles.cards}>
                 <AnimatePresence initial={false}>
@@ -397,7 +399,7 @@ export default function RunViewPage() {
           {dropped.length > 0 ? <DroppedCard items={dropped} onFocus={focusInsight} reduced={reduced} /> : null}
 
           {reveal.finished && !negative && !duplicateOf && run.status !== 'failed' ? (
-            <motion.div className={styles.done} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+            <motion.div className={styles.done} initial={reduced ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
               <div>
                 <strong>Done in {ms(run.durationMs)}</strong>
                 <span className="sl-subtle">
@@ -431,7 +433,7 @@ function RunSkeleton({ id }: { id: string }) {
       <AppPageHeader title="Run" dataAsOf={null} breadcrumbs={[{ label: 'Runs', href: '/app/runs' }, { label: id }]} />
       <section className={styles.top} aria-hidden="true">
         <div className={styles.topHead}>
-          <span className={styles.sk} style={{ width: 38, height: 38 }} />
+          <span className={styles.sk} style={{ width: 32, height: 32 }} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <span className={styles.sk} style={{ width: '40%', height: 16 }} />
             <span className={styles.sk} style={{ width: '60%', height: 11 }} />
@@ -440,7 +442,7 @@ function RunSkeleton({ id }: { id: string }) {
         <div className={styles.skGraph}>
           {Array.from({ length: 10 }, (_, i) => (
             <span key={i} className={styles.skNode}>
-              <span className={styles.sk} style={{ width: 44, height: 44, borderRadius: '50%' }} />
+              <span className={styles.sk} style={{ width: 32, height: 32, borderRadius: '50%' }} />
               <span className={styles.sk} style={{ width: '70%', height: 10 }} />
             </span>
           ))}

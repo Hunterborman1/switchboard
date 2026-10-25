@@ -1,15 +1,18 @@
 /**
- * 16 · Scorecard. What you did and what the system did, with real numbers from the
+ * Part 16 · Scorecard. What you did and what the system did, with real numbers from the
  * viewer's own workspace and from Agent Ops. Then "Explore freely" unlocks everything.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Button, Display, Lede, Reveal, Stat, Chip } from '../components';
+import { Button, SceneHead, Stat, Chip } from '../components';
 import { useCalm } from '../hooks';
+import { DUR, EASE } from '../motion';
 import { loadScoreboard, tourApi, type Scoreboard } from '../../tour/api';
 import type { RunDetail } from '../../shared/contracts';
 import { useTour } from '../../tour/engine/TourProvider';
+import { firstStepOf } from '../../tour/script/steps';
+import { usdTotal } from '../../shared/format';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type AgentImpact, type LogEntry, type Span } from '../../shared/platform-contracts';
 
 type OpsFacts = { logLines: number; spans: number; traces: number; hours: number | null; ok: boolean };
@@ -66,9 +69,18 @@ async function loadOps(runIds: string[]): Promise<OpsFacts> {
   return { logLines, spans, traces: traces.size, hours, ok };
 }
 
-type Tile = { v?: number; s?: string; text?: string; l: string };
+/** A count (`v`), a plain-text value (`text`, muted) or a money figure (`money`, full weight). */
+type Tile = { v?: number; s?: string; text?: string; money?: string; l: string };
 
 function TileView({ t }: { t: Tile }) {
+  if (t.money != null) {
+    return (
+      <div className="n-stat n-stat--sm">
+        <div className="n-stat__value">{t.money}</div>
+        <div className="n-stat__label">{t.l}</div>
+      </div>
+    );
+  }
   if (t.text != null) {
     return (
       <div className="n-stat n-stat--sm">
@@ -158,80 +170,99 @@ export function ScorecardScene() {
     ...(sb && sb.routed > 0 ? [{ v: sb.routed, l: sb.routed === 1 ? 'insight routed' : 'insights routed' }] : []),
   ];
   const sys = sysAll.filter((t): t is Tile => t != null);
-  const lede = !sb
+  // Nothing of the viewer's own to count yet: say so and point at chapter 1, rather than a
+  // wall of zeros that reads like something broke.
+  const empty = sb != null && runs === 0 && !tour.ctx.runId;
+  const startChapter1 = () => tour.goto(firstStepOf('ch1'));
+  const startRef = useRef<HTMLButtonElement>(null);
+  // Keyboard focus follows the primary action: "Start chapter 1" once we know it's empty.
+  useEffect(() => {
+    if (empty) startRef.current?.focus({ preventScroll: true });
+  }, [empty]);
+  const opsCounted = ops != null && ops.ok && ops.traces > 0 && ops.logLines + ops.spans > 0;
+  const lede = empty
+    ? 'It fills in as you go: run one call and it counts what you did and what the system did.'
+    : !sb
     ? 'What you did, and what the system did.'
     : sb.ok
       ? 'Counted from your own workspace and this session, not a script.'
       : 'Live figures were unavailable, so these counts come from this session only.';
 
   return (
-    <div className="n-grid sc-score" data-testid="scorecard">
-      <div className="n-col-12">
-        <Reveal className="n-stack">
-          <Reveal.Item>
-            <Display size="lg" as="h2">
-              Here’s what <em>you</em> just did.
-            </Display>
-          </Reveal.Item>
-          <Reveal.Item>
-            <Lede>{lede}</Lede>
-          </Reveal.Item>
-        </Reveal>
-      </div>
-      <Reveal className="n-col-6 n-card sc-score__panel" delay={0.2}>
-        <Reveal.Item>
-          <span className="n-label">You</span>
-        </Reveal.Item>
-        <div className="sc-score__stats">
-          {you.map((x) => (
-            <Reveal.Item key={x.l}>
-              <TileView t={x} />
-            </Reveal.Item>
-          ))}
+    <div className="sc-score" data-testid="scorecard" data-empty={empty ? 'true' : undefined}>
+      <SceneHead size="lg" title={empty ? 'Your scorecard is empty so far.' : 'Here’s what you just did.'} line={lede} />
+      {empty ? (
+        <motion.section
+          className="n-card sc-score__empty"
+          aria-label="No runs yet"
+          data-testid="scorecard-empty"
+          initial={calm ? false : { opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: calm ? 0 : DUR.layout, ease: EASE }}
+        >
+          <h3 className="sc-score__h">You haven’t run a call yet</h3>
+          <p className="n-body">
+            Chapter 1 brings in a recorded customer call and runs it through Signal Loop. It takes about a minute and a half. Come back here afterwards to see the insights it found, what it held back,
+            what the AI cost and the trail it left in Agent Ops.
+          </p>
+          <div className="sc-score__actions">
+            <Button ref={startRef} size="lg" arrow onClick={startChapter1} data-testid="scorecard-start-ch1">
+              Start chapter 1
+            </Button>
+          </div>
+        </motion.section>
+      ) : (
+        <div className="sc-score__panels">
+          <motion.section className="n-card sc-score__panel" aria-label="You" initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.05 }}>
+            <h3 className="sc-score__h">You</h3>
+            <div className="sc-score__stats">
+              {you.map((x) => (
+                <TileView key={x.l} t={x} />
+              ))}
+            </div>
+          </motion.section>
+          <motion.section className="n-card sc-score__panel" aria-label="The system" initial={calm ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.15 }}>
+            <h3 className="sc-score__h">The system</h3>
+            <div className="sc-score__stats">
+              {sys.map((x) => (
+                <TileView key={x.l} t={x} />
+              ))}
+              <TileView t={{ money: usdTotal(sb?.costUsd ?? 0), l: sb && sb.liveRuns === 0 && sb.runs > 0 ? 'AI spend (replays are free)' : 'AI spend on your runs' }} />
+            </div>
+          </motion.section>
         </div>
-      </Reveal>
-      <Reveal className="n-col-6 n-card n-card--accent sc-score__panel" delay={0.35}>
-        <Reveal.Item>
-          <span className="n-label" style={{ color: 'var(--n-accent)' }}>The system</span>
-        </Reveal.Item>
-        <div className="sc-score__stats">
-          {sys.map((x) => (
-            <Reveal.Item key={x.l}>
-              <TileView t={x} />
-            </Reveal.Item>
-          ))}
-          <Reveal.Item>
-            <Stat value={sb?.costUsd ?? 0} prefix="$" decimals={sb && sb.costUsd < 0.1 ? 4 : 2} label={sb && sb.liveRuns === 0 && sb.runs > 0 ? 'AI spend (replays are free)' : 'AI spend on your runs'} size="sm" tone="accent" />
-          </Reveal.Item>
-        </div>
-      </Reveal>
-      <motion.div className="n-col-12 sc-score__ops" initial={calm ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : 0.6, delay: calm ? 0 : 0.6 }}>
+      )}
+      <motion.div className="sc-score__ops" initial={calm ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.3 }}>
         <span className="n-label">In Agent Ops</span>
         <p className="n-body">
-          {ops && ops.ok ? (
+          {!empty && opsCounted && ops ? (
             <>
-              {ops.traces > 1 ? <>Your {ops.traces} runs produced </> : <>Your run produced </>}
-              <b>{ops.logLines.toLocaleString()}</b> correlated log lines and <b>{ops.spans.toLocaleString()}</b> spans
+              {ops.traces > 1 ? <>Your {ops.traces} runs left </> : <>Your run left </>}
+              <b>{ops.logLines.toLocaleString()}</b> log lines and <b>{ops.spans.toLocaleString()}</b> timed steps
               {ops.traces > 1 ? ' across their traces' : ' in its trace'}
               {ops.hours != null ? (
                 <>
-                  . Signal Loop has returned about <b>{Math.round(ops.hours).toLocaleString()} hours</b> this period (baselines are labelled assumptions).
+                  . Signal Loop has given back about <b>{Math.round(ops.hours).toLocaleString()} hours</b> this period (the baselines are labelled assumptions).
                 </>
               ) : (
                 '.'
               )}
             </>
+          ) : empty ? (
+            'Every call you run shows up in the platform as log lines, timed steps, usage and cost, next to every other agent.'
           ) : (
-            'Every run you did is in the platform as structured logs, spans, usage events and a work unit.'
+            'Every run you did is in the platform as logs, timed steps, usage and a unit of work.'
           )}
         </p>
-        <div className="n-row">
-          {sb && sb.replayRuns > 0 && <Chip tone="indigo">{sb.replayRuns} replayed from a recorded live run</Chip>}
-          {sb && sb.liveRuns > 0 && <Chip tone="accent">{sb.liveRuns} live</Chip>}
-        </div>
+        {!empty && sb && (sb.replayRuns > 0 || sb.liveRuns > 0) && (
+          <div className="n-row" style={{ gap: 8 }}>
+            {sb.replayRuns > 0 && <Chip tone="indigo">{sb.replayRuns} replayed from a recorded live run</Chip>}
+            {sb.liveRuns > 0 && <Chip tone="accent">{sb.liveRuns} live</Chip>}
+          </div>
+        )}
       </motion.div>
-      <div className="n-col-12 sc-score__actions">
-        <Button size="lg" arrow onClick={explore} data-testid="explore-freely" autoFocus>
+      <div className="sc-score__actions">
+        <Button variant={empty ? 'ghost' : undefined} size="lg" arrow={!empty} onClick={explore} data-testid="explore-freely" autoFocus={!empty}>
           Explore freely
         </Button>
         <Button variant="ghost" size="lg" onClick={() => navigate('/ops')}>
@@ -240,9 +271,11 @@ export function ScorecardScene() {
         <Button variant="quiet" onClick={() => navigate('/write-up')}>
           Read the write-up
         </Button>
-        <Button variant="quiet" onClick={tour.restart}>
-          Replay the walkthrough
-        </Button>
+        {empty ? null : (
+          <Button variant="quiet" onClick={tour.restart}>
+            Replay the walkthrough
+          </Button>
+        )}
       </div>
     </div>
   );

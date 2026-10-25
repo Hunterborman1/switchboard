@@ -7,7 +7,7 @@ import { lazy, Suspense } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { AppShell, PlatformShell, appRoutes, platformRoutes } from './bridge';
 
-import { Backdrop, Display, Lede } from '../narrative/components';
+import { Display, Lede } from '../narrative/components';
 
 const appRoutesHaveShell = appRoutes.length === 1 && !appRoutes[0]?.path && !!appRoutes[0]?.children;
 const platformRoutesHaveShell = platformRoutes.length === 1 && !platformRoutes[0]?.path && !!platformRoutes[0]?.children;
@@ -29,12 +29,11 @@ function useDevHarness(hasRoutes: boolean): boolean {
 function Pending({ what }: { what: string }) {
   return (
     <main className="sl-n n-page mount-fallback">
-      <Backdrop />
-      <div className="n-stack" style={{ maxWidth: 560, textAlign: 'center' }}>
+      <div className="n-stack" style={{ maxWidth: 560, justifyItems: 'center' }}>
         <Display size="md">{what} is being prepared.</Display>
         <Lede>This part of the build isn’t deployed yet. The walkthrough and the write-up are available.</Lede>
         <p>
-          <Link className="n-link" to="/">Back to the hub</Link>
+          <Link className="n-btn" to="/">Back to the start</Link>
         </p>
       </div>
     </main>

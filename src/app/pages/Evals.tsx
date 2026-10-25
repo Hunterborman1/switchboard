@@ -1,12 +1,13 @@
 import type { EvalRun } from '../../shared/contracts';
 import { tourAnchor } from '../../tour/anchors';
-import { MetricStrip } from '../../system/components/blocks/MetricStrip.jsx';
 import { Badge } from '../../system/components/primitives/Badge.jsx';
 import { DataTable, type DataTableColumn } from '../../uis/DataTable';
 import { EmptyState } from '../../uis/EmptyState';
 import { RateWithDenominator } from '../../uis/RateWithDenominator';
 import { RelativeTime } from '../../uis/RelativeTime';
 import { Sparkline } from '../../uis/Sparkline';
+import { KpiStrip } from '../../uis/StatTile';
+import { Hint } from '../components/Hint';
 import { CardSkeleton, PageHeaderSkeleton, SkeletonSurface, TilesSkeleton } from '../../uis/Skeleton';
 import { StatusChip } from '../../uis/StatusChip';
 import { useEvals } from '../api/hooks';
@@ -14,6 +15,13 @@ import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { money, ms } from '../lib/labels';
 import { pctText, rateOf } from '../../shared/format';
 import { MODEL_ROLE_LABEL, useModelLabels } from '../lib/models';
+
+/** Plain role names on the surface; exact model ids live only on Settings. */
+function roleName(label: string | null | undefined): string {
+  if (label === MODEL_ROLE_LABEL.primary) return 'Main model';
+  if (label === MODEL_ROLE_LABEL.secondary) return 'Backup model';
+  return label ?? 'Main model';
+}
 import { LevelHeatmap, MetricCard, TypeBars } from './evals/EvalParts';
 import { PromotionGate } from './evals/PromotionGate';
 import { LOWER_IS_BETTER, f1, metric, metricLabel, pooled } from './evals/evalModel';
@@ -44,19 +52,23 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
     <div className="sl-stack">
       <div className={styles.compareStrip}>
         <div>
-          <span className="sl-eyebrow">F1 (pooled)</span>
+          <Hint label="F1: precision and recall combined, across all insight types.">
+            <span className={styles.compareLabel} tabIndex={0}>Overall score</span>
+          </Hint>
           <span className={styles.compareBig}>
             {pctOrDash(f1(current))} → {pctOrDash(f1(candidate))}
           </span>
         </div>
         <div>
-          <span className="sl-eyebrow">p95 latency</span>
+          <Hint label="95th-percentile (p95) time per file.">
+            <span className={styles.compareLabel} tabIndex={0}>Slowest 5% of files</span>
+          </Hint>
           <span className={`${styles.compareBig} ${p95Delta < 0 ? styles.textGood : styles.textFail}`}>
             {ms(current.p95Ms)} → {ms(candidate.p95Ms)}
           </span>
         </div>
         <div>
-          <span className="sl-eyebrow">Eval cost ({candidate.files} files)</span>
+          <span className={styles.compareLabel}>Test cost ({candidate.files} files)</span>
           <span className={`${styles.compareBig} ${costDelta < 0 ? styles.textGood : styles.textFail}`}>
             {money(current.costUsd, { precise: true })} → {money(candidate.costUsd, { precise: true })}
           </span>
@@ -83,7 +95,7 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
                 </td>
                 <td>
                   <StatusChip tone={better ? 'success' : 'danger'} size="sm">
-                    {delta! > 0 ? '▲' : '▼'} {Math.abs(delta!).toFixed(1)} pts
+                    {delta! > 0 ? '+' : '−'}{Math.abs(delta!).toFixed(1)} pts
                   </StatusChip>
                 </td>
               </tr>
@@ -92,7 +104,7 @@ function CandidateCompare({ candidate, current }: { candidate: EvalRun; current:
         </table>
       </div>
       <p className="sl-caption">
-        {rows.length} metric{rows.length === 1 ? '' : 's'} moved · {regressions} regression{regressions === 1 ? '' : 's'} (listed first).
+        {rows.length} metric{rows.length === 1 ? '' : 's'} changed; {regressions} got worse (listed first).
       </p>
     </div>
   );
@@ -130,7 +142,7 @@ export default function EvalsPage() {
   const hist = [...history].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   // The judge is the secondary model. A run that never needed it records judgeModel null, so
   // fall back to the candidate run's judge, then the configured secondary.
-  const judgeLabel = modelLabel(latest.judgeModel ?? candidate?.judgeModel ?? models?.secondary ?? null) ?? MODEL_ROLE_LABEL.secondary;
+  const judgeLabel = roleName(modelLabel(latest.judgeModel ?? candidate?.judgeModel ?? models?.secondary ?? null) ?? MODEL_ROLE_LABEL.secondary);
 
   const histCols: DataTableColumn<EvalRun>[] = [
     {
@@ -141,31 +153,31 @@ export default function EvalsPage() {
           <span className="sl-mono sl-strong">{r.promptVersion}</span>
           {r.id === latest.id ? (
             <Badge tone="brand" size="sm">
-              production
+              Live
             </Badge>
           ) : null}
         </span>
       ),
     },
     { key: 'date', header: 'Run', sortable: true, sortValue: (r) => r.createdAt, render: (r) => <RelativeTime value={r.createdAt} /> },
-    { key: 'p', header: 'Precision (pooled)', render: (r) => <RateWithDenominator {...pooled(r, 'precision')} rate={pooled(r, 'precision').value} unit="" /> },
-    { key: 'r', header: 'Recall (pooled)', render: (r) => <RateWithDenominator {...pooled(r, 'recall')} rate={pooled(r, 'recall').value} unit="" /> },
+    { key: 'p', header: 'Precision', render: (r) => <RateWithDenominator {...pooled(r, 'precision')} rate={pooled(r, 'precision').value} unit="" /> },
+    { key: 'r', header: 'Recall', render: (r) => <RateWithDenominator {...pooled(r, 'recall')} rate={pooled(r, 'recall').value} unit="" /> },
     {
       key: 'l5',
-      header: 'Recall · level 5',
+      header: 'Recall, messiest files',
       render: (r) => {
         const m = metric(r, 'recall.level5');
         return m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit="" /> : '—';
       },
     },
-    { key: 'p95', header: 'p95', render: (r) => <span className="sl-mono">{ms(r.p95Ms)}</span> },
-    { key: 'cost', header: 'Cost', render: (r) => <span className="sl-mono">{money(r.costUsd, { precise: true })}</span> },
+    { key: 'p95', header: 'Slowest 5%', render: (r) => <span className="sl-num">{ms(r.p95Ms)}</span> },
+    { key: 'cost', header: 'Test cost', render: (r) => <span className="sl-num">{money(r.costUsd, { precise: true })}</span> },
     {
       key: 'status',
-      header: 'Gate',
+      header: 'Result',
       render: (r) => (
         <StatusChip tone={r.promoted ? 'success' : 'danger'} size="sm">
-          {r.promoted ? 'promoted' : 'blocked'}
+          {r.promoted ? 'Promoted' : 'Blocked'}
         </StatusChip>
       ),
     },
@@ -173,62 +185,62 @@ export default function EvalsPage() {
 
   return (
     <div className="sl-page">
-      <AppPageHeader title="Evals" dataAsOf={evals.dataAsOf} />
+      <AppPageHeader title="Evals" subtitle="How accurate the AI is, measured on hand-labelled test files" dataAsOf={evals.dataAsOf} />
 
       <section className={styles.runHead} aria-label="Latest eval run">
         <div>
-          <span className="sl-eyebrow">Production prompt</span>
+          <span className={styles.runEyebrow}>Live prompt</span>
           <p className={styles.runTitle}>
-            <span className="sl-mono">{latest.promptVersion}</span> on {latest.files} golden files
+            Version <span className="sl-mono">{latest.promptVersion}</span>, tested on {latest.files} labelled files
           </p>
           <p className="sl-meta">
-            Model <span className="sl-strong">{modelLabel(latest.model)}</span> · judge <span className="sl-strong">{judgeLabel}</span> (a different model family, called only on ambiguous matches) · run <RelativeTime value={latest.createdAt} />
+            Runs on the <span className="sl-strong">{roleName(modelLabel(latest.model))}</span>. Graded by the <span className="sl-strong">{judgeLabel.toLowerCase()}</span>, a different AI family that only steps in when a match is unclear. Last run <RelativeTime value={latest.createdAt} />.
           </p>
         </div>
         {hist.length >= 2 ? (
           <div className={styles.trend}>
-            <span className="sl-eyebrow">Pooled recall by version</span>
+            <span className={styles.runEyebrow}>Recall by version</span>
             <Sparkline values={hist.map((h) => Math.round((pooled(h, 'recall').value ?? 0) * 1000) / 10)} bucketLabels={hist.map((h) => h.promptVersion)} width={140} height={30} label="Pooled recall by prompt version" />
-            <span className="sl-caption sl-mono">
+            <span className="sl-caption sl-num">
               {hist[0]?.promptVersion} {pctOrDash(hist[0] ? pooled(hist[0], 'recall').value : null)} → {latest.promptVersion} {pctOrDash(R.value)}
             </span>
           </div>
         ) : null}
       </section>
 
-      <div className={styles.kpis}>
-        <MetricStrip
+      <div>
+        <KpiStrip
           minItemWidth={170}
-          aria-label="Headline eval metrics"
+          label="Headline eval metrics"
           items={[
-            { label: 'Precision', value: pctOrDash(P.value), sub: `${P.numerator} / ${P.denominator} extracted were right` },
-            { label: 'Recall', value: pctOrDash(R.value), sub: `${R.numerator} / ${R.denominator} planted were found` },
-            { label: 'F1', value: pctOrDash(f1(latest)), sub: 'pooled across 6 types' },
-            { label: 'Latency', value: (latest.p50Ms / 1000).toFixed(2), unit: 's p50', sub: `p95 ${(latest.p95Ms / 1000).toFixed(2)} s per file` },
-            { label: 'Eval cost', value: money(latest.costUsd, { precise: true }), sub: `~${money(latest.costUsd / Math.max(latest.files, 1), { precise: true })} per file` },
+            { label: <Hint label="Of everything the AI pulled out, how much was right."><span tabIndex={0}>Precision</span></Hint>, value: pctOrDash(P.value), sub: `${P.numerator} of ${P.denominator} found were right` },
+            { label: <Hint label="Of the insights planted in the test files, how many the AI found."><span tabIndex={0}>Recall</span></Hint>, value: pctOrDash(R.value), sub: `${R.numerator} of ${R.denominator} planted were found` },
+            { label: <Hint label="F1: precision and recall combined, across all six insight types."><span tabIndex={0}>Overall score</span></Hint>, value: pctOrDash(f1(latest)), sub: 'Across all six insight types' },
+            { label: <Hint label={`p50 ${(latest.p50Ms / 1000).toFixed(2)} s, p95 ${(latest.p95Ms / 1000).toFixed(2)} s per file`}><span tabIndex={0}>Time per file</span></Hint>, value: (latest.p50Ms / 1000).toFixed(1), unit: 'seconds', sub: `Typical. Slowest 5%: ${(latest.p95Ms / 1000).toFixed(1)} seconds` },
+            { label: 'Test cost', value: money(latest.costUsd, { precise: true }), sub: `About ${money(latest.costUsd / Math.max(latest.files, 1), { precise: true })} per file` },
           ]}
         />
       </div>
 
       <div className={styles.mainGrid}>
-        <Panel title="Precision and recall per insight type" sub="Reported per type, with counts. The dashed tick is the pooled gate level, a target here: the gate itself checks all types pooled." anchor={tourAnchor('evals.metrics')}>
+        <Panel title="Accuracy by insight type" sub="Precision and recall for each type, with counts. The tick marks the overall target." anchor={tourAnchor('evals.metrics')}>
           <TypeBars run={latest} />
         </Panel>
         <div className="sl-stack-lg">
-          <Panel title="Per mess level" sub="From clean notes (L1) to chaos (L5). Real calls live at L3–L5." anchor={tourAnchor('evals.levels')}>
+          <Panel title="Accuracy by how messy the file is" sub="From clean notes to chaotic forwarded threads. Real calls sit in the three messiest levels." anchor={tourAnchor('evals.levels')}>
             <LevelHeatmap run={latest} />
           </Panel>
         </div>
       </div>
 
-      <Panel title="Safety and honesty" sub="The failure modes that matter more than accuracy: inventing quotes, inventing work, obeying injected instructions, leaking PHI.">
+      <Panel title="Safety and honesty" sub="The failures that matter more than accuracy: made-up quotes, made-up work, following hidden instructions, leaking health information.">
         <div className={styles.metricGrid}>
-          <MetricCard m={metric(latest, 'grounding_rate')} title="Grounding" note="kept quotes found verbatim or fuzzy ≥ 0.90" />
-          <MetricCard m={metric(latest, 'hallucinations_caught') ?? metric(latest, 'hallucination_caught')} title="Hallucinated quotes dropped" note="quotes that failed grounding, so the insight was dropped by code" />
-          <MetricCard m={metric(latest, 'negative_fp_rate')} title="Negative false positives" note="insights invented on nothing-actionable calls" />
-          <MetricCard m={metric(latest, 'injection_flagged') ?? metric(latest, 'injection_resistance')} title="Injection attempts flagged" note="output schema unchanged by embedded instructions" />
-          <MetricCard m={metric(latest, 'phi_leakage')} title="PHI leakage" note="PHI files where a token reached a model" />
-          <MetricCard m={metric(latest, 'routing_accuracy')} title="Routing accuracy" note="routed to the expected owner" />
+          <MetricCard m={metric(latest, 'grounding_rate')} title="Grounding" note="Kept quotes found in the conversation, word for word or near enough" />
+          <MetricCard m={metric(latest, 'hallucinations_caught') ?? metric(latest, 'hallucination_caught')} title="Made-up quotes caught" note="Quotes not found in the conversation, so the insight was dropped" />
+          <MetricCard m={metric(latest, 'negative_fp_rate')} title="Insights invented from nothing" note="Insights reported on calls with nothing actionable" />
+          <MetricCard m={metric(latest, 'injection_flagged') ?? metric(latest, 'injection_resistance')} title="Manipulation attempts caught" note="Hidden instructions in a file did not change the output" />
+          <MetricCard m={metric(latest, 'phi_leakage')} title="Health information leaked" note="Files with health information where any of it reached the AI" />
+          <MetricCard m={metric(latest, 'routing_accuracy')} title="Routing accuracy" note="Sent to the expected owner" />
         </div>
       </Panel>
 
@@ -238,11 +250,11 @@ export default function EvalsPage() {
             <span className="sl-row-nowrap">
               Candidate prompt <span className="sl-mono">{candidate.promptVersion}</span>
               <Badge tone="warning" size="sm">
-                candidate
+                Candidate
               </Badge>
             </span>
           }
-          sub={`Evaluated on the same ${candidate.files} golden files, judged by ${modelLabel(candidate.judgeModel) ?? 'the secondary model'}.`}
+          sub={`Tested on the same ${candidate.files} labelled files and graded by the ${roleName(modelLabel(candidate.judgeModel) ?? MODEL_ROLE_LABEL.secondary).toLowerCase()}.`}
           anchor={tourAnchor('evals.candidate')}
         >
           <div className={styles.candidateGrid}>
@@ -252,18 +264,18 @@ export default function EvalsPage() {
         </Panel>
       ) : (
         <Panel title="Candidate prompt" anchor={tourAnchor('evals.candidate')}>
-          <EmptyState variant="no-data" title="No candidate waiting" description="A new prompt version appears here after its eval run, with the promotion gate." />
+          <EmptyState variant="no-data" title="No candidate waiting" description="A new prompt version appears here after its test run, with the go-live check." />
         </Panel>
       )}
 
-      <Panel title="Prompt version history" sub="Each version ran the full golden set before it could ship." flush>
+      <Panel title="Prompt version history" sub="Every version ran the full set of labelled files before it could go live." flush>
         <DataTable<EvalRun>
           columns={histCols}
           rows={[...hist].reverse()}
           getRowKey={(r) => r.id}
           pagination="when-needed"
           caption="Prompt version history"
-          empty={<EmptyState variant="not-yet-collected" title="No eval history" />}
+          empty={<EmptyState variant="not-yet-collected" title="No test history yet" />}
         />
       </Panel>
     </div>

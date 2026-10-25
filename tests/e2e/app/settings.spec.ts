@@ -8,8 +8,8 @@ test.describe('Settings', () => {
     // Settings is the one place the exact model ids are shown.
     const models = page.locator('section.sl-panel', { has: page.getByRole('heading', { name: 'Model configuration' }) });
     await expect(models).toBeVisible();
-    await expect(models.getByText('Primary · fast tier')).toBeVisible();
-    await expect(models.getByText('Secondary · fallback & judge')).toBeVisible();
+    await expect(models.getByText('Main model', { exact: true })).toBeVisible();
+    await expect(models.getByText('Backup model', { exact: true })).toBeVisible();
     await expect(models).toContainText('deepseek/deepseek-v4.1-flash');
     await expect(models).toContainText('anthropic/claude-haiku-5.5');
     await expect(page.getByText('≥ 0.80').first()).toBeVisible();

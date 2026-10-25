@@ -1,8 +1,8 @@
 /**
  * The 10-step pipeline graph. Nodes light up from the real run_steps rows (through the
  * reveal pacing in useReveal): pending → running (a turning ring) → passed / warned /
- * failed / skipped. When a step completes, its connector fills and a glowing pulse travels
- * to the next node. Status is always in words too (aria-label + the label row), never
+ * failed / skipped. When a step completes, its connector fills flat with the accent toward
+ * the next node. Status is always in words too (aria-label + the label row), never
  * colour alone. Wide: one row. Medium container: two rows of five. Narrow: a vertical list
  * with each step's one-line summary.
  */
@@ -12,6 +12,7 @@ import { tourAnchor } from '../../../tour/anchors';
 import { ms, STEP_HELP } from '../../lib/labels';
 import { INSTANT_STEP_HELP } from '../../../shared/format';
 import type { DisplayStep } from './useReveal';
+import { plainSummary } from './modelName';
 import styles from './PipelineGraph.module.css';
 
 const STATUS_WORD: Record<string, string> = {
@@ -27,7 +28,7 @@ function Glyph({ status, index }: { status: string; index: number }) {
   if (status === 'passed')
     return (
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-        <motion.path d="m5.5 12.5 4 4L18.5 7.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.28 }} />
+        <motion.path d="m5.5 12.5 4 4L18.5 7.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }} />
       </svg>
     );
   if (status === 'warned')
@@ -64,7 +65,7 @@ export function PipelineGraph({
   pace: number;
   reduced: boolean;
 }) {
-  const flowMs = Math.max(260, Math.min(900, pace * 0.85));
+  const flowMs = Math.max(180, Math.min(600, pace * 0.6));
   return (
     <div className={styles.wrap}>
       <ol className={styles.graph} aria-label="Pipeline steps" {...tourAnchor('run.stepper')}>
@@ -82,28 +83,18 @@ export function PipelineGraph({
                 aria-pressed={selected === s.key}
               >
                 {st === 'running' ? <span className={styles.ring} aria-hidden="true" /> : null}
-                {st === 'running' && !reduced ? <span className={styles.halo} aria-hidden="true" /> : null}
                 <span className={styles.disc}>
                   <Glyph status={st} index={i} />
                 </span>
               </button>
               <span className={styles.label}>{STEP_LABELS[s.key]}</span>
               <span className={styles.meta} title={flowing && st !== 'skipped' && s.durationMs != null && s.durationMs < 1 ? INSTANT_STEP_HELP : undefined}>
-                {st === 'running' ? 'running…' : flowing ? (st === 'skipped' ? 'skipped' : ms(s.durationMs)) : ' '}
+                {st === 'running' ? 'Running…' : flowing ? (st === 'skipped' ? 'Skipped' : ms(s.durationMs)) : ' '}
               </span>
-              {s.display !== 'pending' && s.summary && flowing ? <span className={styles.vsummary}>{s.summary}</span> : <span className={styles.vsummary}>{st === 'running' ? 'Working…' : STEP_HELP[s.key]}</span>}
+              {s.display !== 'pending' && s.summary && flowing ? <span className={styles.vsummary}>{plainSummary(s.summary)}</span> : <span className={styles.vsummary}>{st === 'running' ? 'Working…' : STEP_HELP[s.key]}</span>}
               {next ? (
                 <span className={`${styles.link} ${flowing ? styles.linkOn : ''}`} aria-hidden="true">
                   <span className={styles.linkFill} style={{ transitionDuration: reduced ? '0ms' : `${flowMs}ms` }} />
-                  {flowing && !reduced && s.revealedAt && Date.now() - s.revealedAt < 2500 ? (
-                    <motion.span
-                      key={`${s.key}-${s.revealedAt}`}
-                      className={styles.pulse}
-                      initial={{ left: '0%', opacity: 0 }}
-                      animate={{ left: ['0%', '100%'], opacity: [0, 1, 1, 0] }}
-                      transition={{ duration: flowMs / 1000, ease: 'easeInOut', times: [0, 0.15, 0.85, 1] }}
-                    />
-                  ) : null}
                 </span>
               ) : null}
             </li>

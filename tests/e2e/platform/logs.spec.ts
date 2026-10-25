@@ -7,6 +7,15 @@ test('logs: URL-synced filters, row drawer, trace waterfall with span detail', a
   await open(page, '/ops/logs?agentId=agt_signal_loop');
   const table = anchor(page, 'ops.logs');
   await expect(table.locator('tbody tr').first()).toBeVisible();
+  // Routine web requests are hidden by default; the toggle brings them back via the URL.
+  const web = page.getByLabel('Include web requests');
+  await expect(web).not.toBeChecked();
+  await web.click();
+  await expect(page).toHaveURL(/web=1/);
+  await expect(web).toBeChecked();
+  await web.click();
+  await expect(page).not.toHaveURL(/web=1/);
+  await expect(web).not.toBeChecked();
   await page.getByRole('group', { name: 'Levels' }).getByRole('button', { name: 'debug' }).click();
   await expect(page).toHaveURL(/level=/);
   await page.getByLabel('Search message, event, trace or run id').fill('fall');

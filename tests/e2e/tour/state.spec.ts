@@ -76,20 +76,16 @@ test.describe('tour state, exits and access', () => {
     }
     await go(page, '/walkthrough/cold-open?tour=cold-open&beat=1');
     await expect(page.getByRole('heading', { name: /Every call is a/ })).toBeVisible();
-    // the black-hole field is a still frame, not an empty panel
-    await go(page, '/walkthrough/black-hole');
-    await expect(page.locator('.sc-bh__canvas')).toBeVisible();
+    // the black-hole flow is drawn in its final frame at once: every handoff bar filled
+    await go(page, '/walkthrough/black-hole?tour=black-hole&beat=1');
+    await expect(page.locator('.sc-bh__flow')).toBeVisible();
     await expect
       .poll(() =>
-        page.evaluate(() => {
-          const cv = document.querySelector<HTMLCanvasElement>('.sc-bh__canvas');
-          const d = cv?.getContext('2d')?.getImageData(0, 0, cv.width, cv.height).data;
-          let n = 0;
-          if (d) for (let i = 3; i < d.length; i += 16) if (d[i]! > 0) n++;
-          return n;
-        }),
+        page.evaluate(() =>
+          Array.from(document.querySelectorAll<HTMLElement>('.sc-bh__bar')).map((b) => Math.round((b.getBoundingClientRect().width / (b.parentElement?.getBoundingClientRect().width || 1)) * 100)),
+        ),
       )
-      .toBeGreaterThan(500);
+      .toEqual([100, 72, 55, 40]);
   });
 
   test('a deep-linked scene can still go back, by keyboard', async ({ page }) => {
@@ -101,10 +97,10 @@ test.describe('tour state, exits and access', () => {
   });
 
   test('a missing anchor never dead-ends', async ({ page }) => {
-    // ch8.trace's waterfall may not exist without a run: the callout falls back with Continue
+    // ch8.trace's waterfall may not exist without a run: the callout falls back with Next
     await go(page, '/ops/reliability?tour=ch8.slos');
     await expect(callout(page)).toBeVisible({ timeout: 15_000 });
-    const btn = callout(page).getByRole('button', { name: /^Continue/ });
+    const btn = callout(page).getByRole('button', { name: /^Next/ });
     await expect(btn).toBeVisible({ timeout: 15_000 });
     await btn.click();
     await expect.poll(() => currentStep(page)).toBe('rollout');

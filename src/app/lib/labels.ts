@@ -54,10 +54,10 @@ export const GATE_LABEL: Record<Gate, string> = {
 };
 export const GATE_TONE: Record<Gate, StatusTone> = { auto_route: 'success', review: 'warning', held: 'neutral', dropped: 'danger' };
 export const GATE_HELP: Record<Gate, string> = {
-  auto_route: 'Final confidence ≥ 0.80 and no always-review rule: routed without a human.',
-  review: 'Between 0.55 and 0.80, or a type that is always reviewed (churn risk, sev-1 bug).',
-  held: 'Below 0.55: kept and visible, but not routed.',
-  dropped: 'The quote could not be found in the transcript (grounding < 0.90): counted as a hallucination.',
+  auto_route: 'Confident enough (score 0.80 or higher) to send without a person checking.',
+  review: 'A person checks it first: the score is between 0.55 and 0.80, or it is a type that is always checked (churn risk, critical bugs).',
+  held: 'Score below 0.55: kept and visible, but not sent anywhere.',
+  dropped: 'The quote could not be found in the conversation, so the insight was discarded.',
 };
 
 export const STATUS_LABEL: Record<InsightStatus, string> = {
@@ -83,17 +83,32 @@ export const CHANNEL_LABEL: Record<Channel, string> = {
   triage: 'Triage queue',
 };
 
+/** Plain-English description of each pipeline step (what a CS leader needs to know). */
 export const STEP_HELP: Record<StepKey, string> = {
-  ingest: 'Store the raw file, hash it (SHA-256) and skip exact re-uploads.',
-  normalize: 'Detect the format, parse speakers and turns, assign turn IDs.',
-  redact: 'Swap PII/PHI for reversible tokens. Only redacted text reaches a model.',
-  screen: 'Fast model call: actionable? language? injection suspected?',
-  extract: 'Structured output (Zod schema): type, area, severity, quote, confidence.',
-  ground: 'Code, not a model: find every quote in the transcript (exact, then fuzzy ≥ 0.90).',
-  score: 'Final confidence = model × grounding × type prior; gate at 0.55 / 0.80.',
-  theme: 'Embed and join the nearest theme, or start a candidate theme.',
-  route: 'Editable rules table (type × area × severity × ARR) picks owner + channel.',
-  deliver: 'Write to Slack / Jira / Linear / digest with receipts and retries. Here the destinations are in-app simulators, so delivery itself takes under a millisecond.',
+  ingest: 'Saves the original file. Uploading the same file twice is recognised and not processed again.',
+  normalize: 'Reads the format and splits the conversation into speakers and lines.',
+  redact: 'Replaces names, emails and phone numbers with placeholders. Only the redacted text is sent to AI.',
+  screen: 'A quick AI check: is there anything actionable, what language is it, does anything look like an attempt to manipulate the AI?',
+  extract: 'The main AI step: pulls out each insight with its type, product area, severity and the exact customer quote.',
+  ground: 'Checks every quote really appears in the conversation. Quotes that cannot be found are dropped.',
+  score: 'Combines AI confidence and the quote check into one score that decides: send automatically, ask a person, or hold.',
+  theme: 'Groups the insight with similar feedback from other customers, or starts a new theme.',
+  route: 'Your routing rules pick the owner and channel by type, product area, severity and account size.',
+  deliver: 'Posts to Slack, Jira, Linear or the email digest and keeps a receipt. Here the destinations are in-app previews, so delivery is instant.',
+};
+
+/** The precise, engineer-facing version of each step, for tooltips and Settings. */
+export const STEP_DETAIL: Record<StepKey, string> = {
+  ingest: 'Stores the raw file and hashes it (SHA-256); an exact re-upload returns the earlier run.',
+  normalize: 'Detects the format, parses speakers and turns, and assigns turn IDs.',
+  redact: 'Swaps PII/PHI for reversible tokens before any model call.',
+  screen: 'Fast model call: actionable, language, injection suspected.',
+  extract: 'Schema-validated structured output: type, area, severity, quote, confidence.',
+  ground: 'Code, not a model: exact match, then fuzzy match at 0.90 similarity or better.',
+  score: 'Final confidence = model confidence × grounding × type prior. Auto-route at 0.80, review from 0.55.',
+  theme: 'Embeds the insight and joins the nearest theme, or proposes a candidate theme.',
+  route: 'Editable rules table (type, area, severity, ARR); lowest priority number wins.',
+  deliver: 'Writes with receipts and retries with backoff; failures go to a dead-letter queue.',
 };
 
 export function money(usd: number | null | undefined, opts: { precise?: boolean; compact?: boolean } = {}): string {

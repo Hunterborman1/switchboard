@@ -10,17 +10,18 @@ import type { RegistryRow, TraceView } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { Empty, ErrorState, PageHead, PageSkeleton, Panel, SourceChip } from '../ui/kit';
+import { AREA_LABEL, levelLabel } from './Logs';
 
 const KINDS = [
-  { key: 'request', label: 'API request', color: '#102A56', test: (n: string) => /^(GET|POST|PUT|DELETE|PATCH) /.test(n) },
-  { key: 'workflow', label: 'Workflow', color: '#5E74E3', test: (n: string) => n.startsWith('workflow') || n.startsWith('gumloop flow') },
-  { key: 'step', label: 'Step', color: '#00A87F', test: (n: string) => n.startsWith('step.') },
-  { key: 'ai', label: 'AI call', color: '#7C4DCC', test: (n: string) => n.startsWith('ai.') },
-  { key: 'delivery', label: 'Delivery', color: '#D08A1E', test: (n: string) => n.startsWith('delivery.') },
-  { key: 'run', label: 'Run', color: '#6B6F86', test: (n: string) => n.startsWith('run ') },
+  { key: 'request', label: 'API request', color: '#3E8E9E', test: (n: string) => /^(GET|POST|PUT|DELETE|PATCH) /.test(n) },
+  { key: 'workflow', label: 'Workflow', color: '#2F5DB8', test: (n: string) => n.startsWith('workflow') || n.startsWith('gumloop flow') },
+  { key: 'step', label: 'Step', color: '#008463', test: (n: string) => n.startsWith('step.') },
+  { key: 'ai', label: 'AI call', color: '#7A4FB5', test: (n: string) => n.startsWith('ai.') },
+  { key: 'delivery', label: 'Delivery', color: '#C2780C', test: (n: string) => n.startsWith('delivery.') },
+  { key: 'run', label: 'Run', color: '#6B756F', test: (n: string) => n.startsWith('run ') },
 ] as const;
 function kindOf(name: string) {
-  return KINDS.find((k) => k.test(name)) ?? { key: 'other', label: 'Other', color: '#8E9491' };
+  return KINDS.find((k) => k.test(name)) ?? { key: 'other', label: 'Other', color: '#8A938E' };
 }
 
 type Row = { span: Span; depth: number; startMs: number };
@@ -93,22 +94,16 @@ export function Trace() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow={
-          <>
-            <Link to="/ops/logs" className="ao-link">
-              Logs & traces
-            </Link>{' '}
-            · Trace
-          </>
-        }
         title={runId ? `Run ${runId}` : 'Trace'}
-        sub="Every span in the request: the API call, the workflow and its steps, each AI call (model, tokens, cost, fallback) and each delivery. Select a span for its attributes and logs."
+        sub="Everything that happened in one request, on one timeline: the API call, the workflow and its steps, each AI call and each delivery. Select a step for its details and log lines."
         meta={
           <>
-            <span className="ao-mono">{traceId}</span>
-            {d.source ? <SourceChip source={d.source} /> : null}
             {agent ? <Link to={`/ops/agents/${agent.id}`} className="ao-link">{agent.name}</Link> : null}
-            {built.rows[0] ? <span>started {f.time(built.rows[0].span.start, timezone, true)}</span> : null}
+            {built.rows[0] ? <span>Started {f.time(built.rows[0].span.start, timezone, true)}</span> : null}
+            {d.source ? <SourceChip source={d.source} /> : null}
+            <span>
+              Trace id <span className="ao-mono" style={{ color: 'var(--ao-text-2)' }}>{traceId}</span>
+            </span>
           </>
         }
         actions={
@@ -121,16 +116,16 @@ export function Trace() {
         minItemWidth={140}
         label="Trace summary"
         items={[
-          { label: 'Duration', value: f.ms(built.total) },
-          { label: 'Spans', value: d.spans.length },
-          { label: 'AI calls', value: ai.length, sub: fallbacks ? `${fallbacks} failed over to fallback` : 'no fallbacks' },
-          { label: 'Tokens', value: f.int(tokens) },
+          { label: 'Total time', value: f.ms(built.total) },
+          { label: 'Steps', value: d.spans.length, help: 'Each timed piece of work in this request (a span): the request itself, workflow steps, AI calls and deliveries.' },
+          { label: 'AI calls', value: ai.length, sub: fallbacks ? `${fallbacks} switched to the backup model` : 'None used the backup model' },
+          { label: 'Tokens', value: f.int(tokens), help: 'Text the AI read and wrote, in tokens (roughly ¾ of a word each). AI cost is priced per token.' },
           { label: 'AI cost', value: f.money(cost, { precise: true }) },
-          { label: 'Errors', value: errors, accent: errors ? 'var(--cn-danger-txt)' : undefined, sub: errorNote ?? 'none' },
+          { label: 'Errors', value: errors, accent: errors ? 'var(--ao-danger)' : undefined, sub: errorNote ?? 'None' },
         ]}
       />
-      <Panel title="Span waterfall" sub="Bars are positioned on one time axis from the first span. Striped bars ended in an error." attrs={tourAnchor('ops.trace.waterfall')} flush>
-        <div style={{ padding: '12px 18px 0' }}>
+      <Panel title="Timeline" sub="Each bar is one step, placed on a shared clock from the start of the request. Red bars ended in an error." attrs={tourAnchor('ops.trace.waterfall')} flush>
+        <div style={{ padding: '14px 20px 0' }}>
           <div className="ao-wf-legend">
             {KINDS.map((k) => (
               <span key={k.key}>
@@ -141,10 +136,10 @@ export function Trace() {
           </div>
         </div>
         {built.rows.length ? (
-          <div style={{ overflowX: 'auto', padding: '12px 18px 16px' }}>
-            <div className="ao-wf" role="list" aria-label="Spans">
+          <div style={{ overflowX: 'auto', padding: '12px 20px 16px' }}>
+            <div className="ao-wf" role="list" aria-label="Steps">
               <div className="ao-wf-axis" aria-hidden="true">
-                <span>Span</span>
+                <span>Step</span>
                 <span className="ao-wf-ticks">
                   {tk.map((t) => (
                     <span key={t} style={{ left: `${(t / built.total) * 100}%` }}>
@@ -174,14 +169,14 @@ export function Trace() {
                       <span className="nm" title={rewriteModelIds(r.span.name)}>
                         {rewriteModelIds(r.span.name)}
                       </span>
-                      {r.span.attrs.fallback === true ? <span className="ao-pill warning" style={{ fontSize: 10 }}>fallback</span> : null}
-                      {r.span.status === 'error' ? <span className="ao-pill danger" style={{ fontSize: 10 }}>error</span> : null}
+                      {r.span.attrs.fallback === true ? <span className="ao-pill warning">Backup model</span> : null}
+                      {r.span.status === 'error' ? <span className="ao-pill danger">Error</span> : null}
                     </span>
                     <span className="ao-wf-lane" aria-hidden="true">
                       {tk.map((t) => (
                         <span key={t} className="grid" style={{ left: `${(t / built.total) * 100}%` }} />
                       ))}
-                      <span className={`ao-wf-bar${r.span.status === 'error' ? ' err' : ''}`} style={{ left: `${left}%`, width: `${width}%`, background: r.span.status === 'error' ? '#CF2519' : k.color }} />
+                      <span className={`ao-wf-bar${r.span.status === 'error' ? ' err' : ''}`} style={{ left: `${left}%`, width: `${width}%`, background: r.span.status === 'error' ? '#B42318' : k.color }} />
                     </span>
                     <span className="ao-wf-ms">{f.ms(r.span.durationMs)}</span>
                   </button>
@@ -190,24 +185,24 @@ export function Trace() {
             </div>
           </div>
         ) : (
-          <Empty title="No spans recorded for this trace">The logs below are all there is; spans arrive with the SDK’s span() calls.</Empty>
+          <Empty title="No timed steps recorded for this trace">The log lines below are everything recorded for it.</Empty>
         )}
       </Panel>
 
       {selected ? (
-        <Panel title={rewriteModelIds(selected.name)} sub={`Span ${selected.spanId} · ${f.ms(selected.durationMs)} · ${selected.status}`} actions={<button type="button" className="ao-btn sm" onClick={() => setSel(null)}>Close</button>}>
+        <Panel title={rewriteModelIds(selected.name)} sub={`Took ${f.ms(selected.durationMs)} · ${selected.status === 'error' ? 'ended in an error' : 'completed'} · step id ${selected.spanId}`} actions={<button type="button" className="ao-btn sm" onClick={() => setSel(null)}>Close</button>}>
           <div className="ao-grid g-2">
             <div>
-              <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Attributes</h3>
+              <h3 className="ao-subhead">Attributes</h3>
               <pre className="ao-json">{JSON.stringify(relabelModelsDeep(selected.attrs), null, 2)}</pre>
             </div>
             <div>
-              <h3 style={{ fontSize: 'var(--fs-micro)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', color: 'var(--cn-ink-3-txt)', fontWeight: 500, marginBottom: 6 }}>Logs on this span</h3>
+              <h3 className="ao-subhead">Log lines for this step</h3>
               {selLogs.length ? (
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 6 }}>
                   {selLogs.map((l) => (
-                    <li key={l.id} style={{ display: 'flex', gap: 8, alignItems: 'baseline', fontSize: 'var(--fs-body-sm)' }}>
-                      <span className={`ao-lv ${l.level}`}>{l.level}</span>
+                    <li key={l.id} style={{ display: 'flex', gap: 8, alignItems: 'baseline', fontSize: 13, flexWrap: 'wrap' }}>
+                      <span className={`ao-lv ${l.level}`}>{levelLabel(l.level)}</span>
                       <span className="ao-mono">{l.event}</span>
                       <span>{rewriteModelIds(l.message)}</span>
                     </li>
@@ -215,7 +210,7 @@ export function Trace() {
                 </ul>
               ) : (
                 <p className="ao-muted" style={{ margin: 0 }}>
-                  No log lines on this span.
+                  No log lines for this step.
                 </p>
               )}
             </div>
@@ -223,35 +218,35 @@ export function Trace() {
         </Panel>
       ) : null}
 
-      <Panel title="Correlated logs" sub={`${d.logs.length} lines on this trace${runId ? ` and run ${runId}` : ''}, oldest first.`} flush>
+      <Panel title="Log lines" sub={`${d.logs.length} line${d.logs.length === 1 ? '' : 's'} from this request${runId ? ` and run ${runId}` : ''}, oldest first.`} flush>
         <div className="ao-table-wrap">
           <table className="ao-table ao-logtable compact">
             <caption className="ao-sr">Correlated logs</caption>
             <thead>
               <tr>
-                <th scope="col">+ms</th>
+                <th scope="col">After</th>
                 <th scope="col">Level</th>
-                <th scope="col" className="ao-hide-sm">Component</th>
+                <th scope="col" className="ao-hide-sm">Area</th>
                 <th scope="col" className="ao-hide-sm">Event</th>
                 <th scope="col">Message</th>
                 <th scope="col" className="num">
-                  Duration
+                  Took
                 </th>
               </tr>
             </thead>
             <tbody>
               {d.logs.map((l) => (
                 <tr key={l.id} className={`lvl-${l.level}${sel && l.spanId === sel ? ' is-selected' : ''}`}>
-                  <td className="ao-mono" style={{ whiteSpace: 'nowrap' }}>{built.rows.length ? f.offset(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
+                  <td className="when">{built.rows.length ? f.offset(Math.max(0, Date.parse(l.at) - built.t0)) : f.clock(l.at, timezone)}</td>
                   <td>
-                    <span className={`ao-lv ${l.level}`}>{l.level}</span>
+                    <span className={`ao-lv ${l.level}`}>{levelLabel(l.level)}</span>
                   </td>
-                  <td className="ao-hide-sm">{l.component}</td>
-                  <td className="ao-mono ao-hide-sm">{l.event}</td>
+                  <td className="ao-hide-sm">{AREA_LABEL[l.component] ?? l.component}</td>
+                  <td className="ao-mono ao-hide-sm" style={{ color: 'var(--ao-text-2)' }}>{l.event}</td>
                   <td className="msg">
                     <span title={rewriteModelIds(l.message)}>{rewriteModelIds(l.message)}</span>
                   </td>
-                  <td className="num ao-mono">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
+                  <td className="num" style={{ whiteSpace: 'nowrap', color: 'var(--ao-text-2)' }}>{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
                 </tr>
               ))}
             </tbody>

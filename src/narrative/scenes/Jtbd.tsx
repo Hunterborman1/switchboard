@@ -1,14 +1,12 @@
 /**
- * 03 · Jobs to be done. Four persona cards; click (or Enter) to flip: job statement,
- * struggles today, success measure. Beat 2 surfaces the emotional job.
+ * Part 3 · Jobs to be done. Four persona cards, each showing its job; click (or Enter) to reveal
+ * struggles today and the success measure. Beat 1 names the emotional job in the headline.
  */
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { Display, Lede, PersonaCard, Reveal, type Persona } from '../components';
-import { useCalm } from '../hooks';
+import { PersonaCard, SceneHead, type Persona } from '../components';
 
 const g = (d: string) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d={d} />
   </svg>
 );
@@ -54,52 +52,29 @@ export const PERSONAS: Persona[] = [
 ];
 
 export function Jtbd({ beat }: { beat: number }) {
-  const calm = useCalm();
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
   const count = Object.values(flipped).filter(Boolean).length;
   return (
-    <div className="n-grid sc-jtbd">
-      <div className="n-col-12 sc-jtbd__head">
-        <Reveal className="n-stack">
-          <Reveal.Item>
-            <Display size="md" as="h2">
-              Four people. Four <em>jobs.</em>
-            </Display>
-          </Reveal.Item>
-          <Reveal.Item>
-            <div className="n-row n-row--between" style={{ alignItems: 'flex-end' }}>
-              <Lede>Before any architecture: who hires this system, and for what? Flip each card.</Lede>
-              <span className="n-label" aria-live="polite">
-                Flipped <b style={{ color: 'var(--n-accent)', fontWeight: 500 }}>{count}</b> / 4
-              </span>
-            </div>
-          </Reveal.Item>
-        </Reveal>
+    <div className="sc-jtbd">
+      <div className="sc-jtbd__head">
+        <SceneHead
+          k={beat >= 1 ? 'b1' : 'b0'}
+          title={beat >= 1 ? 'Be the advocate, not the stenographer.' : 'Four people. Four jobs.'}
+          line={
+            beat >= 1
+              ? 'The job underneath all four. CSMs keep the relationship and the judgement; the system takes the data entry and makes their advocacy visible.'
+              : 'Before any architecture: who hires this system, and for what? Open each card to see what gets in the way.'
+          }
+        />
+        <span className="sc-jtbd__count" aria-live="polite">
+          {count} of 4 opened
+        </span>
       </div>
-      <Reveal className="n-col-12 sc-jtbd__cards" delay={0.2} each={0.1}>
+      <div className="sc-jtbd__cards">
         {PERSONAS.map((p) => (
-          <Reveal.Item key={p.id}>
-            <PersonaCard persona={p} flipped={!!flipped[p.id]} onFlip={() => setFlipped((f) => ({ ...f, [p.id]: !f[p.id] }))} />
-          </Reveal.Item>
+          <PersonaCard key={p.id} persona={p} flipped={!!flipped[p.id]} onFlip={() => setFlipped((f) => ({ ...f, [p.id]: !f[p.id] }))} />
         ))}
-      </Reveal>
-      <AnimatePresence>
-        {beat >= 1 && (
-          <motion.div
-            className="n-col-12 sc-jtbd__emotional"
-            initial={calm ? false : { opacity: 0, y: 14, filter: 'blur(8px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: calm ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className="n-label">The emotional job</span>
-            <p className="n-display n-display--sm">
-              Be the <em>advocate,</em> not the stenographer.
-            </p>
-            <p className="n-body">CSMs keep the relationship and the judgement. The system takes the data entry and makes their advocacy visible.</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

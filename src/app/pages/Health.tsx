@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import { tourAnchor } from '../../tour/anchors';
-import { MetricStrip } from '../../system/components/blocks/MetricStrip.jsx';
+import { KpiStrip } from '../../uis/StatTile';
+import { Hint } from '../components/Hint';
+import { STEP_LABELS, type StepKey } from '../../shared/contracts';
 import { Callout } from '../../system/components/blocks/Callout.jsx';
 import { LadderGauge } from '../../uis/costs/LadderGauge';
 import { DailySpendField } from '../../uis/costs/SpendBars';
@@ -18,10 +20,18 @@ import type { AiCallRow, DlqRow } from '../api/types';
 import { AppPageHeader, ErrorState, Panel } from '../components/ui';
 import { IconArrowUpRight } from '../components/icons';
 import { int, money, ms } from '../lib/labels';
-import { useModelLabels } from '../lib/models';
+import { MODEL_ROLE_LABEL, useModelLabels } from '../lib/models';
 import styles from './health/Health.module.css';
 
 const RUNGS = [3.75, 7.5, 11.25, 15];
+
+/** Plain role names on the surface; exact model ids live only on Settings. */
+function roleName(label: string | null | undefined): string | null {
+  if (label === MODEL_ROLE_LABEL.primary) return 'Main model';
+  if (label === MODEL_ROLE_LABEL.secondary) return 'Backup model';
+  return label ?? null;
+}
+const stepName = (s: string | null | undefined) => (s ? (STEP_LABELS as Record<string, string>)[s as StepKey] ?? s : '—');
 const LOGS = `/ops/logs?agentId=${SIGNAL_LOOP_AGENT_ID}`;
 const traceHref = (runId: string) => `/ops/traces/${encodeURIComponent(runId)}`;
 const runLogsHref = (runId: string) => `${LOGS}&runId=${encodeURIComponent(runId)}`;
@@ -49,7 +59,7 @@ function ChartTooltip({ active, payload, label, fmt }: { active?: boolean; paylo
         <div key={p.name} className={styles.tipRow}>
           <i style={{ background: p.color }} aria-hidden="true" />
           <span>{p.name}</span>
-          <span className="sl-mono">{p.value == null ? 'not collected' : fmt(p.value)}</span>
+          <span className="sl-num">{p.value == null ? 'not collected' : fmt(p.value)}</span>
         </div>
       ))}
     </div>
@@ -78,7 +88,7 @@ export default function HealthPage() {
   if (health.error && !health.data) {
     return (
       <div className="sl-page">
-        <AppPageHeader title="Health & cost" dataAsOf={null} />
+        <AppPageHeader title="Health & cost" subtitle="Is the AI working, how fast, and what it costs" dataAsOf={null} />
         <ErrorState error={health.error} onRetry={() => void health.refresh()} what="health and cost" />
       </div>
     );
@@ -104,7 +114,7 @@ export default function HealthPage() {
   const pctUsed = b.limitUsd > 0 ? b.spentUsd / b.limitUsd : 0;
 
   const dlqCols: DataTableColumn<DlqRow>[] = [
-    { key: 'at', header: 'Parked', sortable: true, sortValue: (r) => r.at, render: (r) => <RelativeTime value={r.at} /> },
+    { key: 'at', header: 'Failed', sortable: true, sortValue: (r) => r.at, render: (r) => <RelativeTime value={r.at} /> },
     {
       key: 'run',
       header: 'Run',
@@ -115,40 +125,40 @@ export default function HealthPage() {
         </div>
       ),
     },
-    { key: 'step', header: 'Step', render: (r) => <span className="sl-mono">{r.step ?? '—'}</span> },
+    { key: 'step', header: 'Step', render: (r) => <span>{stepName(r.step)}</span> },
     { key: 'error', header: 'Error', render: (r) => <span className={styles.error}>{r.error ? rewriteModels(r.error) : r.error}</span> },
-    { key: 'attempts', header: 'Attempts', render: (r) => <span className="sl-mono">{r.attempts ?? '—'}</span> },
+    { key: 'attempts', header: 'Attempts', render: (r) => <span className="sl-num">{r.attempts ?? '—'}</span> },
     { key: 'ops', header: 'Agent Ops', render: (r) => <OpsLinks runId={r.runId} /> },
   ];
 
   const recentCols: DataTableColumn<AiCallRow>[] = [
     { key: 'at', header: 'When', sortable: true, sortValue: (r) => r.at, render: (r) => <RelativeTime value={r.at} /> },
-    { key: 'step', header: 'Step', render: (r) => <span className="sl-mono">{r.step ?? '—'}</span> },
-    { key: 'model', header: 'Model', render: (r) => <span className="sl-ellipsis" style={{ display: 'inline-block', maxWidth: 260 }}>{modelLabel(r.model) ?? '—'}</span> },
+    { key: 'step', header: 'Step', render: (r) => <span>{stepName(r.step)}</span> },
+    { key: 'model', header: 'Model', render: (r) => <span className="sl-ellipsis" style={{ display: 'inline-block', maxWidth: 260 }}>{roleName(modelLabel(r.model)) ?? '—'}</span> },
     {
       key: 'tokens',
       header: 'Tokens in / out',
       sortable: true,
       sortValue: (r) => (r.tokensIn ?? 0) + (r.tokensOut ?? 0),
       render: (r) => (
-        <span className="sl-mono">
+        <span className="sl-num">
           {int(r.tokensIn)} / {int(r.tokensOut)}
         </span>
       ),
     },
-    { key: 'cost', header: 'Cost', sortable: true, sortValue: (r) => r.costUsd ?? -1, render: (r) => <span className="sl-mono">{money(r.costUsd, { precise: true })}</span> },
-    { key: 'ms', header: 'Latency', sortable: true, sortValue: (r) => r.ms ?? -1, render: (r) => <span className="sl-mono">{ms(r.ms)}</span> },
+    { key: 'cost', header: 'Cost', sortable: true, sortValue: (r) => r.costUsd ?? -1, render: (r) => <span className="sl-num">{money(r.costUsd, { precise: true })}</span> },
+    { key: 'ms', header: 'Time', sortable: true, sortValue: (r) => r.ms ?? -1, render: (r) => <span className="sl-num">{ms(r.ms)}</span> },
     {
       key: 'ok',
       header: 'Result',
       render: (r) => (
         <span className="sl-row-nowrap">
           <StatusChip tone={r.ok ? 'success' : 'danger'} size="sm">
-            {r.ok ? 'ok' : 'failed'}
+            {r.ok ? 'OK' : 'Failed'}
           </StatusChip>
           {r.mode ? (
             <StatusChip tone={r.mode === 'live' ? 'neutral' : 'info'} size="sm" pulse={false}>
-              {r.mode}
+              {r.mode === 'live' ? 'Live' : r.mode === 'replay' ? 'Replay' : r.mode}
             </StatusChip>
           ) : null}
         </span>
@@ -162,6 +172,7 @@ export default function HealthPage() {
     <div className="sl-page">
       <AppPageHeader
         title="Health & cost"
+        subtitle="Is the AI working, how fast, and what it costs"
         dataAsOf={health.dataAsOf}
         actions={
           <Link to={LOGS} className={styles.opsButton}>
@@ -171,16 +182,25 @@ export default function HealthPage() {
         }
       />
 
-      <div className={styles.kpis}>
-        <MetricStrip
+      <div>
+        <KpiStrip
           minItemWidth={170}
-          aria-label="Health KPIs"
+          label="Health KPIs"
           items={[
-            { label: 'Live AI spend', value: money(b.spentUsd, { precise: true }), unit: `of ${money(b.limitUsd, { precise: true })}`, sub: `${(pctUsed * 100).toFixed(1)}% of the viewer cap` },
-            { label: 'Live runs', value: int(b.liveRuns), unit: 'runs', sub: `${int(b.replayRuns)} replays did not spend` },
-            { label: 'AI calls · 14d', value: int(calls), unit: 'calls', sub: missing ? `${collected.length} of ${ledger.length} days collected` : `${ledger.length} of ${ledger.length} days collected` },
-            { label: 'p95 latency', value: latest?.p95Ms != null ? (latest.p95Ms / 1000).toFixed(2) : '—', unit: 's', sub: latest?.p50Ms != null ? `p50 ${(latest.p50Ms / 1000).toFixed(2)} s · latest day` : 'no latency collected' },
-            { label: 'Failed calls', value: int(failures), unit: `of ${int(calls)}`, sub: `${calls ? ((failures / calls) * 100).toFixed(1) : '—'}% · ${h.dlq.length} parked in DLQ`, accent: failures ? 'var(--cn-danger-txt)' : undefined },
+            { label: 'Live AI spend', value: money(b.spentUsd, { precise: true }), unit: `of ${money(b.limitUsd, { precise: true })}`, sub: `${(pctUsed * 100).toFixed(1)}% of the shared budget` },
+            { label: 'Live runs', value: int(b.liveRuns), unit: 'runs', sub: `Plus ${int(b.replayRuns)} free replays` },
+            { label: `AI calls, last ${ledger.length} days`, value: int(calls), unit: 'calls', sub: missing ? `${collected.length} of ${ledger.length} days recorded` : `All ${ledger.length} days recorded` },
+            {
+              label: (
+                <Hint label={latest?.p50Ms != null ? `p95 ${ms(latest.p95Ms)} · p50 ${ms(latest.p50Ms)}, latest day` : 'p95 latency, latest day'}>
+                  <span tabIndex={0}>Slowest 5% of calls</span>
+                </Hint>
+              ),
+              value: latest?.p95Ms != null ? (latest.p95Ms / 1000).toFixed(1) : '—',
+              unit: 'seconds',
+              sub: latest?.p50Ms != null ? `Typical call: ${(latest.p50Ms / 1000).toFixed(1)} seconds` : 'No timing recorded yet',
+            },
+            { label: 'Failed calls', value: int(failures), unit: `of ${int(calls)}`, sub: `${calls ? ((failures / calls) * 100).toFixed(1) : '—'}%, ${h.dlq.length} waiting in the failed queue`, tone: failures ? 'danger' : 'default' },
           ]}
         />
       </div>
@@ -188,13 +208,13 @@ export default function HealthPage() {
       <div className={styles.topGrid}>
         <Panel
           title="Live AI budget"
-          sub="One shared cap for every viewer of this demo. The provider key has the same hard limit as a backstop."
+          sub="One shared cap for everyone viewing this demo. The AI provider account has the same hard limit as a backstop."
           anchor={tourAnchor('health.budget')}
         >
           <div className="sl-stack-lg">
             <p className={styles.budgetLine}>
-              Live AI budget: <strong className="sl-mono">{money(b.spentUsd, { precise: true })}</strong> of{' '}
-              <strong className="sl-mono">{money(b.limitUsd, { precise: true })}</strong> used · <span className="sl-num">{int(b.liveRuns)}</span> live runs
+              Live AI budget: <strong className="sl-num">{money(b.spentUsd, { precise: true })}</strong> of{' '}
+              <strong className="sl-num">{money(b.limitUsd, { precise: true })}</strong> used across <span className="sl-num">{int(b.liveRuns)}</span> live runs
             </p>
             <LadderGauge
               ladder={ladder}
@@ -204,9 +224,9 @@ export default function HealthPage() {
               copy={
                 b.liveEnabled ? (
                   <>
-                    Next rung at <span className="sl-mono sl-strong">{money(ladder.nextThreshold, { precise: true })}</span>. At{' '}
-                    <span className="sl-mono">{money(b.limitUsd, { precise: true })}</span> live AI switches off atomically and every run replays a recorded live run at real speed,
-                    labelled as a replay. Nothing breaks.
+                    Next marker at <span className="sl-num sl-strong">{money(ladder.nextThreshold, { precise: true })}</span>. At{' '}
+                    <span className="sl-num">{money(b.limitUsd, { precise: true })}</span> live AI switches off in one step, and every run replays a recorded live run at real speed,
+                    clearly labelled. Nothing breaks.
                   </>
                 ) : (
                   <>Budget reached: runs now replay recorded live runs at real speed. Custom uploads are paused and say why.</>
@@ -214,11 +234,11 @@ export default function HealthPage() {
               }
             />
             <div className="sl-row">
-              <StatusChip tone={b.liveEnabled ? 'success' : 'warning'} size="md" pulse={b.liveEnabled}>
+              <StatusChip tone={b.liveEnabled ? 'success' : 'warning'} size="md">
                 {b.liveEnabled ? 'Live AI on' : 'Replay mode'}
               </StatusChip>
               <span className="sl-meta">
-                ~{money(b.liveRuns ? b.spentUsd / b.liveRuns : null, { precise: true })} per live run (estimate from spend ÷ runs) · ~{int(b.liveRuns ? Math.floor((b.limitUsd - b.spentUsd) / (b.spentUsd / b.liveRuns)) : null)} runs of headroom
+                About {money(b.liveRuns ? b.spentUsd / b.liveRuns : null, { precise: true })} per live run, so roughly {int(b.liveRuns ? Math.floor((b.limitUsd - b.spentUsd) / (b.spentUsd / b.liveRuns)) : null)} more live runs fit in the budget
               </span>
             </div>
           </div>
@@ -226,10 +246,10 @@ export default function HealthPage() {
 
         <Panel
           title="Daily AI spend"
-          sub={`Last ${ledger.length} days · ${money(cost14, { precise: true })} collected · median ${money(med, { precise: true })} per day`}
+          sub={`Last ${ledger.length} days: ${money(cost14, { precise: true })} in total, typically ${money(med, { precise: true })} a day`}
           actions={
             <a href="#recent-calls" className="sl-caption">
-              Calls behind this ›
+              See the calls
             </a>
           }
         >
@@ -240,7 +260,7 @@ export default function HealthPage() {
               <DailySpendField days={days} median={null} pace={null} currency="USD" />
               {missing ? (
                 <span className="sl-caption">
-                  {missing} day{missing === 1 ? '' : 's'} with no ledger rows is drawn hatched: unknown, not $0.
+                  {missing} day{missing === 1 ? '' : 's'} with nothing recorded {missing === 1 ? 'is' : 'are'} shown as “no data”, not $0.
                 </span>
               ) : null}
             </div>
@@ -250,11 +270,11 @@ export default function HealthPage() {
 
       <div className="sl-grid-2">
         <Panel
-          title="Latency per day"
-          sub="End-to-end AI call latency, p50 and p95. Gaps are days with nothing collected."
+          title="AI response time per day"
+          sub="Typical call and the slowest 5% of calls. Gaps are days with nothing recorded."
           actions={
             <Link to={LOGS} className="sl-caption">
-              Slow calls in Agent Ops ›
+              Slow calls in Agent Ops
             </Link>
           }
         >
@@ -262,22 +282,22 @@ export default function HealthPage() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 24, bottom: 0, left: -8 }}>
                 <CartesianGrid stroke="var(--cn-grid)" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--text-subtle)' }} tickLine={false} axisLine={{ stroke: 'var(--cn-border)' }} interval="preserveStartEnd" minTickGap={18} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--text-subtle)' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(1)}s`} width={44} />
-                <Tooltip content={<ChartTooltip fmt={(v) => ms(v)} />} />
-                <Legend iconType="plainline" wrapperStyle={{ fontSize: 12 }} />
-                <Line type="monotone" dataKey="p50" name="p50" stroke="var(--cn-chart-1)" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
-                <Line type="monotone" dataKey="p95" name="p95" stroke="var(--cn-chart-3)" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} tickLine={false} axisLine={{ stroke: 'var(--border)' }} interval="preserveStartEnd" minTickGap={18} />
+                <YAxis tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(1)} s`} width={48} />
+                <Tooltip content={<ChartTooltip fmt={(v) => ms(v)} />} cursor={{ stroke: 'var(--border-strong)' }} />
+                <Legend iconType="plainline" wrapperStyle={{ fontSize: 13, color: 'var(--text-secondary)' }} />
+                <Line type="linear" dataKey="p50" name="Typical call" stroke="var(--chart-1)" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
+                <Line type="linear" dataKey="p95" name="Slowest 5%" stroke="var(--chart-2)" strokeWidth={2} dot={false} connectNulls={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </Panel>
         <Panel
           title="Calls and failures per day"
-          sub="Failed calls retried with backoff, then fell back to the secondary model; anything still failing is parked in the DLQ."
+          sub="A failed call is retried, then handed to the backup model. Anything still failing waits in the failed queue."
           actions={
             <a href="#dlq" className="sl-caption">
-              Dead-letter queue ›
+              Failed queue
             </a>
           }
         >
@@ -285,12 +305,12 @@ export default function HealthPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 8, right: 24, bottom: 0, left: -16 }}>
                 <CartesianGrid stroke="var(--cn-grid)" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--text-subtle)' }} tickLine={false} axisLine={{ stroke: 'var(--cn-border)' }} interval="preserveStartEnd" minTickGap={18} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--text-subtle)' }} tickLine={false} axisLine={false} allowDecimals={false} width={40} />
-                <Tooltip content={<ChartTooltip fmt={(v) => int(v)} />} cursor={{ fill: 'var(--cn-row-hover)' }} />
-                <Legend iconType="square" wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="ok" name="Succeeded" stackId="a" fill="var(--cn-chart-1)" isAnimationActive={false} />
-                <Bar dataKey="failed" name="Failed" stackId="a" fill="var(--cn-danger)" radius={[2, 2, 0, 0]} isAnimationActive={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} tickLine={false} axisLine={{ stroke: 'var(--border)' }} interval="preserveStartEnd" minTickGap={18} />
+                <YAxis tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} tickLine={false} axisLine={false} allowDecimals={false} width={40} />
+                <Tooltip content={<ChartTooltip fmt={(v) => int(v)} />} cursor={{ fill: 'var(--bg-subtle)' }} />
+                <Legend iconType="square" wrapperStyle={{ fontSize: 13, color: 'var(--text-secondary)' }} />
+                <Bar dataKey="ok" name="Succeeded" stackId="a" fill="var(--chart-1)" isAnimationActive={false} />
+                <Bar dataKey="failed" name="Failed" stackId="a" fill="var(--chart-6)" radius={[2, 2, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -299,8 +319,8 @@ export default function HealthPage() {
 
       <Panel
         id="dlq"
-        title="Dead-letter queue"
-        sub={`${h.dlq.length} item${h.dlq.length === 1 ? '' : 's'} parked after retries and model fallback. A partial failure reads as a failure.`}
+        title="Failed queue"
+        sub={`${h.dlq.length} item${h.dlq.length === 1 ? '' : 's'} that still failed after retries and the backup model. A partly failed run counts as failed.`}
         flush
       >
         <DataTable<DlqRow>
@@ -308,19 +328,18 @@ export default function HealthPage() {
           rows={h.dlq}
           getRowKey={(r) => r.id}
           pagination="when-needed"
-          rowTone={() => 'red'}
-          caption="Dead-letter queue"
-          empty={<EmptyState variant="no-data" title="Nothing parked" description="Every step either succeeded or recovered on retry." />}
+          caption="Failed queue (dead-letter queue)"
+          empty={<EmptyState variant="no-data" title="Nothing failed" description="Every step either succeeded or recovered on retry." />}
         />
       </Panel>
 
       <Panel
         id="recent-calls"
         title="Recent AI calls"
-        sub={`Latest ${h.recent.length} model calls with tokens, cost and latency.`}
+        sub={`The latest ${h.recent.length} AI calls with size, cost and time.`}
         actions={
           <Link to={LOGS} className="sl-caption">
-            All calls in Agent Ops ›
+            All calls in Agent Ops
           </Link>
         }
         flush
@@ -338,8 +357,8 @@ export default function HealthPage() {
       </Panel>
 
       {missing ? (
-        <Callout tone="neutral" title="Why some days are hatched">
-          The ledger is written per model call. A day with no rows is shown as a gap, never as $0, because "nothing recorded" and "nothing spent" are different facts.
+        <Callout tone="neutral" title="Why some days show “no data”">
+          Spend is recorded for each AI call. A day with nothing recorded is shown as a gap, never as $0, because “nothing recorded” and “nothing spent” are different things.
         </Callout>
       ) : null}
     </div>

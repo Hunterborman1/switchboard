@@ -187,7 +187,7 @@ describe('executive summary', () => {
     });
     expect(s.length).toBeGreaterThanOrEqual(4);
     expect(s.length).toBeLessThanOrEqual(5);
-    expect(s[0]).toContain('~121 hours');
+    expect(s[0]).toContain('saved an estimated 121 hours');
     expect(s[0]).toContain('$10,319');
     expect(s[2]).toContain('up 13%');
     expect(s[3]).toContain('1 standard gap');

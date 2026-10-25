@@ -21,20 +21,20 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 
 ## Part 0 · Cold open (0:30)
 
-**Click:** → once. The waveform resolves into the mark and the headline.
+**Click:** → once. The highlighted moment at 06:00 turns into what Signal Loop makes of it, under the headline.
 
 **Say:**
-> This is a thirteen-minute slice of a QBR. Somewhere in it is a roadmap decision, and today it probably never reaches the person who makes it.
+> This is a thirteen-minute QBR. Twenty seconds in the middle of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.
 > Invoca turns calls into signals for its customers. I built the same loop for Invoca's own customer calls, and then I built the platform I'd use to operate it.
 
-## Part 1 · The insight black hole (1:15)
+## Part 1 · Where feedback gets lost (1:15)
 
-**Click:** → to beat 2 (the void and the counter), → to beat 3 (the assumption label).
+**Click:** → to step 2 (the three handoffs fill in, one after another), → to step 3 (the total and the assumption label).
 
 **Say:**
 > Customers tell CSMs exactly what to build: what's broken, what's missing, what a competitor just offered them.
-> Most of it ends up in a notes field, a Slack thread or someone's memory. The person who could act on it never hears it.
-> "4 of 10" is an assumption, and it says so on screen. The first thing I'd do in the job is a 2-week time study with two CSMs to replace it with a real number.
+> Follow 100 pieces of it. 72 get written down, 55 get shared beyond the CSM, 40 reach someone who can act. The rest is in a notes field, a Slack thread or someone's memory.
+> "40 of 100" is an assumption, and it says so on screen. The first thing I'd do in the job is a 2-week time study with two CSMs to replace it with a real number.
 
 ## Part 2 · Why this option (0:35)
 
@@ -46,16 +46,16 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 
 ## Part 3 · Jobs to be done (2:15)
 
-**Click:** flip all four cards (click, or Tab + Enter). Then → for the emotional job.
+**Click:** open all four cards (click, or Tab + Enter) to show what gets in the way. Then → for the emotional job, which replaces the headline.
 
 **Say:**
 > Before architecture: who hires this, and for what.
 > The CSM wants it captured without retyping, and to know when it ships. The PM wants evidence grouped by theme with ARR attached. The VP wants the cross-account view before the renewal, not after. Sales, competitive and support want it in their channel the same day.
 > The job that matters most is the emotional one: be the advocate, not the stenographer. If the system doesn't make CSMs look good, they stop feeding it, and then nothing else works.
 
-## Part 4 · Current → future state (2:10)
+## Part 4 · Today and tomorrow (2:10)
 
-**Click:** → three times: leaks, morph, loop closes.
+**Click:** → three times: the leaks appear one by one, Signal Loop takes the middle lane and each leak becomes a check, then the loop closes.
 
 **Say:**
 > Today it's a relay race with no baton. Five handoffs between the call and the VP, each one depending on someone remembering.
@@ -172,12 +172,12 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 **Click:** → once.
 
 **Say:**
-> First the rollout you just saw: shadow, champions, the team. Then every call by default from month 3 (the card shows today's average AI cost per call, a fraction of a cent), in-call capture, specialist agents checking each other, drafted PRDs and customer replies, and plugging into Invoca's own Signal AI.
+> First the rollout you just saw: shadow, champions, the team. Then every call by default from month 3 (the card shows today's average AI cost per call, a fraction of a cent), capture during the call, specialist agents checking each other, drafted specs and customer replies, and plugging into Invoca's own Signal AI.
 > What doesn't change: grounding in code, gates, routing as data, and human judgement where it counts.
 
-## Part 15 · POC → production (0:45)
+## Part 15 · From proof of concept to production (0:45)
 
-**Click:** → once.
+**Click:** → once. The production column fills in row by row.
 
 **Say:**
 > The POC runs entirely on Cloudflare. Production keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for long-running workers. Strict TypeScript throughout.

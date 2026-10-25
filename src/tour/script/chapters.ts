@@ -3,10 +3,10 @@ import type { Chapter, ChapterId } from '../engine/types';
 /** The parts of the talk, in order. targetSec sums to 25:00. */
 export const CHAPTERS: Chapter[] = [
   { id: 'cold-open', part: 0, title: 'Cold open', layer: 'narrative', objective: 'Set the frame', targetSec: 30 },
-  { id: 'black-hole', part: 1, title: 'The insight black hole', layer: 'narrative', objective: 'See where feedback goes today', targetSec: 75 },
+  { id: 'black-hole', part: 1, title: 'Where feedback gets lost', layer: 'narrative', objective: 'See where feedback goes today', targetSec: 75 },
   { id: 'why', part: 2, title: 'Why this option', layer: 'narrative', objective: 'Mirror Invoca back onto itself', targetSec: 35 },
   { id: 'jtbd', part: 3, title: 'Jobs to be done', layer: 'narrative', objective: 'Flip each card: who needs what', targetSec: 135 },
-  { id: 'states', part: 4, title: 'Current → future state', layer: 'narrative', objective: 'Find the leaks, then seal them', targetSec: 130 },
+  { id: 'states', part: 4, title: 'Today and tomorrow', layer: 'narrative', objective: 'Find the leaks, then seal them', targetSec: 130 },
   { id: 'ch1', part: 5, title: 'A call comes in', layer: 'product', productIndex: 1, objective: "Bring in today's call", targetSec: 90 },
   { id: 'ch2', part: 6, title: 'Watch it think', layer: 'product', productIndex: 2, objective: 'Find what it refused to say', targetSec: 135 },
   { id: 'ch3', part: 7, title: 'Human in the loop', layer: 'product', productIndex: 3, objective: 'Approve one, correct one', targetSec: 120 },
@@ -17,7 +17,7 @@ export const CHAPTERS: Chapter[] = [
   { id: 'ch8', part: 12, title: 'Operate it', layer: 'product', productIndex: 8, objective: 'Find your own run in the logs', targetSec: 120 },
   { id: 'rollout', part: 13, title: 'Earning trust: rollout', layer: 'narrative', objective: 'Build it, then operate it', targetSec: 150 },
   { id: 'horizon', part: 14, title: 'The next 12–18 months', layer: 'narrative', objective: 'Where this goes', targetSec: 90 },
-  { id: 'production', part: 15, title: 'POC → production', layer: 'narrative', objective: 'Same design, production stack', targetSec: 45 },
+  { id: 'production', part: 15, title: 'From proof of concept to production', layer: 'narrative', objective: 'Same design, production stack', targetSec: 45 },
   { id: 'scorecard', part: 16, title: 'Scorecard', layer: 'both', objective: 'What you did, what it did', targetSec: 45 },
 ];
 

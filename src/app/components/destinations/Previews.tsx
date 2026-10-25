@@ -9,7 +9,7 @@ import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { Delivery, InsightType, Person } from '../../../shared/contracts';
 import { tourAnchor } from '../../../tour/anchors';
-import { Brandmark } from '../../../system/components/primitives/Brandmark.jsx';
+import { ProductMark } from '../../../uis/ProductSwitcher';
 import { MonoId } from '../../../uis/MonoId';
 import { RelativeTime } from '../../../uis/RelativeTime';
 import { IconHash, IconIssue, IconMail, IconTicket } from '../icons';
@@ -77,7 +77,7 @@ export function ChatPreview({ delivery, owner, onOpen }: { delivery: Delivery; o
       </div>
       <div className={styles.chatBody}>
         <span className={styles.botAvatar} aria-hidden="true">
-          <Brandmark tone="dark" size={22} title="" />
+          <ProductMark product="signal-loop" size={36} />
         </span>
         <div className={styles.msg}>
           <div className={styles.msgHead}>
@@ -213,11 +213,11 @@ export function TicketPreview({
           </div>
           {str(p, 'quote') ? (
             <div>
-              <div className={styles.sectionLabel}>Evidence (verbatim, grounded)</div>
+              <div className={styles.sectionLabel}>Customer quote (verified in the call)</div>
               <blockquote className="sl-quote">{str(p, 'quote')}</blockquote>
               <p className="sl-caption" style={{ margin: '6px 0 0' }}>
                 {str(p, 'account') ?? 'Customer'}
-                {str(p, 'csm') ? ` · reported by ${str(p, 'csm')}` : ''} · <Link to={`/app/insights/${delivery.insightId}`}>provenance in Signal Loop →</Link>
+                {str(p, 'csm') ? ` · reported by ${str(p, 'csm')}` : ''} · <Link to={`/app/insights/${delivery.insightId}`}>View in Signal Loop</Link>
               </p>
             </div>
           ) : null}
@@ -243,9 +243,7 @@ export function TicketPreview({
           <div className={styles.sideField}>
             <div className={styles.sectionLabel}>Reporter</div>
             <span className={styles.person}>
-              <span className={styles.initials} style={{ background: 'var(--cn-green-mid)' }} aria-hidden="true">
-                <Brandmark tone="dark" size={16} title="" />
-              </span>
+              <ProductMark product="signal-loop" size={24} />
               Signal Loop
             </span>
           </div>
@@ -393,7 +391,7 @@ export function DigestPreview({ deliveries, recipient, week, note }: { deliverie
                 </span>
                 <span className="sl-strong">{deliveryTitle(d)}</span>
                 {str(p, 'quote') ? <span className="sl-meta">“{str(p, 'quote')}”</span> : null}
-                <Link to={`/app/insights/${d.insightId}`} className="sl-caption">See evidence and provenance →</Link>
+                <Link to={`/app/insights/${d.insightId}`} className="sl-caption">See the evidence</Link>
               </li>
             );
           })}

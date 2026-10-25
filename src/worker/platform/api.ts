@@ -155,7 +155,7 @@ platformApi.get('/logs', async (c) => {
   const ctx = await ctxOf(c);
   const cursor = q(c, 'cursor');
   if (cursor && !validLogCursor(cursor)) return fail(c, 400, 'invalid_cursor', 'The cursor is not valid; start from the first page');
-  const page = await R.logs(ctx, { agentId: q(c, 'agentId'), level: q(c, 'level'), component: q(c, 'component'), traceId: q(c, 'traceId'), runId: q(c, 'runId'), q: q(c, 'q'), source: q(c, 'source'), cursor, limit: Number(q(c, 'limit') ?? 100) || 100 });
+  const page = await R.logs(ctx, { agentId: q(c, 'agentId'), level: q(c, 'level'), component: q(c, 'component'), traceId: q(c, 'traceId'), runId: q(c, 'runId'), q: q(c, 'q'), source: q(c, 'source'), web: q(c, 'web'), cursor, limit: Number(q(c, 'limit') ?? 100) || 100 });
   return ok(c, ctx, { ...page, rows: page.rows.map((l) => redactLog(l, ctx.viewer.workspace)) });
 });
 platformApi.get('/logs/your-last-run', async (c) => {

@@ -283,7 +283,7 @@ function hrs(v: number): string {
 export function executiveSummary(s: SummaryInput): string[] {
   const out: string[] = [];
   out.push(
-    `Over ${s.periodLabel}, ${s.agentsInProduction} production agents returned an estimated ~${hrs(s.hoursReturned)} hours of employee time, worth ~${money(s.valueUsd)} at a loaded $${s.loadedHourlyUsd}/hour, for ${money(s.aiCostUsd)} in AI spend${s.roiMultiple != null ? ` (~${Math.round(s.roiMultiple)}× return on AI cost)` : ''}.`,
+    `Over ${s.periodLabel}, ${s.agentsInProduction} production agents saved an estimated ${hrs(s.hoursReturned)} hours of employee time, worth about ${money(s.valueUsd)} at a loaded $${s.loadedHourlyUsd}/hour, for ${money(s.aiCostUsd)} in AI spend${s.roiMultiple != null ? ` (about ${Math.round(s.roiMultiple)} times the AI spend, before build and seat costs)` : ''}.`,
   );
   if (s.topAgent) {
     out.push(`${s.topAgent.name} contributed the most, ${hrs(s.topAgent.hours)} hours (${Math.round(s.topAgent.share * 100)}% of the total).`);

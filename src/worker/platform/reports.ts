@@ -566,7 +566,17 @@ export async function usage(ctx: Ctx, agentId: string | null, source: 'live' | '
 type LogRow = { id: string; agent_id: string; source: 'live' | 'simulated'; at: string; level: LogEntry['level']; component: string; event: string; message: string; trace_id: string; span_id: string | null; run_id: string | null; workspace_id: string | null; duration_ms: number | null; fields: string };
 const toLog = (r: LogRow): LogEntry => ({ id: r.id, agentId: r.agent_id, source: r.source, at: r.at, level: r.level, component: r.component, event: r.event, message: r.message, traceId: r.trace_id, spanId: r.span_id, runId: r.run_id, workspaceId: r.workspace_id, durationMs: r.duration_ms, fields: parseJson(r.fields, {}) });
 
-export type LogFilter = { agentId?: string | null; level?: string | null; component?: string | null; traceId?: string | null; runId?: string | null; q?: string | null; source?: string | null; cursor?: string | null; limit?: number };
+/**
+ * `web`: '1' includes routine web requests (successful `http.request` lines at debug/info).
+ * They are left out by default because they bury everything else; a trace or run filter, or
+ * the API area, always includes them, and failed requests (warn/error) always show.
+ */
+export type LogFilter = { agentId?: string | null; level?: string | null; component?: string | null; traceId?: string | null; runId?: string | null; q?: string | null; source?: string | null; web?: string | null; cursor?: string | null; limit?: number };
+
+/** Whether a log query includes routine web requests (see LogFilter.web). */
+export function includesWebRequests(f: Pick<LogFilter, 'web' | 'traceId' | 'runId' | 'component'>): boolean {
+  return f.web === '1' || f.web === 'true' || !!f.traceId || !!f.runId || f.component === 'api';
+}
 
 export async function logs(ctx: Ctx, f: LogFilter): Promise<LogsPage> {
   const where: string[] = [];
@@ -592,6 +602,7 @@ export async function logs(ctx: Ctx, f: LogFilter): Promise<LogsPage> {
     binds.push(f.runId, f.runId);
   }
   if (f.source === 'live' || f.source === 'simulated') add('source = ?', f.source);
+  if (!includesWebRequests(f)) where.push("NOT (event = 'http.request' AND level IN ('debug', 'info'))");
   if (f.q) {
     const like = `%${f.q.replace(/[%_]/g, '').slice(0, 80)}%`;
     // Message text is searchable only where it is shown in full: simulated history, the seed,

@@ -6,6 +6,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import type { AgentRecord, Alert, DataSource, Slo } from '../../shared/platform-contracts';
 import type { ReviewStatus } from '../../worker/platform/types';
 import { IconAlert, IconInfo, IconX } from './icons';
+import { InfoTip } from './InfoTip';
 import { modelAgentId, modelLabel } from '../../shared/modelLabels';
 
 // ---------------------------------------------------------------- vocabularies
@@ -44,7 +45,7 @@ export const CLASSIFICATION: Vocab = {
 export function Pill({ vocab, value, size }: { vocab: Vocab; value: string; size?: 'sm' }) {
   const v = vocab[value] ?? { label: value, tone: 'neutral' as Tone, help: '' };
   return (
-    <span className={`ao-pill ${v.tone}`} title={v.help || undefined} data-help={v.help ? '' : undefined} style={size === 'sm' ? { fontSize: 'var(--fs-micro)' } : undefined}>
+    <span className={`ao-pill ${v.tone}`} title={v.help || undefined} data-help={v.help ? '' : undefined} style={size === 'sm' ? { fontSize: 12 } : undefined}>
       <i aria-hidden="true" />
       {v.label}
       {v.help ? <span className="ao-sr">. {v.help}</span> : null}
@@ -59,13 +60,13 @@ export const AlertPill = ({ value }: { value: Alert['status'] }) => <Pill vocab=
 // ---------------------------------------------------------------- source chips
 
 const SRC_HELP: Record<DataSource | 'mixed', string> = {
-  live: 'Live: real telemetry from Signal Loop and the people using this demo right now.',
-  simulated: 'Simulated: seeded six-week history of Invoca-shaped usage. Labelled wherever it appears.',
-  mixed: 'Mixed: seeded history plus live telemetry, tagged per row.',
+  live: 'Live: real activity from Signal Loop and the people using this demo right now.',
+  simulated: 'Simulated: a seeded six-week history shaped like Invoca usage.',
+  mixed: 'Simulated six-week history plus live activity from this demo.',
 };
 export function SourceChip({ source, label }: { source: DataSource | 'mixed'; label?: string }) {
   const cls = source === 'live' ? 'live' : source === 'simulated' ? 'sim' : 'mixed';
-  const text = label ?? (source === 'live' ? 'Live' : source === 'simulated' ? 'Simulated' : 'Live + simulated');
+  const text = label ?? (source === 'live' ? 'Live' : source === 'simulated' ? 'Simulated' : 'Live and simulated');
   return (
     <span className={`ao-src ${cls}`} title={SRC_HELP[source]}>
       <i aria-hidden="true" />
@@ -81,7 +82,7 @@ export function PageHead({ eyebrow, title, sub, meta, actions }: { eyebrow?: Rea
   return (
     <header className="ao-head">
       <div className="ao-head-main">
-        {eyebrow ? <span className="ao-eyebrow">{eyebrow}</span> : null}
+        {eyebrow ? <div className="ao-eyebrow">{eyebrow}</div> : null}
         <h1>{title}</h1>
         {sub ? <p className="ao-head-sub">{sub}</p> : null}
         {meta ? <div className="ao-head-meta">{meta}</div> : null}
@@ -102,7 +103,9 @@ export function Panel({
   id,
   className,
   attrs,
+  help,
 }: {
+  help?: ReactNode;
   title?: ReactNode;
   sub?: ReactNode;
   source?: DataSource | 'mixed';
@@ -117,13 +120,14 @@ export function Panel({
   const hid = useId();
   return (
     <section className={`ao-panel${flush ? ' flush' : ''}${className ? ` ${className}` : ''}`} aria-labelledby={title ? hid : undefined} id={id} {...attrs}>
-      {title || actions || source ? (
+      {title || actions ? (
         <div className="ao-panel-head">
           <div className="ao-panel-title">
             {title ? (
               <h2 id={hid}>
                 {title}
-                {source ? <SourceChip source={source} /> : null}
+                {help && typeof title === 'string' ? <InfoTip label={title}>{help}</InfoTip> : null}
+                {source && source !== 'mixed' ? <SourceChip source={source} /> : null}
               </h2>
             ) : null}
             {sub ? <p>{sub}</p> : null}
@@ -144,6 +148,29 @@ export function Callout({ tone = 'neutral', title, children, icon }: { tone?: 'n
       <div>
         {title ? <b>{title}</b> : null} {children}
       </div>
+    </div>
+  );
+}
+
+/** The one calm note about where the numbers come from (replaces per-page warning banners). */
+export function AboutNote({ onAssumptions, children }: { onAssumptions?: () => void; children?: ReactNode }) {
+  return (
+    <div className="ao-about" role="note">
+      <IconInfo />
+      <span className="ao-about-text">
+        {children ?? (
+          <>
+            <b>Estimates, not billing data.</b> Six weeks of history are simulated; Signal Loop’s runs and the people using this demo are live. Hours saved and value rest on assumptions you can edit.
+          </>
+        )}
+      </span>
+      {onAssumptions ? (
+        <span className="ao-about-act">
+          <button type="button" className="ao-link" onClick={onAssumptions}>
+            Edit assumptions
+          </button>
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -182,11 +209,10 @@ export function PageSkeleton({ kpis = true }: { kpis?: boolean }) {
   return (
     <div className="ao-page" aria-busy="true" aria-label="Loading">
       <div style={{ display: 'grid', gap: 10 }}>
-        <Skel h={12} w={120} />
-        <Skel h={30} w={320} />
-        <Skel h={14} w="60%" />
+        <Skel h={28} w={320} />
+        <Skel h={14} w="55%" />
       </div>
-      {kpis ? <Skel h={92} r={8} /> : null}
+      {kpis ? <Skel h={96} r={8} /> : null}
       <div className="ao-grid g-main">
         <Skel h={300} r={8} />
         <Skel h={300} r={8} />
@@ -223,6 +249,8 @@ export type Col<T> = {
   mobileHide?: boolean;
   /** Hide on laptop-width screens too (< 1600px), so a wide table fits without sideways scroll. */
   wideHide?: boolean;
+  /** Plain-English definition of the column, behind an info button in the header. */
+  help?: ReactNode;
 };
 
 export function Table<T>({
@@ -276,16 +304,17 @@ export function Table<T>({
               const active = sort?.key === c.key;
               return (
                 <th key={c.key} className={[c.num ? 'num' : '', c.mobileHide ? 'ao-hide-sm' : '', c.wideHide ? 'ao-hide-md' : ''].join(' ').trim() || undefined} style={c.width ? { width: c.width } : undefined} aria-sort={active ? (sort!.dir === 'asc' ? 'ascending' : 'descending') : undefined} scope="col">
-                  {c.sort ? (
-                    <button type="button" onClick={() => setSort(active ? { key: c.key, dir: sort!.dir === 'asc' ? 'desc' : 'asc' } : { key: c.key, dir: c.num ? 'desc' : 'asc' })}>
-                      {c.header}
-                      <span aria-hidden="true" style={{ opacity: active ? 1 : 0.3 }}>
-                        {active && sort!.dir === 'asc' ? '↑' : '↓'}
-                      </span>
-                    </button>
-                  ) : (
-                    c.header
-                  )}
+                  <span className="ao-th">
+                    {c.sort ? (
+                      <button type="button" onClick={() => setSort(active ? { key: c.key, dir: sort!.dir === 'asc' ? 'desc' : 'asc' } : { key: c.key, dir: c.num ? 'desc' : 'asc' })}>
+                        {c.header}
+                        {active ? <span aria-hidden="true">{sort!.dir === 'asc' ? '↑' : '↓'}</span> : null}
+                      </button>
+                    ) : (
+                      c.header
+                    )}
+                    {c.help && typeof c.header === 'string' ? <InfoTip label={c.header}>{c.help}</InfoTip> : null}
+                  </span>
                 </th>
               );
             })}
@@ -387,7 +416,7 @@ export function Delta({ value, goodWhen = 'up', suffix }: { value: number | null
   const dir = p === 0 ? 'flat' : (p > 0) === (goodWhen === 'up') ? 'up' : 'down';
   return (
     <span className={`ao-delta ${dir}`}>
-      {p > 0 ? '▲' : p < 0 ? '▼' : '■'} {Math.abs(p)}%{suffix ? ` ${suffix}` : ''}
+      {p > 0 ? '↑' : p < 0 ? '↓' : ''}{Math.abs(p)}%{suffix ? ` ${suffix}` : ''}
     </span>
   );
 }
@@ -400,7 +429,7 @@ export function Avatar({ name, color }: { name: string; color?: string }) {
     .map((w) => w[0]!.toUpperCase())
     .join('');
   return (
-    <span className="ao-avatar" style={color ? { background: color } : undefined} aria-hidden="true">
+    <span className="ao-avatar" style={color ? { background: color, color: '#fff' } : undefined} aria-hidden="true">
       {ini}
     </span>
   );
@@ -443,7 +472,7 @@ export function Score({ passed, total }: { passed: number; total: number }) {
 export function BudgetBar({ slo }: { slo: Slo }) {
   const rem = slo.errorBudgetRemaining;
   const w = rem == null ? 0 : Math.max(0, Math.min(1, rem));
-  const color = slo.status === 'breached' ? 'var(--cn-danger)' : slo.status === 'at_risk' ? '#B45309' : slo.status === 'ok' ? 'var(--cn-success)' : 'var(--cn-line-ghost)';
+  const color = slo.status === 'breached' ? 'var(--ao-danger)' : slo.status === 'at_risk' ? 'var(--ao-warning-mark)' : slo.status === 'ok' ? 'var(--ao-success)' : 'var(--ao-border-strong)';
   return (
     <div className="ao-budget">
       <div className="ao-budget-track" role="img" aria-label={rem == null ? 'Error budget: no data' : `Error budget remaining ${Math.round(Math.max(rem, 0) * 100)}%`}>

@@ -7,7 +7,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
   return (
     <div className="sl-page">
-      <AppPageHeader title="Page not found" dataAsOf={null} />
+      <AppPageHeader title="Page not found" subtitle="This link does not match a page" dataAsOf={null} />
       <EmptyState
         variant="no-data"
         size="lg"

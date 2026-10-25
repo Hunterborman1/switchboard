@@ -249,7 +249,7 @@ function OverlayInner() {
           floatingRef={calloutRef}
           style={style}
           shakeKey={shakeKey}
-          arrow={mode === 'anchored' ? <FloatingArrow ref={arrowRef} context={context} width={16} height={8} fill="#12352e" stroke="rgb(242 245 228 / 0.16)" strokeWidth={1} data-placement={finalPlacement} /> : null}
+          arrow={mode === 'anchored' ? <FloatingArrow ref={arrowRef} context={context} width={16} height={8} fill="#FFFFFF" stroke="#E3E6E3" strokeWidth={1} data-placement={finalPlacement} /> : null}
         />
       )}
     </>

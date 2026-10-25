@@ -41,12 +41,28 @@ export function durationText(value: number | null | undefined): string {
   return `${(value / 1000).toFixed(value < 10_000 ? 2 : 1)} s`;
 }
 
-/** Small dollar amounts (per-run AI cost): 4 decimals under a cent, 3 under a dollar. */
+/**
+ * Small dollar amounts (per-run, per-call, per-task AI cost): 4 decimals under a cent, 3 under
+ * a dollar. Zero reads "$0", and an amount too small for 4 decimals reads "under 1¢", never
+ * "$0.0000".
+ */
 export function usdPrecise(usd: number): string {
-  if (usd === 0) return '$0.00';
+  if (usd === 0) return '$0';
+  if (Math.abs(usd) < 0.00005) return 'under 1¢';
   if (Math.abs(usd) < 0.01) return `$${usd.toFixed(4)}`;
   if (Math.abs(usd) < 1) return `$${usd.toFixed(3)}`;
   return `$${usd.toFixed(2)}`;
+}
+
+/**
+ * Money totals (spend so far, AI spend on your runs): "$0" for nothing, "under 1¢" for a
+ * fraction of a cent, otherwise dollars and cents. Per-unit costs use usdPrecise instead.
+ */
+export function usdTotal(usd: number | null | undefined): string {
+  if (usd == null || !Number.isFinite(usd)) return '—';
+  if (usd === 0) return '$0';
+  if (Math.abs(usd) < 0.01) return 'under 1¢';
+  return `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 /** Tooltip for a step that made no model call and took under a millisecond. */

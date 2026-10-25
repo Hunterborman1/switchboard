@@ -7,7 +7,8 @@ import { WriteUp } from './pages/WriteUp';
 import { BackupPage } from '../narrative/backup/BackupPage';
 import { AppMount, OpsMount } from './mounts';
 import { appRoutes, platformRoutes } from './bridge';
-import { Backdrop, Display, Lede } from '../narrative/components';
+import { Display, Lede } from '../narrative/components';
+import { SceneTopBar } from '../narrative/Scene';
 import { RouteError } from './RouteError';
 
 export const BASENAME = '/repo/invoca';
@@ -15,23 +16,23 @@ export const BASENAME = '/repo/invoca';
 function NotFound() {
   return (
     <main className="sl-n n-page nf">
-      <Backdrop />
-      <div className="n-stack" style={{ justifyItems: 'center' }}>
-        <span className="n-label">404</span>
-        <Display size="md">
-          No signal <em>here.</em>
-        </Display>
-        <Lede>That page doesn’t exist.</Lede>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Link className="n-btn n-btn--primary" to="/">
-            Back to the hub
-          </Link>
-          <Link className="n-btn" to="/walkthrough">
-            Start the walkthrough
-          </Link>
-          <Link className="n-btn" to="/write-up">
-            Read the write-up
-          </Link>
+      <SceneTopBar />
+      <div className="nf__body">
+        <div className="nf__card">
+          <span className="n-label">Page not found</span>
+          <Display size="md">There’s nothing here.</Display>
+          <Lede>That page doesn’t exist. Pick up from one of these instead.</Lede>
+          <div className="nf__actions">
+            <Link className="n-btn n-btn--primary" to="/">
+              Back to the start
+            </Link>
+            <Link className="n-btn" to="/walkthrough">
+              Start the walkthrough
+            </Link>
+            <Link className="n-btn" to="/write-up">
+              Read the write-up
+            </Link>
+          </div>
         </div>
       </div>
     </main>

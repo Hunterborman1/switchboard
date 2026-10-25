@@ -1,9 +1,9 @@
 .intro {
   margin: 0;
   max-width: 80ch;
-  font-size: var(--fs-body-lg);
-  line-height: var(--lh-copy);
-  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 .jump {
   display: flex;
@@ -16,22 +16,27 @@
   gap: var(--sp-15);
   min-height: var(--control-sm);
   padding: 0 var(--sp-3);
-  border: 1px solid var(--cn-border);
-  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   background: var(--cn-white);
-  color: var(--cn-off-black) !important;
-  font-size: var(--fs-meta);
+  color: var(--text) !important;
+  font-size: 13px;
+  font-weight: 500;
   text-decoration: none !important;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.jumpLink svg {
+  color: var(--text-tertiary);
 }
 .jumpLink:hover {
-  border-color: var(--cn-border-strong);
-  background: var(--cn-row-hover);
-  opacity: 1 !important;
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
 }
 .count {
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
 }
 .block {
   display: flex;
@@ -50,25 +55,26 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-md);
-  background: var(--cn-brand-soft);
-  color: var(--cn-brand-txt);
+  border-radius: var(--radius-sm);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
   flex: none;
 }
 .blockTitle {
   margin: 0;
-  font-size: var(--fs-title-lg) !important;
-  font-weight: var(--fw-medium) !important;
-  color: var(--cn-off-black);
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 24px !important;
+  color: var(--text);
 }
 .blockChannel {
-  font-weight: var(--fw-regular);
-  color: var(--text-subtle);
+  font-weight: 400;
+  color: var(--text-tertiary);
 }
 .blockSub {
-  margin: 2px 0 0 !important;
-  font-size: var(--fs-meta) !important;
-  color: var(--text-subtle);
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: var(--text-secondary);
 }
 .section {
   display: grid;
@@ -89,7 +95,7 @@
   flex-direction: column;
   gap: 2px;
   background: var(--cn-white);
-  border: 1px solid var(--cn-border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   max-height: 520px;
   overflow-y: auto;
@@ -105,30 +111,22 @@
   gap: 4px;
   width: 100%;
   padding: var(--sp-2) var(--sp-3) !important;
-  border-radius: var(--radius-md) !important;
+  border-radius: var(--radius-sm) !important;
   text-align: left;
   position: relative;
+  transition: background var(--dur-fast) var(--ease-out);
 }
 .item:hover {
-  background: var(--cn-row-hover) !important;
+  background: var(--bg-subtle) !important;
 }
 .item[aria-current='true'] {
-  background: color-mix(in srgb, var(--cn-green) 8%, var(--cn-white)) !important;
-}
-.item[aria-current='true']::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--cn-green);
+  background: var(--accent-subtle) !important;
 }
 .itemTitle {
-  font-size: var(--fs-body);
-  color: var(--cn-off-black);
-  line-height: var(--lh-compact);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 20px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -139,8 +137,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 12px;
+  color: var(--text-tertiary);
   min-width: 0;
 }
 .preview {
@@ -153,10 +151,8 @@
 /* The viewer's own delivery is pinned to the top of each list. */
 .mine {
   align-self: flex-start;
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-medium);
-  color: var(--cn-green-deep, #006B51);
-  background: color-mix(in srgb, var(--cn-green) 10%, var(--cn-white));
-  border-radius: var(--radius-pill);
-  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-text);
+  line-height: 18px;
 }

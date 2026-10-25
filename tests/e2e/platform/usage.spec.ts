@@ -23,6 +23,6 @@ test('usage: heatmap, top 3 users, filters synced to the URL, timezone toggle', 
   await expect(page.getByTestId('top-users').locator('li')).toHaveCount(3);
   await page.getByRole('group', { name: 'Data source' }).getByRole('button', { name: 'Simulated' }).click();
   await expect(page).toHaveURL(/source=simulated/);
-  await page.getByRole('radio', { name: 'PT' }).click();
+  await page.getByRole('combobox', { name: 'Time zone' }).selectOption('America/Los_Angeles');
   await expect(anchor(page, 'ops.usage.heatmap')).toContainText('Pacific time');
 });

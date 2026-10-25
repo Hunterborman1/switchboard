@@ -9,7 +9,7 @@ test('presenter view syncs with the main window and drives it', async ({ context
   const presenter = await context.newPage();
   await presenter.goto(`${BASE}/presenter?notrack=1`);
   await expect(presenter.getByTestId('presenter-status')).toHaveAttribute('data-on', 'true', { timeout: 10_000 });
-  await expect(presenter.getByTestId('pv-current')).toContainText('black hole');
+  await expect(presenter.getByTestId('pv-current')).toContainText('Where feedback gets lost');
   await expect(presenter.getByTestId('pv-notes')).toBeVisible();
 
   // remote next: advances a beat on the main window

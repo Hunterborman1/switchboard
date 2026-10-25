@@ -163,6 +163,7 @@ export default function ReviewPage() {
     <div className="sl-page">
       <AppPageHeader
         title="Review queue"
+        subtitle="Insights a person should check before they reach an owner."
         dataAsOf={queue.dataAsOf}
       />
       {queue.error && !queue.data ? (
@@ -175,7 +176,7 @@ export default function ReviewPage() {
               variant="no-data"
               icon="✓"
               title="Queue clear"
-              description="Nothing is waiting for a human. Insights below 0.80 confidence, churn risks and sev-1 bugs land here; everything else routes on its own."
+              description="Nothing is waiting for you. Lower-confidence insights, churn risks and critical bugs come here first; everything else goes straight to its owner."
               action={
                 <Link to="/app/insights?status=routed" className="sl-linkbtn">
                   See routed insights
@@ -188,7 +189,7 @@ export default function ReviewPage() {
                 <header className={styles.queueHead}>
                   <span className="sl-panel-title">Waiting for review</span>
                   <span className="sl-meta sl-num">
-                    {items.length} item{items.length === 1 ? '' : 's'} · oldest <RelativeTime value={[...items].sort((a, b) => a.createdAt.localeCompare(b.createdAt))[0]?.createdAt} />
+                    {items.length} item{items.length === 1 ? '' : 's'} · oldest from <RelativeTime value={[...items].sort((a, b) => a.createdAt.localeCompare(b.createdAt))[0]?.createdAt} />
                   </span>
                   <span className={styles.keys} aria-label="Keyboard shortcuts: J and K move, A approve, E edit, R reject">
                     <kbd>J</kbd>
@@ -305,7 +306,7 @@ function Detail({
             <dt>Account</dt>
             <dd>
               {world.accountName(insight.accountId)}
-              {acct ? <span className="sl-caption"> · {money(acct.arrUsd, { compact: true })} ARR · {acct.tier}</span> : null}
+              {acct ? <span className="sl-caption" style={{ display: 'block' }}>{money(acct.arrUsd, { compact: true })} ARR · {acct.tier}</span> : null}
             </dd>
           </div>
           <div>
@@ -329,13 +330,13 @@ function Detail({
           <div className="sl-spread">
             <h3 className={styles.blockTitle}>Evidence in context</h3>
             {ev ? (
-              <span className="sl-caption sl-num">
-                {ev.method} match · grounding {ev.score.toFixed(2)}
+              <span className="sl-caption sl-num" title={`Quote check: ${ev.method} match, similarity ${ev.score.toFixed(2)}`}>
+                {ev.method === 'exact' ? 'Quote found word for word' : ev.method === 'failed' ? 'Quote not found' : `Quote found (${Math.round(ev.score * 100)}% match)`}
                 {insight.runId ? (
                   <>
                     {' · '}
-                    <Link to={`/app/runs/${insight.runId}`} className="sl-quietlink">
-                      open run
+                    <Link to={`/app/runs/${insight.runId}`} className="sl-linkbtn">
+                      Open run
                     </Link>
                   </>
                 ) : null}
@@ -346,11 +347,11 @@ function Detail({
         </section>
 
         <section className={styles.block}>
-          <h3 className={styles.blockTitle}>Confidence</h3>
+          <h3 className={styles.blockTitle}>Confidence score</h3>
           <div className={styles.confGrid}>
-            <ConfStat label="Model self-report" value={insight.confidenceModel} />
-            <ConfStat label="Grounding" value={insight.groundingScore} />
-            <ConfStat label="Final (gated)" value={insight.confidenceFinal} strong />
+            <ConfStat label="AI confidence" hint="How sure the model said it was." value={insight.confidenceModel} />
+            <ConfStat label="Quote check" hint="How closely the quote matches the conversation (1.00 is word for word)." value={insight.groundingScore} />
+            <ConfStat label="Overall score" hint="Combines the two above with how reliable this insight type usually is. This decides where it goes." value={insight.confidenceFinal} strong />
           </div>
           <ConfBar value={insight.confidenceFinal} />
           {insight.rationale ? <p className="sl-p">{insight.rationale}</p> : null}
@@ -371,25 +372,25 @@ function Detail({
           <Button variant="tertiary" iconLeft="x" onClick={() => setMode('reject')} disabled={busy}>
             Reject <kbd>R</kbd>
           </Button>
-          <span className={`sl-caption ${styles.actionsNote}`}>Edits are saved as labelled data with an audit diff.</span>
+          <span className={`sl-caption ${styles.actionsNote}`}>Every decision is saved with a record of what changed.</span>
         </footer>
       ) : null}
     </article>
   );
 }
 
-function ConfStat({ label, value, strong }: { label: string; value: number; strong?: boolean }) {
+function ConfStat({ label, hint, value, strong }: { label: string; hint: string; value: number; strong?: boolean }) {
   return (
-    <div className={styles.confStat}>
+    <div className={styles.confStat} title={hint}>
       <span className="sl-caption">{label}</span>
-      <span className={`sl-mono ${strong ? styles.confStrong : ''}`}>{value.toFixed(2)}</span>
+      <span className={`${styles.confValue} ${strong ? styles.confStrong : ''}`}>{value.toFixed(2)}</span>
     </div>
   );
 }
 
 function ConfBar({ value }: { value: number }) {
   return (
-    <div className={styles.confBar} role="img" aria-label={`Final confidence ${value.toFixed(2)}; review band 0.55–0.80, auto-route at 0.80 or above`}>
+    <div className={styles.confBar} role="img" aria-label={`Overall score ${value.toFixed(2)}. Held below 0.55, a person reviews from 0.55 to 0.80, sent automatically at 0.80 or above.`}>
       <div className={styles.confTrack}>
         <span className={styles.zoneHeld} style={{ width: '55%' }} />
         <span className={styles.zoneReview} style={{ width: '25%' }} />
@@ -397,9 +398,9 @@ function ConfBar({ value }: { value: number }) {
         <i className={styles.confMarker} style={{ left: `${Math.min(100, Math.max(0, value * 100))}%` }} />
       </div>
       <div className={styles.confLabels} aria-hidden="true">
-        <span style={{ width: '55%' }}>held &lt; 0.55</span>
-        <span style={{ width: '25%' }}>review</span>
-        <span style={{ width: '20%' }}>auto ≥ 0.80</span>
+        <span style={{ width: '55%' }}>Held (below 0.55)</span>
+        <span style={{ width: '25%' }}>Person reviews</span>
+        <span style={{ width: '20%' }}>Sent automatically</span>
       </div>
     </div>
   );
@@ -503,7 +504,7 @@ function RejectForm({ busy, onCancel, onReject }: { busy: boolean; onCancel: () 
         ))}
       </div>
       <div ref={ref}>
-        <Input value={reason} maxLength={300} placeholder="Or write a reason (saved as a labelled negative example)" aria-label="Reject reason" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReason(e.target.value)} />
+        <Input value={reason} maxLength={300} placeholder="Or write your own reason" aria-label="Reject reason" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReason(e.target.value)} />
       </div>
       <div className="sl-row">
         <Button type="submit" variant="danger" iconLeft="x" disabled={!reason.trim()} loading={busy}>
@@ -512,7 +513,7 @@ function RejectForm({ busy, onCancel, onReject }: { busy: boolean; onCancel: () 
         <Button variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        {!reason.trim() ? <span className="sl-why-disabled">ⓘ A reason is required so the rejection trains the next prompt.</span> : null}
+        {!reason.trim() ? <span className="sl-why-disabled">ⓘ Add a reason so the next version of the AI learns from it.</span> : null}
       </div>
     </form>
   );
@@ -537,15 +538,15 @@ function OutcomeCard({ outcome, onDismiss }: { outcome: Outcome; onDismiss: () =
               Delivered to <span className="sl-strong">{world.personName(d.ownerId)}</span> via {CHANNEL_LABEL[d.channel]} <span className="sl-mono">{d.destination}</span>
               {d.receipt ? (
                 <>
-                  · receipt <MonoId value={d.receipt} keep={12} />
+                  · <span title={`Delivery receipt ${d.receipt}`}>receipt <MonoId value={d.receipt} keep={12} /></span>
                 </>
               ) : null}
-              · <Link to="/app/destinations" className="sl-quietlink">open in destinations</Link>
+              · <Link to="/app/destinations" className="sl-linkbtn">Open in Destinations</Link>
             </span>
           ) : outcome.action === 'reject' ? (
-            <span className="sl-meta">Saved as a labelled negative example; nothing was routed.</span>
+            <span className="sl-meta">Saved as an example of what not to send; nothing was routed.</span>
           ) : (
-            <span className="sl-meta">Routed; the delivery receipt will appear in the delivery log.</span>
+            <span className="sl-meta">Sent to its owner; the delivery will show in the delivery log.</span>
           )}
         </div>
         <Button variant="ghost" size="sm" iconLeft="x" onClick={onDismiss} aria-label="Dismiss" />

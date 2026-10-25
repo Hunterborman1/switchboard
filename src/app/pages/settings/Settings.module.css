@@ -4,8 +4,8 @@
 
 .track {
   display: flex;
-  height: 30px;
-  border-radius: var(--radius-md);
+  height: 28px;
+  border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--cn-border);
 }
@@ -14,8 +14,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-medium);
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -28,13 +28,13 @@
 .zoneReview {
   background: var(--cn-warning-soft);
   color: var(--cn-warning-txt);
-  border-left: 2px solid var(--cn-warning);
+  border-left: 1px solid var(--cn-white);
 }
 
 .zoneAuto {
   background: var(--cn-success-soft);
   color: var(--cn-success-txt);
-  border-left: 2px solid var(--cn-success);
+  border-left: 1px solid var(--cn-white);
 }
 
 .ticks {
@@ -46,9 +46,9 @@
   position: absolute;
   top: 6px;
   transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  color: var(--text-subtle);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
 }
 
 .ticks > span:first-child {
@@ -64,13 +64,20 @@
   flex-direction: column;
   gap: var(--sp-15);
   padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--cn-border-row);
-  border-radius: var(--radius-md);
-  background: var(--cn-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--cn-white);
+}
+
+.ruleLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .ruleValue {
-  font-family: var(--font-mono);
-  font-size: var(--fs-title-lg);
-  color: var(--cn-off-black);
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }

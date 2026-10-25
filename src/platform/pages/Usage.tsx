@@ -5,9 +5,9 @@ import { useTimezone } from '../../uis/TimezoneContext';
 import type { RegistryRow, UsageReportX } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { BarList, Heatmap, Lines } from '../ui/charts';
+import { BarList, Heatmap, Legend, Lines } from '../ui/charts';
 import { IconEye, IconPlay, IconSpark, IconUsers } from '../ui/icons';
-import { Avatar, Delta, ErrorState, PageHead, PageSkeleton, Panel, Seg, SourceChip } from '../ui/kit';
+import { Avatar, Delta, ErrorState, PageHead, PageSkeleton, Panel, Seg } from '../ui/kit';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -50,34 +50,34 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
       <div className="ao-live-head">
         <div>
           <h2 id="ao-live-title">
-            Live right now <SourceChip source="live" />
+            <span className="ao-livedot" aria-hidden="true" /> Live right now
           </h2>
-          <p>Real people using this demo, from Signal Loop’s usage events (last 5 minutes for “active now”). Refreshes every 10 seconds. Your own session is marked.</p>
+          <p>Real people using this demo, updated every 10 seconds. “Active now” means seen in the last 5 minutes. Your own session is marked.</p>
         </div>
-        <Link to="/app" className="ao-btn sm" style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', borderColor: 'rgba(255,255,255,0.25)' }}>
-          Use Signal Loop to appear here
+        <Link to="/app" className="ao-btn sm">
+          Open Signal Loop to appear here
         </Link>
       </div>
       <div className="ao-live-stats">
         <div className="ao-live-stat">
           <span>Active now</span>
           <b data-testid="live-active">{f.int(l.activeNow)}</b>
-          <small>sessions, last 5 min</small>
+          <small>Sessions in the last 5 minutes</small>
         </div>
         <div className="ao-live-stat">
           <span>Sessions</span>
           <b>{f.int(l.sessionsToday)}</b>
-          <small>last 24 hours</small>
+          <small>Last 24 hours</small>
         </div>
         <div className="ao-live-stat">
           <span>Walkthrough starts</span>
           <b>{f.int(l.tourStarts)}</b>
-          <small>last 24 hours</small>
+          <small>Last 24 hours</small>
         </div>
         <div className="ao-live-stat">
-          <span>Completions</span>
+          <span>Walkthroughs finished</span>
           <b>{f.int(l.tourCompletions)}</b>
-          <small>{l.tourStarts ? `${f.pct(l.tourCompletions / l.tourStarts)} of starts` : 'none yet'}</small>
+          <small>{l.tourStarts ? `${f.pct(l.tourCompletions / l.tourStarts)} of starts` : 'None yet'}</small>
         </div>
       </div>
       {compact ? null : (
@@ -97,8 +97,8 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
                         {s.isYou ? <span className="ao-you">That’s you</span> : null}
                       </span>
                       <span className="m">
-                        {s.events} event{s.events === 1 ? '' : 's'}
-                        {cleanPath(s.lastPath) ? ` · on ${cleanPath(s.lastPath)}` : ''}
+                        {s.events} action{s.events === 1 ? '' : 's'}
+                        {cleanPath(s.lastPath) ? ` · last on ${cleanPath(s.lastPath)}` : ''}
                       </span>
                     </span>
                     <time dateTime={s.lastAt}>{f.ago(s.lastAt)}</time>
@@ -107,12 +107,12 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
               </ul>
             ) : (
               <div className="ao-live-empty">
-                Nobody in the last 30 minutes. Open <Link to="/app">Signal Loop</Link> or start the <Link to="/walkthrough">walkthrough</Link> in another tab and come back: your session shows up here within seconds, marked “That’s you”.
+                Nobody in the last 30 minutes. Open <Link to="/app">Signal Loop</Link> or start the <Link to="/walkthrough">walkthrough</Link> in another tab, then come back: your session appears here within seconds, marked “That’s you”.
               </div>
             )}
           </div>
           <div className="ao-live-col">
-            <h3>Recent live events</h3>
+            <h3>Recent activity</h3>
             {l.recent.length ? (
               <ul className="ao-live-list" aria-live="polite">
                 {l.recent.slice(0, 14).map((e) => {
@@ -127,7 +127,7 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
                           {f.kind(e.kind)} {you ? <span className="ao-you">You</span> : null}
                         </span>
                         <span className="m">
-                          {cleanPath(e.path) ?? (typeof e.props.step === 'string' ? e.props.step : '')} {e.actorId === 'owner' ? '· owner' : `· ${e.actorId}`}
+                          {cleanPath(e.path) ?? (typeof e.props.step === 'string' ? e.props.step : '')} {e.actorId === 'owner' ? '· owner' : `· ${e.actorId.replace(/^viewer:/, 'viewer ')}`}
                         </span>
                       </span>
                       <time dateTime={e.at} title={f.time(e.at, timezone, true)}>
@@ -138,7 +138,7 @@ export function LivePanel({ data, compact }: { data: UsageReportX; compact?: boo
                 })}
               </ul>
             ) : (
-              <div className="ao-live-empty">No live events yet. They arrive from Signal Loop’s browser telemetry (POST /telemetry) and its API.</div>
+              <div className="ao-live-empty">No live activity yet. It arrives as people use Signal Loop.</div>
             )}
           </div>
         </div>
@@ -166,15 +166,14 @@ export function Usage() {
   const src = source === 'live' ? 'live' : source === 'simulated' ? 'simulated' : 'mixed';
   const tz = f.tzLabel(timezone);
   const featureRows = d.features.filter((x) => x.kind !== 'session_start').slice(0, 9).map((x) => ({ label: f.kind(x.kind), value: x.events, sub: `${x.users} ${x.users === 1 ? 'person' : 'people'}` }));
-  const roles = d.byRole.map((r) => ({ label: f.role(r.role), value: r.users, sub: `${f.int(r.events)} events` }));
+  const roles = d.byRole.map((r) => ({ label: f.role(r.role), value: r.users, sub: `${f.int(r.events)} actions` }));
 
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Adoption"
         title="Usage"
-        sub="Who uses which agent, when, and how often. The live panel is real; the six-week history is simulated and labelled."
-        meta={<span>Data as of {f.ago(usage.dataAsOf)}</span>}
+        sub="Who uses which agent, when, and how often. The live panel is real; the six-week history is simulated."
+        meta={<span>Updated {f.ago(usage.dataAsOf)}</span>}
         actions={
           <>
             <select className="ao-select" aria-label="Agent" value={agentId} onChange={(e) => set('agentId', e.target.value)}>
@@ -205,20 +204,26 @@ export function Usage() {
         minItemWidth={150}
         label="Usage totals"
         items={[
-          { label: 'People', value: f.int(d.totals.users), sub: 'distinct users in the period' },
-          { label: 'Weekly active', value: f.int(d.totals.wau), sub: <span className="ao-kpi-sub"><Delta value={d.totals.priorWau ? (d.totals.wau - d.totals.priorWau) / d.totals.priorWau : null} /> vs {d.totals.priorWau} the week before</span> },
-          { label: 'Sessions', value: f.int(d.totals.sessions), sub: 'period total' },
-          { label: 'Events', value: f.int(d.totals.events), sub: 'page views, runs, reviews, exports…' },
+          { label: 'People', value: f.int(d.totals.users), sub: 'Used an agent this period' },
+          { label: 'Weekly active users', value: f.int(d.totals.wau), sub: <><Delta value={d.totals.priorWau ? (d.totals.wau - d.totals.priorWau) / d.totals.priorWau : null} /> vs {d.totals.priorWau} the week before</> },
+          { label: 'Sessions', value: f.int(d.totals.sessions), sub: 'This period' },
+          { label: 'Actions', value: f.int(d.totals.events), sub: 'Page views, runs, reviews and exports', help: 'Every tracked action: viewing a page, starting a run, reviewing an output, exporting, and so on.' },
         ]}
       />
 
-      <Panel title="Daily active people and sessions" source={src} sub="Weekday rhythm with quiet weekends. A day with no events draws as zero only because events were measured that day.">
+      <Panel title="People and sessions per day" source={src} sub="Busy on weekdays, quiet at weekends.">
+        <Legend
+          series={[
+            { key: 'users', label: 'People', color: '#008463' },
+            { key: 'sessions', label: 'Sessions', color: '#2F5DB8' },
+          ]}
+        />
         <Lines
           data={d.daily.map((x) => ({ ...x, label: f.day(x.day) }))}
           x="label"
           series={[
-            { key: 'users', label: 'People', color: '#102A56' },
-            { key: 'sessions', label: 'Sessions', color: '#5E74E3', dash: true },
+            { key: 'users', label: 'People', color: '#008463' },
+            { key: 'sessions', label: 'Sessions', color: '#2F5DB8' },
           ]}
           height={220}
           yFormat={(v) => String(v)}
@@ -229,24 +234,24 @@ export function Usage() {
       </Panel>
 
       <div className="ao-grid g-main">
-        <Panel title="When people use agents" source={src} sub={`Events by weekday and hour, ${tz}. Peaks mid-morning and early afternoon Pacific.`} attrs={tourAnchor('ops.usage.heatmap')}>
+        <Panel title="When people use agents" source={src} sub={`Activity by weekday and hour, ${tz === 'UTC' ? 'UTC' : 'Pacific time'}. Busiest mid-morning and early afternoon Pacific.`} attrs={tourAnchor('ops.usage.heatmap')}>
           <Heatmap cells={shiftHeat(d.heatmap, timezone)} tzLabel={tz === 'UTC' ? 'UTC' : 'Pacific time'} rowLabels={DAYS} />
         </Panel>
-        <Panel title="Top users" source={src} sub="Ranked by work units and sessions in the period.">
+        <Panel title="Top users" source={src} sub="Ranked by tasks completed, then sessions.">
           {d.topUsers.length ? (
             <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 12 }} data-testid="top-users">
               {d.topUsers.map((u, i) => (
-                <li key={u.actorId} style={{ display: 'grid', gridTemplateColumns: '18px auto minmax(0,1fr) auto', gap: 10, alignItems: 'center' }}>
-                  <span className="ao-muted ao-num">{i + 1}</span>
-                  <Avatar name={u.name} color={['#102A56', '#3D51BE', '#5E74E3'][i]} />
+                <li key={u.actorId} style={{ display: 'grid', gridTemplateColumns: '16px auto minmax(0,1fr) auto', gap: 10, alignItems: 'center' }}>
+                  <span className="ao-muted ao-num" style={{ fontSize: 13 }}>{i + 1}</span>
+                  <Avatar name={u.name} />
                   <span style={{ minWidth: 0 }}>
                     <b style={{ fontWeight: 500, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{u.name}</b>
-                    <small className="ao-muted">
+                    <small className="ao-muted" style={{ fontSize: 13 }}>
                       {u.role} · last seen {f.day(u.lastSeen)}
                     </small>
                   </span>
-                  <span style={{ textAlign: 'right', fontSize: 'var(--fs-caption)' }} className="ao-num">
-                    <b style={{ fontWeight: 500, fontSize: 'var(--fs-body)' }}>{f.int(u.workUnits)}</b> units
+                  <span style={{ textAlign: 'right', fontSize: 13 }} className="ao-num">
+                    <b style={{ fontWeight: 600, fontSize: 14 }}>{f.int(u.workUnits)}</b> tasks
                     <br />
                     <span className="ao-muted">{f.int(u.sessions)} sessions</span>
                   </span>
@@ -260,11 +265,11 @@ export function Usage() {
       </div>
 
       <div className="ao-grid g-2">
-        <Panel title="By role" source={src} sub="Distinct people per role.">
-          <BarList rows={roles} format={(v) => `${v} ${v === 1 ? 'person' : 'people'}`} color="#102A56" />
+        <Panel title="By role" source={src} sub="People per role.">
+          <BarList rows={roles} format={(v) => `${v} ${v === 1 ? 'person' : 'people'}`} color="#008463" />
         </Panel>
-        <Panel title="Features used" source={src} sub="Usage events by kind. Tells the owner which parts of an agent earn their keep.">
-          <BarList rows={featureRows} format={(v) => f.int(v)} />
+        <Panel title="Features used" source={src} sub="Actions by type: which parts of an agent earn their keep.">
+          <BarList rows={featureRows} format={(v) => f.int(v)} color="#2F5DB8" />
         </Panel>
       </div>
     </div>
