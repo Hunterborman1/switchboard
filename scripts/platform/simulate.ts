@@ -805,7 +805,7 @@ function changelogFor(agentId: string, shift: number): ChangeEntry[] {
   const rows: Omit<ChangeEntry, 'agentId'>[] =
     agentId === 'agt_signal_loop'
       ? [
-          { id: 'chg_sl_01', at: at('2026-09-10T18:00:00.000Z'), kind: 'review', title: 'Security & data review approved', detail: 'Redaction before any model call; provider data collection denied; gate and signed-link access reviewed.', actor: 'Sofia Marino', ref: 'SEC-2026-031' },
+          { id: 'chg_sl_01', at: at('2026-09-10T18:00:00.000Z'), kind: 'review', title: 'Security & data review requested', detail: 'Pending: to be completed by Invoca Security. Build evidence attached: redaction before any model call, provider data collection denied, gated access.', actor: 'Hunter Borman', ref: 'SEC-pending' },
           { id: 'chg_sl_02', at: at('2026-09-14T16:00:00.000Z'), kind: 'deploy', title: 'Shadow mode: 2 CSMs', detail: 'Runs on every call; nothing routes automatically. CSMs compare with their own notes.', actor: 'Hunter Borman', ref: 'v0.9.0' },
           { id: 'chg_sl_03', at: at('2026-09-21T17:30:00.000Z'), kind: 'prompt', title: 'Extract prompt v3 promoted', detail: 'Added counter-examples (a rep complaint is not a bug). Precision 0.89 → 0.93 on the golden set; recall unchanged.', actor: 'Hunter Borman', ref: 'eval_2026-09-21' },
           { id: 'chg_sl_04', at: at('2026-09-28T16:00:00.000Z'), kind: 'deploy', title: 'Champions rollout: 4 CSMs, 2 PMs', detail: 'Auto-routing on above 0.80 confidence; review queue for the rest.', actor: 'Hunter Borman', ref: 'v1.0.0' },
@@ -814,7 +814,7 @@ function changelogFor(agentId: string, shift: number): ChangeEntry[] {
           { id: 'chg_sl_07', at: at('2026-10-13T18:40:00.000Z'), kind: 'incident', title: 'Primary model 503s; automatic fallback', detail: '16:05–18:30 UTC the primary provider returned 503s; 61% of calls fell back to the secondary model. Runs stayed within budget; 1 run failed after retries.', actor: 'Hunter Borman', ref: 'INC-0142' },
           { id: 'chg_sl_08', at: at('2026-10-15T19:00:00.000Z'), kind: 'rule', title: 'Routing: pricing objections > $250k ARR → VP Product', detail: 'Requested by Elena Vasquez after the Brightline renewal.', actor: 'Nina Patel', ref: 'rule_pricing_vp' },
           { id: 'chg_sl_09', at: at('2026-10-21T16:30:00.000Z'), kind: 'model', title: 'Primary model: deepseek/deepseek-v4.1-flash', detail: 'Speed test on 10 golden files: fastest at equal F1. Secondary stays anthropic/claude-haiku-5.5 (fallback + eval judge).', actor: 'Hunter Borman', ref: 'speed-test-2026-10-21' },
-          { id: 'chg_sl_10', at: at('2026-10-22T15:00:00.000Z'), kind: 'prompt', title: 'Prompt v5 blocked by promotion gate', detail: 'Recall on level-5 (chaos) files fell 0.82 → 0.71. v4 stays in production.', actor: 'Eval gate', ref: 'eval_2026-10-22' },
+          { id: 'chg_sl_10', at: at('2026-10-22T15:00:00.000Z'), kind: 'prompt', title: 'Prompt v5 blocked by promotion gate', detail: 'Precision fell 88.7% → 59.7% (under the 85% bar, −28.9 pts). v4 stays in production.', actor: 'Eval gate', ref: 'eval_2026-10-22' },
         ]
       : [
           { id: 'chg_rfp_01', at: at('2026-08-12T17:00:00.000Z'), kind: 'review', title: 'Security & data review approved with conditions', detail: 'SOC 2 report read-only; no customer data in prompts; answers cite their source document.', actor: 'Sofia Marino', ref: 'SEC-2026-027' },
