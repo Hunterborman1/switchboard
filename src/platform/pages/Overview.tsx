@@ -80,7 +80,7 @@ export function Overview() {
     { key: 'hours', header: 'Hours', num: true, sort: (r) => r.hoursReturned, render: (r) => f.hours(r.hoursReturned) },
     { key: 'value', mobileHide: true, header: 'Value', num: true, sort: (r) => r.valueUsd, render: (r) => f.money(r.valueUsd, { est: true }) },
     { key: 'cost', mobileHide: true, header: 'AI cost', num: true, sort: (r) => r.aiCostUsd, render: (r) => f.money(r.aiCostUsd) },
-    { key: 'roi', mobileHide: true, header: 'ROI', num: true, sort: (r) => r.roiMultiple, render: (r) => (r.roiMultiple == null ? '—' : `~${f.multiple(r.roiMultiple)}`) },
+    { key: 'roi', mobileHide: true, header: 'Value ÷ AI cost', num: true, sort: (r) => r.roiMultiple, render: (r) => (r.roiMultiple == null ? '—' : `~${f.multiple(r.roiMultiple)}`) },
     { key: 'acc', mobileHide: true, header: 'Accepted', num: true, sort: (r) => r.acceptanceRate, render: (r) => <span title="(accepted + automatic) ÷ all work units">{f.pct(r.acceptanceRate)}</span> },
     { key: 'users', mobileHide: true, header: 'Users', num: true, sort: (r) => r.activeUsers, render: (r) => f.int(r.activeUsers) },
     { key: 'trend', mobileHide: true, header: 'Weekly hours', render: (r) => <Spark values={r.weeklyHours} color={r.color} label={`${r.name} weekly hours`} width={84} /> },
@@ -89,7 +89,7 @@ export function Overview() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Executive overview"
+        eyebrow="Executive overview"
         title="What our AI agents return"
         sub="Hours given back to teams, what that is worth, what it costs, and who is using each agent. One place to see every production agent at Invoca."
         meta={
@@ -112,17 +112,27 @@ export function Overview() {
         }
       />
 
-      <div {...tourAnchor('ops.overview.kpis')}>
+      <div className="ao-kpis5" {...tourAnchor('ops.overview.kpis')}>
+        {/* Hours returned leads. The value-to-AI-cost ratio is a caption under Value, labelled for what
+            it leaves out (build and seats), not a headline tile. */}
         <MetricStrip
           size="lg"
           minItemWidth={150}
           label="Headline metrics"
           items={[
-            { label: 'In production', value: t.agentsInProduction, sub: `${d.agentRows.length} in registry · ${d.agentRows.filter((a) => a.status !== 'production').length} pilot or review` },
             { label: 'Hours returned', value: <><span className="ao-est">~</span>{f.int(t.hoursReturned)}</>, unit: 'h', sub: `~${f.int(d.lastWeek.hoursReturned)} h in the latest week` },
-            { label: 'Value', value: <><span className="ao-est">~</span>{f.compactMoney(t.valueUsd)}</>, sub: <button type="button" className="ao-link" style={{ fontSize: 'inherit' }} onClick={() => setAssumptionsOpen(true)}>hours × ${d.assumptions.loadedHourlyUsd}/h loaded · assumptions</button> },
+            {
+              label: 'Value',
+              value: <><span className="ao-est">~</span>{f.compactMoney(t.valueUsd)}</>,
+              sub: (
+                <span className="ao-kpi-sub">
+                  {t.roiMultiple == null ? null : <span>~{f.multiple(t.roiMultiple)} metered AI spend · excl. build & seats ·</span>}
+                  <button type="button" className="ao-link" style={{ fontSize: 'inherit' }} onClick={() => setAssumptionsOpen(true)}>hours × ${d.assumptions.loadedHourlyUsd}/h · assumptions</button>
+                </span>
+              ),
+            },
             { label: 'AI cost', value: f.money(t.aiCostUsd), sub: 'Metered model spend, not billing' },
-            { label: 'ROI multiple', value: <><span className="ao-est">~</span>{t.roiMultiple == null ? '—' : f.multiple(t.roiMultiple)}</>, sub: 'Value ÷ AI cost (excludes seats & build)' },
+            { label: 'In production', value: t.agentsInProduction, sub: `${d.agentRows.length} in registry · ${d.agentRows.filter((a) => a.status !== 'production').length} pilot or review` },
             {
               label: 'Weekly active',
               value: d.wau.current,
@@ -250,7 +260,7 @@ export function Overview() {
       <Panel
         title="Impact by agent"
         source="mixed"
-        sub={`${f.range(d.range.from, d.range.to)}. Value and ROI are estimates (~). Acceptance = (accepted + automatic) ÷ all work units.`}
+        sub={`${f.range(d.range.from, d.range.to)}. Value and value ÷ AI cost are estimates (~) and exclude build and seat costs. Acceptance = (accepted + automatic) ÷ all work units.`}
         actions={stage ? <button type="button" className="ao-btn sm" onClick={() => { const n = new URLSearchParams(params); n.delete('stage'); setParams(n, { replace: true }); }}>Clear stage filter</button> : null}
         flush
       >

@@ -156,3 +156,13 @@ body { background: #0a231e; }
 /* ---------------------------------------------------------------- misc */
 .nf { min-height: 100dvh; display: grid; place-items: center; text-align: center; padding: 24px; }
 .mount-fallback { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+
+/* Route error card inside the product / Ops shells (RouteError variant="product"). */
+.sl-route-error { max-width: 560px; margin: 48px auto; padding: 32px; border: 1px solid var(--cn-border, #E3E4E1); border-left: 3px solid var(--cn-green, #008463); border-radius: 10px; background: var(--cn-white, #fff); display: grid; gap: 12px; }
+.sl-route-error h1 { margin: 0; font: 600 22px/1.25 var(--font-sans, Inter, system-ui, sans-serif); letter-spacing: -0.01em; color: var(--cn-off-black, #1B1F1E); }
+.sl-route-error p { margin: 0; color: var(--cn-ink-2, #4A5A55); font-size: 14px; line-height: 1.5; }
+.sl-route-error .sl-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.sl-route-error a { color: var(--cn-green, #008463); font-size: 14px; }
+.sl-route-error__btn { height: 36px; padding: 0 16px; border: 0; border-radius: 6px; background: var(--cn-green, #008463); color: #fff; font: 600 14px/1 var(--font-sans, Inter, system-ui, sans-serif); cursor: pointer; }
+.sl-route-error__btn:hover { background: var(--cn-green-deep, #006B51); }
+.sl-route-error__btn:focus-visible { outline: 2px solid var(--cn-green, #008463); outline-offset: 2px; }

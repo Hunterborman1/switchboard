@@ -97,7 +97,7 @@
         "perRunCapUsd": 0.05,
         "humanMinutesPerUnit": 1.5,
         "integrations": [
-          "OpenRouter (2 models)",
+          "Model router (2 models)",
           "Workers AI embeddings",
           "Vectorize",
           "Jira",

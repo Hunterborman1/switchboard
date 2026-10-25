@@ -145,11 +145,29 @@
     "passed": null
    },
    {
+    "key": "precision.level1",
+    "label": "Precision · mess level 1",
+    "value": 0.9545,
+    "numerator": 21,
+    "denominator": 22,
+    "threshold": null,
+    "passed": null
+   },
+   {
     "key": "recall.level2",
     "label": "Recall · mess level 2",
     "value": 0.9583,
     "numerator": 23,
     "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.level2",
+    "label": "Precision · mess level 2",
+    "value": 0.8846,
+    "numerator": 23,
+    "denominator": 26,
     "threshold": null,
     "passed": null
    },
@@ -163,11 +181,29 @@
     "passed": null
    },
    {
+    "key": "precision.level3",
+    "label": "Precision · mess level 3",
+    "value": 0.8667,
+    "numerator": 26,
+    "denominator": 30,
+    "threshold": null,
+    "passed": null
+   },
+   {
     "key": "recall.level4",
     "label": "Recall · mess level 4",
     "value": 1,
     "numerator": 20,
     "denominator": 20,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.level4",
+    "label": "Precision · mess level 4",
+    "value": 0.9091,
+    "numerator": 20,
+    "denominator": 22,
     "threshold": null,
     "passed": null
    },
@@ -179,6 +215,15 @@
     "denominator": 20,
     "threshold": 0.7,
     "passed": true
+   },
+   {
+    "key": "precision.level5",
+    "label": "Precision · mess level 5",
+    "value": 0.7826,
+    "numerator": 18,
+    "denominator": 23,
+    "threshold": null,
+    "passed": null
    },
    {
     "key": "grounding_rate",
@@ -398,11 +443,29 @@
     "passed": null
    },
    {
+    "key": "precision.level1",
+    "label": "Precision · mess level 1",
+    "value": 0.6563,
+    "numerator": 21,
+    "denominator": 32,
+    "threshold": null,
+    "passed": null
+   },
+   {
     "key": "recall.level2",
     "label": "Recall · mess level 2",
     "value": 1,
     "numerator": 24,
     "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.level2",
+    "label": "Precision · mess level 2",
+    "value": 0.6,
+    "numerator": 24,
+    "denominator": 40,
     "threshold": null,
     "passed": null
    },
@@ -416,11 +479,29 @@
     "passed": null
    },
    {
+    "key": "precision.level3",
+    "label": "Precision · mess level 3",
+    "value": 0.6667,
+    "numerator": 26,
+    "denominator": 39,
+    "threshold": null,
+    "passed": null
+   },
+   {
     "key": "recall.level4",
     "label": "Recall · mess level 4",
     "value": 1,
     "numerator": 20,
     "denominator": 20,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.level4",
+    "label": "Precision · mess level 4",
+    "value": 0.5556,
+    "numerator": 20,
+    "denominator": 36,
     "threshold": null,
     "passed": null
    },
@@ -432,6 +513,15 @@
     "denominator": 20,
     "threshold": 0.7,
     "passed": true
+   },
+   {
+    "key": "precision.level5",
+    "label": "Precision · mess level 5",
+    "value": 0.5455,
+    "numerator": 18,
+    "denominator": 33,
+    "threshold": null,
+    "passed": null
    },
    {
     "key": "grounding_rate",
@@ -675,11 +765,29 @@
      "passed": null
     },
     {
+     "key": "precision.level1",
+     "label": "Precision · mess level 1",
+     "value": 0.9545,
+     "numerator": 21,
+     "denominator": 22,
+     "threshold": null,
+     "passed": null
+    },
+    {
      "key": "recall.level2",
      "label": "Recall · mess level 2",
      "value": 0.9583,
      "numerator": 23,
      "denominator": 24,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.level2",
+     "label": "Precision · mess level 2",
+     "value": 0.8846,
+     "numerator": 23,
+     "denominator": 26,
      "threshold": null,
      "passed": null
     },
@@ -693,11 +801,29 @@
      "passed": null
     },
     {
+     "key": "precision.level3",
+     "label": "Precision · mess level 3",
+     "value": 0.8667,
+     "numerator": 26,
+     "denominator": 30,
+     "threshold": null,
+     "passed": null
+    },
+    {
      "key": "recall.level4",
      "label": "Recall · mess level 4",
      "value": 1,
      "numerator": 20,
      "denominator": 20,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.level4",
+     "label": "Precision · mess level 4",
+     "value": 0.9091,
+     "numerator": 20,
+     "denominator": 22,
      "threshold": null,
      "passed": null
     },
@@ -709,6 +835,15 @@
      "denominator": 20,
      "threshold": 0.7,
      "passed": true
+    },
+    {
+     "key": "precision.level5",
+     "label": "Precision · mess level 5",
+     "value": 0.7826,
+     "numerator": 18,
+     "denominator": 23,
+     "threshold": null,
+     "passed": null
     },
     {
      "key": "grounding_rate",

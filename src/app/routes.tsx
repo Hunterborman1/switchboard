@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
 import { AppShell } from './AppShell';
+import { RouteError } from '../web/RouteError';
 
 /**
  * Product routes, mounted under /app by src/web (router basename /repo/invoca). The top
@@ -42,4 +43,5 @@ export const appChildRoutes: RouteObject[] = [
   { path: '*', element: <NotFound /> },
 ];
 
-export const appRoutes: RouteObject[] = [{ element: <AppShell />, children: appChildRoutes }];
+// The pathless child boundary keeps the AppShell (rail, header) on screen when a page throws.
+export const appRoutes: RouteObject[] = [{ element: <AppShell />, children: [{ errorElement: <RouteError variant="product" />, children: appChildRoutes }] }];

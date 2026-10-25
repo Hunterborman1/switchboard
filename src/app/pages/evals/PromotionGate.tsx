@@ -6,7 +6,7 @@ import { Button } from '../../../system/components/primitives/Button.jsx';
 import { usePrefersReducedMotion } from '../../state';
 import { track } from '../../telemetry';
 import { IconCheck, IconX } from '../../components/icons';
-import { gateChecks } from './evalModel';
+import { gateChecks, gateVerdict } from './evalModel';
 import styles from './Evals.module.css';
 
 type Phase = 'idle' | 'checking' | 'done';
@@ -64,7 +64,7 @@ export function PromotionGate({ candidate, current }: { candidate: EvalRun; curr
       {phase !== 'idle' ? (
         <ol className={styles.checks} aria-live="polite">
           {checks.map((c, i) => {
-            const state = i < shown ? (c.ok ? 'ok' : 'fail') : i === shown && phase === 'checking' ? 'running' : 'pending';
+            const state = i < shown ? (c.info ? 'info' : c.ok ? 'ok' : 'fail') : i === shown && phase === 'checking' ? 'running' : 'pending';
             return (
               <li key={c.id} className={`${styles.check} ${styles[`check_${state}`] ?? ''}`}>
                 <span className={styles.checkIcon} aria-hidden="true">
@@ -72,9 +72,9 @@ export function PromotionGate({ candidate, current }: { candidate: EvalRun; curr
                 </span>
                 <span className={styles.checkText}>
                   <span className={styles.checkLabel}>{c.label}</span>
-                  {state === 'ok' || state === 'fail' ? <span className="sl-caption">{c.detail}</span> : null}
+                  {state === 'ok' || state === 'fail' || state === 'info' ? <span className="sl-caption">{c.detail}</span> : null}
                 </span>
-                <span className="sl-sr-only">{state === 'ok' ? 'passed' : state === 'fail' ? 'failed' : state}</span>
+                <span className="sl-sr-only">{state === 'ok' ? 'passed' : state === 'fail' ? 'failed' : state === 'info' ? 'for information' : state}</span>
               </li>
             );
           })}
@@ -89,11 +89,9 @@ export function PromotionGate({ candidate, current }: { candidate: EvalRun; curr
           className={`${styles.result} ${candidate.promoted ? styles.resultOk : styles.resultBlocked}`}
           {...tourAnchor('evals.gate')}
         >
-          <span className={styles.resultWord}>{candidate.promoted ? 'PROMOTED' : 'PROMOTION BLOCKED'}</span>
+          <span className={styles.resultWord}>{candidate.promoted ? 'Promoted' : 'Promotion blocked'}</span>
           <span className={styles.resultSub}>
-            {candidate.promoted
-              ? `${candidate.promptVersion} is now the production prompt. New runs record it on every insight.`
-              : `${current.promptVersion} stays in production. ${candidate.promptVersion} is faster and cheaper, but the gate protects recall on the hardest files.`}
+            {gateVerdict(candidate, current)}
           </span>
           {!candidate.promoted && candidate.blockedReasons.length ? (
             <ul className={styles.reasons}>

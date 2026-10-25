@@ -207,3 +207,9 @@
 
 /* The UIS PageHeader carries its own bottom margin; inside .sl-page the column gap spaces it. */
 .sl-app .sl-page > header[data-testid='page-header'] { margin-bottom: 0; }
+
+/* Secondary sub-lines (run ids, call ids) only where there is room for them. */
+@media (max-width: 1599px) { .sl-app .sl-xl-only { display: none; } }
+
+/* Headings everywhere in the product: slightly tight, like the narrative layer's display type. */
+.sl-app .sl-panel-title { letter-spacing: -0.01em; }

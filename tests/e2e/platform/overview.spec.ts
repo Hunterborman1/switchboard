@@ -7,7 +7,7 @@ test('overview: KPIs, weekly chart, needs attention, impact table', async ({ pag
   await open(page, '/ops');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('What our AI agents return');
   const kpis = anchor(page, 'ops.overview.kpis');
-  for (const label of ['In production', 'Hours returned', 'Value', 'AI cost', 'ROI multiple', 'Weekly active']) await expect(kpis).toContainText(label);
+  for (const label of ['Hours returned', 'Value', 'AI cost', 'In production', 'Weekly active', 'excl. build & seats']) await expect(kpis).toContainText(label);
   await expect(page.getByText('Estimates, not billing data.').first()).toBeVisible();
   await expect(page.locator('.ao-simmark')).toContainText('Simulated org data · 6 weeks');
   await expect(anchor(page, 'ops.overview.chart').locator('.recharts-bar-rectangle').first()).toBeVisible();

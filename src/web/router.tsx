@@ -8,6 +8,7 @@ import { BackupPage } from '../narrative/backup/BackupPage';
 import { AppMount, OpsMount } from './mounts';
 import { appRoutes, platformRoutes } from './bridge';
 import { Backdrop, Display, Lede } from '../narrative/components';
+import { RouteError } from './RouteError';
 
 export const BASENAME = '/repo/invoca';
 
@@ -21,9 +22,17 @@ function NotFound() {
           No signal <em>here.</em>
         </Display>
         <Lede>That page doesn’t exist.</Lede>
-        <Link className="n-btn n-btn--primary" to="/">
-          Back to the hub
-        </Link>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Link className="n-btn n-btn--primary" to="/">
+            Back to the hub
+          </Link>
+          <Link className="n-btn" to="/walkthrough">
+            Start the walkthrough
+          </Link>
+          <Link className="n-btn" to="/write-up">
+            Read the write-up
+          </Link>
+        </div>
       </div>
     </main>
   );
@@ -32,16 +41,23 @@ function NotFound() {
 export const router = createBrowserRouter(
   [
     // The presenter view lives outside the TourProvider: it drives the main window, it isn't one.
-    { path: '/presenter', element: <Presenter /> },
+    { path: '/presenter', element: <Presenter />, errorElement: <RouteError /> },
     {
       element: <RootLayout />,
+      errorElement: <RouteError />,
       children: [
         { index: true, element: <Hub /> },
         { path: 'write-up', element: <WriteUp /> },
         { path: 'walkthrough/:part?', element: <Walkthrough /> },
         { path: 'backup/:topic?', element: <BackupPage /> },
-        { path: 'app', element: <AppMount />, children: appRoutes.length ? appRoutes : [{ path: '*', element: null }] },
-        { path: 'ops', element: <OpsMount />, children: platformRoutes.length ? platformRoutes : [{ path: '*', element: null }] },
+        { path: 'app', element: <AppMount />, errorElement: <RouteError />, children: appRoutes.length ? appRoutes : [{ path: '*', element: null }] },
+        {
+          path: 'ops',
+          element: <OpsMount />,
+          errorElement: <RouteError />,
+          // A pathless child boundary keeps the Ops shell (rail) on screen when a page throws.
+          children: platformRoutes.length ? [{ errorElement: <RouteError variant="product" />, children: platformRoutes }] : [{ path: '*', element: null }],
+        },
         { path: '*', element: <NotFound /> },
       ],
     },

@@ -1,13 +1,14 @@
 import { Hono, type Context } from 'hono';
 import { z } from 'zod';
 import {
-  CreateRun, ReviewAction, RoutingRule, THRESHOLDS, type ArrBand, type CreateRunResult, type Envelope, type EvalRun, type Insight, type LibraryFile, type Session,
+  CreateRun, ReviewAction, RoutingRule, THRESHOLDS, type ArrBand, type CreateRunResult, type Delivery, type Envelope, type EvalRun, type Insight, type LibraryFile, type Session,
 } from '../../shared/contracts.ts';
 import { TelemetryBatch } from '../../shared/platform-contracts.ts';
 import { platformApi } from '../platform/api.ts';
 import { CANDIDATE_PROMPT_VERSION, PROMPT_VERSION } from '../../shared/prompts/extract.ts';
 import { LIVE_FALLBACK_AFTER_MS, MINUTES_SAVED_PER_CALL, PROMOTION_GATE, RUN_COST_ESTIMATE_USD, THEME_JOIN_THRESHOLD, TYPE_PRIORS } from '../../shared/scoring.ts';
 import { effectiveRules, previewFlows } from '../../pipeline/route.ts';
+import { enrichDelivery } from '../../pipeline/deliver.ts';
 import { percentile } from '../../pipeline/util.ts';
 import { getBudget, setLive } from '../budget.ts';
 import {
@@ -224,7 +225,7 @@ api.get('/insights/:id', async (c) => {
   const insight = await getInsight(c.env.DB, ws, c.req.param('id'));
   if (!insight || Date.parse(insight.createdAt) > Date.now()) return fail(c, 404, 'not_found', 'No such insight');
   const run = await getRunRow(c.env.DB, insight.runId);
-  const deliveries = visible(await queryDeliveries(c.env.DB, ws, 'insight_id = ?', [insight.id]));
+  const deliveries = await withPreviewFields(c.env.DB, ws, visible(await queryDeliveries(c.env.DB, ws, 'insight_id = ?', [insight.id])), [insight]);
   const reviews = (await queryReviews(c.env.DB, ws, insight.id)).filter((r) => r.workspaceId === ws || r.workspaceId === SEED);
   const theme = insight.themeId ? (await themesView(c.env.DB, ws, Date.now(), insight.themeId)).themes[0] ?? null : null;
   return ok(c, { insight, run: run ? publicRun(run) : null, deliveries, reviews, theme });
@@ -308,10 +309,34 @@ api.post('/routing/preview', async (c) => {
 
 // ------------------------------------------------------------------ deliveries & notifications
 
+/**
+ * Delivery rows written before the flat preview fields existed (account, ARR, renewal, area,
+ * confidence, CSM) get them from the insight/account join at read time, so every preview
+ * renders real values for old and new rows alike.
+ */
+async function withPreviewFields(db: D1Database, ws: string, rows: Delivery[], known: Insight[] = []): Promise<Delivery[]> {
+  const stale = rows.filter((d) => {
+    const p = d.payload as Record<string, unknown>;
+    return p.type === undefined || p.confidence === undefined;
+  });
+  if (!stale.length) return rows;
+  const byId = new Map(known.map((i) => [i.id, i]));
+  if (stale.some((d) => !byId.has(d.insightId))) for (const i of await queryInsights(db, ws, '1=1', [], 5000)) byId.set(i.id, i);
+  const [accounts, people] = await Promise.all([getAccounts(db), getPeople(db)]);
+  const acc = new Map(accounts.map((a) => [a.id, a]));
+  const ppl = new Map(people.map((p) => [p.id, p]));
+  return rows.map((d) => {
+    const ins = byId.get(d.insightId);
+    if (!ins) return d;
+    return enrichDelivery(d, ins, ins.accountId ? acc.get(ins.accountId) ?? null : null, ins.csmId ? ppl.get(ins.csmId) ?? null : null);
+  });
+}
+
 api.get('/deliveries', async (c) => {
   const channel = c.req.query('channel');
   const rows = await queryDeliveries(c.env.DB, c.get('ws'), channel ? 'channel = ?' : '1=1', channel ? [channel] : []);
-  return ok(c, visible(rows).filter((d) => !channel || d.channel === channel));
+  const out = visible(rows).filter((d) => !channel || d.channel === channel);
+  return ok(c, await withPreviewFields(c.env.DB, c.get('ws'), out));
 });
 
 const TicketBody = z.object({ state: z.enum(['open', 'in_progress', 'shipped', 'wont_do']) });
@@ -323,7 +348,8 @@ api.post('/deliveries/:id/ticket', async (c) => {
   const r = await changeTicket(c.env, ws, c.req.param('id'), b.data.state, actorOf(c));
   if (!r.ok) return fail(c, r.status, r.code, r.message);
   c.get('trace').rep.track({ sessionId: ws, actorId: actorOf(c), actorRole: 'viewer', kind: 'ticket_state', path: null, props: { deliveryId: r.delivery.id, state: b.data.state }, durationMs: null });
-  return ok(c, { delivery: r.delivery, notification: r.notification });
+  const [delivery] = await withPreviewFields(c.env.DB, ws, [r.delivery]);
+  return ok(c, { delivery, notification: r.notification });
 });
 
 api.get('/notifications', async (c) => {

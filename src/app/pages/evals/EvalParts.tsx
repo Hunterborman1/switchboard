@@ -95,7 +95,10 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
           </tr>
         </thead>
         <tbody>
-          {(['precision', 'recall'] as const).map((kind) => (
+          {(['precision', 'recall'] as const)
+            // A run recorded before per-level precision existed shows recall only, not a row of gaps.
+            .filter((kind) => LEVELS.some((l) => metric(run, `${kind}.level${l.n}`)?.denominator != null))
+            .map((kind) => (
             <tr key={kind}>
               <th scope="row">{kind === 'precision' ? 'Precision' : 'Recall'}</th>
               {LEVELS.map((l) => {
@@ -117,7 +120,7 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
         </tbody>
       </table>
       <p className="sl-caption" style={{ marginTop: 8 }}>
-        Tinted cells are the only colour on this grid: green passes its threshold (precision ≥ 85%, recall ≥ 80%), red does not. Each level has 8 golden files with planted insights.
+        Precision is matched insights over everything extracted at that level; recall is planted insights found. Only level-5 recall has its own gate rule, so only it is tinted (green passes, red does not). Each level has 8 golden files.
       </p>
     </div>
   );
@@ -125,6 +128,22 @@ export function LevelHeatmap({ run }: { run: EvalRun }) {
 
 export function MetricCard({ m, title, note }: { m: Metric | null; title: string; note: string }) {
   const lower = m ? ['negative_fp_rate', 'phi_leakage'].includes(m.key) : false;
+  if (m && m.denominator == null && m.numerator != null) {
+    // A count with no denominator (quotes dropped by grounding): show the count, never a %.
+    return (
+      <div className={styles.metricCard}>
+        <span className="sl-eyebrow">{title}</span>
+        <span className={styles.metricTop}>
+          <span className={styles.metricBig}>{m.numerator}</span>
+          <PassChip m={m} />
+        </span>
+        <span className="sl-meta">
+          {m.numerator} {unitFor(m.key)} across the golden set
+        </span>
+        <span className="sl-caption">{note}</span>
+      </div>
+    );
+  }
   return (
     <div className={`${styles.metricCard} ${passed(m) === false ? styles.metricFail : ''}`}>
       <span className="sl-eyebrow">{title}</span>

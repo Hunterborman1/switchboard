@@ -63,14 +63,14 @@ function Brand({ collapsed }: { collapsed?: boolean }) {
           <circle cx="4" cy="4" r="1.6" />
           <circle cx="12" cy="4" r="1.6" />
           <circle cx="4" cy="12" r="1.6" />
-          <circle cx="12" cy="12" r="1.6" fill="#C9D2FF" stroke="#C9D2FF" />
+          <circle cx="12" cy="12" r="1.6" fill="#D1FFD1" stroke="#D1FFD1" />
           <path d="M5.6 4h4.8M4 5.6v4.8M5.6 12h4.8M12 5.6v4.8" strokeOpacity=".7" />
         </svg>
       </span>
       {collapsed ? null : (
         <span className="ao-brand-text">
           <b>Agent Ops</b>
-          <small>AI Operations · Invoca (demo)</small>
+          <small>AI operations · demo</small>
         </span>
       )}
     </Link>
@@ -106,16 +106,9 @@ function TopBar() {
   const m = meta.data;
   return (
     <div className="ao-topbar ao-noprint">
+      {/* The rail already names the product, so the trail starts at the section (no "Agent Ops" root). */}
       <nav className="ao-crumbs" aria-label="Breadcrumb">
-        <Link to="/ops">Agent Ops</Link>
-        {seg ? (
-          <>
-            <span className="sep" aria-hidden="true">
-              /
-            </span>
-            {pathname.split('/').filter(Boolean).length > 2 && seg !== 'traces' ? <Link to={`/ops/${seg}`}>{label}</Link> : <span aria-current="page">{label}</span>}
-          </>
-        ) : null}
+        {pathname.split('/').filter(Boolean).length > 2 && seg && seg !== 'traces' ? <Link to={`/ops/${seg}`}>{label}</Link> : <span aria-current="page">{label}</span>}
       </nav>
       <div className="ao-topbar-end">
         <span className="ao-simmark" title="Everything except Signal Loop’s live telemetry and real demo viewers is simulated, and labelled where it appears.">

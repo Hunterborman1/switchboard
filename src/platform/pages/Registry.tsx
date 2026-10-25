@@ -61,7 +61,7 @@ export function Registry() {
   return (
     <div className="ao-page">
       <PageHead
-        eyebrow="Agent Ops · Registry"
+        eyebrow="Registry"
         title="Agent registry"
         sub="Every agent in production or on its way there, with a named owner and business owner, a documented purpose and success metric, a review cadence, and its score against the agent standard."
         meta={
@@ -79,6 +79,7 @@ export function Registry() {
       />
       <Panel title="All agents" sub="30-day figures end at the latest data. Select a row for purpose, owners, the standard checklist, SLOs and the changelog." flush attrs={tourAnchor('ops.registry')}>
         <Table
+          className="ao-cards"
           caption="Agent registry"
           rows={rows}
           cols={cols}
