@@ -355,6 +355,8 @@ export const ReviewAction = z.object({
   action: z.enum(['approve', 'edit', 'reject']),
   edits: z.object({ type: InsightType, summary: z.string(), productArea: ProductArea, severity: Severity }).partial().optional(),
   reason: z.string().max(300).optional(),
+  /** Additive: client-measured time from opening the item to acting (Agent Ops humanMinutesSpent). */
+  dwellMs: z.number().int().min(0).max(3_600_000).optional(),
 });
 export type ReviewAction = z.infer<typeof ReviewAction>;
 
@@ -428,6 +430,8 @@ export const CreateRun = z.union([
   z.object({ text: z.string().min(40).max(60_000), filename: z.string().max(120).default('pasted-notes.txt'), mode: z.literal('auto').default('auto') }),
 ]);
 export type CreateRun = z.infer<typeof CreateRun>;
+/** POST /runs response. Additive: modeReason, duplicate (same sha256 already processed → existing run). */
+export type CreateRunResult = { runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean };
 
 /** GET /api/runs/:id — everything the Run view and walkthrough need in one poll. */
 export type RunDetail = {

@@ -3,7 +3,7 @@
    only the selectors gain the `.sl-app` prefix. Keyframes and the reduced-motion
    rule stay global because they are inert unless something opts in. */
 
-.sl-app, .sl-app *, .sl-app *::before, .sl-app *::after { box-sizing: border-box; }
+:where(.sl-app), :where(.sl-app) :where(*), :where(.sl-app) :where(*::before), :where(.sl-app) :where(*::after) { box-sizing: border-box; }
 
 .sl-app {
   min-height: 100dvh;
@@ -19,40 +19,40 @@
   text-rendering: optimizeLegibility;
 }
 
-.sl-app h1, .sl-app h2, .sl-app h3, .sl-app h4 { margin: 0; color: var(--text); font-kerning: none; }
-.sl-app h1 { font-weight: var(--fw-light);   font-size: var(--fs-h1); line-height: var(--lh-snug); letter-spacing: 0.25px; }
-.sl-app h2 { font-weight: var(--fw-light);   font-size: var(--fs-h2); line-height: var(--lh-snug); letter-spacing: 0.1px; }
-.sl-app h3 { font-weight: var(--fw-regular); font-size: var(--fs-h3); line-height: var(--lh-snug); letter-spacing: 0.2px; }
-.sl-app h4 { font-weight: var(--fw-medium);  font-size: var(--fs-h4); line-height: var(--lh-normal); letter-spacing: 0.18px; }
+:where(.sl-app) :where(h1), :where(.sl-app) :where(h2), :where(.sl-app) :where(h3), :where(.sl-app) :where(h4) { margin: 0; color: var(--text); font-kerning: none; }
+:where(.sl-app) :where(h1) { font-weight: var(--fw-light);   font-size: var(--fs-h1); line-height: var(--lh-snug); letter-spacing: 0.25px; }
+:where(.sl-app) :where(h2) { font-weight: var(--fw-light);   font-size: var(--fs-h2); line-height: var(--lh-snug); letter-spacing: 0.1px; }
+:where(.sl-app) :where(h3) { font-weight: var(--fw-regular); font-size: var(--fs-h3); line-height: var(--lh-snug); letter-spacing: 0.2px; }
+:where(.sl-app) :where(h4) { font-weight: var(--fw-medium);  font-size: var(--fs-h4); line-height: var(--lh-normal); letter-spacing: 0.18px; }
 
-.sl-app p { margin: 0 0 var(--sp-4); font-weight: var(--fw-regular); font-size: var(--fs-body-lg); line-height: var(--lh-copy); }
+:where(.sl-app) :where(p) { margin: 0 0 var(--sp-4); font-weight: var(--fw-regular); font-size: var(--fs-body-lg); line-height: var(--lh-copy); }
 
-.sl-app .cn-eyebrow {
+:where(.sl-app) :where(.cn-eyebrow) {
   font-size: var(--fs-micro); font-weight: var(--fw-medium);
   letter-spacing: var(--tracking-eyebrow); text-transform: uppercase;
   color: var(--text-subtle); font-kerning: none;
 }
 
-.sl-app code, .sl-app .cn-mono { font-family: var(--font-mono); font-size: 0.92em; }
+:where(.sl-app) :where(code), :where(.sl-app) :where(.cn-mono) { font-family: var(--font-mono); font-size: 0.92em; }
 
-.sl-app a { color: var(--text-link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.sl-app a:hover { opacity: 0.8; }
+:where(.sl-app) :where(a) { color: var(--text-link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+:where(.sl-app) :where(a:hover) { opacity: 0.8; }
 
-.sl-app hr { border: 0; border-top: 1px solid var(--border); margin: var(--sp-6) 0; }
+:where(.sl-app) :where(hr) { border: 0; border-top: 1px solid var(--border); margin: var(--sp-6) 0; }
 
-.sl-app button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
-.sl-app input, .sl-app select, .sl-app textarea { font: inherit; }
+:where(.sl-app) :where(button) { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
+:where(.sl-app) :where(input), :where(.sl-app) :where(select), :where(.sl-app) :where(textarea) { font: inherit; }
 
-.sl-app ::-webkit-scrollbar { width: 10px; height: 10px; }
-.sl-app ::-webkit-scrollbar-thumb { background: var(--cn-border-strong); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
-.sl-app ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); background-clip: padding-box; }
-.sl-app ::-webkit-scrollbar-track { background: transparent; }
+:where(.sl-app) :where(::-webkit-scrollbar) { width: 10px; height: 10px; }
+:where(.sl-app) :where(::-webkit-scrollbar-thumb) { background: var(--cn-border-strong); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+:where(.sl-app) :where(::-webkit-scrollbar-thumb:hover) { background: var(--text-muted); background-clip: padding-box; }
+:where(.sl-app) :where(::-webkit-scrollbar-track) { background: transparent; }
 
-.sl-app .on-dark { color: var(--text-on-dark); }
-.sl-app .on-dark a { color: var(--cn-sage); }
+:where(.sl-app) :where(.on-dark) { color: var(--text-on-dark); }
+:where(.sl-app) :where(.on-dark a) { color: var(--cn-sage); }
 
-.sl-app :focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
-.sl-app .on-dark :focus-visible, .sl-app .on-dark:focus-visible { outline: var(--focus-ring-on-dark); }
+:where(.sl-app) :where(:focus-visible) { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+:where(.sl-app) :where(.on-dark :focus-visible), :where(.sl-app) :where(.on-dark:focus-visible) { outline: var(--focus-ring-on-dark); }
 
 @media (prefers-reduced-motion: reduce) {
   .sl-app *, .sl-app *::before, .sl-app *::after {

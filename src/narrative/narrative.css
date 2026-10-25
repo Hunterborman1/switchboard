@@ -26,7 +26,6 @@
 .sl-n-portal :focus-visible {
   outline: 2px solid var(--n-accent);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 .sl-n-portal {
   font-family: var(--n-font-body);
@@ -96,7 +95,7 @@
 .n-scene__body {
   position: relative;
   z-index: 2;
-  padding: var(--n-s-5) var(--n-gutter);
+  padding: var(--n-s-3) var(--n-gutter) var(--n-s-5);
   display: grid;
   align-content: center;
 }
@@ -413,8 +412,8 @@
   -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--n-s-3);
-  padding: var(--n-s-5);
+  gap: 10px;
+  padding: 20px 22px;
   border-radius: var(--n-r-lg);
   border: 1px solid var(--n-line);
   background: linear-gradient(180deg, rgb(242 245 228 / 0.04), rgb(242 245 228 / 0.01)), var(--n-bg-2);

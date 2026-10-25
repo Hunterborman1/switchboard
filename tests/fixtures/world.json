@@ -1,0 +1,26 @@
+{
+  "accounts": [
+    {"id":"acct_brightline","name":"Brightline Home Services","vertical":"home_services","tier":"Enterprise","arrUsd":310000,"arrBand":"250k-1m","seats":85,"products":["call_tracking","signal_ai","presense","integrations"],"renewalDate":"2027-01-15","health":"watch","csmId":"ppl_marcus","hq":"Charlotte, NC","notes":"HVAC across 14 branches."},
+    {"id":"acct_meridian","name":"Meridian Health Partners","vertical":"healthcare","tier":"Elite","arrUsd":1250000,"arrBand":">1m","seats":220,"products":["call_tracking","signal_ai","platform"],"renewalDate":"2026-12-01","health":"at_risk","csmId":"ppl_aisha","hq":"Columbus, OH","notes":"Hospital network; HIPAA-sensitive."},
+    {"id":"acct_sunpeak","name":"SunPeak Solar","vertical":"solar","tier":"Pro","arrUsd":42000,"arrBand":"<50k","seats":12,"products":["call_tracking"],"renewalDate":"2027-06-30","health":"healthy","csmId":"ppl_marcus","hq":"Phoenix, AZ","notes":"Small installer."}
+  ],
+  "people": [
+    {"id":"ppl_marcus","name":"Marcus Bell","role":"csm","title":"Senior CSM","productArea":null,"slackHandle":"@marcus.bell","email":"marcus.bell@invoca.example","initials":"MB"},
+    {"id":"ppl_aisha","name":"Aisha Coleman","role":"csm","title":"CSM, Healthcare","productArea":null,"slackHandle":"@aisha.coleman","email":"aisha.coleman@invoca.example","initials":"AC"},
+    {"id":"ppl_priya","name":"Priya Raman","role":"pm","title":"PM, Integrations","productArea":"integrations","slackHandle":"@priya","email":"priya@invoca.example","initials":"PR"},
+    {"id":"ppl_omar","name":"Omar Haddad","role":"pm","title":"PM, Signal AI","productArea":"signal_ai","slackHandle":"@omar","email":"omar@invoca.example","initials":"OH"},
+    {"id":"ppl_renee","name":"Renee Laurent","role":"vp_product","title":"VP Product","productArea":null,"slackHandle":"@renee","email":"renee@invoca.example","initials":"RL"},
+    {"id":"ppl_tess","name":"Tess Nguyen","role":"pricing","title":"Pricing lead","productArea":"billing_pricing","slackHandle":"@tess","email":"tess@invoca.example","initials":"TN"},
+    {"id":"ppl_cole","name":"Cole Barrett","role":"competitive_intel","title":"Competitive Intel","productArea":null,"slackHandle":"@cole","email":"cole@invoca.example","initials":"CB"},
+    {"id":"ppl_triage","name":"Triage Desk","role":"triage","title":"Product triage","productArea":null,"slackHandle":"@triage","email":"triage@invoca.example","initials":"TD"}
+  ],
+  "rules": [
+    {"id":"rule_churn","workspaceId":"seed","priority":10,"name":"Churn risk on $250k+ → VP","match":{"types":["churn_risk"],"areas":null,"minSeverity":null,"arrBands":["250k-1m",">1m"]},"ownerId":"ppl_renee","channel":"slack","destination":"#cs-leadership","enabled":true},
+    {"id":"rule_intg_bug","workspaceId":"seed","priority":20,"name":"Integration bugs → INTG Jira","match":{"types":["bug"],"areas":["integrations"],"minSeverity":null,"arrBands":null},"ownerId":"ppl_priya","channel":"jira","destination":"INTG","enabled":true},
+    {"id":"rule_sai","workspaceId":"seed","priority":30,"name":"Signal AI → Linear","match":{"types":["bug","feature_request"],"areas":["signal_ai"],"minSeverity":null,"arrBands":null},"ownerId":"ppl_omar","channel":"linear","destination":"Signal AI team","enabled":true},
+    {"id":"rule_pricing","workspaceId":"seed","priority":40,"name":"Pricing objections → pricing","match":{"types":["pricing_objection"],"areas":null,"minSeverity":null,"arrBands":null},"ownerId":"ppl_tess","channel":"slack","destination":"#pricing-feedback","enabled":true},
+    {"id":"rule_comp","workspaceId":"seed","priority":50,"name":"Competitors → CI","match":{"types":["competitor_mention"],"areas":null,"minSeverity":null,"arrBands":null},"ownerId":"ppl_cole","channel":"slack","destination":"#competitive","enabled":true},
+    {"id":"rule_praise","workspaceId":"seed","priority":60,"name":"Praise → digest","match":{"types":["praise"],"areas":null,"minSeverity":null,"arrBands":null},"ownerId":"ppl_renee","channel":"email_digest","destination":"VP digest","enabled":true},
+    {"id":"rule_disabled","workspaceId":"seed","priority":5,"name":"Disabled catch-all","match":{"types":null,"areas":null,"minSeverity":null,"arrBands":null},"ownerId":"ppl_renee","channel":"slack","destination":"#nowhere","enabled":false}
+  ]
+}

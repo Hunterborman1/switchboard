@@ -1,0 +1,118 @@
+/* Shell chrome specific to Signal Loop: budget pill, sidebar footer, mobile brand. */
+
+.sl-app .sl-budget-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--control-sm);
+  padding: 0 var(--sp-25) 0 var(--sp-2);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--radius-pill);
+  background: var(--cn-white);
+  font-size: var(--fs-caption);
+  color: var(--cn-off-black);
+  white-space: nowrap;
+  cursor: default;
+}
+.sl-app .sl-budget-pill.is-compact {
+  background: rgba(242, 245, 228, 0.08);
+  border-color: var(--cn-border-on-dark);
+  color: var(--text-on-dark);
+}
+.sl-app .sl-budget-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--cn-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cn-success) 20%, transparent);
+  animation: cn-pulse var(--dur-pulse) ease-in-out infinite;
+}
+.sl-app .sl-budget-pill.is-replay .sl-budget-dot {
+  background: var(--cn-warning);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cn-warning) 25%, transparent);
+  animation: none;
+}
+.sl-app .sl-budget-label { font-weight: var(--fw-medium); }
+.sl-app .sl-budget-track {
+  position: relative;
+  width: 44px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--cn-chart-track);
+  overflow: hidden;
+}
+.sl-app .sl-budget-track > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--cn-green);
+  border-radius: inherit;
+}
+.sl-app .sl-budget-amt { color: var(--text-muted); font-size: var(--fs-caption); }
+
+@media (max-width: 1100px) {
+  .sl-app .sl-budget-track, .sl-app .sl-budget-amt { display: none; }
+}
+
+/* Sidebar footer */
+.sl-app .sl-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+.sl-app .sl-agentops-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-25);
+  min-height: 40px;
+  padding: var(--sp-15) var(--sp-25);
+  border: 1px solid var(--cn-border-on-dark);
+  border-radius: var(--radius-md);
+  background: rgba(209, 255, 209, 0.06);
+  color: var(--text-on-dark);
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.sl-app .sl-agentops-link:hover {
+  opacity: 1;
+  background: rgba(209, 255, 209, 0.12);
+  border-color: rgba(209, 255, 209, 0.3);
+}
+.sl-app .sl-agentops-link.is-collapsed { justify-content: center; padding: 0; width: 40px; margin-inline: auto; }
+.sl-app .sl-agentops-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+.sl-app .sl-agentops-text small {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
+  color: var(--side-fg-muted);
+}
+.sl-app .sl-footer-ws {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-25);
+  font-size: var(--fs-caption);
+  color: var(--side-fg);
+  line-height: 1.35;
+}
+.sl-app .sl-footer-ws small { display: block; color: var(--side-fg-muted); font-size: var(--fs-micro); }
+.sl-app .sl-footer-dot {
+  margin-top: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--cn-sage);
+  flex: none;
+}
+.sl-app .sl-mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}

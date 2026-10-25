@@ -18,5 +18,5 @@
     "noEmit": true,
     "types": ["vite/client"]
   },
-  "include": ["src/web", "src/tour", "src/narrative", "src/uis", "src/app", "src/shared", "src/pipeline", "src/system/**/*.d.ts", "src/types"]
+  "include": ["src/web", "src/tour", "src/narrative", "src/uis", "src/app", "src/platform", "src/shared", "src/pipeline", "src/system/**/*.d.ts", "src/types"]
 }
