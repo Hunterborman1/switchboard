@@ -1,0 +1,782 @@
+{
+ "promoted": {
+  "id": "eval_v4_20261025",
+  "promptVersion": "v4",
+  "model": "deepseek/deepseek-v4.1-flash",
+  "judgeModel": null,
+  "createdAt": "2026-10-25T03:58:20.670Z",
+  "files": 48,
+  "promoted": true,
+  "blockedReasons": [],
+  "metrics": [
+   {
+    "key": "precision",
+    "label": "Precision (all types)",
+    "value": 0.8865,
+    "numerator": 125,
+    "denominator": 141,
+    "threshold": 0.85,
+    "passed": true
+   },
+   {
+    "key": "recall",
+    "label": "Recall (all types)",
+    "value": 0.9766,
+    "numerator": 125,
+    "denominator": 128,
+    "threshold": 0.8,
+    "passed": true
+   },
+   {
+    "key": "precision.feature_request",
+    "label": "Precision · feature request",
+    "value": 0.8148,
+    "numerator": 22,
+    "denominator": 27,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.feature_request",
+    "label": "Recall · feature request",
+    "value": 0.9167,
+    "numerator": 22,
+    "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.bug",
+    "label": "Precision · bug",
+    "value": 0.9796,
+    "numerator": 48,
+    "denominator": 49,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.bug",
+    "label": "Recall · bug",
+    "value": 0.9796,
+    "numerator": 48,
+    "denominator": 49,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.pricing_objection",
+    "label": "Precision · pricing objection",
+    "value": 0.7778,
+    "numerator": 14,
+    "denominator": 18,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.pricing_objection",
+    "label": "Recall · pricing objection",
+    "value": 1,
+    "numerator": 14,
+    "denominator": 14,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.competitor_mention",
+    "label": "Precision · competitor mention",
+    "value": 1,
+    "numerator": 17,
+    "denominator": 17,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.competitor_mention",
+    "label": "Recall · competitor mention",
+    "value": 1,
+    "numerator": 17,
+    "denominator": 17,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.churn_risk",
+    "label": "Precision · churn risk",
+    "value": 0.7857,
+    "numerator": 11,
+    "denominator": 14,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.churn_risk",
+    "label": "Recall · churn risk",
+    "value": 1,
+    "numerator": 11,
+    "denominator": 11,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.praise",
+    "label": "Precision · praise",
+    "value": 0.8125,
+    "numerator": 13,
+    "denominator": 16,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.praise",
+    "label": "Recall · praise",
+    "value": 1,
+    "numerator": 13,
+    "denominator": 13,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level1",
+    "label": "Recall · mess level 1",
+    "value": 1,
+    "numerator": 21,
+    "denominator": 21,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level2",
+    "label": "Recall · mess level 2",
+    "value": 0.9583,
+    "numerator": 23,
+    "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level3",
+    "label": "Recall · mess level 3",
+    "value": 1,
+    "numerator": 26,
+    "denominator": 26,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level4",
+    "label": "Recall · mess level 4",
+    "value": 1,
+    "numerator": 20,
+    "denominator": 20,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level5",
+    "label": "Recall · mess level 5",
+    "value": 0.9,
+    "numerator": 18,
+    "denominator": 20,
+    "threshold": 0.7,
+    "passed": true
+   },
+   {
+    "key": "grounding_rate",
+    "label": "Quotes grounded in the transcript",
+    "value": 1,
+    "numerator": 275,
+    "denominator": 275,
+    "threshold": 0.95,
+    "passed": true
+   },
+   {
+    "key": "hallucinations_caught",
+    "label": "Hallucinated quotes caught and dropped",
+    "value": 0,
+    "numerator": 0,
+    "denominator": null,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "routing_accuracy",
+    "label": "Routed to the expected owner",
+    "value": 0.944,
+    "numerator": 118,
+    "denominator": 125,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "negative_fp_rate",
+    "label": "Negative controls with any insight (false positives)",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 2,
+    "threshold": 0,
+    "passed": true
+   },
+   {
+    "key": "injection_flagged",
+    "label": "Injection attempts flagged",
+    "value": 1,
+    "numerator": 2,
+    "denominator": 2,
+    "threshold": 1,
+    "passed": true
+   },
+   {
+    "key": "phi_leakage",
+    "label": "Files where PHI reached the model",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 2,
+    "threshold": 0,
+    "passed": true
+   },
+   {
+    "key": "run_failures",
+    "label": "Runs that failed",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 48,
+    "threshold": 0,
+    "passed": true
+   }
+  ],
+  "costUsd": 0.093264,
+  "p50Ms": 2665,
+  "p95Ms": 3822
+ },
+ "promotedGatePassed": true,
+ "candidate": {
+  "id": "eval_v5_20261025",
+  "promptVersion": "v5",
+  "model": "deepseek/deepseek-v4.1-flash",
+  "judgeModel": "anthropic/claude-haiku-5.5",
+  "createdAt": "2026-10-25T03:59:27.097Z",
+  "files": 48,
+  "promoted": false,
+  "blockedReasons": [
+   "Precision (all types) 59.7% (126/211) misses the threshold 85%",
+   "No regression vs v4 · precision: -28.9 pts (limit −2.0)"
+  ],
+  "metrics": [
+   {
+    "key": "precision",
+    "label": "Precision (all types)",
+    "value": 0.5972,
+    "numerator": 126,
+    "denominator": 211,
+    "threshold": 0.85,
+    "passed": false
+   },
+   {
+    "key": "recall",
+    "label": "Recall (all types)",
+    "value": 0.9844,
+    "numerator": 126,
+    "denominator": 128,
+    "threshold": 0.8,
+    "passed": true
+   },
+   {
+    "key": "precision.feature_request",
+    "label": "Precision · feature request",
+    "value": 0.5476,
+    "numerator": 23,
+    "denominator": 42,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.feature_request",
+    "label": "Recall · feature request",
+    "value": 0.9583,
+    "numerator": 23,
+    "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.bug",
+    "label": "Precision · bug",
+    "value": 0.9231,
+    "numerator": 48,
+    "denominator": 52,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.bug",
+    "label": "Recall · bug",
+    "value": 0.9796,
+    "numerator": 48,
+    "denominator": 49,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.pricing_objection",
+    "label": "Precision · pricing objection",
+    "value": 0.7778,
+    "numerator": 14,
+    "denominator": 18,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.pricing_objection",
+    "label": "Recall · pricing objection",
+    "value": 1,
+    "numerator": 14,
+    "denominator": 14,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.competitor_mention",
+    "label": "Precision · competitor mention",
+    "value": 1,
+    "numerator": 17,
+    "denominator": 17,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.competitor_mention",
+    "label": "Recall · competitor mention",
+    "value": 1,
+    "numerator": 17,
+    "denominator": 17,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.churn_risk",
+    "label": "Precision · churn risk",
+    "value": 0.3548,
+    "numerator": 11,
+    "denominator": 31,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.churn_risk",
+    "label": "Recall · churn risk",
+    "value": 1,
+    "numerator": 11,
+    "denominator": 11,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "precision.praise",
+    "label": "Precision · praise",
+    "value": 0.2549,
+    "numerator": 13,
+    "denominator": 51,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.praise",
+    "label": "Recall · praise",
+    "value": 1,
+    "numerator": 13,
+    "denominator": 13,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level1",
+    "label": "Recall · mess level 1",
+    "value": 1,
+    "numerator": 21,
+    "denominator": 21,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level2",
+    "label": "Recall · mess level 2",
+    "value": 1,
+    "numerator": 24,
+    "denominator": 24,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level3",
+    "label": "Recall · mess level 3",
+    "value": 1,
+    "numerator": 26,
+    "denominator": 26,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level4",
+    "label": "Recall · mess level 4",
+    "value": 1,
+    "numerator": 20,
+    "denominator": 20,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "recall.level5",
+    "label": "Recall · mess level 5",
+    "value": 0.9,
+    "numerator": 18,
+    "denominator": 20,
+    "threshold": 0.7,
+    "passed": true
+   },
+   {
+    "key": "grounding_rate",
+    "label": "Quotes grounded in the transcript",
+    "value": 0.9941,
+    "numerator": 502,
+    "denominator": 505,
+    "threshold": 0.95,
+    "passed": true
+   },
+   {
+    "key": "hallucinations_caught",
+    "label": "Hallucinated quotes caught and dropped",
+    "value": 1,
+    "numerator": 1,
+    "denominator": null,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "routing_accuracy",
+    "label": "Routed to the expected owner",
+    "value": 0.9048,
+    "numerator": 114,
+    "denominator": 126,
+    "threshold": null,
+    "passed": null
+   },
+   {
+    "key": "negative_fp_rate",
+    "label": "Negative controls with any insight (false positives)",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 2,
+    "threshold": 0,
+    "passed": true
+   },
+   {
+    "key": "injection_flagged",
+    "label": "Injection attempts flagged",
+    "value": 1,
+    "numerator": 2,
+    "denominator": 2,
+    "threshold": 1,
+    "passed": true
+   },
+   {
+    "key": "phi_leakage",
+    "label": "Files where PHI reached the model",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 2,
+    "threshold": 0,
+    "passed": true
+   },
+   {
+    "key": "run_failures",
+    "label": "Runs that failed",
+    "value": 0,
+    "numerator": 0,
+    "denominator": 48,
+    "threshold": 0,
+    "passed": true
+   },
+   {
+    "key": "regression.precision",
+    "label": "No regression vs v4 · precision",
+    "value": -0.2893,
+    "numerator": null,
+    "denominator": null,
+    "threshold": -0.02,
+    "passed": false
+   },
+   {
+    "key": "regression.recall",
+    "label": "No regression vs v4 · recall",
+    "value": 0.0078,
+    "numerator": null,
+    "denominator": null,
+    "threshold": -0.02,
+    "passed": true
+   },
+   {
+    "key": "regression.recall.level5",
+    "label": "No regression vs v4 · recall.level5",
+    "value": 0,
+    "numerator": null,
+    "denominator": null,
+    "threshold": -0.02,
+    "passed": true
+   }
+  ],
+  "costUsd": 0.113475,
+  "p50Ms": 3786,
+  "p95Ms": 6295
+ },
+ "history": [
+  {
+   "id": "eval_v4_20261025",
+   "promptVersion": "v4",
+   "model": "deepseek/deepseek-v4.1-flash",
+   "judgeModel": null,
+   "createdAt": "2026-10-25T03:58:20.670Z",
+   "files": 48,
+   "promoted": true,
+   "blockedReasons": [],
+   "metrics": [
+    {
+     "key": "precision",
+     "label": "Precision (all types)",
+     "value": 0.8865,
+     "numerator": 125,
+     "denominator": 141,
+     "threshold": 0.85,
+     "passed": true
+    },
+    {
+     "key": "recall",
+     "label": "Recall (all types)",
+     "value": 0.9766,
+     "numerator": 125,
+     "denominator": 128,
+     "threshold": 0.8,
+     "passed": true
+    },
+    {
+     "key": "precision.feature_request",
+     "label": "Precision · feature request",
+     "value": 0.8148,
+     "numerator": 22,
+     "denominator": 27,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.feature_request",
+     "label": "Recall · feature request",
+     "value": 0.9167,
+     "numerator": 22,
+     "denominator": 24,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.bug",
+     "label": "Precision · bug",
+     "value": 0.9796,
+     "numerator": 48,
+     "denominator": 49,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.bug",
+     "label": "Recall · bug",
+     "value": 0.9796,
+     "numerator": 48,
+     "denominator": 49,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.pricing_objection",
+     "label": "Precision · pricing objection",
+     "value": 0.7778,
+     "numerator": 14,
+     "denominator": 18,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.pricing_objection",
+     "label": "Recall · pricing objection",
+     "value": 1,
+     "numerator": 14,
+     "denominator": 14,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.competitor_mention",
+     "label": "Precision · competitor mention",
+     "value": 1,
+     "numerator": 17,
+     "denominator": 17,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.competitor_mention",
+     "label": "Recall · competitor mention",
+     "value": 1,
+     "numerator": 17,
+     "denominator": 17,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.churn_risk",
+     "label": "Precision · churn risk",
+     "value": 0.7857,
+     "numerator": 11,
+     "denominator": 14,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.churn_risk",
+     "label": "Recall · churn risk",
+     "value": 1,
+     "numerator": 11,
+     "denominator": 11,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "precision.praise",
+     "label": "Precision · praise",
+     "value": 0.8125,
+     "numerator": 13,
+     "denominator": 16,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.praise",
+     "label": "Recall · praise",
+     "value": 1,
+     "numerator": 13,
+     "denominator": 13,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.level1",
+     "label": "Recall · mess level 1",
+     "value": 1,
+     "numerator": 21,
+     "denominator": 21,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.level2",
+     "label": "Recall · mess level 2",
+     "value": 0.9583,
+     "numerator": 23,
+     "denominator": 24,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.level3",
+     "label": "Recall · mess level 3",
+     "value": 1,
+     "numerator": 26,
+     "denominator": 26,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.level4",
+     "label": "Recall · mess level 4",
+     "value": 1,
+     "numerator": 20,
+     "denominator": 20,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "recall.level5",
+     "label": "Recall · mess level 5",
+     "value": 0.9,
+     "numerator": 18,
+     "denominator": 20,
+     "threshold": 0.7,
+     "passed": true
+    },
+    {
+     "key": "grounding_rate",
+     "label": "Quotes grounded in the transcript",
+     "value": 1,
+     "numerator": 275,
+     "denominator": 275,
+     "threshold": 0.95,
+     "passed": true
+    },
+    {
+     "key": "hallucinations_caught",
+     "label": "Hallucinated quotes caught and dropped",
+     "value": 0,
+     "numerator": 0,
+     "denominator": null,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "routing_accuracy",
+     "label": "Routed to the expected owner",
+     "value": 0.944,
+     "numerator": 118,
+     "denominator": 125,
+     "threshold": null,
+     "passed": null
+    },
+    {
+     "key": "negative_fp_rate",
+     "label": "Negative controls with any insight (false positives)",
+     "value": 0,
+     "numerator": 0,
+     "denominator": 2,
+     "threshold": 0,
+     "passed": true
+    },
+    {
+     "key": "injection_flagged",
+     "label": "Injection attempts flagged",
+     "value": 1,
+     "numerator": 2,
+     "denominator": 2,
+     "threshold": 1,
+     "passed": true
+    },
+    {
+     "key": "phi_leakage",
+     "label": "Files where PHI reached the model",
+     "value": 0,
+     "numerator": 0,
+     "denominator": 2,
+     "threshold": 0,
+     "passed": true
+    },
+    {
+     "key": "run_failures",
+     "label": "Runs that failed",
+     "value": 0,
+     "numerator": 0,
+     "denominator": 48,
+     "threshold": 0,
+     "passed": true
+    }
+   ],
+   "costUsd": 0.093264,
+   "p50Ms": 2665,
+   "p95Ms": 3822
+  }
+ ]
+}

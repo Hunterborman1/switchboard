@@ -119,7 +119,7 @@
 .n-col-6 { grid-column: span 6; }
 .n-col-5 { grid-column: span 5; }
 .n-col-4 { grid-column: span 4; }
-@media (max-width: 1080px) {
+@media (max-width: 900px) {
   .n-col-7, .n-col-6, .n-col-5 { grid-column: span 12; }
 }
 @media (max-width: 760px) {

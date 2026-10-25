@@ -41,6 +41,7 @@ export function signedPct(v: number | null | undefined): string {
 }
 export function multiple(v: number | null | undefined): string {
   if (v == null || !Number.isFinite(v)) return DASH;
+  if (v >= 1000) return '1,000×+';
   return `${v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(1)}×`;
 }
 export function ms(v: number | null | undefined): string {

@@ -59,6 +59,7 @@
 .ao-app .sr-only, .ao-app .ao-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ---------------------------------------------------------------- shell */
+.ao-app [data-testid='console-main'] { min-width: 0; }
 .ao-app .ao-brand { display: flex; align-items: center; gap: 10px; color: var(--ao-on-navy); text-decoration: none; min-width: 0; }
 .ao-app .ao-brand:hover { opacity: 1; }
 .ao-app .ao-brand-mark { width: 28px; height: 28px; flex: none; border-radius: 7px; background: linear-gradient(140deg, #5E74E3 0%, #3D51BE 100%); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); }
@@ -82,7 +83,7 @@
 .ao-app .ao-simmark { display: inline-flex; align-items: center; gap: 7px; min-height: var(--pill-h); padding: 0 10px; border-radius: var(--radius-pill); background: var(--ao-sim-soft); color: #4C5068; font-size: var(--fs-caption); border: 1px dashed #B9BCD0; white-space: nowrap; }
 .ao-app .ao-simmark i { width: 7px; height: 7px; border-radius: 2px; background: var(--ao-hatch), #9A9EB8; }
 
-.ao-app .ao-page { max-width: var(--content-max); margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--sp-16); display: grid; gap: var(--sp-5); min-width: 0; }
+.ao-app .ao-page { max-width: var(--content-max); margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--sp-16); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); min-width: 0; }
 .ao-app .ao-page > * { min-width: 0; }
 
 /* ---------------------------------------------------------------- page head */
@@ -124,7 +125,8 @@
 .ao-app .g-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .ao-app .g-main { grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr); }
 .ao-app .g-main-r { grid-template-columns: minmax(300px, 1fr) minmax(0, 1.75fr); }
-@media (max-width: 1180px) { .ao-app .g-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ao-app .g-main, .ao-app .g-main-r { grid-template-columns: minmax(0, 1fr); } }
+.ao-app .g-2w { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 1180px) { .ao-app .g-2w { grid-template-columns: minmax(0, 1fr); } .ao-app .g-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ao-app .g-main, .ao-app .g-main-r { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .ao-app .g-2, .ao-app .g-3 { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------------------------------------------------------------- KPI strip helpers */
@@ -149,7 +151,7 @@
 .ao-app .ao-dot { width: 9px; height: 9px; border-radius: 3px; flex: none; display: inline-block; }
 
 /* ---------------------------------------------------------------- tables */
-.ao-app .ao-table-wrap { overflow-x: auto; min-width: 0; }
+.ao-app .ao-table-wrap { overflow-x: auto; min-width: 0; position: relative; }
 .ao-app table.ao-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-body); }
 .ao-app .ao-table th { position: sticky; top: 0; z-index: 1; text-align: left; font-weight: var(--fw-medium); font-size: var(--fs-micro); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--cn-ink-3-txt); background: var(--cn-paper); padding: 9px 12px; border-bottom: 1px solid var(--cn-border); white-space: nowrap; }
 .ao-app .ao-table th.num, .ao-app .ao-table td.num { text-align: right; }
@@ -218,7 +220,7 @@
 .ao-app .ao-att .ao-att-icon.info { background: var(--cn-info-soft); color: var(--cn-info-txt); }
 .ao-app .ao-att .ao-att-icon.neutral { background: var(--cn-neutral-soft); color: var(--cn-ink-2); }
 .ao-app .ao-att b { display: block; font-weight: var(--fw-medium); font-size: var(--fs-body); }
-.ao-app .ao-att small { display: block; color: var(--cn-ink-3-txt); font-size: var(--fs-caption); line-height: 1.45; margin-top: 2px; }
+.ao-app .ao-att small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--cn-ink-3-txt); font-size: var(--fs-caption); line-height: 1.45; margin-top: 2px; }
 .ao-app .ao-att .go { color: var(--ao-indigo-ink); font-size: var(--fs-caption); white-space: nowrap; padding-top: 4px; }
 
 /* ---------------------------------------------------------------- funnel tiles */
@@ -472,7 +474,7 @@
 .ao-app .ao-error { padding: 14px 16px; border-radius: var(--radius-lg); background: var(--cn-danger-soft); color: var(--cn-danger-txt); border: 1px solid #F2B8B2; font-size: var(--fs-body); display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 /* executive summary (print) */
-.ao-app .ao-exec { max-width: 860px; margin: 0 auto; background: var(--cn-white); border: 1px solid var(--cn-border); border-radius: var(--radius-lg); padding: 40px 48px; display: grid; gap: 22px; }
+.ao-app .ao-exec { min-width: 0; grid-template-columns: minmax(0, 1fr); max-width: 860px; margin: 0 auto; background: var(--cn-white); border: 1px solid var(--cn-border); border-radius: var(--radius-lg); padding: 40px 48px; display: grid; gap: 22px; }
 .ao-app .ao-exec h1 { font-size: var(--fs-h2); font-weight: var(--fw-light); }
 .ao-app .ao-exec .lede p { font-size: 16px; line-height: 1.65; margin: 0 0 12px; color: var(--cn-off-black); }
 .ao-app .ao-exec-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--cn-border); border-radius: var(--radius-md); overflow: hidden; }
@@ -508,4 +510,33 @@
 @media (prefers-reduced-motion: reduce) {
   .ao-app .ao-src.live i { animation: none; }
   .ao-app .ao-skel { animation: none; }
+}
+
+/* ---------------------------------------------------------------- phones: slimmed-down, still functional */
+@media (max-width: 760px) {
+  .ao-app .ao-hide-sm { display: none !important; }
+  .ao-app .ao-head-actions { width: 100%; }
+  .ao-app .ao-head-actions > * { flex: 1 1 auto; }
+  .ao-app .ao-head-actions .ao-select { flex: 1 1 100%; }
+  .ao-app .ao-topbar .ao-simmark { font-size: var(--fs-micro); }
+  .ao-app .ao-table td, .ao-app .ao-table th { padding-left: 10px; padding-right: 10px; }
+  .ao-app .ao-wf { min-width: 0; }
+  .ao-app .ao-wf-axis { display: none; }
+  .ao-app .ao-wf-row { grid-template-columns: minmax(0, 1fr) 64px; grid-template-areas: 'name ms' 'lane lane'; padding: 4px 0; }
+  .ao-app .ao-wf-name { grid-area: name; }
+  .ao-app .ao-wf-ms { grid-area: ms; }
+  .ao-app .ao-wf-lane { grid-area: lane; height: 16px; }
+  .ao-app .ao-wf-bar { top: 3px; height: 10px; }
+  .ao-app .ao-logtable td.msg { max-width: 58vw; }
+  .ao-app .ao-filters { gap: 8px; }
+  .ao-app .ao-filters .ao-field { flex: 1 1 45%; }
+  .ao-app .ao-filters .ao-field.grow { flex: 1 1 100%; }
+  .ao-app .ao-filters .ao-select, .ao-app .ao-filters .ao-input { width: 100%; }
+  .ao-app .ao-logtable td.msg { max-width: none; white-space: normal; }
+  .ao-app .ao-logtable td.msg span { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .ao-app .ao-alert-kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ao-app .ao-live-stat b { font-size: var(--fs-metric); }
+  .ao-app .ao-exec-kpis b { font-size: 18px; }
+  .ao-app .ao-att .go { display: none; }
+  .ao-app .ao-att a { grid-template-columns: auto minmax(0, 1fr); }
 }

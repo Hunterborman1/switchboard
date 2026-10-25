@@ -87,6 +87,7 @@ export function ExecSummary() {
             </b>
           </div>
         </div>
+        <div className="ao-table-wrap">
         <table className="ao-table compact">
           <caption className="ao-sr">Per agent</caption>
           <thead>
@@ -112,6 +113,7 @@ export function ExecSummary() {
             ))}
           </tbody>
         </table>
+        </div>
         <footer>
           Estimates, not billing data. Hours use registered per-task baselines (assumptions until a 2-week time study); value uses a loaded cost of ${d.assumptions.loadedHourlyUsd}/hour. Six weeks of org history are simulated for this demo; Signal Loop’s runs and the
           people using the demo are live. Generated from the numbers by template, not written by a model.

@@ -58,6 +58,8 @@ test.describe('narrative scenes', () => {
 
   test('back steps through beats, then to the previous scene', async ({ page }) => {
     await go(page, '/walkthrough/why');
+    await expect(page.getByTestId('scene-why')).toBeVisible();
+    await expectStep(page, 'why');
     await page.keyboard.press('ArrowRight');
     await expect(page.getByTestId('scene-why')).toHaveAttribute('data-beat', '1');
     await page.keyboard.press('ArrowLeft');

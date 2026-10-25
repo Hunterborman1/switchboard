@@ -55,7 +55,7 @@ export function Cost() {
       </Callout>
 
       <MetricStrip
-        minItemWidth={170}
+        minItemWidth={150}
         label="Cost totals"
         items={[
           { label: 'AI cost', value: f.money(d.totals.costUsd), sub: 'period, all agents' },
@@ -141,8 +141,8 @@ export function Cost() {
                 </div>
               ),
             },
-            { key: 'src', header: 'Data', render: (r) => <SourceChip source={r.source === 'live' ? 'mixed' : 'simulated'} label={r.source === 'live' ? 'Live + history' : 'Simulated'} /> },
-            { key: 'units', header: 'Units', num: true, sort: (r) => r.workUnits, render: (r) => f.int(r.workUnits) },
+            { key: 'src', mobileHide: true, header: 'Data', render: (r) => <SourceChip source={r.source === 'live' ? 'mixed' : 'simulated'} label={r.source === 'live' ? 'Live + history' : 'Simulated'} /> },
+            { key: 'units', mobileHide: true, header: 'Units', num: true, sort: (r) => r.workUnits, render: (r) => f.int(r.workUnits) },
             { key: 'cost', header: 'AI cost', num: true, sort: (r) => r.costUsd, render: (r) => f.money(r.costUsd) },
             {
               key: 'cpu',
@@ -156,9 +156,9 @@ export function Cost() {
                 </span>
               ),
             },
-            { key: 'mtd', header: 'Month to date vs cap', sort: (r) => r.monthToDateUsd / (r.monthlyBudgetUsd || 1), render: (r) => <Meter value={r.monthToDateUsd} max={r.monthlyBudgetUsd} label={`${r.name} month to date`} /> },
-            { key: 'cap', header: 'Per-run cap', num: true, sort: (r) => r.perRunCapUsd, render: (r) => f.money(r.perRunCapUsd) },
-            { key: 'value', header: 'Value', num: true, sort: (r) => r.valueUsd, render: (r) => f.money(r.valueUsd, { est: true }) },
+            { key: 'mtd', mobileHide: true, header: 'Month to date vs cap', sort: (r) => r.monthToDateUsd / (r.monthlyBudgetUsd || 1), render: (r) => <Meter value={r.monthToDateUsd} max={r.monthlyBudgetUsd} label={`${r.name} month to date`} /> },
+            { key: 'cap', mobileHide: true, header: 'Per-run cap', num: true, sort: (r) => r.perRunCapUsd, render: (r) => f.money(r.perRunCapUsd) },
+            { key: 'value', mobileHide: true, header: 'Value', num: true, sort: (r) => r.valueUsd, render: (r) => f.money(r.valueUsd, { est: true }) },
           ]}
         />
       </Panel>
@@ -172,7 +172,7 @@ export function Cost() {
           defaultSort={{ key: 'cost', dir: 'desc' }}
           cols={[
             { key: 'model', header: 'Model', sort: (r) => r.model, render: (r) => <span className="ao-mono">{r.model}</span> },
-            { key: 'calls', header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
+            { key: 'calls', mobileHide: true, header: 'Calls', num: true, sort: (r) => r.calls, render: (r) => f.int(r.calls) },
             { key: 'cost', header: 'Cost', num: true, sort: (r) => r.costUsd, render: (r) => f.money(r.costUsd, { precise: r.costUsd < 1 }) },
             { key: 'per', header: 'Per call', num: true, sort: (r) => (r.calls ? r.costUsd / r.calls : 0), render: (r) => f.money(r.calls ? r.costUsd / r.calls : null, { precise: true }) },
           ]}

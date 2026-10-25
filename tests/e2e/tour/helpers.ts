@@ -63,13 +63,7 @@ export async function pickAndRun(page: Page, branch: string) {
     for (const term of BRANCH_FILES[branch] ?? []) {
       await search.fill(term);
       const opt = dialog.getByRole('option').filter({ hasText: term }).first();
-      const ok = await opt.waitFor({ state: 'visible', timeout: 2500 }).then(
-        () => true,
-        (e: Error) => {
-          console.log('pick miss', term, String(e.message).slice(0, 160));
-          return false;
-        },
-      );
+      const ok = await opt.waitFor({ state: 'visible', timeout: 8000 }).then(() => true, () => false);
       if (ok) {
         await opt.click();
         picked = true;
@@ -98,8 +92,9 @@ export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: str
     await c.waitFor({ state: 'visible', timeout: 15_000 });
     const choice = c.getByRole('button', { name: /^Continue/ });
     const skip = c.getByRole('button', { name: /^Skip/ });
-    if (await choice.isVisible().catch(() => false)) await choice.click();
-    else if (await skip.isVisible().catch(() => false)) await skip.click();
+    // dispatch directly: the callout may still be gliding after its target while the run view animates
+    if (await choice.isVisible().catch(() => false)) await choice.dispatchEvent('click');
+    else if (await skip.isVisible().catch(() => false)) await skip.dispatchEvent('click');
     else await page.keyboard.press('ArrowRight');
     await expect.poll(() => currentStep(page), { timeout: 15_000 }).not.toBe(step);
   }

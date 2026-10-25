@@ -61,29 +61,28 @@ export function Overview() {
       header: 'Agent',
       sort: (r) => r.name,
       render: (r) => (
-        <div className="cell-title" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="cell-title" style={{ display: 'flex', gap: 10, alignItems: 'center', minWidth: 'min(260px, 52vw)' }}>
           <AgentDot color={r.color} />
           <span style={{ display: 'grid', gap: 2, minWidth: 0 }}>
             <Link className="row-link" to={`/ops/agents/${r.agentId}`}>
               {r.name}
             </Link>
-            <small className="ao-muted" style={{ fontSize: 'var(--fs-caption)' }}>
-              {r.builtWith} · {r.department}
+            <small className="ao-muted" style={{ fontSize: 'var(--fs-caption)', display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+              {r.builtWith} · {r.department} <SourceChip source={r.source === 'live' ? 'mixed' : 'simulated'} label={r.source === 'live' ? 'Live + history' : 'Simulated'} />
             </small>
           </span>
         </div>
       ),
     },
-    { key: 'src', header: 'Data', render: (r) => <SourceChip source={r.source === 'live' ? 'mixed' : 'simulated'} label={r.source === 'live' ? 'Live + history' : 'Simulated'} /> },
     ...(stage ? [{ key: 'stage', header: STAGES.find((s) => s.key === stage)!.label, num: true, sort: (r: (typeof hoursShare)[number]) => stageCount(r.outcomes, stage), render: (r: (typeof hoursShare)[number]) => <b>{f.int(stageCount(r.outcomes, stage))}</b> } as Col<(typeof hoursShare)[number]>] : []),
-    { key: 'units', header: 'Work units', num: true, sort: (r) => r.workUnits, render: (r) => <span title={r.unitLabel}>{f.int(r.workUnits)}</span> },
+    { key: 'units', mobileHide: true, header: 'Work units', num: true, sort: (r) => r.workUnits, render: (r) => <span title={r.unitLabel}>{f.int(r.workUnits)}</span> },
     { key: 'hours', header: 'Hours', num: true, sort: (r) => r.hoursReturned, render: (r) => f.hours(r.hoursReturned) },
-    { key: 'value', header: 'Value', num: true, sort: (r) => r.valueUsd, render: (r) => f.money(r.valueUsd, { est: true }) },
-    { key: 'cost', header: 'AI cost', num: true, sort: (r) => r.aiCostUsd, render: (r) => f.money(r.aiCostUsd) },
-    { key: 'roi', header: 'ROI', num: true, sort: (r) => r.roiMultiple, render: (r) => (r.roiMultiple == null ? '—' : `~${f.multiple(r.roiMultiple)}`) },
-    { key: 'acc', header: 'Accepted', num: true, sort: (r) => r.acceptanceRate, render: (r) => <span title="(accepted + automatic) ÷ all work units">{f.pct(r.acceptanceRate)}</span> },
-    { key: 'users', header: 'Users', num: true, sort: (r) => r.activeUsers, render: (r) => f.int(r.activeUsers) },
-    { key: 'trend', header: 'Weekly hours', render: (r) => <Spark values={r.weeklyHours} color={r.color} label={`${r.name} weekly hours`} /> },
+    { key: 'value', mobileHide: true, header: 'Value', num: true, sort: (r) => r.valueUsd, render: (r) => f.money(r.valueUsd, { est: true }) },
+    { key: 'cost', mobileHide: true, header: 'AI cost', num: true, sort: (r) => r.aiCostUsd, render: (r) => f.money(r.aiCostUsd) },
+    { key: 'roi', mobileHide: true, header: 'ROI', num: true, sort: (r) => r.roiMultiple, render: (r) => (r.roiMultiple == null ? '—' : `~${f.multiple(r.roiMultiple)}`) },
+    { key: 'acc', mobileHide: true, header: 'Accepted', num: true, sort: (r) => r.acceptanceRate, render: (r) => <span title="(accepted + automatic) ÷ all work units">{f.pct(r.acceptanceRate)}</span> },
+    { key: 'users', mobileHide: true, header: 'Users', num: true, sort: (r) => r.activeUsers, render: (r) => f.int(r.activeUsers) },
+    { key: 'trend', mobileHide: true, header: 'Weekly hours', render: (r) => <Spark values={r.weeklyHours} color={r.color} label={`${r.name} weekly hours`} width={84} /> },
   ];
 
   return (
@@ -115,16 +114,16 @@ export function Overview() {
       <div {...tourAnchor('ops.overview.kpis')}>
         <MetricStrip
           size="lg"
-          minItemWidth={175}
+          minItemWidth={150}
           label="Headline metrics"
           items={[
-            { label: 'Agents in production', value: t.agentsInProduction, sub: `${d.agentRows.length} in registry · ${d.agentRows.filter((a) => a.status !== 'production').length} pilot or review` },
+            { label: 'In production', value: t.agentsInProduction, sub: `${d.agentRows.length} in registry · ${d.agentRows.filter((a) => a.status !== 'production').length} pilot or review` },
             { label: 'Hours returned', value: <><span className="ao-est">~</span>{f.int(t.hoursReturned)}</>, unit: 'h', sub: `~${f.int(d.lastWeek.hoursReturned)} h in the latest week` },
             { label: 'Value', value: <><span className="ao-est">~</span>{f.compactMoney(t.valueUsd)}</>, sub: <button type="button" className="ao-link" style={{ fontSize: 'inherit' }} onClick={() => setAssumptionsOpen(true)}>hours × ${d.assumptions.loadedHourlyUsd}/h loaded · assumptions</button> },
             { label: 'AI cost', value: f.money(t.aiCostUsd), sub: 'Metered model spend, not billing' },
             { label: 'ROI multiple', value: <><span className="ao-est">~</span>{t.roiMultiple == null ? '—' : f.multiple(t.roiMultiple)}</>, sub: 'Value ÷ AI cost (excludes seats & build)' },
             {
-              label: 'Weekly active users',
+              label: 'Weekly active',
               value: d.wau.current,
               unit: `of ${t.activeUsers}`,
               sub: (
@@ -163,7 +162,7 @@ export function Overview() {
             data={chartRows}
             x="week"
             series={series}
-            height={270}
+            height={330}
             yFormat={(v) => `${v}h`}
             ariaLabel={`Stacked weekly hours returned by agent, ${weeks.length} weeks`}
             tipTitle={(r) => `Week of ${String(r.week)}${r.partial ? ' (partial)' : ''}`}
@@ -202,7 +201,7 @@ export function Overview() {
       </div>
 
       <div className="ao-grid g-2">
-        <Panel title="Adoption" source="mixed" sub="Distinct people using any agent each week. A person counts once per week however many agents they use.">
+        <Panel className="ao-hide-sm" title="Adoption" source="mixed" sub="Distinct people using any agent each week. A person counts once per week however many agents they use.">
           <Lines
             data={d.weekly.map((w) => ({ week: f.day(w.week), users: w.activeUsers }))}
             x="week"
@@ -264,23 +263,22 @@ export function Overview() {
           foot={
             <tr>
               <td>All agents</td>
-              <td />
               {stage ? <td className="num">{f.int(fCounts[stage])}</td> : null}
-              <td className="num">{f.int(t.workUnits)}</td>
+              <td className="num ao-hide-sm">{f.int(t.workUnits)}</td>
               <td className="num">{f.hours(t.hoursReturned)}</td>
-              <td className="num">{f.money(t.valueUsd, { est: true })}</td>
-              <td className="num">{f.money(t.aiCostUsd)}</td>
-              <td className="num">{t.roiMultiple == null ? '—' : `~${f.multiple(t.roiMultiple)}`}</td>
-              <td className="num">{f.pct(funnel.invoked ? (funnel.accepted + funnel.automatic) / funnel.invoked : null)}</td>
-              <td className="num">{f.int(t.activeUsers)}</td>
-              <td />
+              <td className="num ao-hide-sm">{f.money(t.valueUsd, { est: true })}</td>
+              <td className="num ao-hide-sm">{f.money(t.aiCostUsd)}</td>
+              <td className="num ao-hide-sm">{t.roiMultiple == null ? '—' : `~${f.multiple(t.roiMultiple)}`}</td>
+              <td className="num ao-hide-sm">{f.pct(funnel.invoked ? (funnel.accepted + funnel.automatic) / funnel.invoked : null)}</td>
+              <td className="num ao-hide-sm">{f.int(t.activeUsers)}</td>
+              <td className="ao-hide-sm" />
             </tr>
           }
         />
       </Panel>
 
       {!hasLive ? null : (
-        <p className="ao-muted" style={{ fontSize: 'var(--fs-caption)', margin: 0 }}>
+        <p className="ao-muted ao-hide-sm" style={{ fontSize: 'var(--fs-caption)', margin: 0 }}>
           Signal Loop rows combine its live runs with simulated history; every row in Logs & traces says which is which.
         </p>
       )}
@@ -301,7 +299,7 @@ function buildAttention(d: OverviewX): AttItem[] {
     if (a.kind === 'standard_gap') {
       const [head, ...rest] = a.message.split('. ');
       const gap = head!.replace(/^.*standard gap: /, '');
-      out.push({ key: `std-${a.agentId}-${gap}`, tone: 'warning', icon: <IconShield size={15} />, title: `${name(a.agentId)}: ${gap}`, detail: rest.join('. '), href: `/ops/agents/${a.agentId}#standard` });
+      out.push({ key: `std-${a.agentId}-${gap}`, tone: 'warning', icon: <IconShield size={15} />, title: `${name(a.agentId)}: ${gap.charAt(0).toLowerCase()}${gap.slice(1)}`, detail: rest.join('. '), href: `/ops/agents/${a.agentId}#standard` });
     } else if (a.kind === 'slo_breached') {
       out.push({ key: `slo-${a.message}`, tone: 'danger', icon: <IconPulse size={15} />, title: a.message.replace(/\.$/, ''), detail: 'Error budget exhausted for the window.', href: `/ops/reliability?agentId=${a.agentId}` });
     } else if (a.kind === 'review_overdue') {

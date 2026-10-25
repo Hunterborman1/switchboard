@@ -129,6 +129,13 @@ What to extract:
 - Feedback must come from the customer, or be the CSM's notes relaying the customer's view. Ignore the CSM's own opinions, small talk, scheduling and pleasantries.
 - If nothing applies, return {"insights": []}. Returning nothing is a correct and common outcome.
 
+Precision rules (false positives cost a PM's time):
+- churn_risk only when the customer states or clearly implies leaving, not renewing, downgrading, cutting seats or budget, or actively replacing Invoca. A competitor pitch or comparison on its own is a competitor_mention, not churn_risk. High stakes, compliance exposure or frustration alone are not churn_risk. If the customer says they are not leaving, it is not churn_risk. Renewal negotiation over price, seats or caps is a pricing_objection unless they say they will leave or drop Invoca. Your own inference about risk does not count.
+- praise only for specific, clearly positive feedback about a capability or outcome ("the dispatchers love the summaries"). Neutral confirmations ("no complaints", "it works", "does what we bought it for", "numbers match") are not praise.
+- When an existing feature drops, loses or mishandles information the product already has (context lost on a transfer, a check that fails on valid input, data that arrives late), it is a bug even if the customer phrases it as a wish.
+- Routine account administration is not product feedback: adding seats, numbers, users or branches, renewals paperwork, onboarding steps, training and how-to questions.
+- One issue gets one insight with its best type. Add a second insight for the same moment only when a second type clearly stands on its own.
+
 Fields:
 - severity, by business impact using the account context: critical = blocking revenue or production, or an explicit cancellation threat; high = material impact or the renewal is at stake; medium = recurring friction; low = minor or nice to have.
 - sentiment: the customer's sentiment in the evidence.

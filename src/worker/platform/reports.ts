@@ -302,7 +302,7 @@ export async function overview(ctx: Ctx): Promise<OverviewX> {
     if (a.reviewStatus === 'overdue') attention.push({ agentId: a.record.id, kind: 'review_overdue', message: `${a.record.name}: review overdue since ${a.record.nextReview} (owner ${a.record.ownerName}).` });
     for (const s of slos.get(a.record.id) ?? []) if (s.status === 'breached') attention.push({ agentId: a.record.id, kind: 'slo_breached', message: `${a.record.name}: ${s.label} SLO breached over ${s.window}.` });
     const std = effectiveStandard(a, live[agents.indexOf(a)] ?? null, now);
-    for (const c of std.filter((c) => !c.passed && c.key !== 'review_cadence')) attention.push({ agentId: a.record.id, kind: 'standard_gap', message: `${a.record.name}: standard gap: ${c.label.toLowerCase()}. ${c.evidence}` });
+    for (const c of std.filter((c) => !c.passed && c.key !== 'review_cadence')) attention.push({ agentId: a.record.id, kind: 'standard_gap', message: `${a.record.name}: standard gap: ${c.label}. ${c.evidence}` });
     for (const al of alerts.filter((x) => x.agentId === a.record.id && x.status !== 'resolved')) {
       if (al.rule.startsWith('AI cost up')) attention.push({ agentId: a.record.id, kind: 'cost_spike', message: `${a.record.name}: AI cost ${al.actual} vs ${al.expected}.` });
       if (al.rule.startsWith('Weekly active users')) attention.push({ agentId: a.record.id, kind: 'adoption_drop', message: `${a.record.name}: weekly active users ${al.actual}.` });

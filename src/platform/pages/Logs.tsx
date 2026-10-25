@@ -227,15 +227,15 @@ export function Logs() {
                 <tr>
                   <th scope="col">Time ({f.tzLabel(timezone)})</th>
                   <th scope="col">Level</th>
-                  <th scope="col">Agent</th>
-                  <th scope="col">Component</th>
-                  <th scope="col">Event</th>
+                  <th scope="col" className="ao-hide-sm">Agent</th>
+                  <th scope="col" className="ao-hide-sm">Component</th>
+                  <th scope="col" className="ao-hide-sm">Event</th>
                   <th scope="col">Message</th>
-                  <th scope="col">Trace</th>
-                  <th scope="col" className="num">
+                  <th scope="col" className="ao-hide-sm">Trace</th>
+                  <th scope="col" className="num ao-hide-sm">
                     Duration
                   </th>
-                  <th scope="col">Data</th>
+                  <th scope="col" className="ao-hide-sm">Data</th>
                 </tr>
               </thead>
               <tbody>
@@ -254,26 +254,27 @@ export function Logs() {
                     aria-label={`${l.level} ${l.event}: ${l.message}`}
                   >
                     <td className="ao-mono" style={{ whiteSpace: 'nowrap' }} title={f.time(l.at, timezone, true)}>
-                      {f.time(l.at, timezone, true).replace(/ (UTC|PT)$/, '')}
+                      <span className="ao-hide-sm">{f.time(l.at, timezone, true).replace(/ (UTC|PT)$/, '').replace(/ \d\d:\d\d:\d\d$/, '')} </span>
+                      {f.clock(l.at, timezone)}
                     </td>
                     <td>
                       <span className={`ao-lv ${l.level}`}>{l.level}</span>
                     </td>
-                    <td style={{ whiteSpace: 'nowrap' }}>{names[l.agentId] ?? l.agentId}</td>
-                    <td>{l.component}</td>
-                    <td className="ao-mono" style={{ whiteSpace: 'nowrap' }}>
+                    <td className="ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>{names[l.agentId] ?? l.agentId}</td>
+                    <td className="ao-hide-sm">{l.component}</td>
+                    <td className="ao-mono ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>
                       {l.event}
                     </td>
                     <td className="msg">
                       <span title={l.message}>{l.message}</span>
                     </td>
-                    <td>
+                    <td className="ao-hide-sm">
                       <Link className="ao-trace-btn" to={`/ops/traces/${l.traceId}`} title={l.traceId}>
                         {l.traceId.slice(0, 8)}…
                       </Link>
                     </td>
-                    <td className="num ao-mono">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
-                    <td>
+                    <td className="num ao-mono ao-hide-sm">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
+                    <td className="ao-hide-sm">
                       <SourceChip source={l.source} />
                     </td>
                   </tr>

@@ -167,7 +167,7 @@ export function Lines({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: 0 }}>
           {GRID}
-          <XAxis dataKey={x} {...AXIS} interval="preserveStartEnd" minTickGap={28} tickFormatter={xFormat} />
+          <XAxis dataKey={x} {...AXIS} interval="preserveStartEnd" minTickGap={28} tickFormatter={xFormat} padding={{ left: 8, right: 18 }} />
           <YAxis {...AXIS} width={52} tickFormatter={(v: number) => yFormat(v)} domain={yDomain ?? [0, 'auto']} />
           {shade?.map((s) => <ReferenceArea key={s.x1} x1={s.x1} x2={s.x2} fill="rgba(207,37,25,0.07)" stroke="none" label={{ value: s.label, position: 'insideTop', fontSize: 10, fill: '#A81E14' }} />)}
           {target ? <ReferenceLine y={target.value} stroke="#A81E14" strokeDasharray="4 4" strokeWidth={1.5} label={{ value: target.label, position: 'insideTopRight', fontSize: 10, fill: '#A81E14' }} /> : null}
