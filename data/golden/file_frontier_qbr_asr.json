@@ -1,0 +1,32 @@
+{
+  "fileId": "file_frontier_qbr_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Loan Application object mapping broke again after a release; call outcomes not writing back.",
+      "quote": "the loan application object mapping broke again after our last release, so call outcomes aren't writing back",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense routing of refi shoppers to the refi team lifted conversion.",
+      "quote": "pre-sense routing sending the refi shoppers to our refi team that's been a big win conversion on those is up",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Repeats ask for a Looker connector.",
+      "quote": "i keep asking for a looker connector, i know i know",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

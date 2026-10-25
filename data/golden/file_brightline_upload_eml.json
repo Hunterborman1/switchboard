@@ -1,0 +1,24 @@
+{
+  "fileId": "file_brightline_upload_eml",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Booked Job offline conversion uploads arrive in Google Ads 48–72 hours after the call.",
+      "quote": "Our offline conversion uploads for the Booked Job action are arriving in Google Ads 48 to 72 hours after the call.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Customer is getting CallRail outreach claiming same-day sync.",
+      "quote": "fyi they're also getting callrail outreach claiming same-day sync",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

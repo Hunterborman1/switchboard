@@ -1,0 +1,39 @@
+Coastal Comfort Mattress / Invoca | check-in | Thu, Oct 15, 2026
+
+[00:00:03] Tom Lindqvist: Hi Vanessa, Tom here. How's the week going in Tampa?
+[00:00:07] Vanessa Grant: Hey Tom. Busy, but that's the usual. We're heading into mattress season, apparently.
+[00:00:12] Tom Lindqvist: Is that a real thing?
+[00:00:15] Vanessa Grant: It is if you're in retail. October through December, people decide they hate their old bed before the holidays.
+[00:00:24] Tom Lindqvist: Makes sense. I pulled some numbers before the call. Looks like you're tracking around 41,000 calls a month across the 64 showrooms now.
+[00:00:35] Vanessa Grant: That's right. September was 40,200, I think. We added two stores in August, so it'll keep creeping up.
+[00:00:42] Tom Lindqvist: How's the Amazon Connect side holding up with the extra volume?
+[00:00:47] Vanessa Grant: Fine. My call center manager, Priyanka, says the routing is behaving. We did add three agents last month, so we're at 38 in the center now.
+[00:00:59] Tom Lindqvist: Good. And the AI Voice Agent for store hours and order status?
+[00:01:05] Vanessa Grant: It's doing what we asked. About 22 percent of calls get handled without a live agent now, mostly the 'are you open' and 'where's my delivery' stuff.
+[00:01:16] Tom Lindqvist: That's a solid share for two use cases.
+[00:01:20] Vanessa Grant: It is. And honestly, the team stopped complaining about it, which is the highest praise you'll get from a call center.
+[00:01:29] Tom Lindqvist: I'll take it. Anything you want me to look at while we're here?
+[00:01:34] Vanessa Grant: One thing, and it's not urgent. It's about reporting.
+[00:01:39] Tom Lindqvist: Go ahead.
+[00:01:40] Vanessa Grant: So every Monday, one of my analysts, Hector, pulls CSVs out of Invoca by hand. Call volumes by showroom, by campaign, the PreSense screen pop data, all of it. Then he pastes it into Looker and into a couple of Google Sheets that the regional managers live in.
+[00:02:00] Tom Lindqvist: Every Monday, same routine?
+[00:02:02] Vanessa Grant: Every Monday. It takes him most of the morning, and if he's out, nobody else knows the sequence. Last week he was at a wedding and the Southeast region got their numbers on Wednesday.
+[00:02:17] Tom Lindqvist: So the ask is scheduled delivery into Looker and Sheets, so nobody's hand-carrying files.
+[00:02:23] Vanessa Grant: Right. Same reports, same cadence, just pushed on a schedule instead of exported by a person. If it could also hit a BI tool directly, that would help, because we're moving more of this into Looker anyway.
+[00:02:36] Tom Lindqvist: Is it just the weekly set, or are there other reports Hector's pulling?
+[00:02:42] Vanessa Grant: Mostly the weekly. Sometimes he does a monthly rollup for me and for finance, but that one he can live with.
+[00:02:51] Tom Lindqvist: Got it. Who else touches these once they land?
+[00:02:55] Vanessa Grant: The eight regional managers, plus me, plus finance at month end. So maybe fifteen people downstream of Hector's export.
+[00:03:03] Tom Lindqvist: Okay. I'll write it up and take it to the product team. I don't want to promise anything on timing, but I'll make sure it's logged with the detail, the Looker piece and the Sheets piece.
+[00:03:16] Vanessa Grant: That's all I'm asking. Nobody's angry about it. It's just one of those things that quietly eats a morning a week.
+[00:03:25] Tom Lindqvist: Totally fair. Anything else on the list?
+[00:03:29] Vanessa Grant: Google Ads and Meta are both fine. We're not touching the campaign structure until January.
+[00:03:36] Tom Lindqvist: Good. Do you want me to pull together a quick review of the AI Voice Agent handling before your January planning? Something you can show the store ops folks?
+[00:03:49] Vanessa Grant: That would be useful. Can we do it the first week of December? I'm out the week of Thanksgiving.
+[00:03:57] Tom Lindqvist: First week of December works. I'll send a hold for Tuesday the 8th, and you can move it if it's bad.
+[00:04:07] Vanessa Grant: Perfect. Oh, and one tangent. Do you know if your team is doing anything at the retail conference in Orlando in March? A few of us are going.
+[00:04:20] Tom Lindqvist: I don't have that in front of me. Let me check with the events folks and get back to you.
+[00:04:29] Vanessa Grant: No rush. It's more of a 'should we stop by the booth' question.
+[00:04:35] Tom Lindqvist: Understood. So to recap on my side: I'll log the scheduled reporting request with the Looker and Sheets detail, and I'll set up the December review. Anything I'm missing?
+[00:04:48] Vanessa Grant: That's it. Thanks Tom.
+[00:04:50] Tom Lindqvist: Thanks Vanessa. Talk soon.

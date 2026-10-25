@@ -1,0 +1,181 @@
+WEBVTT
+
+1
+00:00:07.799 --> 00:00:17.563
+Priya Raman: Okay, thanks for jumping on so fast. Sandra, Mark, Paul is on with us from support. Sandra, you wanted to walk us through what you found.
+
+2
+00:00:18.610 --> 00:00:32.115
+Sandra Pruitt: Yes. I was doing a routine audit Friday afternoon, pulling transcripts from the central scheduling queue, and I found a call where the patient's information was sitting right there in the transcript, plain as day.
+
+3
+00:00:33.481 --> 00:00:35.832
+Priya Raman: Okay. Can you read me what's exposed?
+
+4
+00:00:36.726 --> 00:00:44.922
+Sandra Pruitt: I'll read it exactly as it appears. Patient name Margaret Ellison, date of birth March 14, 1958, MRN 4471229083.
+
+5
+00:00:45.626 --> 00:00:49.451
+Mark Delgado: That's a scheduler call. She called in to move an appointment.
+
+6
+00:00:49.897 --> 00:00:57.927
+Sandra Pruitt: There's more. The agent read back the callback number (615) 555-0148, and her home address, 2218 Belmont Boulevard, Nashville.
+
+7
+00:00:59.220 --> 00:01:02.376
+Priya Raman: Okay. I'm writing this down as you go.
+
+8
+00:01:02.600 --> 00:01:11.609
+Sandra Pruitt: Spoken dates of birth and MRNs are coming through in the transcripts completely unredacted. Card numbers get masked, but those don't.
+
+9
+00:01:12.365 --> 00:01:16.940
+Mark Delgado: Sandra, how many calls are we talking about, just this one?
+
+10
+00:01:17.383 --> 00:01:28.139
+Sandra Pruitt: I've spot-checked about forty so far and found four with the same pattern. I stopped there because I wanted to get on this call before I went further.
+
+11
+00:01:28.513 --> 00:01:33.629
+Paul Ricci: That's helpful. Can I ask a couple of questions about the configuration while we're here?
+
+12
+00:01:34.759 --> 00:01:35.559
+Sandra Pruitt: Please.
+
+13
+00:01:35.847 --> 00:01:42.273
+Paul Ricci: Which redaction settings are currently turned on for the account? Is it the standard profile or something custom?
+
+14
+00:01:42.722 --> 00:01:54.949
+Mark Delgado: As far as I know it's whatever we set up at implementation. I haven't touched it. I can pull it up if you tell me where to look.
+
+15
+00:01:55.234 --> 00:02:03.189
+Paul Ricci: I'll send you the exact path after this call. And just to confirm on my side, card numbers are being masked correctly?
+
+16
+00:02:03.847 --> 00:02:09.155
+Mark Delgado: Yes. We tested that ourselves, the payment calls show the card as masked. That part's fine.
+
+17
+00:02:10.473 --> 00:02:15.976
+Paul Ricci: Good. So the masking is working for card data but not for the spoken identifiers.
+
+18
+00:02:16.211 --> 00:02:28.711
+Sandra Pruitt: That's the shape of it. And I'll say this now while everyone's here. We need to be able to choose which identifiers get redacted, and lock that setting so a regional admin can't turn it off.
+
+19
+00:02:28.976 --> 00:02:39.481
+Priya Raman: Understood. I'm not going to guess at what's possible on that, I want to take it to the product team and come back with something concrete.
+
+20
+00:02:40.713 --> 00:02:48.176
+Sandra Pruitt: I appreciate that, but I need more than concrete eventually. We have a BAA. This is reportable if it goes wider.
+
+21
+00:02:49.519 --> 00:02:58.592
+Priya Raman: I know. And I'm sorry this happened. Let's figure out what we can do right now to stop the bleeding, then work the rest.
+
+22
+00:02:58.802 --> 00:03:03.021
+Mark Delgado: Can we turn transcripts off for the scheduling queue in the meantime?
+
+23
+00:03:03.626 --> 00:03:14.765
+Paul Ricci: That's a config change, so I don't want to promise it on this call. Let me look at what's available for that queue specifically and get back to you today.
+
+24
+00:03:15.980 --> 00:03:21.558
+Mark Delgado: Today would be good. I've got agents on that queue around the clock.
+
+25
+00:03:22.816 --> 00:03:35.836
+Paul Ricci: Understood. I'll also want to know whether the calls in question came in through the main tracking number or a campaign number, so I can scope how far back this goes.
+
+26
+00:03:36.591 --> 00:03:42.825
+Mark Delgado: Most of our scheduling calls come through the main line. The campaign numbers are more for the clinics' outreach.
+
+27
+00:03:44.019 --> 00:03:51.056
+Sandra Pruitt: I can send you the four call IDs I found. Should I send them to you directly, Paul?
+
+28
+00:03:51.755 --> 00:03:57.818
+Paul Ricci: Yes, that works. Send them to me and I'll attach them to the ticket.
+
+29
+00:03:58.056 --> 00:04:02.411
+Priya Raman: Sandra, who else at Meridian knows about this so far?
+
+30
+00:04:02.947 --> 00:04:07.665
+Sandra Pruitt: Just Mark and our general counsel. I haven't told the clinic leads yet.
+
+31
+00:04:08.548 --> 00:04:15.167
+Priya Raman: Okay. I'll keep this tight on our side. Paul, me, and my director, that's it for now.
+
+32
+00:04:15.490 --> 00:04:18.434
+Sandra Pruitt: Good. I don't want this bouncing around.
+
+33
+00:04:19.649 --> 00:04:29.724
+Priya Raman: Here's what I can commit to. By end of day tomorrow you'll have a written summary from me of what we know and what we're doing.
+
+34
+00:04:29.724 --> 00:04:37.861
+Priya Raman: By Thursday I'll have an answer from product on the redaction controls. And Paul will have the transcript question answered today.
+
+35
+00:04:39.080 --> 00:04:43.319
+Paul Ricci: I'll confirm that in the ticket before I sign off today.
+
+36
+00:04:44.360 --> 00:04:49.361
+Sandra Pruitt: And the exposed records? Do we need to do anything with those transcripts?
+
+37
+00:04:50.358 --> 00:05:01.297
+Priya Raman: I'll ask about options for those specific calls in the same conversation. I don't want to tell you something today that I can't stand behind.
+
+38
+00:05:02.782 --> 00:05:06.903
+Mark Delgado: That's fair. I'd rather you come back straight with us than guess.
+
+39
+00:05:08.355 --> 00:05:18.469
+Sandra Pruitt: Agreed. One more thing, and this is procedural. Any communication about this needs to come to me and to Mark, not to the clinic managers.
+
+40
+00:05:19.792 --> 00:05:24.441
+Priya Raman: Noted. Paul, anything else you need from them before we wrap?
+
+41
+00:05:25.095 --> 00:05:30.719
+Paul Ricci: Just the call IDs and confirmation of the queue name. I have the rest.
+
+42
+00:05:31.625 --> 00:05:34.576
+Mark Delgado: I'll send the queue name right after this.
+
+43
+00:05:36.022 --> 00:05:45.267
+Priya Raman: Okay. Sandra, thank you for bringing it to us quickly. I know this isn't how you wanted to spend a Monday.
+
+44
+00:05:46.441 --> 00:05:51.339
+Sandra Pruitt: No, it isn't. But here we are. I'll watch for your summary tomorrow.
+
+45
+00:05:52.644 --> 00:05:54.464
+Priya Raman: You'll have it. Talk soon.

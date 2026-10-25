@@ -1,0 +1,35 @@
+Slack export · #ext-northwind-invoca (Slack Connect: shared with Northwind Telecom)
+Exported 10/12/2026 10:16 AM · 29 messages
+
+[10/12/2026 9:10 AM] tom.lindqvist: morning all, opening this shared channel so we're not bouncing between email threads. michelle, thx for jumping on early. goal today is to get the xfer issue scoped w/ real examples & get the right ppl on it. no promises on a fix this week, just want to stop the bleeding & know how widespread it is.
+[10/12/2026 9:12 AM] michelle.tran: morning. yeah it's been a rough couple weeks on our side. gave the team a heads up this would be the focus this morning.
+[10/12/2026 9:14 AM] lena.brooks: hi michelle, lena here, i pm the presense side. tom pulled me in. can you walk us through what you're seeing on the genesys side?
+[10/12/2026 9:15 AM] derek.shaw: derek from spuport escalations, also on. :wave:
+[10/12/2026 9:18 AM] michelle.tran: sure. short version: when a call starts on the sales queue the screen pop looks right, ad, keyword, pages, all of it. as soon as the agent warm-xfers to retention, the pop on the retention side shows up but w/ nothing in the fields.
+[10/12/2026 9:19 AM] michelle.tran: xfers from sales to retention still losing the PreSense payload, we tested 20 this morning & 17 came over blank
+[10/12/2026 9:22 AM] lena.brooks: ok that's helpful. 17 of 20 is pretty consistent. do the 3 that worked have anything in common? specific agent, time of day, mobile vs landline?
+[10/12/2026 9:25 AM] michelle.tran: not that i can see yet. two of them were the same agent, devon, but he had blank ones too. i'll pull the full list.
+[10/12/2026 9:28 AM] derek.shaw: can you grab the genesys interaction ids for the 20? even just the 17 blank ones. we can line them up against our logs on the invoca side & see where the handoff drops.
+[10/12/2026 9:30 AM] michelle.tran: yep i can export those. give me till after lunch, we've got a WFM mtg at 11.
+[10/12/2026 9:31 AM] derek.shaw: :+1:
+[10/12/2026 9:34 AM] lena.brooks: one more q while you're in there. are these warm xfers where the sales agent stays on the line, or cold? & is retention on the same genesys queue or a different one?
+[10/12/2026 9:36 AM] michelle.tran: warm, agent stays on. different queue, retention is its own.
+[10/12/2026 9:38 AM] lena.brooks: got it. thanks. that helps narrow where to look.
+[10/12/2026 9:41 AM] tom.lindqvist: michelle while you're pulling the ids, can you also note which of the 20 were from google ads traffic vs organic? trying to understand if it's all sources or just paid.
+[10/12/2026 9:43 AM] michelle.tran: will do. most of our sales volume is paid so it'll skew that way but i'll flag any organic.
+[10/12/2026 9:46 AM] tom.lindqvist: appreciate it. i know this is the second time we've talked about xfer issues this quarter & i don't want to keep asking you to re-test the same thing. once we have the ids derek and lena can dive from there.
+[10/12/2026 9:49 AM] michelle.tran: tbh the retesting isn't the annoying part, it's the agents losing context mid-call. they start asking the customer stuff the pop should've told them.
+[10/12/2026 9:52 AM] lena.brooks: yeah that's the part we care about. ok, i'll set up a working session once we have the ids so we're not doing this over chat. does 2pm mt wednesday work?
+[10/12/2026 9:54 AM] michelle.tran: wednesday 2pm works. atcually can we do 2:30? i have a satnding that runs till 2:15.
+[10/12/2026 9:55 AM] lena.brooks: 2:30 it is. i'll send the invite.
+[10/12/2026 9:57 AM] derek.shaw: on it for the log side. drop the ids here whenever & i'll start the pull.
+[10/12/2026 10:00 AM] michelle.tran: cool. fyi our qbr is end of month so if we can have at least a direction by then it'll make that convo a lot easier.
+[10/12/2026 10:02 AM] tom.lindqvist: understood. we'll aim for that.
+
+--- #acct-northwind (internal, Invoca only) ---
+
+[10/12/2026 10:05 AM] tom.lindqvist: brandon hinted they'd drop presense at renewal if this isn't sorted, owen is cc'd on everything now
+    ↳ [10/12/2026 10:07 AM] lena.brooks: noted. that raises the stakes. let's keep the comms tight and factual.
+    ↳ [10/12/2026 10:08 AM] derek.shaw: yep. no speculation in the shared channel.
+[10/12/2026 10:11 AM] michelle.tran: ids coming your way this afternoon. thx for the quick turnaround on this one.
+[10/12/2026 10:13 AM] tom.lindqvist: :eyes: will watch for them.

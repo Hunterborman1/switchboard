@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_096",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "PreSense, the QM seats, the AI Voice minutes, and now they're looking at Signal AI and saying, 'Wait, this is another add-on on top of call tracking?'",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,40 @@
+{
+  "fileId": "file_northwind_qbr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense data does not carry over when Genesys transfers a call from sales to retention.",
+      "quote": "Every time we transfer from sales to retention in Genesys, the PreSense data just doesn't come across. The second agent gets nothing.",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "AI Voice Agent handoff to a live rep loses the account number, so customers repeat it.",
+      "quote": "The voice agent is handing people to a live rep and the rep has to ask for the account number again. That's the one thing we told customers they wouldn't have to do.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Procurement questions AI Voice Agent per-minute pricing on top of the platform fee.",
+      "quote": "Procurement is going to ask me why AI Voice Agent is priced per minute on top of the platform fee. I need a better answer than I have.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "praise",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "The attribution-by-campaign view is the first report the digital team opens each morning.",
+      "quote": "The new attribution view by campaign is honestly the report my team opens first every morning.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

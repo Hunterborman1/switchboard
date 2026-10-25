@@ -1,0 +1,203 @@
+Bluewater Insurance Partners check-in
+Wed, Oct 7, 2026, 11:00AM • 10:57
+
+Rachel Okafor  0:06
+Hey both, good to see you. How's the weather up um, in Hartford? I saw snow flurries on the news this morning and it's still seventy degrees here.
+
+Sanjay Iyer  0:17
+Oh, don't even. It was thirty-two when I walked in. Carol's got her space heater going full blast in the QA room.
+
+Carol Bennett  0:27
+It's a small office, um, I run cold. Sanjay, tell her about the parking situation, we lost half the lot to construction.
+
+Sanjay Iyer  0:35
+We don't need to relitigate parking. Rachel, how are things on your end? You sound like you're in a hallway.
+
+Rachel Okafor  0:42
+I am, I'm hiding between two conference rooms because the one I booked got double-booked. Give me ten seconds, I'll go sit in my car if I have to.
+
+Carol Bennett  0:53
+Take your time, we're just staring at enrollment spreadsheets over here.
+
+Rachel Okafor  0:58
+Okay, I'm in. Can you both hear me okay now?
+
+Sanjay Iyer  1:02
+Loud and clear.
+
+Rachel Okafor  1:04
+Perfect. So this is just a check-in, you're eight days out from AEP. I wanted to hear how prep is going and whether anything needs a hand before the fifteenth.
+
+Sanjay Iyer  1:15
+Yeah, so, prep is prep. We've got about four hundred agents across the network, give or take, and the Medicare Advantage side is going to be the bulk of the volume this year. Last AEP we did, what, Carol, sixty thousand calls in the first three weeks?
+
+Carol Bennett  1:32
+Sixty-two. And that's just the recorded ones through Genesys. Some of the smaller agencies don't route everything through us.
+
+Rachel Okafor  1:39
+Got it. And how are the tracking numbers looking? Anything weird on attribution as you've been loading up the new campaign set?
+
+Sanjay Iyer  1:48
+That part's fine. Dynamic number insertion is doing what it's supposed to. Google Ads is getting the conversions, no complaints there.
+
+Rachel Okafor  1:57
+Okay. So what's actually keeping you up at night?
+
+Sanjay Iyer  2:02
+Honestly? The Salesforce side. Uh, we noticed it last week, and I've been meaning to get um, you on the phone about it, so good timing. Um, Look, the Salesforce push is failing on our Policy Quote custom object, so agents are back to typing call notes in by hand.
+
+Rachel Okafor  2:20
+Okay. When you say failing, is it erroring out entirely, or is it writing to the standard call record and just skipping the custom object?
+
+Sanjay Iyer  2:31
+It lands on the call record. The Policy Quote object, nothing. So the outcome and the summary are there if you open the task, but the quote fields are empty and the agent has to go fill them in.
+
+Carol Bennett  2:46
+And it's not just a couple of calls. It's every call since, you know, what, the twenty-eighth?
+
+Sanjay Iyer  2:55
+Every call. We've got a network of agencies, so you multiply a manual note by a few thousand calls a week and it's a real drag on handle time. Not catastrophic, but but it's the kind of thing that turns into a data problem three weeks from now when nobody remembers what they typed.
+
+Rachel Okafor  3:15
+Understood. How many agents would you say are doing the manual workaround right now?
+
+Sanjay Iyer  3:22
+All of the ones on the Medicare side. Uh, so, I'd guess a hundred, hundred and ten. The P&C folks barely touch that object.
+
+Rachel Okafor  3:32
+Okay, and did anything change on your Salesforce side right before the twenty-eighth? So, New fields, a validation rule, a permission set?
+
+Sanjay Iyer  3:41
+I don't think so, but I'm not the admin. That's on our ops engineering side and and they're slammed. I can get you the name of who owns it.
+
+Rachel Okafor  3:55
+Please do. What I'd like to do is grab the call IDs and a couple of timestamps where you saw it, and take it back to our integrations uh, team. I'm not going to guess at what's happening from here.
+
+Sanjay Iyer  4:10
+I mean, yeah, that's fair. I'll send you three or four examples this afternoon.
+
+Rachel Okafor  4:17
+Great. And if it helps in the meantime, the manual notes aren't lost, they're just in the wrong place, right?
+
+Sanjay Iyer  4:25
+Correct, they're in the task description. Ugly but findable.
+
+Rachel Okafor  4:30
+Okay. Carol, switch to you. How's the QM rollout? I know you were targeting full coverage by the end of September.
+
+Carol Bennett  4:40
+Behind. We're at maybe forty percent of the agents scored, and the scorecards themselves are still half-baked. But the bigger thing, and this is what I wanted to talk through, Medicare calls have a required disclaimer script, and I need QM to check for the exact language, not just whether they talked about the plan.
+
+Rachel Okafor  5:02
+So the current scorecard is checking topic, not wording.
+
+Carol Bennett  5:06
+Right. We have a question that's basically did the agent discuss plan benefits, and it's a yes/no. That's not what compliance wants. Compliance wants to know whether the agent read the disclaimer, the actual sentences, verbatim, within the first ninety seconds. If they paraphrase it, that's a finding.
+
+Rachel Okafor  5:25
+And what's driving the timing on this? Is there a a review coming?
+
+Carol Bennett  5:31
+There's always a review. We're a licensed agency network, CMS doesn't care that we're small. If we can't show we're monitoring the disclaimer language across the network, that's a problem for us.
+
+Rachel Okafor  5:45
+Okay. Can I ask, is the disclaimer the same across all the agencies, or does each one have its own version?
+
+Carol Bennett  5:55
+There are two versions. One for the MA plans and one for the dual-eligible stuff. The core sentences are identical, there's a paragraph in the middle that swaps.
+
+Sanjay Iyer  6:05
+And a couple of the agencies add their own tag at the end, like a state-specific line. So it's not perfectly clean.
+
+Carol Bennett  6:14
+Right. So I need something that looks for the required language and flags when it's missing or altered, and I don't want to build it twice a year when the script changes.
+
+Rachel Okafor  6:25
+Got it. So two things, a way to detect exact language, and a way for you to maintain it without a ticket every time legal tweaks a sentence.
+
+Carol Bennett  6:38
+Yes. That's That's it exactly.
+
+Rachel Okafor  6:41
+Okay. I want to be careful here because I don't want to promise you something on this call. Let me take the requirement back to the team that owns scorecards, and I'll come back with what's possible and what isn't. Can you send me the two script versions, the MA one and the dual-eligible one, plus an example of a call where the agent paraphrased?
+
+Carol Bennett  7:08
+I can do that today. I've got a call from the second where the agent said the benefits are explained in the materials you'll get in the mail instead of reading it. That one's a good test case.
+
+Rachel Okafor  7:21
+Perfect, send that one.
+
+Carol Bennett  7:24
+And, um, this is a separate thing, but it's been on my mind. One of our agencies already uses Gong, and their manager keeps sending me screenshots of its scorecards. Which, you know, is a little annoying, but it's also making me wonder how far off we are.
+
+Rachel Okafor  7:42
+How many calls are they scoring?
+
+Carol Bennett  7:45
+I don't know the number. She sends me screenshots, not a report. I think she's just trying to be helpful.
+
+Sanjay Iyer  7:53
+She's trying to be helpful the way a neighbor is helpful when they tell you their lawn guy is cheaper.
+
+Carol Bennett  8:02
+Sanjay.
+
+Sanjay Iyer  8:05
+I'm just saying. Carol, we bought QM for a reason and the reason is the network. One agency doing its own thing with a different tool doesn't change that. If anything it argues for us getting ours right so everybody's on the same scorecard.
+
+Carol Bennett  8:22
+I agree. I'm not shopping. I'm telling you what I'm hearing so you know why I'm pushing on the disclaimer piece.
+
+Rachel Okafor  8:30
+That's helpful context, and I'd rather hear it than not. I'll tell you what I can do. I'll bring the disclaimer requirement to the team, and I'll also ask whether there's anything in how you set up the scorecard today that we can tighten while we wait. I'm not going to sit on it until after AEP.
+
+Carol Bennett  8:51
+That's all I'm asking.
+
+Rachel Okafor  8:53
+Sanjay, on the Salesforce thing, who else needs to be in the loop on your side? I don't want to be trading emails with you and then have the admin surprised.
+
+Sanjay Iyer  9:07
+Let me loop in the ops engineering lead. I'll copy you when I send the examples.
+
+Rachel Okafor  9:15
+Good. So to to recap, and tell me if I've got this wrong. Salesforce push to the Policy Quote object, examples coming from you today. QM disclaimer language, scripts plus the test call coming from Carol today. And I take both back to the teams and come back to you with next steps.
+
+Sanjay Iyer  9:36
+That's right.
+
+Carol Bennett  9:38
+Yes.
+
+Rachel Okafor  9:40
+Okay. One more thing and then I'll let you go. Is there anything about AEP I should know about on the Invoca side? Volume spikes, weird hours, anything you're worried about?
+
+Sanjay Iyer  9:53
+Volume, obviously. We'll probably triple call volume in the first ten days. Beyond that, no. Attribution has been steady, so I'm not expecting surprises.
+
+Rachel Okafor  10:03
+Okay. If something does come up during AEP, don't wait for a scheduled call, just email me and put urgent in the subject.
+
+Carol Bennett  10:13
+Fair warning, I may take you up on that at seven in the morning.
+
+Rachel Okafor  10:19
+I'm up. Sanjay, how's the drive in with the parking situation?
+
+Sanjay Iyer  10:24
+I've started parking at the garage two blocks over. It's an extra fifteen minutes each way and I've made my peace with it.
+
+Carol Bennett  10:33
+He has not made his peace with it.
+
+Sanjay Iyer  10:36
+I have not made my peace with it.
+
+Rachel Okafor  10:41
+Okay, well, good luck with the spreadsheets and the parking. I'll watch for the emails today and come back to you both this week.
+
+Carol Bennett  10:51
+Thanks, Rachel.
+
+Sanjay Iyer  10:52
+Appreciate it. Talk soon.

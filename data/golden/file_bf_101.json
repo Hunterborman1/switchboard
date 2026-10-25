@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_101",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "Instead of listening to a whole call, they read the summary & know exactly what the member needed",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "We changed a picklist value on the Member_Interaction__c object last month, & now some calls aren't writing the outcome to the right place",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

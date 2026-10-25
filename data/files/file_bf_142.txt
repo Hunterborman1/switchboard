@@ -1,0 +1,98 @@
+Meridian Health Partners check-in
+Fri, Oct 16, 2026, 11:00AM • 4:38
+
+Priya Raman  0:03
+Hey Mark, how's it going? Sorry, I was on mute for a second there.
+
+Mark Delgado  0:09
+No worries. Good, busy week. We had two clinics go live on the new scheduling flow Monday, like, so it's been a little chaotic.
+
+Priya Raman  0:20
+Nice. How'd the go-live go?
+
+Mark Delgado  0:22
+Smoother than the last one. Carla's team handled the training, and we we only had a handful of calls that got routed wrong. Like maybe six or seven out of a couple thousand.
+
+Priya Raman  0:34
+That's a good ratio. And call volume overall, where are you sitting?
+
+Mark Delgado  0:38
+Last month we were around 61,000 inbound to the central line. Up maybe four percent from August. Scheduling is the bulk of it, refills second.
+
+Priya Raman  0:48
+Okay so that tracks with what I see on the dashboard. Uh, Anything staffing-wise I should know about going into November?
+
+Mark Delgado  0:57
+We're down two agents on the evening shift, I mean, so hold times after six have been ugly. Darnell's interviewing, I mean, but you know how that goes. Probably another three weeks before we're back so, to full.
+
+Priya Raman  1:11
+So, got it. I'll keep that in mind if anything scheduling-related comes up from our side.
+
+Mark Delgado  1:19
+Yeah. Oh, and before I forget, we're moving the downtown clinic to a new location in January. Same number though, we're porting it over.
+
+Priya Raman  1:30
+Same number makes my life easy. Just send me the date when it's locked and I'll note it on the account.
+
+Mark Delgado  1:39
+Will do. So the other thing, and this is more of a, um, an ask than a problem.
+
+Priya Raman  1:45
+Sure, go ahead.
+
+Mark Delgado  1:47
+The QM scorecards. Right now we're scoring against the default criteria, and honestly they're close, but they don't match what our human QA team actually uses. We've got a rubric that's been in place for years, and the scores don't line up.
+
+Priya Raman  2:05
+Okay. So the human team has their own set of criteria?
+
+Mark Delgado  2:11
+Right. And it it varies by call type. A scheduling call gets scored on different things you know, than a billing question. Plus some items are required disclosures, so um, those should weigh heavier. Right now I don't think we like, can do any of that that.
+
+Priya Raman  2:29
+Let me write this down. So So it's really three pieces, custom criteria, call-type-specific scoring, and weighting.
+
+Mark Delgado  2:37
+Yeah, that's the shape of it. The goal would be that the QM scores match what our QA leads are already doing, so we're not maintaining two sets of numbers. Right now we are.
+
+Priya Raman  2:50
+And are you still doing 100 percent scoring on the calls, or is it a a sample?
+
+Mark Delgado  2:58
+It's all of them. That's why the mismatch bugs me, when it says a call did great and the human review says we missed a disclosure, that creates work for two people.
+
+Priya Raman  3:10
+Makes sense. Can you send me the rubric, even as a PDF or a screenshot? I want to take it to our PM with the actual wording, not my summary of it.
+
+Mark Delgado  3:24
+Yeah, I'll get it from Denise and send it over today or Monday.
+
+Priya Raman  3:28
+Perfect. And is the matching part the main pain, or is it the setup effort of rebuilding scorecards?
+
+Mark Delgado  3:37
+The matching, mostly. I don't mind doing setup once if it stays put.
+
+Priya Raman  3:43
+Okay. I'll log it as a request and keep you posted. No promises on timing, I haven't seen the the roadmap for that like, area.
+
+Mark Delgado  3:52
+Yeah, understood. I figured I'd raise it now rather than at renewal next June.
+
+Priya Raman  3:58
+Good timing actually, it's easier to push on when it's not urgent. Anything else on your list?
+
+Mark Delgado  4:04
+No, everything else is fine. Integrations are humming along. Uh, We're good.
+
+Priya Raman  4:09
+Great. So I'll send a recap, like, you'll get me the rubric, and I'll flag the January number port when you have the date.
+
+Mark Delgado  4:18
+So, Sounds good. Hey, are you doing anything for Halloween? My kids are already planning costumes.
+
+Priya Raman  4:27
+Ha, my nephew wants to be a fire truck. We'll see. Have a good weekend, Mark.
+
+Mark Delgado  4:34
+You too. Talk soon.

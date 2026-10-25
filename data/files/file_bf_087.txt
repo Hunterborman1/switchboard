@@ -1,0 +1,91 @@
+auto-transcript | rec_20261021_frontier_raw | duration 00:04:08 | speakers detected: 3
+
+Speaker 1  00:00:05
+hey monica hey andre. how's the week
+
+Speaker 2  00:00:19
+going over there Busy. Rates moved again Monday so our purchase pipeline um is doing that thing where everyone calls at once.
+
+Speaker 3  00:00:28
+yeah we were at what 41,000 inbound for the month through tuesday something like that eleven over forecast
+
+Speaker 1  00:00:37
+that's a lot. and you're still carrying that open req on the overnight desk right?
+
+Speaker 2  00:00:53
+two now denise finally got her start date pushed to november so we're running thin on late shifts
+
+Speaker 1  00:01:01
+okay anything you need from me on the routing side while you're short-staffed?
+
+Speaker 2  00:01:07
+no um honestly the thing i actually wanted to tell you about is pre sense the screen [inaudible] with the pages they were browsing
+
+Speaker 1  00:01:18
+okay.
+
+Speaker 2  00:01:19
+it's making a real difference for the loan officers catching the digital shoppers when somebody comes in already three pages deep on the rate calculator, the agent picks up knowing that, and those calls close way better
+
+Speaker 2  00:01:37
+our routed cohort is converting about, i think it was 2.4x the ones with no journey context last quarter andre has the exact slide.
+
+Speaker 3  00:01:47
+yeah it's in the ops review. the the officers who used to complain about the pop slowing down their answer time stopped complaining once they saw their own numbers
+
+Speaker 1  00:01:59
+that's good to hear so anything specific you want me to look at on the routing side or is it just working?
+
+Speaker 2  00:02:09
+just working i mostly wanted you to hear it's landing because i was skeptical in march [crosstalk]
+
+Speaker 1  00:02:18
+noted i'll [inaudible] back to the the team. have you all touched anything else since we last talked? [crosstalk]
+
+Speaker 3  00:02:25
+qm's fine call tracking's fine sales force sync is fine nothing's on fire
+
+Speaker 1  00:02:32
+good how's the loan application object holding up? that
+
+Speaker 3  00:02:36
+was the custom one the loan_app__c thing yeah it's been solid since rosa cleaned up the field mapping in the summer
+
+Speaker 2  00:02:47
+rosa's on leave actually back the second week of december
+
+Speaker 1  00:02:52
+okay so so if anything comes up there we go through andre
+
+Speaker 3  00:02:58
+You know that's me Or Tom on my team if I'm out
+
+Speaker 1  00:03:04
+got it. i mean, anything coming up before end of year that i should know about? um, hiring push anything?
+
+Speaker 2  00:03:13
+we're doing a small seasonal class in november, like twelve officers mostly for the [inaudible]
+
+Speaker 1  00:03:18
+do they need five nine seats set up or [inaudible] handled internally? [crosstalk]
+
+Speaker 2  00:03:24
+handled internally but i might ping you about onboarding material for them
+
+Speaker 1  00:03:30
+sure. do you want me to do a uh refresher session with the class in december, or wait until january?
+
+Speaker 3  00:03:38
+january um december's a mess with holidays. [crosstalk]
+
+Speaker 1  00:03:42
+Okay I'll put a hold on the calendar for mid-January Last thing is there anyone new on your side I should be talking to to?
+
+Speaker 2  00:03:53
+i i don't think so. i'll let you know if that changes
+
+Speaker 1  00:03:57
+perfect. i'll send the recap tomorrow and we'll talk in a couple weeks
+
+Speaker 2  00:04:04
+sounds good thanks aisha

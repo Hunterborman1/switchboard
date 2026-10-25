@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_140",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "the presense routing piece has been really good for us. we started sending the high intent callers, the ones who came off the pricing page or a google ad and actually clicked through, straight to our strongest schedulers instead of the general queue.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

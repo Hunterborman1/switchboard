@@ -1,0 +1,88 @@
+auto-transcript | audio_0923_frontier | duration 00:03:31 | speakers detected: 2
+
+Speaker 1  00:00:08
+hey monica how's the week going
+
+Speaker 2  00:00:10
+oh you know end of quarter so it's a little wild we're fine though
+
+Speaker 1  00:00:16
+i figured i [inaudible] the call volume ticked up looks like you're trending around 23,000 a month now
+
+Speaker 2  00:00:24
+yeah, 23 maybe 24 the refi wave from the rate drop in august is still working through
+
+Speaker 1  00:00:37
+nice how's the call center handling it? i know you had some hiring going on
+
+Speaker 2  00:00:44
+we brought on 22 new loan officers since june we're at about 180 now training is a whole thing.. gets easier every cohort though
+
+Speaker 1  00:00:53
+that's a big class is the routing holding up with all the new folks?
+
+Speaker 2  00:00:58
+yeah um, no complaints there i mean actually that's kind of what i wanted to tell you
+
+Speaker 1  00:01:07
+okay, go ahead
+
+Speaker 2  00:01:09
+uh so the presence piece when someone's been on the site looking at rates and they call in we route them by that intent to our top closers, and giving the agent that page history right in the screen pop it's made a real difference.
+
+Speaker 2  00:01:25
+Our close rate on those digital shoppers is up about 11% since we made that that change in July.
+
+Speaker 1  00:01:33
+that's great to hear the high-intent routing piece was something your ops team pushed for
+
+Speaker 2  00:01:40
+darnell's team, yeah. he's been on me to tell you it's working so there, uh, i told you
+
+Speaker 1  00:01:48
+ha well tell darnell i said thanks anything feeling rough on your end? not
+
+Speaker 2  00:01:54
+really signal ai's been fine salesforce handoff's fine. adobe's fine. it's just busy
+
+Speaker 1  00:01:59
+good. let me pull up the scorecards for a sec. qm still getting [inaudible] the coaching leads?
+
+Speaker 2  00:02:05
+mm um it's fine. the the leads use it i don't get in there much myself.
+
+Speaker 1  00:02:12
+you know understood uh and how's five nine holding up with
+
+Speaker 2  00:02:18
+the added seats fine, fine we added the five nine licenses same week no drama.
+
+Speaker 1  00:02:24
+okay do you want me to set up a i mean, quick session with the [inaudible] coaching leads on scorecards? twenty minutes maybe next week [crosstalk]
+
+Speaker 2  00:02:34
+yeah let's do that tuesday or wednesday morning works better before the phones get loud
+
+Speaker 1  00:02:40
+i'll send something for tuesday. oh, before i forget, you're still on the old google ad conversion setup you know for the home equity campaign um, right
+
+Speaker 2  00:02:49
+i think so [inaudible] world but yeah i don't think anything changed there
+
+Speaker 1  00:02:56
+okay you know i'll double-check on my side and loop him in if i see anything off
+
+Speaker 2  00:03:04
+perfect i've got to run to a pricing meeting in a few, but this was good
+
+Speaker 1  00:03:11
+Of course. I'll get the invite out today And seriously congrats on the close rate bump
+
+Speaker 2  00:03:19
+thanks darnell will be insufferable about it but thanks
+
+Speaker 1  00:03:22
+ha talk tuesday [crosstalk]
+
+Speaker 2  00:03:26
+yep talk then

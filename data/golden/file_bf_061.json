@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_061",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "I'd love it if we could just... have the dashboard metrics delivered automatically.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

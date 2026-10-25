@@ -1,0 +1,125 @@
+Frontier Home Lending escalation
+Mon, Oct 19, 2026, 3:30PM • 5:14
+
+Aisha Coleman  0:07
+Hey Stacy, hey Monica. How's the week going? Dallas still pretending it's summer?
+
+Monica Chen  0:12
+It was 91 on Saturday, so yes. Kids had a soccer thing, we were all melting.
+
+Stacy Klein  0:19
+I was inside all weekend, honestly. Working on the sandbox refresh.
+
+Aisha Coleman  0:24
+Okay so I know we had this on the calendar as an escalation, so so let me just get out of the way and ask what's going on.
+
+Monica Chen  0:37
+Yeah. I'll start. This is the thing that's been driving me nuts for about three weeks now.
+
+Monica Chen  0:43
+Our online application is a single-page app. You land on the marketing site, the Invoca tag does its thing, number swaps, all good.
+
+Monica Chen  0:53
+But the minute somebody navigates inside the app, like from the rate page to the pre-qual flow, the number flips back to our main 800 line.
+
+Aisha Coleman  1:05
+So it reverts after a client-side route change.
+
+Monica Chen  1:09
+It reverts. And we're not talking about a rounding error. Last month that's that's somewhere around 4,100 calls that hit the wrong number.
+
+Aisha Coleman  1:19
+Okay. And when you say the um, wrong number, they're landing on the general queue in Five9?
+
+Monica Chen  1:26
+General queue, yeah. So my loan officers on the digital campaign, they're sitting there and the calls are going somewhere else.
+
+Aisha Coleman  1:35
+How long has it been happening, do you know? Like when did you first notice?
+
+Stacy Klein  1:41
+I can jump in. I first saw it in Adobe, actually, the campaign source looked off. That was, what, the 28th? End of September.
+
+Monica Chen  1:51
+I remember because it was right before the quarter closed and I I was already in a bad mood.
+
+Aisha Coleman  1:59
+And Stacy, on the Salesforce side, are the call records still writing to the Loan Application object?
+
+Stacy Klein  2:08
+They are. That part's fine. It's just the wrong queue attached to them half the time, so the routing and the reporting don't line up.
+
+Aisha Coleman  2:18
+Okay. So let me ask a couple things and then I'll take it back to the team.
+
+Aisha Coleman  2:26
+Is it every in-app navigation, or specific pages?
+
+Monica Chen  2:31
+I want to say specific ones. The pre-qual and the rate calculator, definitely. The thank-you page, I I think it holds.
+
+Stacy Klein  2:38
+It's not the thank-you page. I tested that Friday.
+
+Monica Chen  2:43
+Okay, so not that one.
+
+Aisha Coleman  2:45
+And does it ever come back to the right number on its own, or does it stay on the default until they leave?
+
+Monica Chen  2:55
+Stays. Once it's back to the 800, it's the 800 for the rest of the session. Unless they hard refresh, then it's fine again.
+
+Aisha Coleman  3:03
+That's helpful. I'm writing this down. What I'd like to do is get you on with the support engineer who owns the tag, and I want to have a a session recording if you have one from the last week or two.
+
+Stacy Klein  3:21
+I can pull one. I've got a HAR file from the 14th, too, if that helps.
+
+Aisha Coleman  3:28
+It helps. Send it to me and I'll attach it to the case um, so it doesn't get bounced around.
+
+Monica Chen  3:37
+Thank you. Because I've been going back and forth on email with somebody for a week and a half and I don't think they understood it was the route change.
+
+Aisha Coleman  3:50
+Yeah, and that's on us. I'll own the case from here.
+
+Aisha Coleman  3:54
+Other than this, how's everything else sitting? PreSense, QM?
+
+Monica Chen  3:58
+Fine. No issues.
+
+Aisha Coleman  4:00
+Good. And I saw the volume report, you're tracking around 61,000 calls a a month now, that's up from the spring.
+
+Monica Chen  4:09
+Up about 8 percent. We added eleven loan officers in September, so that tracks.
+
+Stacy Klein  4:15
+Which reminds me, I still owe you the updated seat list for QM. I'll get that over this week.
+
+Aisha Coleman  4:25
+No rush, just before the end of the month so the the invoice is clean.
+
+Monica Chen  4:31
+And we should probably do the next business review in person. I'm tired of staring at a screen.
+
+Aisha Coleman  4:40
+I'm in. I'll send some dates. Maybe early December, before everyone disappears for the holidays.
+
+Monica Chen  4:46
+Um, Works for me.
+
+Aisha Coleman  4:48
+Okay, so to recap from my side: Stacy sends the HAR and a session recording, I open the case and get the tag engineer looped in, and I come back to you with next steps by Wednesday.
+
+Monica Chen  5:02
+Perfect. Thanks Aisha.
+
+Aisha Coleman  5:04
+Of course. And Monica, sorry you've been chasing this. We'll get it sorted.
+
+Monica Chen  5:09
+Appreciate it. Talk soon.

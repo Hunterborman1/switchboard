@@ -1,0 +1,80 @@
+Meridian Health Partners check-in
+Tue, Oct 13, 2026, 9:00AM • 4:03
+
+Priya Raman  0:05
+Morning, Lauren. How's Nashville treating you you? Still that early fall humidity?
+
+Lauren Whitfield  0:10
+Oh, you know, it's that weird week where everybody's got a hoodie and flip flops in the same parking lot. Busy though. We're deep in flu shot season.
+
+Priya Raman  0:24
+Right, I saw call volume ticked up last week. Let me pull it up... yeah, you're running like 14,200 calls a month across the 38 clinics now, up from about 12,800 in August.
+
+Lauren Whitfield  0:35
+That tracks. Central scheduling's been slammed. We've got two new hires on the Genesys side starting next Monday, so hopefully that eases things.
+
+Priya Raman  0:44
+Nice. Okay so, agenda-wise, I mostly wanted to check in on how QM scorecards are landing and see if anything's shifted on the redaction side.
+
+Lauren Whitfield  0:54
+Scorecards are fine. Coaches are using them. The redaction thing, though... that's actually the one I wanted to talk about.
+
+Priya Raman  1:03
+Go ahead.
+
+Lauren Whitfield  1:05
+So here's the thing. We've got our BAA, we've got redaction turned on, but it's, um, it's all or nothing right now. Either you see the redacted version or you uh, basically shouldn't be in the transcript at all.
+
+Priya Raman  1:22
+Got it. And who's hitting that wall?
+
+Lauren Whitfield  1:25
+So, our compliance team. They need to pull actual member identifiers sometimes. A date of birth, a member ID, uh, something that got said on the call. Right now if I want them to see it, I have to give them the same view our schedulers have, and that's... no.
+
+Priya Raman  1:44
+Yeah, that's a permissions problem more than a redaction problem.
+
+Lauren Whitfield  1:49
+Exactly. What I want, and I've said this to my team, is configurable redaction where, like, you pick which fields get masked, and then role-based access so only compliance sees the unredacted transcript. Like, Not the scheduling director, not me. Compliance.
+
+Priya Raman  2:04
+And an audit trail on who viewed what, I'm guessing?
+
+Lauren Whitfield  2:09
+Yes. If compliance pulls an unredacted call, we need to know who, when, why. Our auditors will ask. They always ask.
+
+Priya Raman  2:19
+Okay. Let me make sure I've got it. Configurable field-level redaction, role-based visibility so unredacted stays with compliance, and an audit log on access. That's the ask.
+
+Lauren Whitfield  2:28
+That's it. And I'll be honest, this is the kind of thing that, I mean, when we um, were evaluating, we assumed would come. It's not a dealbreaker. It's just... we're a health system. It comes up in every privacy review.
+
+Priya Raman  2:44
+That's fair. Let me take this back to to the product team. I don't want to promise anything on timing, but I mean, I'll get it written up properly with your language um, and see where it lands.
+
+Lauren Whitfield  2:57
+Appreciate it. And to be clear, no urgency on our end this quarter. Just want it on the map.
+
+Priya Raman  3:06
+Um, Noted. Anything else feeling off? PreSense screen pops, Google Ads, Salesforce?
+
+Lauren Whitfield  3:11
+Um, PreSense is good. Agents like it. Google Ads is fine. Salesforce, no complaints I've heard.
+
+Priya Raman  3:18
+Great. I'll send a recap by end of day. Oh, and one logistics thing, your Q4 business review, do you want it the week of November 9th or the 16th?
+
+Lauren Whitfield  3:29
+The 16th. I'm out the week before at a conference in Dallas.
+
+Priya Raman  3:34
+You know, Perfect, I'll get it on the calendar. I'll also loop in our privacy folks on the redaction write-up so the language is right.
+
+Lauren Whitfield  3:44
+Good. And hey, tell your team thanks for the quick turnaround on that last support ticket. The duplicate call records thing.
+
+Priya Raman  3:52
+I will. Alright, go enjoy the hoodie-and-flip-flops weather. Talk soon.
+
+Lauren Whitfield  3:57
+Ha, so, will do. Bye, Priya.

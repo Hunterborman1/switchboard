@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_165",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "medium",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "dynamic number insertion isn't picking up the number changes after client-side route changes on the new single-page order flow and on mobile the click-to-call ends up dialing the default number instead of the campaign one",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_162",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "So the ask, and it's not urgent, is a way to have that dashboard land in my inbox or in Looker on a schedule.",
+      "owner": "ppl_nina"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+      "quote": "When the Voice Agent hands a call off to one of my people, the notes don't come with it.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

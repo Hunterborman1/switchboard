@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:03.620 --> 00:00:07.773
+Aisha Coleman: Morning, Jason. How's the rain treating you up in Tacoma?
+
+2
+00:00:08.045 --> 00:00:15.734
+Jason Park: Oh, you know, it's October in the Northwest. My commute was basically a car wash. How about you?
+
+3
+00:00:16.284 --> 00:00:23.852
+Aisha Coleman: Sunny down here in Denver, sorry. Okay, so, before we get into it it, how did the member call volume look in September?
+
+4
+00:00:24.425 --> 00:00:32.704
+Jason Park: Let me pull it up... yeah, we ended around 18,400 tracked calls. That's up about six percent from August.
+
+5
+00:00:33.335 --> 00:00:36.096
+Aisha Coleman: Nice. Is that mostly the auto loan campaign?
+
+6
+00:00:36.712 --> 00:00:48.144
+Jason Park: Um, Mostly, yeah. And the HELOC stuff picked up a little. Oh, and we had a staffing change, uh, Marcia left the contact center, so Dana's covering her queues for now.
+
+7
+00:00:48.958 --> 00:00:57.091
+Aisha Coleman: Got it. Do you need me to send anything over for the new folks, like a refresher on the QM side?
+
+8
+00:00:57.718 --> 00:01:05.141
+Jason Park: Maybe later. Right now I want to talk about something that's been bugging me for a couple of weeks.
+
+9
+00:01:05.869 --> 00:01:06.669
+Aisha Coleman: Sure.
+
+10
+00:01:07.596 --> 00:01:18.549
+Jason Park: So our Salesforce sync, the standard stuff, Leads, uh, Contacts, those all look fine. But the custom objects we built for loan inquiries and member outreach? They just stopped getting call data.
+
+11
+00:01:19.222 --> 00:01:21.273
+Aisha Coleman: When did you first notice?
+
+12
+00:01:22.339 --> 00:01:31.318
+Jason Park: About two weeks ago. And here's the thing, it only broke after we added a field and changed a picklist on those objects.
+
+13
+00:01:31.318 --> 00:01:33.270
+Jason Park: Standard objects are totally fine.
+
+14
+00:01:34.482 --> 00:01:37.992
+Aisha Coleman: So the writes just aren't landing on the custom objects.
+
+15
+00:01:39.285 --> 00:01:49.952
+Jason Park: Correct. Nothing in Salesforce. We can see the calls in Invoca, but nothing shows up on the custom side. It's a gap for my reporting and it's driving me a little nuts.
+
+16
+00:01:51.411 --> 00:02:02.524
+Aisha Coleman: Okay, that's helpful. Can you send me the object names and the fields you changed? I'll hand it to uh, the integrations team with your examples so they can dig in.
+
+17
+00:02:02.962 --> 00:02:12.911
+Jason Park: Yeah, I'll email you today. Honestly it's medium at worst, the standard objects cover most of what we need, but I do want it on the the radar.
+
+18
+00:02:14.113 --> 00:02:21.676
+Aisha Coleman: Understood. I'll log it and come back to you with next steps. Separately, how's the QM scoring going?
+
+19
+00:02:22.813 --> 00:02:28.317
+Jason Park: Good. Compliance signed off on the scorecard changes last month, so we're set there.
+
+20
+00:02:29.042 --> 00:02:32.211
+Aisha Coleman: Great. And the Signal AI signals, still behaving?
+
+21
+00:02:32.723 --> 00:02:41.755
+Jason Park: Yeah, um, those are fine. Oh, one small thing... can we move our next session to the 30th? I've got a board prep thing on the 23rd.
+
+22
+00:02:42.845 --> 00:02:45.820
+Aisha Coleman: The 30th works. I'll send an updated invite.
+
+23
+00:02:46.630 --> 00:02:51.142
+Jason Park: Perfect. So you'll follow up on the Salesforce thing once you hear back?
+
+24
+00:02:52.073 --> 00:02:58.515
+Aisha Coleman: Yep, I'll keep you posted. And if Dana needs anything on the QM side, just point her my way.
+
+25
+00:02:59.981 --> 00:03:01.423
+Jason Park: Will do. Thanks, Aisha.
+
+26
+00:03:02.506 --> 00:03:04.444
+Aisha Coleman: Anytime. Stay dry out there.

@@ -1,0 +1,56 @@
+{
+  "fileId": "file_c1042",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Offline conversions reach Google Ads two to three days after the call, so Smart Bidding swings on stale data; CPA up from ~$85 to ~$120.",
+      "quote": "the offline conversions are showing up two, sometimes three days after the call",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail is pitching same-day conversion sync to Google Ads.",
+      "quote": "CallRail's been emailing me, like, every week. Their rep keeps telling me they push conversions to Google same day.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Signal AI tags after-hours callers as spam; 31 of 40 sampled were real customers booking jobs.",
+      "quote": "Signal AI is tagging a lot of our after-hours calls as spam, and they're not spam.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance asks why PreSense is an add-on ahead of renewal: \"feels like paying twice.\"",
+      "quote": "he asked me why PreSense is an add-on at all. His words were, it feels like paying twice.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Dispatchers love AI call summaries; saves each about an hour a day.",
+      "quote": "the dispatchers love them. Like, genuinely.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Hedged: if the Google Ads delay is not fixed by renewal they will look at alternatives.",
+      "quote": "if the Google piece isn't fixed by renewal, we'll have to look around.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

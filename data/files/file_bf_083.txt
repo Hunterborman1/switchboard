@@ -1,0 +1,31 @@
+Frontier notes 10/6
+
+monica + andre, 11:30
+
+volumes: sept 41.2k calls, up 6% mom. peak mon/tue 9-11a. andre short two on the overnight five9 queue, training class of 4 starts 10/19.
+
+monica: "we're exporting the presense and qm numbers to csv every monday and then someone hand-builds the same deck. what i'd really want is a scheduled export into google sheets, so the branch vps open a link & it's just there."
+
+Andre on the same: "Same for me, I pull the Five9 side by hand. If I could point Looker or Sheets at it on a schedule, that's my Monday gone."
+
+aisha: asked whether daily or weekly, which fields, who consumes it. taking it back to the team, no promise on timing.
+
+rest of the qm side: fine. signal ai catching appointment booked & quote given as expected. salesforce loan application objects writing clean, no dupes since the august mapping pass.
+
+Pasted from this morning's spot check (call 10/6 08:14):
+agent: "...so the rate lock is 45 days, & i can email you the disclosure today."
+CALLER: "Okay. & the appraisal, is that out of pocket?"
+agent: "it is, i'll put the number in writing."
+
+Email thread, Andre to Aisha, 10/3:
+"Aisha, heads up, we have a compliance walkthrough the week of 11/9. Can you confirm the QM scorecard version we're on before then?"
+
+To-do:
+- send monica the sheets export question in writing
+- check scorecard version for Andre, before 11/9
+- cnfirm 10/19 training headcount, does overnight need coverage
+- Nov check-in? Monica out 11/20-11/27
+
+Tangent: Monica's moving the Dallas office to a smaller floor in January, contact center staying put.
+
+renewal 4/30/27, nothing to do yet.

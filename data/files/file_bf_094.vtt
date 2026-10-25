@@ -1,0 +1,157 @@
+WEBVTT
+
+1
+00:00:06.104 --> 00:00:11.789
+Aisha Coleman: Hi Denise, thanks for making the time. How's the week going over there?
+
+2
+00:00:13.283 --> 00:00:19.280
+Denise Morales: Busy. We're down two people on the member care floor, so everyone's picking up extra shifts.
+
+3
+00:00:20.352 --> 00:00:25.510
+Aisha Coleman: That's a lot. Is that temporary coverage or are you hiring for those seats?
+
+4
+00:00:26.702 --> 00:00:34.903
+Denise Morales: Hiring, but you know how it goes. Interviews take forever in our HR process. Should be filled by November, hopefully.
+
+5
+00:00:36.121 --> 00:00:47.952
+Aisha Coleman: Got it. I pulled the numbers before this call so we could walk through them together. Last quarter Harbor had about 61,000 inbound calls across all campaigns.
+
+6
+00:00:47.952 --> 00:00:50.580
+Aisha Coleman: Does that match what you're seeing?
+
+7
+00:00:51.587 --> 00:00:59.166
+Denise Morales: Roughly. I think we were closer to 63,000 if you count the overflow line for the loan team.
+
+8
+00:01:00.365 --> 00:01:11.833
+Aisha Coleman: Okay, I'll check whether that number is pulling into the same campaign group. And the Google Ads side, you're still sending conversions back for the Smart Bidding campaigns?
+
+9
+00:01:13.322 --> 00:01:17.830
+Denise Morales: Yes, that's still running the way it was. We haven't touched it.
+
+10
+00:01:19.047 --> 00:01:25.519
+Aisha Coleman: Good. How about Salesforce? Any changes on the Financial Services Cloud side since we talked in June?
+
+11
+00:01:26.464 --> 00:01:31.651
+Denise Morales: No, same setup. Call records land on the member record like before.
+
+12
+00:01:32.750 --> 00:01:39.708
+Aisha Coleman: Okay. Let me switch to the quality management piece, since that's what we set aside most of the hour for.
+
+13
+00:01:40.758 --> 00:01:45.613
+Denise Morales: Yes, please. That's the part I actually wanted to talk through.
+
+14
+00:01:46.871 --> 00:01:49.098
+Aisha Coleman: Tell me what's been coming up.
+
+15
+00:01:49.960 --> 00:02:02.280
+Denise Morales: So our QA team has a rubric they've used for years, before we ever had software scoring calls. It has specific things they listen for on each call type.
+
+16
+00:02:02.280 --> 00:02:13.750
+Denise Morales: A HELOC inquiry has different checkpoints than a fraud report or a card dispute. Right now the scorecard in the platform doesn't map to any of that.
+
+17
+00:02:15.024 --> 00:02:18.200
+Aisha Coleman: When you say specific checkpoints, what kinds of things?
+
+18
+00:02:18.981 --> 00:02:30.314
+Denise Morales: Exact disclosures. Reg Z language on lending calls, the fraud liability script, the identity verification steps. Word for word matters to us, not just the gist of it.
+
+19
+00:02:30.314 --> 00:02:34.361
+Denise Morales: If an agent paraphrases, that's a finding in our rubric.
+
+20
+00:02:35.721 --> 00:02:39.476
+Aisha Coleman: And the scoring today doesn't let you build that granularity in?
+
+21
+00:02:40.403 --> 00:02:56.149
+Denise Morales: Not at the level we need. We'd want to define the criteria ourselves, per call type, and weight them. The identity verification piece should carry more weight on a fraud call than it does on a general servicing question.
+
+22
+00:02:56.149 --> 00:03:08.664
+Denise Morales: Right now everything's scored the same way across the board and our compliance reviews come back asking why the scores don't line up with what the QA team would have given.
+
+23
+00:03:09.578 --> 00:03:17.525
+Aisha Coleman: So the ask is essentially: let Harbor build scorecards that mirror your existing rubric, with call-type specific questions and weighting.
+
+24
+00:03:18.571 --> 00:03:26.891
+Denise Morales: That's it exactly. If the platform's scoring lined up with the rubric my team already uses, we wouldn't have to run two parallel QA processes.
+
+25
+00:03:26.891 --> 00:03:31.882
+Denise Morales: And our compliance reviews would get simpler because there'd be one number instead of two.
+
+26
+00:03:32.428 --> 00:03:35.758
+Aisha Coleman: How often does compliance review the scorecards today?
+
+27
+00:03:36.225 --> 00:03:47.389
+Denise Morales: Every time we change one. Our internal audit group signs off on any scoring change before it goes live, so we've been pretty conservative about what we adjust.
+
+28
+00:03:48.479 --> 00:03:59.344
+Aisha Coleman: Understood. I'm going to write this up for our product team with the examples you gave, Reg Z, fraud liability, identity verification, and the weighting piece.
+
+29
+00:03:59.344 --> 00:04:05.194
+Aisha Coleman: Can I use Harbor's name in that write-up, or do you want it anonymized?
+
+30
+00:04:06.546 --> 00:04:09.923
+Denise Morales: You can use our name. No issue there.
+
+31
+00:04:10.684 --> 00:04:19.566
+Aisha Coleman: Great. I can't promise a timeline from here, but I'll get it in front of the right people and let you know what I hear back.
+
+32
+00:04:19.566 --> 00:04:21.616
+Aisha Coleman: Anything else on the QA side?
+
+33
+00:04:22.059 --> 00:04:27.830
+Denise Morales: No, that's the one. Everything else on that end is working the way we expect.
+
+34
+00:04:28.371 --> 00:04:42.228
+Aisha Coleman: Okay. Last thing from my side, your renewal comes up in February 2027. We don't need to do anything now, but I'll start the internal prep on that after the first of the year so it's not a scramble.
+
+35
+00:04:43.308 --> 00:04:52.361
+Denise Morales: That works. I'll be on leave the first two weeks of January, so maybe aim for the back half of the month.
+
+36
+00:04:52.679 --> 00:05:01.698
+Aisha Coleman: Noted, back half of January. Do you want me to send a recap of today with the numbers and the scorecard request?
+
+37
+00:05:02.130 --> 00:05:07.240
+Denise Morales: Yes, send it to me and I'll forward it to my director.
+
+38
+00:05:08.254 --> 00:05:11.647
+Aisha Coleman: Will do, probably this afternoon. Thanks for the time, Denise.
+
+39
+00:05:12.265 --> 00:05:13.664
+Denise Morales: Thanks, Aisha. Talk soon.

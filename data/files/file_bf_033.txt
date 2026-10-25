@@ -1,0 +1,25 @@
+Brightline Home Services / Invoca | exec sponsor | Fri, Oct 23, 2026
+
+[00:00:06] Marcus Bell: Morning, Dana. How's the week going?
+[00:00:09] Dana Ortiz: Morning. Busy. We're in shoulder season so the HVAC side is steady but plumbing is picking up. How about you?
+[00:00:17] Marcus Bell: Same, same. I saw call volume ticked up about six percent last month across the branches. Anything unusual on your end?
+[00:00:26] Dana Ortiz: No, that tracks. We added two techs in Raleigh and one in Greensboro, so the routing feels better. Still, I wanted to talk through a couple of things that came up this week.
+[00:00:40] Marcus Bell: Sure. Go ahead.
+[00:00:42] Dana Ortiz: First one is on the Google Ads side. The offline conversions we send from Invoca are landing in Google one to three days after the call. So Smart Bidding is optimizing on data that's already stale by the time it gets there.
+[00:00:58] Marcus Bell: Okay, so the conversions are delayed. Is that every call or just some?
+[00:01:03] Dana Ortiz: Looks like most of them. I noticed it in the weekly numbers because our cost per booked job was creeping up even though call quality looked fine. Then our CMO pulled the report and asked why the bid strategy was leaning so hard on the cheap stuff.
+[00:01:23] Marcus Bell: Got it. And when did you first see the lag?
+[00:01:28] Dana Ortiz: Maybe three weeks ago. I didn't flag it right away because I thought it was a Google reporting delay. But it's consistent.
+[00:01:36] Marcus Bell: Let me pull the integration logs and check the timestamps on our side. I'll get back to you by Tuesday with what I find. Does that work?
+[00:01:47] Dana Ortiz: Tuesday's fine. The other thing is bigger. Finance and procurement went line by line through this year versus last year, and they're pushing back on paying separately for PreSense, QM seats, AI Voice Agent minutes. They want one number at renewal.
+[00:02:04] Marcus Bell: I hear that. When you say one number, are they asking for a bundle or just a single line item?
+[00:02:13] Dana Ortiz: Honestly, either. They don't want to see add-ons stacked on top of the base. They compared the two invoices and the delta was mostly the add-ons. So now every conversation about renewal starts with that.
+[00:02:28] Marcus Bell: Okay. I can bring that to our pricing team and see what options exist. I can't promise anything today, but I'll take it back.
+[00:02:38] Dana Ortiz: That's all I'm asking. Just don't come back with a three percent increase and call it a bundle.
+[00:02:45] Marcus Bell: Noted. Anything else on your list?
+[00:02:47] Dana Ortiz: No, that's it. PreSense has been fine since we turned it on. The agents like the screen pop.
+[00:02:56] Marcus Bell: Good. I'll also check in with your ops lead about the Q1 staffing plan. I know you mentioned adding hours in the Charlotte branch.
+[00:03:07] Dana Ortiz: Yeah, we're still figuring that out. Probably early December before we post the req.
+[00:03:12] Marcus Bell: Okay. I'll send a calendar note for a check-in the first week of November, and I'll have an update on the Google Ads timing by Tuesday.
+[00:03:25] Dana Ortiz: Perfect. Thanks, Marcus.
+[00:03:26] Marcus Bell: Talk soon.

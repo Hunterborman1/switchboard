@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_166",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "medium",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "Ideally Looker, but honestly Google Sheets would cover it for the exec view. The point is it shows up on a schedule.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:04.975 --> 00:00:10.773
+Rachel Okafor: Morning, Sanjay. How was the weekend? Did you end up going to that Hartford marathon thing?
+
+2
+00:00:11.220 --> 00:00:18.649
+Sanjay Iyer: Hey Rachel. Um, no, uh, I skipped it. My knee's been acting up. Just watched my neighbor run by. How about you?
+
+3
+00:00:18.996 --> 00:00:23.466
+Rachel Okafor: Pretty quiet. I finally got my garden beds cleaned out. Uh, Thrilling stuff.
+
+4
+00:00:24.880 --> 00:00:30.519
+Sanjay Iyer: Ha. So, um, um, I wanted to talk about something that's been biting us.
+
+5
+00:00:31.497 --> 00:00:32.589
+Rachel Okafor: Sure. Go ahead.
+
+6
+00:00:33.729 --> 00:00:39.316
+Sanjay Iyer: It's the PreSense screen pop. We're seeing something weird with blind transfers between queues.
+
+7
+00:00:39.973 --> 00:00:42.542
+Rachel Okafor: Okay. Tell me more about what's happening.
+
+8
+00:00:43.473 --> 00:01:01.430
+Sanjay Iyer: So when a call comes in, the first agent sees the digital journey fine, ad, pages, all of it. But when they blind transfer to another queue, or even to another agent in a different queue, the receiving agent gets a blank pop.
+
+9
+00:01:02.649 --> 00:01:07.349
+Rachel Okafor: Blank as in no data at all, or just missing the journey part?
+
+10
+00:01:07.592 --> 00:01:19.862
+Sanjay Iyer: No data. You know, Empty box. Like it never fired. And this is happening on maybe one in five transfers. It's not every time, but it's enough that our Medicare team is losing context.
+
+11
+00:01:20.532 --> 00:01:27.814
+Rachel Okafor: Okay. And is this on the Genesys side, like, or are you seeing it in Invoca logs too?
+
+12
+00:01:29.089 --> 00:01:37.922
+Sanjay Iyer: Genesys side, um, from what we can tell. The agent just gets nothing. We've had a couple of calls where the member had to repeat everything.
+
+13
+00:01:37.922 --> 00:01:38.602
+Sanjay Iyer: Not great.
+
+14
+00:01:39.847 --> 00:01:47.155
+Rachel Okafor: Yeah, I can see how that would be frustrating. Can you send me a few example call IDs?
+
+15
+00:01:47.764 --> 00:01:55.632
+Sanjay Iyer: I can get you those. Give me until tomorrow. Our telephony guy, Dev, um, he's been tracking it.
+
+16
+00:01:56.441 --> 00:02:00.535
+Rachel Okafor: Perfect. And is it happening across all queues or just specific ones?
+
+17
+00:02:01.007 --> 00:02:10.420
+Sanjay Iyer: Mostly the ones that transfer between Medicare and P&C. But I think it's any blind transfer. We saw it on a Spanish queue too.
+
+18
+00:02:10.739 --> 00:02:20.961
+Rachel Okafor: Got it. I'll take this back to our team. I don't want to guess at a cause, but I'll get you you a case number today.
+
+19
+00:02:22.334 --> 00:02:33.497
+Sanjay Iyer: Appreciate that. On a lighter note, we're finally seeing call volumes settle after the AEP ramp. About 12,000 calls last um, week, which is down from the peak but but still healthy.
+
+20
+00:02:33.948 --> 00:02:41.387
+Rachel Okafor: That's good to hear. How's the QM rollout going? Last time we talked it was a bit behind.
+
+21
+00:02:42.302 --> 00:02:48.877
+Sanjay Iyer: Still behind. We're at 40 seats out of the 130. Training's the bottleneck. But that's on us, not you.
+
+22
+00:02:50.227 --> 00:02:55.955
+Rachel Okafor: Um, okay. Let me know if you want me to set up a refresher for the supervisors.
+
+23
+00:02:56.644 --> 00:03:00.185
+Sanjay Iyer: Maybe in October. We're stretched thin with open enrollment prep.
+
+24
+00:03:01.341 --> 00:03:05.316
+Rachel Okafor: Understood. I'll send the case number and we can go from there.
+
+25
+00:03:05.717 --> 00:03:09.200
+Sanjay Iyer: Thanks. And hey, tell your garden I said good luck.
+
+26
+00:03:10.198 --> 00:03:12.304
+Rachel Okafor: Will do. Talk soon, Sanjay.

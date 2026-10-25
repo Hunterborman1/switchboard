@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_024",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "So when a call comes in and our Genesys flow hands it off between queues, or a rep warm transfers it to somebody else, the second agent gets the pop but there's nothing in it. Just an empty frame.",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

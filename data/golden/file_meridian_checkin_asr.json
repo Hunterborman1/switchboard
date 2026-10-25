@@ -1,0 +1,24 @@
+{
+  "fileId": "file_meridian_checkin_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Salesforce Health Cloud sync fails on the custom Referral object; referral source blank.",
+      "quote": "the salesforce health cloud sync keeps failing on our custom referral object so the referral source is blank",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Wants QM to flag when a scheduler does not offer the telehealth option.",
+      "quote": "i'd like qm to flag when a scheduler doesn't offer the telehealth option, that's a new policy for us",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

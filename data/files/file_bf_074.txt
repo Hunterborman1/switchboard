@@ -1,0 +1,97 @@
+auto-transcript | audio_1008_evergreen | duration 00:04:18 | speakers detected: 3
+
+Speaker 1  00:00:02
+hey kyle, hey ashley. how's the week going out there in raleigh?
+
+Speaker 2  00:00:08
+busy termite season doesn't really quit around here um so you know. ashley's got the dashboard open i think.
+
+Speaker 3  00:00:16
+i do i was just pulling september numbers before you you got on. we're at about 3,100 calls for the month across the six locations which is up from august. [crosstalk]
+
+Speaker 1  00:00:30
+nice. that's a decent jump. is that that mostly the google ads push you had running?
+
+Speaker 3  00:00:36
+yeah the charlotte and and durham campaigns um, the greensboro one is still kind of flat but we're working on it
+
+Speaker 2  00:00:46
+which um, speaking of working on it, uh, i wanted to bring something up i don't know if i mean it's a me thing or a you thing.
+
+Speaker 1  00:00:55
+okay, go ahead.
+
+Speaker 2  00:00:57
+so the spam filtering in signal ai it's flagging real customers as spam and i mean real, booked-job customers.
+
+Speaker 1  00:01:05
+huh okay what are you seeing exactly?
+
+Speaker 2  00:01:10
+it's the after-hours and weekend stuff mostly uh people call at like 9 pm about a a wasp nest nobody picks up, they hang up and call right back. second [inaudible] tagged spam and it just.. vanishes from the reporting. so ashley's numbers don't match what actually came in
+
+Speaker 3  00:01:26
+And it's not a small thing Last weekend I counted four of those and one of them turned into a $600 job. I only found it because the guy called back Monday and asked why nobody called him back So the callback pattern,
+
+Speaker 1  00:01:43
+same number short gap that's what's getting tagged
+
+Speaker 2  00:01:47
+So that's my read on it I'm not a data guy but that's the pattern I see when I I go digging
+
+Speaker 1  00:01:55
+okay. can you send me a couple of those call ids? even three or four would help me pull examples
+
+Speaker 3  00:02:05
+yeah, i can get you those today i've got a spreadsheet going already honestly, because it kept happening
+
+Speaker 1  00:02:13
+perfect i'll take it to the the team and see what they they say i can't promise a timeline on my end but i'll get it it in front of the right people
+
+Speaker 2  00:02:27
+that's all i ask i just don't want to be so sitting here in three months explaining to my ops guy why we're missing jobs.
+
+Speaker 1  00:02:36
+i mean understood anything else on the reporting side feel off?
+
+Speaker 3  00:02:41
+no, the rest is fine. like, attribution's matching up with google adds like it should.
+
+Speaker 1  00:02:48
+good how's the team holding up otherwise? i know you had somebody out
+
+Speaker 2  00:02:54
+yeah one of our techs todd he's out till the 19th with a knee thing. so we're running five techs across six locations, which is fun
+
+Speaker 3  00:03:06
+it's fine, we're just routing more to the raleigh crew calls are still getting answered mostly
+
+Speaker 1  00:03:13
+okay and your next session do you want to keep it on the second thursday? that'd be november 12 [crosstalk]
+
+Speaker 3  00:03:21
+the 12th works i mean same time?
+
+Speaker 1  00:03:31
+same time i'll send the invite
+
+Speaker 2  00:03:35
+oh hey before i forget unrelated you ever deal with a raccoon in an attic? because i had one last week at my my uh own house, so, not a customer, and it was a whole production
+
+Speaker 1  00:03:50
+ha um no i grew up in the city uh, my my raccoon experience is limited to trash cans
+
+Speaker 2  00:03:57
+lucky you anyway
+
+Speaker 1  00:04:00
+alright so i'll grab those call ids from ashley and i'll follow up once i i hear something
+
+Speaker 3  00:04:08
+sounds good i'll email them over this afternoon.
+
+Speaker 2  00:04:12
+appreciate it marcus
+
+Speaker 1  00:04:12
+yep talk soon, so, both of you

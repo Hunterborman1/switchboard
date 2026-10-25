@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_062",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "high",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "The dynamic number insertion just stops swapping. After someone navigates within the app, the number on the page stays whatever it was when the page first loaded. So if they click through to checkout and then call, it's the original number, not the campaign one.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "praise",
+      "productArea": "ai_agents",
+      "severity": "low",
+      "summary": "Specific praise of AI Voice Agent adoption",
+      "quote": "Oh, and tell your team the AI Voice Agent's been a nice surprise. Callers actually use it.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

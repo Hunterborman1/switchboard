@@ -1,0 +1,83 @@
+Frontier Home Lending check-in
+Tue, Oct 13, 2026, 3:30PM • 3:53
+
+Aisha Coleman  0:03
+Hey Andre, hey Victor. Sorry, I was on mute for a a second there. How's Dallas treating you this week?
+
+Andre Williams  0:11
+Hot for October, but we'll take it. Victor, you just get back from somewhere?
+
+Victor Huang  0:19
+San Antonio yesterday, examiner uh, meetings. Long day. I'm mostly listening today, but I did want to grab fifteen minutes of your time on one thing.
+
+Aisha Coleman  0:28
+Um, Of course. Let me pull the account up... So, okay. So before we get into that, Andre, how are volumes looking this month?
+
+Andre Williams  0:38
+Up. We did about 14,200 inbound calls in September, and I think we're tracking maybe six percent over that for October. Purchase is carrying it, refi is still soft.
+
+Aisha Coleman  0:50
+And that's across the 180 loan officers on Five9, all PreSense screen pops?
+
+Andre Williams  0:56
+All of them. Well, except the eleven new hires from the October class, they're still in nesting. Should be live by the first week of November.
+
+Aisha Coleman  1:08
+Got it. Do they need anything from me before they go live, or is that handled internally?
+
+Andre Williams  1:15
+Handled. Renata runs uh, the new hire uh, training, she's got the routing piece down. We're fine there.
+
+Aisha Coleman  1:22
+Okay. You know, and attribution side, anything weird coming into uh, Salesforce from the call records?
+
+Andre Williams  1:29
+No, that's been clean. The loan application object is populating the way we expect.
+
+Aisha Coleman  1:35
+Good. Victor, you had something.
+
+Victor Huang  1:38
+Yeah. So this is more of a, I don't know how to phrase it, a um, request than a problem. We're using the QM scorecards for compliance review, right? You know, Every scored call gets the same scorecard.
+
+Aisha Coleman  1:53
+Right.
+
+Victor Huang  1:55
+The trouble is a purchase pre-approval call and a servicing transfer look nothing alike. We've got a scorecard that's trying to cover both, um, and the scoring gets muddy. What I'd want is to set up my own criteria, so a different scorecard fires depending on the call type.
+
+Aisha Coleman  2:15
+When you say your own criteria, are you talking about the questions on the scorecard, or the weighting of them?
+
+Victor Huang  2:23
+Both, honestly. The exact disclosures we're required to read, those need to be in there verbatim. And the weighting, because right now a I mean, missed disclosure and a missed greeting count the same, which makes the compliance report useless to my examiners.
+
+Aisha Coleman  2:41
+Okay, that's helpful. I mean, so call type drives which scorecard, and within each one you want to control the criteria and how much each weighs.
+
+Victor Huang  2:53
+Yes. And to be clear, this is low on my list. Nothing's broken, we just do a lot of manual workaround right now.
+
+Aisha Coleman  3:03
+Understood. I don't want to promise anything on the um, call, but I'll write it up and get it in front of the product team. Can I come back to you with questions if they have any?
+
+Victor Huang  3:17
+Please. Copy Andre, he owns the scoring process day to day.
+
+Andre Williams  3:21
+Yep, like, cc me.
+
+Aisha Coleman  3:24
+Will do. Anything else today, or are we good?
+
+Andre Williams  3:28
+We're good. Adobe Analytics on your side is still fine, by the way, in case anyone asks.
+
+Aisha Coleman  3:35
+Noted. I'll send a recap tomorrow, and I've got our next check-in on the calendar for the 27th. Um, Victor, good to to put a face to the name.
+
+Victor Huang  3:48
+Same. Thanks Aisha.
+
+Andre Williams  3:49
+Talk soon.

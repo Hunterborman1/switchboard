@@ -1,0 +1,109 @@
+WEBVTT
+
+1
+00:00:02.773 --> 00:00:06.300
+Priya Raman: Morning, Lauren. How's Friday treating you over there?
+
+2
+00:00:06.890 --> 00:00:14.618
+Lauren Whitfield: Busy. We had two clinics short-staffed this week, so I'm just now catching up on everything else. How about you?
+
+3
+00:00:15.447 --> 00:00:22.963
+Priya Raman: Same kind of week. I pulled the numbers before this, so I have them if you want to start there.
+
+4
+00:00:24.114 --> 00:00:25.336
+Lauren Whitfield: Yeah, go ahead.
+
+5
+00:00:26.112 --> 00:00:35.770
+Priya Raman: September came in around 41,500 calls across the 38 clinics, up about 6 percent from August. Central scheduling is still carrying the biggest share of that.
+
+6
+00:00:36.811 --> 00:00:41.824
+Lauren Whitfield: That tracks. We added two schedulers in mid-September, which is part of the bump.
+
+7
+00:00:42.037 --> 00:00:45.546
+Priya Raman: Good to know. Anything on the Genesys side misbehaving?
+
+8
+00:00:45.808 --> 00:00:50.777
+Lauren Whitfield: No, routing has been steady. PreSense pops are landing fine for the agents.
+
+9
+00:00:51.944 --> 00:00:56.402
+Priya Raman: Great. Redaction is on the agenda, as usual. Anything new there?
+
+10
+00:00:57.327 --> 00:01:06.078
+Lauren Whitfield: Actually, yes. Legal finished their review of the BAA last week, and it kicked up a question I need to bring to you.
+
+11
+00:01:06.437 --> 00:01:08.531
+Priya Raman: Sure, what are they asking?
+
+12
+00:01:09.518 --> 00:01:23.878
+Lauren Whitfield: So right now redaction is all or nothing across transcripts and summaries, and legal wants us to be able to choose which identifiers get masked, like dates of birth or member IDs, and keep some fields visible for certain roles.
+
+13
+00:01:25.253 --> 00:01:29.482
+Priya Raman: Okay. And who would need to see the unmasked version?
+
+14
+00:01:30.027 --> 00:01:40.043
+Lauren Whitfield: Compliance and our quality team, probably. Not front-line staff. And they want a record of who viewed what, so we can show it in an audit.
+
+15
+00:01:41.271 --> 00:01:48.904
+Priya Raman: Got it. Is this something legal flagged as required before they'll sign off on anything, or more of a gap they want closed?
+
+16
+00:01:49.938 --> 00:02:00.940
+Lauren Whitfield: More of a gap. Nobody's blocking us. But they put it in writing, so I'd rather get ahead of it than explain later why we didn't ask.
+
+17
+00:02:02.054 --> 00:02:11.688
+Priya Raman: That makes sense. I'll write it up as a request with the legal context. Can I tell the team this came out of the BAA review?
+
+18
+00:02:12.836 --> 00:02:17.854
+Lauren Whitfield: Please do. That'll help them understand why it's not just a preference.
+
+19
+00:02:18.670 --> 00:02:26.328
+Priya Raman: And would role-based access need to line up with how permissions work in Genesys or Salesforce, or would this live on its own?
+
+20
+00:02:27.595 --> 00:02:33.959
+Lauren Whitfield: I don't know yet. Let me check with our compliance lead before I answer that.
+
+21
+00:02:34.339 --> 00:02:37.100
+Priya Raman: Fine. Anything else from legal while we're here?
+
+22
+00:02:38.026 --> 00:02:42.274
+Lauren Whitfield: No, that's the only item. Everything else came back clean.
+
+23
+00:02:43.120 --> 00:02:53.770
+Priya Raman: Good. Last thing on my list, we're due to review the QM scorecards next month. Do you want to keep that on the calendar or move it?
+
+24
+00:02:54.554 --> 00:03:03.511
+Lauren Whitfield: Keep it. The quality leads have been asking about it. Can we push it to the second week? First week is our flu shot ramp.
+
+25
+00:03:04.957 --> 00:03:13.912
+Priya Raman: Second week works. I'll send an invite and add the redaction item as a separate line so it doesn't get buried.
+
+26
+00:03:14.784 --> 00:03:16.027
+Lauren Whitfield: Perfect. Thanks, Priya.
+
+27
+00:03:16.797 --> 00:03:18.681
+Priya Raman: Thanks, Lauren. Talk next week.

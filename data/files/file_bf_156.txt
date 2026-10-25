@@ -1,0 +1,97 @@
+auto-transcript | audio_1006_northwind | duration 00:03:52 | speakers detected: 3
+
+Speaker 1  00:00:05
+morning both how's denver treating you still smoky up there?
+
+Speaker 2  00:00:10
+Ha I mean, no I mean that cleared up last week We're good Michelle's the one who's been living in the call data
+
+Speaker 3  00:00:18
+um, yeah it's been a month i mean hi tom.
+
+Speaker 1  00:00:23
+hi. before we get into it, just so i know what we're looking at anything blow up since we last talked?
+
+Speaker 2  00:00:37
+define blow up i mean we onboarded the new weekend sales pod, so call volume's up maybe eighteen percent that's not a blow up that's just more
+
+Speaker 3  00:00:48
+and it's making one thing harder to ignore
+
+Speaker 1  00:00:51
+okay go ahead
+
+Speaker 3  00:00:53
+so we run ads saturday and sunday right uh and the whole point is that when somebody calls after hours we can still count it it but signal a eye keeps tagging a chunk
+
+Speaker 1  00:01:05
+of them as spam tagging them how like the spam signal itself firing?
+
+Speaker 3  00:01:12
+that's the one real people, they leave a voicemail, they say their account number and the signal still says spam so those calls vanish from our campaign reporting.
+
+Speaker 2  00:01:23
+which makes the the weekend ad spend look like garbage on paper we're paying for calls that never happened.
+
+Speaker 1  00:01:31
+how many are we talking? ballpark
+
+Speaker 3  00:01:34
+so it's like twelve percent of saturday and sunday calls weekdays it's basically zero so it's the after-hours pattern doing it twelve percent of
+
+Speaker 1  00:01:44
+weekend volume and it drops out of reporting entirely. is that the reporting in invoke a um, or what you're seeing downstream?
+
+Speaker 3  00:01:53
+both. the campaign view in in vocal and then adobe analytics gets the same hole because the conversion never fires so owen gets a dashboard that's just wrong.
+
+Speaker 2  00:02:04
+i'd rather know it's wrong than think it's right, but yeah
+
+Speaker 1  00:02:08
+got it. what would you want done with those calls if i take this back, do you want them reclassified or do you just want them not to get tagged in the first place?
+
+Speaker 3  00:02:23
+not tagged in the first place is the real fix i can live with a reclass for the backlog if that's what's possible. okay
+
+Speaker 1  00:02:34
+Can you send me three, four call IDs from last weekend I'll attach them so [inaudible] [inaudible] guessing.
+
+Speaker 3  00:02:41
+yeah i'll pull them after this
+
+Speaker 1  00:02:43
+otherwise how's everything sitting? screen pops um genesis all
+
+Speaker 2  00:02:48
+of that fine. no complaints there
+
+Speaker 3  00:02:52
+so yeah, like that's all [inaudible] [crosstalk]
+
+Speaker 1  00:02:55
+good um one housekeeping thing your business review is on the calendar for the twenty-second still good with 10:30 mountain?
+
+Speaker 2  00:03:04
+make it eleven i've got a budget call that always runs over
+
+Speaker 1  00:03:08
+Eleven it is I'll move it and send a fresh invite. [crosstalk]
+
+Speaker 3  00:03:20
+oh and heads up we're down a person on the telecom side for a few weeks so if response times look slower on our end that's why
+
+Speaker 1  00:03:30
+noted no stress i'll keep the asks light until you're back to full.
+
+Speaker 2  00:03:35
+appreciate that
+
+Speaker 1  00:03:38
+okay i'll write up the spam tagging thing and send it over with your call ids you'll hear from me by thursday
+
+Speaker 3  00:03:46
+sounds good. thanks tom
+
+Speaker 2  00:03:48
+yep, talk soon

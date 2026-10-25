@@ -1,0 +1,19 @@
+Slack export · #ext-meridian-invoca (Slack Connect: shared with Meridian Health Partners)
+Exported 9/28/2026 4:43 PM · 12 messages
+
+[9/28/2026 4:15 PM] priya.raman: hey both, notes from our call just now, dropping here so we have it
+  
+  quick recap: q3 call volume through invoca was 41,200, up about 9% over q2. central scheduling on genesys handled most of it. no issues on the tracking side, numbers all mapping clean to campaigns.
+  
+  mark, you mentioned the new hires in the nashville pod start oct 5, so we'll want their qm seats provisioned before then. i'll get that moving.
+[9/28/2026 4:17 PM] mark.delgado: yep, 4 new schedulers. i'll send you the list by wed
+[9/28/2026 4:19 PM] priya.raman: perfect. also flagging that our next check-in lands on columbus day, want to push to tuesday the 13th instead? same time
+[9/28/2026 4:21 PM] lauren.whitfield: tuesday works better for me anyway
+[9/28/2026 4:22 PM] priya.raman: done, moved it. invite updated :+1:
+[9/28/2026 4:27 PM] lauren.whitfield: one thing i wanted to make sure got captured. the presense routing piece has been really good for us. we started sending the high intent callers, the ones who came off the pricing page or a google ad and actually clicked through, straight to our strongest schedulers instead of the general queue. those agents are closing noticeably more of those calls. lauren saw it in the numbers before i did, the booking rate on that segment is up and it's not just noise.
+[9/28/2026 4:29 PM] priya.raman: that's great to hear. when you say high intent, is that the rule you built around page depth plus the ad source, or is it a signal doing the work?
+[9/28/2026 4:31 PM] lauren.whitfield: page depth plus ad source. we tried a signal first but the page rule was cleaner for us
+[9/28/2026 4:33 PM] mark.delgado: the agents like it too, they get the context on screen before they pick up so they're not starting cold
+[9/28/2026 4:36 PM] priya.raman: noted, i'll write that up on our side. anything else on your list before i let you go?
+[9/28/2026 4:38 PM] lauren.whitfield: nope, we're good. thanks priya
+[9/28/2026 4:40 PM] priya.raman: talk tuesday the 13th. i'll send the seat list request to mark separately

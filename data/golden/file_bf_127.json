@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_127",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "People call in at ten at night, they just had a tree land on the garage, and the first thing out of their mouth when we pick up is the address. That's it.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

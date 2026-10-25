@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_004",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "Marchex came to us, uh, I want to say three weeks ago, and they're quoting a lower per-rooftop price.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

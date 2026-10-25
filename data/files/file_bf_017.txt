@@ -1,0 +1,119 @@
+Bluewater Insurance Partners check-in
+Fri, Oct 9, 2026, 11:30AM • 5:43
+
+Rachel Okafor  0:04
+Hey Sanjay, how's it going? Did you end up getting any of that rain up in Hartford yesterday?
+
+Sanjay Iyer  0:11
+Hey Rachel. Yeah, we got a bit, my drive in took an extra twenty minutes because some genius tried to take the exit at 40. How about you, are you still down in Atlanta?
+
+Rachel Okafor  0:26
+Yep, still here. Sunny and and eighty, sorry. So I know we've got a lot to get through, but I wanted to check in first on how the quarter's shaping up on your side.
+
+Sanjay Iyer  0:40
+You know, it's Medicare Advantage season, uh, so it's chaos as always. We're seeing probably fifteen, sixteen thousand inbound calls a month across the network right now, up from about twelve in the summer. P&C is steady, maybe four thousand.
+
+Rachel Okafor  0:54
+That's right in line with what we saw last October. How's the Genesys side holding up with the volume?
+
+Sanjay Iyer  1:01
+Mostly fine. We added three folks in the Hartford queue last month, and Terrence is still out on leave until early November, so scheduling's been a bit of a puzzle. Nothing we can't uh, handle.
+
+Rachel Okafor  1:18
+Got it. And how's QM looking? Last time we talked you were doing scorecards for the Medicare team first.
+
+Sanjay Iyer  1:27
+Behind, honestly. We're at like forty percent of so, target on scored calls. Renee's team is doing the reviewing but the volume is just... you know how it is in Q4.
+
+Rachel Okafor  1:37
+Forty percent, okay. Is that a bandwidth thing or something else?
+
+Sanjay Iyer  1:43
+Bandwidth, mostly. The scorecards so, themselves are fine. Nobody's complaining about those. It's just getting the reviewers time in the day.
+
+Rachel Okafor  1:53
+That makes sense. I can pull together a short session for Renee's leads on batching the reviews if that would help, just say the the word.
+
+Sanjay Iyer  2:03
+Yeah, maybe. Let me talk to her first.
+
+Rachel Okafor  2:07
+Perfect. So what else is on your list?
+
+Sanjay Iyer  2:11
+Uh, there's something I've been meaning to bring up. It's about the screen pop. PreSense.
+
+Rachel Okafor  2:16
+Go ahead.
+
+Sanjay Iyer  2:19
+So when a call gets transferred between queues in Genesys, or between agents, the agent picking it up gets a blank PreSense panel.
+
+Rachel Okafor  2:29
+Blank meaning no digital journey at all, or missing pieces?
+
+Sanjay Iyer  2:33
+Nothing. Blank. Which is a problem because the whole pitch to our agents was, hey, you'll know what the caller was looking at before you say hello. And half the warm transfers, they get nothing.
+
+Rachel Okafor  2:47
+Is it every transfer or only some?
+
+Sanjay Iyer  2:50
+That's the thing, it's not every transfer. The first agent sees the journey fine. It's when they blind transfer to another queue, like the Medicare queue handing off to a specialist, the receiving agent gets an empty panel. Not always, but a lot.
+
+Rachel Okafor  3:10
+Okay. Does it happen on agent-to-agent transfers too, or just queue-to-queue?
+
+Sanjay Iyer  3:15
+Both, I think. Denise noticed it first on the P&C side. She said about a quarter of her transfers this week came through blank. So it's frequent enough that people are starting to not trust it.
+
+Rachel Okafor  3:27
+How long has this been going on, do you know?
+
+Sanjay Iyer  3:32
+Hard to say exactly. A few weeks at least. So, it might be tied to something on our end, I don't know, but I wanted to get it in front of you you.
+
+Rachel Okafor  3:46
+No, I'm glad you did. Let me ask a few things so I can hand it over properly. Do you have a call example, time and agent, something we can look at?
+
+Sanjay Iyer  4:00
+I can get you a couple. Let me ask Denise and Terrence's backup to send me timestamps.
+
+Rachel Okafor  4:08
+That would help a lot. And is it happening in both the Medicare queues and the P&C queues, or is one worse?
+
+Sanjay Iyer  4:19
+P&C seems worse, but Medicare's smaller right now so it's hard to compare.
+
+Rachel Okafor  4:24
+Got it. So here's what I'll do. I'll write this up for our support team today with everything you've got, and ask them to look at whether the journey data is dropping on the transfer path. Can you send me those examples by Monday?
+
+Sanjay Iyer  4:41
+Yeah, Monday works. I'll send what I can round up.
+
+Rachel Okafor  4:46
+Perfect. And I'll loop back with you once they've had a look. Should be a couple of days, but I don't want to promise anything until they've dug in.
+
+Sanjay Iyer  4:57
+Appreciate it. It's not a five alarm fire, but it's the kind of thing that quietly erodes adoption.
+
+Rachel Okafor  5:05
+Totally fair. Like, okay, anything else before we wrap?
+
+Sanjay Iyer  5:10
+No, I think that's it. Oh, one thing, our quarterly business review, can we push it a week? The second week of November is brutal for us.
+
+Rachel Okafor  5:22
+Sure, I'll send a couple of options. Week of the sixteenth?
+
+Sanjay Iyer  5:26
+That's better, yeah.
+
+Rachel Okafor  5:29
+Done. And good luck with the season. Try to sleep at some point.
+
+Sanjay Iyer  5:36
+Ha. I'll try. Thanks Rachel.
+
+Rachel Okafor  5:38
+Talk soon. Bye Sanjay.

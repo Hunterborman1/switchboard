@@ -1,0 +1,28 @@
+Brightline Home Services / Invoca | QBR | Mon, Oct 19, 2026
+
+[00:00:03] Marcus Bell: Morning, Carla. Thanks for making the time. How's everything on the dispatch floor this week?
+[00:00:09] Carla Nguyen: Morning, Marcus. Busy. We're into heating season now, so the phones are going pretty much nonstop.
+[00:00:16] Marcus Bell: That tracks with what I'm seeing. You all tracked around 41,000 calls last month across the 14 branches, up about 12 percent from August.
+[00:00:26] Carla Nguyen: Yeah, that sounds right. September was heavy. And we've got two new dispatchers starting next Monday, so we're trying to get them trained before the real cold hits.
+[00:00:36] Marcus Bell: Good timing, then. Before we get into the numbers, anything top of mind for you?
+[00:00:43] Carla Nguyen: Honestly, the thing I keep hearing from the front line is how much they like the AI call summaries. It saves them a ton of time on callbacks and dispatch handoffs.
+[00:00:55] Marcus Bell: That's good to hear. Can you give me a sense of how they're using them day to day?
+[00:01:02] Carla Nguyen: Sure. Say a customer calls about a furnace that's short cycling. Instead of the dispatcher listening to the whole recording, they read the summary, see what the tech needs to know, and get the job assigned. It used to take ten minutes, now it's two.
+[00:01:18] Carla Nguyen: And the new hires, they ramp faster because they can read the summary before they even pick up the callback. Our last training class was up to speed in about half the usual time.
+[00:01:33] Marcus Bell: That's a nice outcome. I'll pass that along to the team, they like hearing it. Anything on the PreSense side you want to talk about?
+[00:01:43] Carla Nguyen: PreSense is fine. The screen pops are working, no complaints there.
+[00:01:49] Marcus Bell: Good. Let's look at the Google Ads piece, since that's the bulk of what we're measuring. Your offline conversions are still flowing, and Smart Bidding has been using them since the spring.
+[00:02:03] Carla Nguyen: Right. I know our marketing folks watch that, but I mostly see the call side. What are the numbers looking like?
+[00:02:11] Marcus Bell: So for Q3, you sent about 8,200 qualified call conversions back to Google. Booked-appointment signals are up 9 percent quarter over quarter, and the spam signals are holding steady at around 14 percent of total volume.
+[00:02:24] Carla Nguyen: The spam number, is that about the same as last quarter?
+[00:02:30] Marcus Bell: About the same, yeah. Nothing jumping out.
+[00:02:33] Carla Nguyen: Okay. That's consistent with what we see.
+[00:02:37] Marcus Bell: One thing I wanted to ask: with the two new dispatchers coming in, do you want me to set up a refresher on reading the summaries and the signal categories? Sometimes that helps with the handoff.
+[00:02:52] Carla Nguyen: That could be useful. Let me check with the branch leads and get back to you. I think we'd want it in the first couple of weeks.
+[00:03:04] Marcus Bell: I'll hold a slot for the week of the 2nd. Just let me know.
+[00:03:10] Carla Nguyen: Will do. Oh, one other thing, we're moving the Raleigh branch to a new location in November, so the phone setup there might need a look.
+[00:03:22] Marcus Bell: Good to know. Send me the address and the date and I'll make sure the tracking numbers stay mapped correctly.
+[00:03:32] Carla Nguyen: I'll send it over this week.
+[00:03:35] Marcus Bell: Anything else before we wrap?
+[00:03:38] Carla Nguyen: No, I think that covers it. Thanks, Marcus.
+[00:03:43] Marcus Bell: Thanks, Carla. Talk soon.

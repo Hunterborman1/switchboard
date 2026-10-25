@@ -1,0 +1,79 @@
+auto-transcript | audio_0925_meridian | duration 00:03:31 | speakers detected: 2
+
+Speaker 1  00:00:07
+hey kevin how's it going?
+
+Speaker 2  00:00:11
+pretty good, pretty good busy week we had two clinics go live on the new scheduling flow monday so it's been a little chaotic
+
+Speaker 1  00:00:20
+oh nice which two? [crosstalk]
+
+Speaker 2  00:00:23
+you know the franklin and murfreesboro locations small volumes compared to the main campus but still, you know, it's the first time those front desks have had to work the genesys queue that way
+
+Speaker 1  00:00:35
+how's it going so far? fine, honestly. a
+
+Speaker 2  00:00:39
+couple of people had to to relearn where the transfer button [inaudible] but that's every rollout
+
+Speaker 1  00:00:47
+okay and call volumes overall, um, are we still pacing where we were in august?
+
+Speaker 2  00:00:51
+yeah we're around 41,000 calls for the the month, maybe a little under september's always a dip for us because of the school schedules and everything. [crosstalk]
+
+Speaker 1  00:01:04
+uh that tracks with what i'm seeing on the the dashboard nothing that jumped
+
+Speaker 2  00:01:10
+out no no surprises hey one staffing thing, our scheduling manager dana is out on leave until mid-october so if anything comes up on the the genesis side, route it to me instead of her.
+
+Speaker 1  00:01:27
+got it it i'll update my notes. do you want me to loop in anyone else while she's out [crosstalk]
+
+Speaker 2  00:01:35
+so, no um, just me. it's easier that way
+
+Speaker 1  00:01:39
+fair enough so what else is going on anything you wanted to talk through today?
+
+Speaker 2  00:01:45
+not really i mean things are pretty steady actually um one thing i've been meaning to tell you the pre sense piece has been landing really uh well with the scheduling team
+
+Speaker 1  00:01:58
+oh yeah?
+
+Speaker 2  00:02:00
+i mean yeah when someone's browsed the site and then calls in, the the agent sees which page they were on, so what they were looking at and it just changes the conversation. they're not starting from zero our agents genuinely like seeing what the caller browsed before they picked up.
+
+Speaker 1  00:02:17
+that's good to hear. are you seeing it in the numbers at all?
+
+Speaker 2  00:02:24
+anecdotally, the schedulers say they're closing more of those calls um the ones that come in from digital, where the person already knows what they want um, they're not having to ask three questions to figure out what the person needs
+
+Speaker 1  00:02:41
+you know okay that's useful i'll note that if you want at some point we could look at the routing side of it too just to see how the intents are like splitting out.
+
+Speaker 2  00:02:53
+sure maybe after dana's back she'd want to be in on that makes
+
+Speaker 1  00:03:00
+sense anything on the sales force side or the google ads offline conversions?
+
+Speaker 2  00:03:06
+those are fine we're not touching them [inaudible]
+
+Speaker 1  00:03:10
+okay so nothing urgent i'll send a a short recap and a note for the october check-in.
+
+Speaker 2  00:03:18
+sounds good and thanks for being flexible on the timing, i know we moved this from wednesday
+
+Speaker 1  00:03:24
+no problem at all talk soon kevin. [crosstalk]
+
+Speaker 2  00:03:27
+you know yep, take care

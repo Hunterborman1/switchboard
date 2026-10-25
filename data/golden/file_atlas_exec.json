@@ -1,0 +1,32 @@
+{
+  "fileId": "file_atlas_exec",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Controller must bring two options to the December budget meeting and Invoca is one of them.",
+      "quote": "I'll be straight with you, I've been asked to bring two options to the December budget meeting, and you're one of them.",
+      "owner": "ppl_renee"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex offers a flat per-rooftop rate ~30% below Invoca, including call scoring.",
+      "quote": "Marchex is offering a flat rate per rooftop that's about thirty percent under what we pay you, and they'll include the call scoring.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Google conversions two days late; this is what makes the competitor sound good.",
+      "quote": "The Google conversions being two days late is the thing that makes Marchex sound good. Fix that and half this conversation goes away.",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

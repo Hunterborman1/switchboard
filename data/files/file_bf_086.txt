@@ -1,0 +1,98 @@
+Frontier Home Lending working session
+Mon, Oct 12, 2026, 8:30AM • 4:38
+
+Aisha Coleman  0:03
+I mean, Morning, both. How was the weekend? Dallas still pretending it's summer?
+
+Andre Williams  0:09
+Oh, it was 94 on Saturday. My kid had a soccer tournament, so I was outside for like six hours. I'm still recovering.
+
+Stacy Klein  0:17
+I was inside doing yard work, which is a weird sentence. Anyway. Hi Aisha.
+
+Aisha Coleman  0:23
+Hi. Okay so, I know we have a few things. You sent over the agenda last week, Salesforce writing issue first?
+
+Andre Williams  0:34
+Yeah, that's the one that's biting us. So, quick context. Uh, we have a custom object for loan applications, and the integration writes like, the call record onto it. Outcome, uh, call ID, um, agent, that stuff.
+
+Stacy Klein  0:48
+Right. And last Tuesday we added a new picklist value on the application object. 'Docs pending' is what we called it.
+
+Andre Williams  0:57
+And after that, records just stopped writing. Not all of them, but anything that hits that value. Loan officers are calling me because their calls aren't showing on the app.
+
+Aisha Coleman  1:10
+Stopped writing entirely, or the call data isn't attaching to the new value?
+
+Andre Williams  1:15
+The second one. The call happens, it's in Invoca, transcript and everything. It just doesn't land on the Salesforce side. So when a new picklist value shows up, or we change a field, the write just... doesn't happen.
+
+Stacy Klein  1:29
+I mean, and we saw it in the logs Wednesday morning. Felt like it was a config thing on our end at first, so we poked at it for a day before looping you in.
+
+Aisha Coleman  1:41
+Got it it. How many records are we talking? Roughly.
+
+Andre Williams  1:46
+Maybe forty, fifty since Tuesday. It's medium for us, honestly. It's not an outage, but it's the kind of thing where a loan officer loses trust in the screen pop real fast.
+
+Aisha Coleman  2:00
+Okay. Can you send me the exact field name and the value, plus a couple of affected record IDs? I'll take it to the integrations team and come back with next steps. I'm not going to guess at it on the call.
+
+Stacy Klein  2:16
+I'll get you a list today. I have a report I can export in about ten minutes.
+
+Aisha Coleman  2:24
+Perfect. What else is on your list?
+
+Andre Williams  2:28
+Volumes, mostly. We're running about 11,400 calls a month across the 180 loan officers. Up maybe eight percent from August.
+
+Aisha Coleman  2:37
+That tracks with what I see. Any staffing changes I should know about for the QM scorecards?
+
+Andre Williams  2:45
+Yeah, we hired four new loan officers in the Plano pod, so they'll need scorecards assigned. Stacy, are they in the right permission set yet?
+
+Stacy Klein  2:55
+Like, Two of them, yes. The other two start on the 26th, so I'll do it it then.
+
+Aisha Coleman  3:02
+Okay. Send me their names when they're active and I'll make sure the QM seats line up.
+
+Andre Williams  3:10
+Will do. Oh, and one small thing. Can we move the November review? I'm out the first week.
+
+Aisha Coleman  3:18
+Sure, second week works. I'll send an invite for the 12th and you can move it if it's bad.
+
+Stacy Klein  3:27
+You know, Second week is better for me too. Adobe Analytics is fine, by the way, no issues there. Google Ads offline conversions are flowing.
+
+Aisha Coleman  3:36
+Good. PreSense and the Five9 screen pop, everything behaving?
+
+Andre Williams  3:40
+Yeah, that's fine. Agents like it. So, back to the Salesforce thing for a second, is there anything we should be doing on our side while we wait?
+
+Aisha Coleman  3:52
+Not that I'd recommend. I don't want you changing field configs again mid-week and muddying what we're looking at. Let me get it in front of the team first.
+
+Andre Williams  4:03
+Fair enough. I just hate telling the Plano folks to wait.
+
+Aisha Coleman  4:09
+I know. I'll ask for a same-week read. Send me the report and the field details today I mean, and I'll push it hard.
+
+Stacy Klein  4:20
+Sending now, actually. You'll have it before lunch.
+
+Aisha Coleman  4:24
+Great. Anything else, or are we good?
+
+Andre Williams  4:27
+We're good. Thanks for the time.
+
+Aisha Coleman  4:31
+Thanks, both. Go enjoy the fall weather. It's only 94.

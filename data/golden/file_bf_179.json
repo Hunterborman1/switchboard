@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_179",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "So one to three days.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Customer links \"offline conversions lag in google ads\" to the renewal decision.",
+      "quote": "The BDC runs off those numbers. If we can't trust the timing on the Google Ads side, it makes the whole renewal conversation harder than it needs to be.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

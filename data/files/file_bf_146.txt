@@ -1,0 +1,89 @@
+Meridian Health Partners check-in
+Tue, Oct 20, 2026, 12:45PM • 4:11
+
+Priya Raman  0:05
+Hey Mark, hey Sandra. How's the week going over there?
+
+Mark Delgado  0:10
+Busy. Flu shot calls started, so central scheduling is slammed.
+
+Sandra Pruitt  0:13
+Yeah, and and I've got a policy review due Friday, so this is a nice break.
+
+Priya Raman  0:20
+Okay, well I'll keep it quick. I saw call volume ticked up about twelve percent last week. Is that the flu thing?
+
+Mark Delgado  0:31
+That's the flu thing. We're at about 9,400 calls a week now, up from 8,200. And two of my schedulers are out with, uh, you know, actual flu. Um, so we're running thin.
+
+Priya Raman  0:44
+Ouch. Are you covering with overtime or pulling from the clinics?
+
+Mark Delgado  0:49
+A little of both. We've got folks from the Brentwood and Franklin clinics helping remotely. Um, it's fine, just noisy.
+
+Priya Raman  0:57
+Got it. Anything on your end, Sandra, or should we start with the redaction review? I I know that's our standing item.
+
+Sandra Pruitt  1:07
+Let's do redaction first, since I have to run at one.
+
+Priya Raman  1:13
+Sure. Last month we walked through the PHI redaction rules for the scheduling queues. Did the updated config land the way you expected?
+
+Sandra Pruitt  1:24
+It did. We tested with a few mock calls and the names and dates came out clean. I'm still checking the transcript exports weekly, but so far, um, no surprises.
+
+Priya Raman  1:38
+Good. And the BAA is still on file, nothing's changed there. I'll note that in the account record.
+
+Sandra Pruitt  1:44
+Please do. Now, so, the other thing I wanted to mention, and this is a positive, is the AI call summaries.
+
+Priya Raman  1:52
+Okay, tell me more.
+
+Sandra Pruitt  1:54
+So our front-line teams, the ones doing callbacks and dispatch and handoffs to the clinics, they're saying the summaries save them a ton of time. Instead of pulling a recording and listening to six minutes, they read the summary and know what happened.
+
+Mark Delgado  2:09
+Yeah, and honestly, my team leads are using them the same way. They used to spot-check recordings, now they read summaries first and only listen if something looks off.
+
+Priya Raman  2:21
+That's really good to hear. Is it consistent across all 38 clinics, or are some teams leaning on it more?
+
+Sandra Pruitt  2:31
+It's pretty consistent. The Nashville and Murfreesboro teams are the heaviest users, but even the smaller clinics are picking it up.
+
+Mark Delgado  2:40
+The handoff piece is the big one for us. I mean, when a call transfers from scheduling to a nurse line, the summary gives the nurse the context without a warm transfer. That used to be a gap.
+
+Priya Raman  2:55
+That makes um, sense. I'll pass that along to our product team, they like hearing where it's actually saving time. Anything else on your list before we talk Genesys?
+
+Mark Delgado  3:06
+Genesys is fine. Um, no issues. Same with the Google um, Ads sync, conversions are landing.
+
+Priya Raman  3:12
+Great. Uh, so on my side, I've got the Q4 business review penciled in for the second week of December. Does that still work, or so, should I look at January?
+
+Mark Delgado  3:26
+December's okay, but not the week of the 14th. We've got a system-wide training that week.
+
+Priya Raman  3:32
+Noted. I'll send a couple of options. And I'll pull the QM scorecard trends for the review, unless you want something else?
+
+Mark Delgado  3:43
+No, that's good. Sandra, you want the redaction stats in there too?
+
+Sandra Pruitt  3:49
+Yes, please. Just the audit summary, not the raw data.
+
+Priya Raman  3:54
+Will do. Okay, I mean, I think that's everything. Thanks for the time, and I hope the flu wave passes soon.
+
+Mark Delgado  4:03
+You and me both. Talk soon, Priya.
+
+Sandra Pruitt  4:07
+Thanks, Priya. Bye.

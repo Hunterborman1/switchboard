@@ -1,0 +1,165 @@
+WEBVTT
+
+1
+00:00:06.018 --> 00:00:15.979
+Rachel Okafor: Hi Erin, hi Patricia. Thanks for making the time. I know this was short notice on our side, so I appreciate you both jumping on.
+
+2
+00:00:16.663 --> 00:00:22.995
+Patricia Hale: Sure, Rachel. Erin filled me in a bit, but I want to hear it from you too.
+
+3
+00:00:24.490 --> 00:00:31.106
+Erin Walsh: Yeah. So, we've got a problem with Signal AI that I need to escalate. It's the spam detection.
+
+4
+00:00:32.152 --> 00:00:34.307
+Rachel Okafor: Okay. Tell me what you're seeing.
+
+5
+00:00:34.803 --> 00:00:45.058
+Erin Walsh: We pulled a sample of calls that Signal AI tagged as spam over the last three weeks. About 180 calls. We listened to them.
+
+6
+00:00:45.892 --> 00:00:53.574
+Erin Walsh: Most of those were real customers. People calling Saturday morning about a claim, or after hours on a Sunday. Not spam at all.
+
+7
+00:00:54.096 --> 00:00:59.780
+Rachel Okafor: So legitimate after-hours and weekend callers are getting flagged as spam and dropping out of reporting.
+
+8
+00:01:00.457 --> 00:01:10.254
+Erin Walsh: Right. Which means our weekend claims volume looks lower than it actually is. And some of those calls aren't getting followed up the way they should.
+
+9
+00:01:11.348 --> 00:01:22.415
+Patricia Hale: That's the part that worries me. If a homeowner calls Saturday about water damage and we've filed it as junk, that's a coverage conversation waiting to happen.
+
+10
+00:01:22.796 --> 00:01:26.909
+Rachel Okafor: Patricia, that's fair. How many of the 180 did you get through?
+
+11
+00:01:28.307 --> 00:01:36.639
+Erin Walsh: We listened to all of them. Maybe 140, 150 were real. The rest were actual junk, robocalls, a couple of wrong numbers.
+
+12
+00:01:37.263 --> 00:01:41.405
+Rachel Okafor: And was this recent, or has it been going on longer?
+
+13
+00:01:42.225 --> 00:01:50.156
+Erin Walsh: It got worse around Labor Day weekend. Before that it was maybe a handful a week. Now it's dozens.
+
+14
+00:01:51.225 --> 00:01:56.121
+Rachel Okafor: Okay. And are these coming through the main claims line, or the after-hours flow?
+
+15
+00:01:57.101 --> 00:02:03.616
+Erin Walsh: Mostly after-hours and weekend. When the AI Voice Agent picks up and then transfers to a live adjuster.
+
+16
+00:02:05.115 --> 00:02:07.487
+Rachel Okafor: Got it. So the transfer calls specifically.
+
+17
+00:02:07.920 --> 00:02:10.255
+Erin Walsh: That's where we see the concentration, yeah.
+
+18
+00:02:10.669 --> 00:02:23.621
+Rachel Okafor: Okay. I want to get the call IDs and a couple of the ones you listened to. Can you send me the list, or should I pull it from the reporting side?
+
+19
+00:02:24.376 --> 00:02:30.192
+Erin Walsh: I can send you the spreadsheet. It has the call IDs and the timestamps.
+
+20
+00:02:30.708 --> 00:02:43.861
+Rachel Okafor: Perfect. I'll take this to the Signal AI team today and come back to you with what they find. I'm not going to guess at a cause on the call.
+
+21
+00:02:44.279 --> 00:02:50.696
+Patricia Hale: How long are we talking? Because if this keeps happening through the winter storm season, I need to know.
+
+22
+00:02:51.745 --> 00:03:01.140
+Rachel Okafor: I'll push for an update by next Wednesday. If I don't have an answer by then, I'll tell you where it stands.
+
+23
+00:03:01.789 --> 00:03:02.666
+Patricia Hale: That works.
+
+24
+00:03:03.792 --> 00:03:08.273
+Rachel Okafor: While I have you, how's the Genesys side holding up? Any routing issues?
+
+25
+00:03:09.716 --> 00:03:14.700
+Erin Walsh: Genesys is fine. The PreSense screen pops are doing what they should. No complaints there.
+
+26
+00:03:15.026 --> 00:03:19.070
+Rachel Okafor: Good. And the AI Voice Agent pilot? Still after-hours claims only?
+
+27
+00:03:20.182 --> 00:03:25.440
+Patricia Hale: Still after-hours claims. We're keeping it contained until we see a full quarter.
+
+28
+00:03:26.088 --> 00:03:28.993
+Rachel Okafor: Makes sense. What's the volume looking like?
+
+29
+00:03:29.349 --> 00:03:39.777
+Erin Walsh: About 40, 45 calls a night on the agent, and most of those transfer to a live person. We're adding two adjusters to the overnight shift next month to keep up.
+
+30
+00:03:41.009 --> 00:03:46.209
+Rachel Okafor: Noted. I'll keep that in mind when we plan the next review.
+
+31
+00:03:47.253 --> 00:03:51.203
+Patricia Hale: Erin, did you want to mention the QM scorecard calibration?
+
+32
+00:03:52.683 --> 00:03:59.996
+Erin Walsh: Oh, right. That's separate. We're doing a scorecard calibration session in two weeks. Nothing urgent, just scheduling.
+
+33
+00:04:01.153 --> 00:04:08.073
+Rachel Okafor: I can send over a few times for that. Does the week of the 19th work?
+
+34
+00:04:08.583 --> 00:04:11.678
+Erin Walsh: I think so. I'll check with the team.
+
+35
+00:04:13.048 --> 00:04:21.844
+Patricia Hale: One other thing, Rachel. My daughter's college tour is in Columbus next Friday, so I may be late to our monthly.
+
+36
+00:04:21.844 --> 00:04:23.939
+Patricia Hale: Erin can start without me.
+
+37
+00:04:24.292 --> 00:04:31.976
+Rachel Okafor: No problem at all. Erin, I'll send the calendar invite for the monthly and the calibration options this afternoon.
+
+38
+00:04:32.305 --> 00:04:33.105
+Erin Walsh: Great.
+
+39
+00:04:33.517 --> 00:04:42.947
+Rachel Okafor: And I'll follow up on the Signal AI issue by Wednesday. If anything changes on your end before then, just email me.
+
+40
+00:04:43.903 --> 00:04:45.259
+Patricia Hale: Thanks, Rachel. Talk soon.
+
+41
+00:04:45.573 --> 00:04:46.394
+Erin Walsh: Thanks. Bye.

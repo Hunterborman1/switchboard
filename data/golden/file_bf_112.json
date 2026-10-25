@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_112",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "We want to be able to weight criteria differently depending on the agent's tenure.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

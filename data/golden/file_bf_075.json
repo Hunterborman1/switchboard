@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_075",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "we pulled three examples live. call 9/4, conversion shows 9/6. call 9/11, shows 9/13. call 9/15, shows 9/18",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "call_tracking",
+      "severity": "low",
+      "summary": "Competitor marketing to customer",
+      "quote": "she did mention she keeps getting mail from callrail",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

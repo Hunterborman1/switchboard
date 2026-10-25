@@ -1,0 +1,24 @@
+{
+  "fileId": "file_northwind_escalation",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "critical",
+      "summary": "Since the Genesys update on the 3rd, PreSense is lost on essentially every warm transfer.",
+      "quote": "Since the Genesys update on the third, we're losing PreSense on basically every warm transfer. Not some. Every one.",
+      "owner": "ppl_derek"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "VP is questioning whether to keep PreSense next year if it does not survive transfers.",
+      "quote": "I've got my VP asking whether we should even keep PreSense next year if it doesn't survive a transfer.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

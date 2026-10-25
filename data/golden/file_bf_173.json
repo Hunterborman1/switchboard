@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_173",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "So we send our call conversions to Google Ads, right? And they're showing up one to three days after the call. Sometimes longer.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "platform",
+      "severity": "medium",
+      "summary": "Named competitor being considered",
+      "quote": "He did ask me about Marchex last week. He used them at his last group.",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

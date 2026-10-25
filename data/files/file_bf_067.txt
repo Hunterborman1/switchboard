@@ -1,0 +1,92 @@
+Coastal Comfort Mattress exec sponsor
+Fri, Oct 16, 2026, 4:30PM • 3:53
+
+Tom Lindqvist  0:07
+Hey Darnell, I mean, how's it going? Friday afternoon, huh?
+
+Darnell Wright  0:12
+Man, it's been a week. You know, we had two stores short-staffed in the Atlanta district, so I was on the phones yesterday. But hey, like, we're here.
+
+Tom Lindqvist  0:23
+Ouch. Did the voice agent pick up any of the slack?
+
+Darnell Wright  0:28
+Some. Store-hours calls, order status, it handles a good chunk. Um, actually, that's kind of what I wanted to talk about, but let me hit the other thing first.
+
+Tom Lindqvist  0:39
+Go ahead.
+
+Darnell Wright  0:41
+So the Google Ads offline conversions. We're seeing them land one to three days after the call. Sometimes two days, sometimes three.
+
+Tom Lindqvist  0:49
+Okay. And that's a problem because...
+
+Darnell Wright  0:52
+Because Smart Bidding is optimizing on partial data. Um, if a Tuesday call doesn't show up until Thursday, the algorithm already made its calls for Wednesday. Our paid search guy, Ellis, he's been pulling his hair out.
+
+Tom Lindqvist  1:08
+And you've confirmed the conversions are actually getting matched? GCLIDs are coming through?
+
+Darnell Wright  1:14
+Yeah. We checked the GCLID capture, we checked the tag on the site, we even had Ellis rebuild the conversion action in Google Ads. Nothing changed on our end. Same delay.
+
+Tom Lindqvist  1:26
+Okay, so the tag's firing, GCLIDs look right, you know, and it's still lagging. How long has it been this way?
+
+Darnell Wright  1:35
+Three, maybe four weeks? It wasn't like this in the spring. We were seeing next-day at worst.
+
+Tom Lindqvist  1:43
+Got it. I want to get our support folks looking at the delivery timestamps on those Jobs, see what the send time looks like versus the landing time in Ads. I'll open it today and copy you.
+
+Darnell Wright  1:59
+Uh, Appreciate that.
+
+Tom Lindqvist  2:02
+How's volume looking overall this month?
+
+Darnell Wright  2:06
+We're tracking around 41,000 calls for October, up maybe six percent from September. Voice agent's handling about a fifth of those now, mostly after hours.
+
+Tom Lindqvist  2:16
+Nice. That's up from what, twelve percent in July?
+
+Darnell Wright  2:20
+Something like that. The team's gotten comfortable letting it take the simple stuff. Like, Anyway. Second thing, and this one's less fun.
+
+Tom Lindqvist  2:29
+Lay it on me.
+
+Darnell Wright  2:32
+Finance and procurement. Every time we get to renewal, they look at the bill and there's the base, then PreSense, then the QM seats, then AI Voice Agent minutes stacked on top. Yolanda in procurement wants one number.
+
+Tom Lindqvist  2:47
+One bundled price.
+
+Darnell Wright  2:50
+One bundled price. She doesn't want to see five line items and try to figure out which ones are negotiable. And honestly, neither do I, because every add-on turns into a separate conversation.
+
+Tom Lindqvist  3:02
+That's fair. I can't promise anything on pricing structure today, that's not my call, but I can get it in front of the right people with your context. Renewal's August, so there's runway.
+
+Darnell Wright  3:15
+That's all I'm asking. Just get it on someone's radar before we're three weeks out.
+
+Tom Lindqvist  3:22
+I'll write it up this afternoon and follow up with you Monday or Tuesday once I hear back.
+
+Darnell Wright  3:31
+Perfect. Hey, you doing anything this weekend?
+
+Tom Lindqvist  3:34
+My kid has a soccer tournament in Sarasota, so I'll be in a folding chair most of Saturday.
+
+Darnell Wright  3:41
+Ha. Bring sunscreen. It's still brutal you know, down here.
+
+Tom Lindqvist  3:45
+Learned that one the hard way. Um, Talk soon, Darnell.
+
+Darnell Wright  3:49
+Thanks, Tom. Bye.

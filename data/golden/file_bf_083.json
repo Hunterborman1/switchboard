@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_083",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "monica: \"we're exporting the presense and qm numbers to csv every monday and then someone hand-builds the same deck. what i'd really want is a scheduled export into google sheets, so the branch vps open a link & it's just there",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

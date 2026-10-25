@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_159",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Signal AI being an add-on on top of call tracking is the one that gets him the most.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense screen pop failing on transfer",
+      "quote": "The PreSense pops are fine when they show up, but we've had a couple of instances where a call transfers and the screen pop either doesn't fire on the second leg or it fires to the wrong agent.",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

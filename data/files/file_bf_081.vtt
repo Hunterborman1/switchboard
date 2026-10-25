@@ -1,0 +1,177 @@
+WEBVTT
+
+1
+00:00:06.788 --> 00:00:11.269
+Aisha Coleman: Like, Morning, both. How's Dallas treating you? I know it's been stupid hot.
+
+2
+00:00:11.946 --> 00:00:19.624
+Andre Williams: Oh, it finally broke. We had like two days in the eighties, uh, which for late September is basically a gift.
+
+3
+00:00:20.654 --> 00:00:24.800
+Stacy Klein: I'll take it. My commute's been fine, which is rare.
+
+4
+00:00:25.339 --> 00:00:34.205
+Aisha Coleman: Okay so, before we get into uh, the numbers, is there anything that happened this quarter that I should have on my radar?
+
+5
+00:00:35.521 --> 00:00:49.661
+Andre Williams: Mostly fine. We had a stretch in August where the floor was short, a couple of the newer loan officers were in training, so we ran about fifteen percent under our usual headcount on the phones.
+
+6
+00:00:49.661 --> 00:00:50.840
+Andre Williams: Volume held though.
+
+7
+00:00:51.423 --> 00:00:59.205
+Aisha Coleman: Yeah, I saw that. You were right around 41,000 calls for the the quarter, which is up a bit from Q2.
+
+8
+00:01:00.647 --> 00:01:02.565
+Stacy Klein: That tracks. July was heavy.
+
+9
+00:01:03.108 --> 00:01:08.674
+Aisha Coleman: And the PreSense screen pops, how are the loan officers feeling about those?
+
+10
+00:01:09.805 --> 00:01:20.069
+Andre Williams: Good. Jimmy, one of my supervisors, says the team's gotten used to having the ad and the pages up before they even pick up.
+
+11
+00:01:20.069 --> 00:01:21.352
+Andre Williams: That's been fine.
+
+12
+00:01:22.612 --> 00:01:27.384
+Aisha Coleman: Great. And the QM scorecards, any coaching wins you want to talk about?
+
+13
+00:01:28.114 --> 00:01:31.063
+Andre Williams: No, that's all running. Um, Nothing to raise there.
+
+14
+00:01:32.517 --> 00:01:35.471
+Stacy Klein: Actually, can I jump in on something?
+
+15
+00:01:36.115 --> 00:01:36.915
+Aisha Coleman: Please.
+
+16
+00:01:38.085 --> 00:01:52.801
+Stacy Klein: So this is the second time this year we've hit it. When someone on my team changes a field or a picklist value on the Loan Application object, the call data stops writing over.
+
+17
+00:01:52.801 --> 00:02:01.024
+Stacy Klein: Like, it just goes quiet. The The calls still come in, Five9's fine, but nothing lands on the record.
+
+18
+00:02:02.518 --> 00:02:05.478
+Aisha Coleman: Okay. When did you last see that?
+
+19
+00:02:06.204 --> 00:02:17.847
+Stacy Klein: Um, About three uh, weeks ago. We'd refreshed a sandbox, and the mapping between the Invoca fields and our custom objects had to be rebuilt before anything would write again.
+
+20
+00:02:17.847 --> 00:02:21.339
+Stacy Klein: Took my admin the better part of a day.
+
+21
+00:02:22.673 --> 00:02:29.060
+Aisha Coleman: So the refresh is what triggered it, or was it the field change before that?
+
+22
+00:02:29.482 --> 00:02:39.064
+Stacy Klein: Honestly I think it's the combination. We changed a picklist value in the same window, and then the refresh... it's hard to say which one broke it first.
+
+23
+00:02:40.476 --> 00:02:53.352
+Andre Williams: From my side what I notice is the gap in um, the loan officer's view. They pick up the call, they talk to the borrower, and then there's nothing on the record to follow up on.
+
+24
+00:02:54.439 --> 00:03:02.031
+Aisha Coleman: That's like, the part that worries me most, yeah. I mean, how many calls are we talking about in that window?
+
+25
+00:03:03.530 --> 00:03:12.870
+Stacy Klein: I'd have to go back and count. It wasn't the whole day, but it was enough that a couple of the LOs asked me about it.
+
+26
+00:03:13.318 --> 00:03:25.244
+Aisha Coleman: Okay. I don't want to guess at what's driving it, so let me take it back to the team and come to you with questions rather than theories.
+
+27
+00:03:25.244 --> 00:03:30.781
+Aisha Coleman: Uh, can you send me the ticket you filed, and roughly the dates?
+
+28
+00:03:31.240 --> 00:03:33.204
+Stacy Klein: I'll forward it after this.
+
+29
+00:03:34.523 --> 00:03:40.854
+Aisha Coleman: Perfect. And Andre, is there anything on the routing side I should know about, with the staffing thing?
+
+30
+00:03:41.948 --> 00:03:45.807
+Andre Williams: No, that's internal. We shuffled some shifts around, that's all.
+
+31
+00:03:46.355 --> 00:03:59.392
+Aisha Coleman: Okay. Let me pull up the rest. So attribution: Google Ads offline conversions are still flowing, Adobe's still seeing the the call events, that all looks normal on my end.
+
+32
+00:03:59.702 --> 00:04:00.748
+Stacy Klein: Yeah, nothing there.
+
+33
+00:04:01.217 --> 00:04:09.913
+Aisha Coleman: Good. Anything coming up on your side we should plan around? I know you've got that compliance review in November.
+
+34
+00:04:11.301 --> 00:04:19.218
+Andre Williams: Yeah, second week. We'll probably lean on the QM recordings a little heavier than usual that month, but that's just us.
+
+35
+00:04:19.496 --> 00:04:27.597
+Aisha Coleman: Makes sense. Do uh, you want to do a shorter check-in mid-October, just so we're not stacking everything on the QBR cadence?
+
+36
+00:04:28.544 --> 00:04:31.560
+Andre Williams: That'd be good. Thursdays are usually clearer for me.
+
+37
+00:04:31.789 --> 00:04:35.998
+Aisha Coleman: I'll send something for the fifteenth. Twenty minutes, no deck.
+
+38
+00:04:36.371 --> 00:04:38.176
+Stacy Klein: So, Works for uh, me.
+
+39
+00:04:39.593 --> 00:04:45.862
+Aisha Coleman: And I'll follow up on the Salesforce piece separately, once I've got your ticket and dates.
+
+40
+00:04:47.165 --> 00:04:48.050
+Andre Williams: Appreciate it.
+
+41
+00:04:49.515 --> 00:04:52.803
+Aisha Coleman: Alright. Anything else before I let you go?
+
+42
+00:04:53.600 --> 00:04:54.852
+Andre Williams: Nope. Thanks, Aisha.
+
+43
+00:04:55.574 --> 00:04:57.469
+Stacy Klein: Thanks. Stay cool out there.
+
+44
+00:04:58.384 --> 00:04:59.725
+Aisha Coleman: You too. Talk soon.

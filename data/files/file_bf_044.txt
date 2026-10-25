@@ -1,0 +1,103 @@
+auto-transcript | audio_1009_cedarridge | duration 00:04:51 | speakers detected: 3
+
+Speaker 1  00:00:04
+morning, uh both can you hear me okay
+
+Speaker 2  00:00:08
+yep we're here heather just got in like she's still taking her coat off
+
+Speaker 3  00:00:13
+i'm here i'm here i mean, sorry um it's like forty degrees out there this morning
+
+Speaker 1  00:00:20
+boise in october, huh. okay so i put together the quarterly numbers, mostly call volume and how the google ads side is flowing. want to uh start there [crosstalk]
+
+Speaker 2  00:00:33
+sure let's do it. so across the nineteen
+
+Speaker 1  00:00:36
+practices you're running right around 11,200 tracked calls for the quarter up maybe six percent from q2 new patient line is the bulk of it which tracks with what you told me in july
+
+Speaker 3  00:00:52
+that sounds right the meridian and eagle offices have been slammed since school started
+
+Speaker 2  00:00:59
+yeah and the google ads conversions, uh are those still matching up? because that's kind of the whole reason we're doing this
+
+Speaker 1  00:01:06
+um they are match rate's been holding in the low nineties the offline conversions are going back to google fine gee click id matching looks healthy
+
+Speaker 2  00:01:17
+good. that's the piece i get asked about uh by leadership so.
+
+Speaker 1  00:01:23
+how are the practice managers doing with the summaries? i know that was newer for them this year
+
+Speaker 3  00:01:32
+Mostly good The newer managers took to [inaudible] than the ones who've [inaudible] fifteen years honestly. There's one in Nampa who like still prints them out
+
+Speaker 2  00:01:41
+she highlights them with an actual highlighter
+
+Speaker 1  00:01:44
+that's amazing whatever works [crosstalk]
+
+Speaker 3  00:01:47
+hey we take what we can get oh side note we've got two front desk openings in the caldwell office, so call handling there has been spotty. if the routing looks weird on the reporting that's why.
+
+Speaker 1  00:02:04
+good to know i'll keep that in mind if anything looks off on their numbers
+
+Speaker 2  00:02:11
+actually can i bring something up? this is the thing i wanted to
+
+Speaker 1  00:02:17
+talk about please
+
+Speaker 2  00:02:19
+so the spam tagging single a.i is marking a bunch of our after-hours and weekend calls as spam and when it does that those calls just vanish from the reporting so we're looking at the campaign numbers and it looks you know like we got twelve new patient calls on a a saturday when really it was twenty-five
+
+Speaker 1  00:02:44
+okay how'd you catch it
+
+Speaker 2  00:02:48
+Because the office managers kept saying, we had way more calls than this. So I went in and listened to a sample of the um calls that got tagged spam and Priya most of them were real Like people calling Saturday morning about a toothache wanting to book Those are exactly the calls we're paying Google for
+
+Speaker 3  00:03:12
+and if they're not in the reporting they're not in the numbers we take to the physicians, and they're not in the bidding data either.
+
+Speaker 1  00:03:22
+How far back does it go, do you think
+
+Speaker 2  00:03:26
+i mean i only pulled two weeks but it's been happening for a while i just didn't have a reason to look until the managers complained
+
+Speaker 1  00:03:37
+got it can you send me a few examples call ids or dates whatever's easy i want to get this in front of the single ai team with real calls [inaudible] not just a description yeah i can pull
+
+Speaker 2  00:03:54
+ten or so this afternoon Like Perfect I'll take
+
+Speaker 1  00:03:59
+that back to them and see what they say. I'm not going to guess at what's happening under the hood but the examples will help a lot Appreciate it. It's
+
+Speaker 3  00:04:11
+not an emergency nobody's mad, um it's just.. we we can't run the ad budget off bad counts.
+
+Speaker 1  00:04:20
+totally fair. anything else on the list no everything
+
+Speaker 2  00:04:24
+else has been pretty quiet uh meta side is fine [crosstalk]
+
+Speaker 3  00:04:29
+renewal's not till spring right
+
+Speaker 1  00:04:33
+april fifteenth yeah plenty of time okay i'll follow up once i've got the examples in hand heather, good luck with the caldwell hiring.
+
+Speaker 3  00:04:44
+thanks we'll need it
+
+Speaker 2  00:04:47
+thanks priya

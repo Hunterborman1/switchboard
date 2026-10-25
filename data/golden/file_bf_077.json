@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_077",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "but it's one to three days after the call",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail is pitching same-day conversion sync to Google Ads, often with a lower quote.",
+      "quote": "a call rail rep keeps emailing me about same-day sync to google ads",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

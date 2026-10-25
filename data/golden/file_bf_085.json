@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_085",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "low",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "What I'd want is to set up my own criteria, so a different scorecard fires depending on the call type.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

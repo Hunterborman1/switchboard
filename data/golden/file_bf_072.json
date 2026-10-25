@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_072",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "About 30 calls in September got marked spam, and when I listened to them, most were real customers calling after hours about ants or a wasp nest or whatever.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

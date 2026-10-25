@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_120",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "Agents really like seeing the pages a caller browsed before they pick up. It gives them something to work with right away, and it's helping them close more of those calls that started as digital shoppers.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "Signal AI is flagging legitimate after-hours or weekend callers as spam. So real customers are getting pulled out of our reporting entirely.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

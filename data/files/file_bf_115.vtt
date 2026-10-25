@@ -1,0 +1,185 @@
+WEBVTT
+
+1
+00:00:04.426 --> 00:00:09.361
+Rachel Okafor: Hi both, thanks for making the time. How's everything on your end?
+
+2
+00:00:10.110 --> 00:00:15.353
+Nate Simmons: Pretty good. Busy season is starting to ramp, so the timing works.
+
+3
+00:00:15.717 --> 00:00:19.956
+Erin Walsh: Same here. I was just pulling some numbers before this, actually.
+
+4
+00:00:20.180 --> 00:00:28.078
+Rachel Okafor: Perfect. I figured we'd do a quick pass on how things are running, and then I want to hear about the after-hours pilot.
+
+5
+00:00:29.577 --> 00:00:40.467
+Nate Simmons: Sounds good. On the contact center side, we're still around six thousand calls a week into the Genesys queues. Claims is the bulk of it.
+
+6
+00:00:40.711 --> 00:00:43.845
+Rachel Okafor: Is that up from the last time we talked?
+
+7
+00:00:44.485 --> 00:00:54.525
+Nate Simmons: Maybe four or five percent. Nothing wild. We've got two new hires in training on the licensed side, so that should ease the Monday mornings.
+
+8
+00:00:55.001 --> 00:01:00.187
+Erin Walsh: Mondays are brutal. The queue backs up by nine and stays there until lunch.
+
+9
+00:01:01.639 --> 00:01:06.358
+Rachel Okafor: I remember you flagging that in the spring. Does the routing hold up?
+
+10
+00:01:07.574 --> 00:01:12.583
+Nate Simmons: Yeah, no complaints there. The flows do what we tell them to.
+
+11
+00:01:13.128 --> 00:01:15.899
+Rachel Okafor: Good. And Erin, how's the marketing side looking?
+
+12
+00:01:16.925 --> 00:01:32.181
+Erin Walsh: Honestly, the thing I keep coming back to is PreSense. When someone comes in from a quote page or a comparison ad and we've got that context popped for the agent, the call just goes differently.
+
+13
+00:01:33.024 --> 00:01:33.850
+Rachel Okafor: Different how?
+
+14
+00:01:34.737 --> 00:01:43.624
+Erin Walsh: The agent isn't starting from zero. They can see the person was already shopping auto, maybe they looked at two or three pages.
+
+15
+00:01:43.624 --> 00:01:51.738
+Erin Walsh: Our conversion on those routed calls is up close to eleven percent since we turned it on for the auto campaigns.
+
+16
+00:01:52.978 --> 00:01:57.358
+Rachel Okafor: That's a solid lift. Is it holding across both auto and home?
+
+17
+00:01:57.799 --> 00:02:12.196
+Erin Walsh: Auto is stronger. Home is more of a slow build, but it's moving in the same direction. And the agents have told us they'd rather have it than not, which counts for something.
+
+18
+00:02:13.300 --> 00:02:19.111
+Rachel Okafor: That's really good to hear. I'll note it for the account file, if that's alright.
+
+19
+00:02:19.564 --> 00:02:20.874
+Erin Walsh: Sure, go ahead.
+
+20
+00:02:22.248 --> 00:02:32.036
+Nate Simmons: One thing on my list, and it's small. Can we get the weekly QM scorecard export moved to Monday morning instead of Sunday night?
+
+21
+00:02:33.027 --> 00:02:39.316
+Rachel Okafor: Let me look at how it's scheduled. Do you want it in your inbox or dropped somewhere in Salesforce?
+
+22
+00:02:40.774 --> 00:02:45.118
+Nate Simmons: Inbox is fine. My ops lead pulls it into a deck first thing.
+
+23
+00:02:45.688 --> 00:02:50.091
+Rachel Okafor: Got it. I'll check the schedule and let you know.
+
+24
+00:02:51.422 --> 00:02:57.742
+Nate Simmons: Appreciate it. And the Salesforce sync has been running clean, no dupes since the summer.
+
+25
+00:02:59.136 --> 00:03:03.974
+Rachel Okafor: Good. How about the after-hours pilot? You're what, four weeks in?
+
+26
+00:03:05.382 --> 00:03:17.990
+Nate Simmons: Five now. It's covering claims intake from six at night to seven in the morning, plus weekends. Volume is lighter than I expected, maybe a hundred and forty calls a week.
+
+27
+00:03:19.039 --> 00:03:21.509
+Rachel Okafor: How's it handling the routine stuff?
+
+28
+00:03:22.935 --> 00:03:32.049
+Nate Simmons: First notice of loss, basic policy questions, that kind of thing. It transfers to a live adjuster when it needs to.
+
+29
+00:03:32.049 --> 00:03:36.389
+Nate Simmons: The handoffs have been cleaner than I figured they'd be.
+
+30
+00:03:37.691 --> 00:03:40.130
+Rachel Okafor: Any themes in what's getting escalated?
+
+31
+00:03:40.581 --> 00:03:48.291
+Nate Simmons: Mostly people who want to argue about a settlement. Which is fair, you don't want a machine doing that.
+
+32
+00:03:49.173 --> 00:03:55.966
+Erin Walsh: We're seeing decent engagement on the SMS side too, the follow-up messages after a missed call. Opt-outs are low.
+
+33
+00:03:57.303 --> 00:04:06.392
+Rachel Okafor: That's encouraging. Nate, are you planning to expand the pilot to more hours, or keep it where it is for now?
+
+34
+00:04:07.510 --> 00:04:15.193
+Nate Simmons: Keep it for now. I want a full quarter of data before I take it to the exec team.
+
+35
+00:04:16.670 --> 00:04:23.018
+Rachel Okafor: Makes sense. I can pull a summary of the pilot calls when you're ready for that conversation.
+
+36
+00:04:23.329 --> 00:04:25.981
+Nate Simmons: That would help. Let's aim for early November.
+
+37
+00:04:26.198 --> 00:04:29.917
+Rachel Okafor: I'll put a placeholder on the calendar. Anything else stirring?
+
+38
+00:04:31.364 --> 00:04:38.118
+Erin Walsh: Not really. Adobe Analytics is fine, Google Ads is fine. Offline conversions are matching the way they should.
+
+39
+00:04:39.411 --> 00:04:44.403
+Rachel Okafor: Good. I know you had that audit coming up, how did it go?
+
+40
+00:04:44.766 --> 00:04:51.370
+Nate Simmons: Fine, two findings, both administrative. I spent a week doing nothing but paperwork, but it's behind us.
+
+41
+00:04:51.978 --> 00:04:57.857
+Erin Walsh: He's being modest, he also reorganized the whole escalation matrix while he was at it.
+
+42
+00:04:58.138 --> 00:05:00.519
+Nate Simmons: That was mostly just renaming things.
+
+43
+00:05:00.805 --> 00:05:08.983
+Rachel Okafor: Well, either way. I'll follow up on the export timing and send the pilot summary outline so you can tell me what to include.
+
+44
+00:05:09.858 --> 00:05:10.858
+Nate Simmons: Perfect. Thanks, Rachel.
+
+45
+00:05:12.156 --> 00:05:13.305
+Erin Walsh: Thanks, talk soon.
+
+46
+00:05:14.356 --> 00:05:17.367
+Rachel Okafor: Thanks both, have a good rest of your week.

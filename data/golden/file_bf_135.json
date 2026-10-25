@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bf_135",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "the a.i call summaries the front-line teams love them",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "she's been getting sync error emails every single morning",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "they want to choose which identifiers get redacted in transcripts and summaries",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

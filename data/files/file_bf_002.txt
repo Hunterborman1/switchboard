@@ -1,0 +1,77 @@
+Atlas Auto Group working session
+Mon, Sep 28, 2026, 12:30PM • 3:37
+
+Diego Alvarez  0:05
+Hey Steve, how's it going? How was the drive up from you know, the... wait, are you in Phoenix today or out at one of the rooftops?
+
+Steve Kowalski  0:18
+Phoenix today. Good, busy. We just wrapped the Q3 numbers, so I'm living in spreadsheets. How about you?
+
+Diego Alvarez  0:27
+Same, same. End of quarter is always a lot. I saw your call volume ticked up again in September, looks like you're pacing about 38,000 calls across the group?
+
+Steve Kowalski  0:39
+Yeah, roughly. Somewhere in that range. We added the Henderson store, so that's part of um, it.
+
+Diego Alvarez  0:46
+Nice. And how's the BDC team holding up? I remember you uh, were down a person or two over the summer.
+
+Steve Kowalski  0:55
+We backfilled one. Um, Still interviewing for the other. I mean, honestly, I mean, the summary thing has been a lifesaver with the team stretched like this.
+
+Diego Alvarez  1:06
+You know, Oh yeah? Which part?
+
+Steve Kowalski  1:09
+The Signal AI summaries. Our front-line folks, the BDC reps, the service advisors, they all say the same thing: they read the summary instead of listening to the whole recording. Saves them a ton of time on callbacks and dispatch.
+
+Diego Alvarez  1:25
+That's great to um, hear. So the managers are actually using them too?
+
+Steve Kowalski  1:30
+Yeah, the service managers love it. They used to have to pull recordings to check a handoff. Now they just read the summary. It's made my one-on-ones a lot easier, I'll say that.
+
+Diego Alvarez  1:43
+Good. And the Google Ads side, is that still feeding the offline conversions okay?
+
+Steve Kowalski  1:49
+Yeah, that's been fine. Like, no issues there.
+
+Diego Alvarez  1:53
+Great. Let's look at the signal configuration for the the new Henderson store. Did you want to clone the setup from the Tempe rooftop?
+
+Steve Kowalski  2:02
+Yeah, that makes sense. Same call flows, same signals. Can we do that this week?
+
+Diego Alvarez  2:08
+I'll get with our onboarding team. Should be doable by Friday. I'll confirm tomorrow.
+
+Steve Kowalski  2:14
+Perfect. Hey, before I forget, my VP of Finance asked me to take a hard look at the Marchex quote. I don't have the specifics in front of me, but they came in lower per rooftop.
+
+Diego Alvarez  2:28
+Got it. Uh, that's helpful to know. I won't put you on the spot, but if there's a ballpark or a range you can share, I can bring that to my leadership.
+
+Steve Kowalski  2:42
+I'd have to dig up the email. It's not a you know, huge gap, but it's enough that finance is asking questions.
+
+Diego Alvarez  2:51
+Understood. I'll flag it internally and see what we can do. No promises, but I'll make sure the right people are aware.
+
+Steve Kowalski  3:00
+Appreciate it. And for what it's worth, the summaries alone probably save us a few hours a week per manager. That's not nothing.
+
+Diego Alvarez  3:10
+That's good context. I'll pass that along too. Anything else on your list for today?
+
+Steve Kowalski  3:16
+No, I think that's it. I've got a hard stop in ten anyway.
+
+Diego Alvarez  3:23
+Cool. I'll send a recap and the Henderson timeline by end of day.
+
+Steve Kowalski  3:29
+Sounds good. Thanks Diego.
+
+Diego Alvarez  3:32
+No problem. Talk soon.

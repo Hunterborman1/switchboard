@@ -1,0 +1,44 @@
+Frontier Home Lending / Invoca | check-in | Wed, Oct 21, 2026
+
+[00:00:05] Aisha Coleman: Morning, both. Thanks for making the time.
+[00:00:08] Andre Williams: Morning, Aisha. Stacy's on with us too.
+[00:00:12] Stacy Klein: Hi, Aisha.
+[00:00:14] Aisha Coleman: Hi, Stacy. How's the week going so far?
+[00:00:18] Andre Williams: Busy. Refi volume is cooling off, so we're doing a lot of looking at numbers and not much liking what we see.
+[00:00:26] Aisha Coleman: Yeah, we're hearing that from a few lenders. Is it a steady decline or more of a cliff?
+[00:00:35] Andre Williams: Steady, maybe fifteen percent down from the summer peak. Purchase is holding, refi is the soft spot.
+[00:00:42] Stacy Klein: Which makes every call count more, honestly.
+[00:00:45] Aisha Coleman: Makes sense. What's top of mind for you two today?
+[00:00:48] Andre Williams: A couple of things. First, there's pressure from sales leadership. Our sales leadership has Gong for the loan officers, and they keep asking why we need Invoca's QM on top of it.
+[00:01:01] Aisha Coleman: Okay. When they ask that, what are they comparing, exactly? The scoring, the coverage, the coaching workflow?
+[00:01:08] Andre Williams: Mostly the scoring. They see Gong scoring calls for the loan officers and figure that's the same job.
+[00:01:16] Aisha Coleman: Got it. Do you want me to put together something you can walk them through, like how the QM scorecards map to your compliance checks versus coaching?
+[00:01:28] Andre Williams: That would help. Something short, one page. They won't read more than that.
+[00:01:34] Aisha Coleman: I'll draft it and send it over for your review before it goes anywhere.
+[00:01:40] Andre Williams: Appreciate it. Second thing, and this one's been bugging us for a few weeks. The Five9 integration is stamping the transfer time instead of the answer time, so our speed-to-answer report is off by about forty seconds on every transferred call.
+[00:01:55] Aisha Coleman: Okay, that's a real gap. When did you first notice it?
+[00:02:00] Andre Williams: Early October, I think. It was subtle at first because not every call transfers.
+[00:02:06] Stacy Klein: It shows up in the Five9 reports too, so it's not just on your side.
+[00:02:13] Aisha Coleman: Do you have a couple of example calls with the Five9 IDs? That'll help me get it in front of the right team.
+[00:02:21] Andre Williams: I can pull five or six from last week and send them today.
+[00:02:28] Aisha Coleman: Perfect. I'll open a ticket and attach them, and I'll keep you posted on what I hear back.
+[00:02:36] Andre Williams: Thanks.
+[00:02:37] Aisha Coleman: Stacy, you had something on your list?
+[00:02:41] Stacy Klein: Yeah. We'd love an API endpoint for the dashboard metrics so we can pull them into Looker without the CSV export.
+[00:02:51] Aisha Coleman: Okay. Which metrics are you pulling most often?
+[00:02:54] Stacy Klein: Call volume by campaign, conversion rate, and the signal counts. The weekly exec pack is built in Looker, so right now someone exports the CSV every Monday and it's manual.
+[00:03:08] Aisha Coleman: And how often would you want it refreshed if you had it?
+[00:03:14] Stacy Klein: Daily would be plenty. It's not real-time reporting, it's trend reporting.
+[00:03:19] Aisha Coleman: Got it. I'll log that as a request and see where it sits. I can't promise a date, but I'll make sure it's captured with the detail you just gave me.
+[00:03:32] Stacy Klein: That's all I ask.
+[00:03:35] Aisha Coleman: Anything else on the Salesforce side? The loan application object sync has been quiet, as far as I can tell.
+[00:03:43] Stacy Klein: It's fine. No issues there.
+[00:03:45] Andre Williams: Yeah, that's been stable.
+[00:03:47] Aisha Coleman: Good. How's the team handling the lower volume? Any changes to staffing?
+[00:03:53] Andre Williams: We've shifted a few folks to purchase campaigns. Nothing drastic yet, but if the trend continues we'll be looking at schedules in Q1.
+[00:04:03] Aisha Coleman: Okay. If it's useful, I can pull your call trends by campaign before our next call so you have the numbers in one place.
+[00:04:14] Andre Williams: That would be useful. Especially the purchase versus refi split.
+[00:04:18] Aisha Coleman: I'll have that ready. Anything else before we wrap?
+[00:04:23] Andre Williams: No, I think that covers it. Thanks, Aisha.
+[00:04:27] Stacy Klein: Thanks. Looking forward to the API update, even if it's a no.
+[00:04:32] Aisha Coleman: Understood. I'll follow up on the ticket and the one-pager this week. Talk soon.

@@ -1,0 +1,32 @@
+{
+  "fileId": "file_coastal_qbr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "Voice agent transfers into Amazon Connect arrive with no order number or call reason; customer starts over.",
+      "quote": "When the voice agent transfers to a person in Amazon Connect, the agent sees nothing. No order number, no reason for the call. The customer has to start over.",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "call_tracking",
+      "severity": "low",
+      "summary": "CallRail contacted the CMO directly.",
+      "quote": "CallRail reached out to our CMO directly. I'm not worried, but you should know they're circling.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense shows agents which mattress the caller viewed; close rates on those calls are up.",
+      "quote": "PreSense has been the surprise of the year. Agents can see which mattress the person was looking at, and close rates on those calls are up.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

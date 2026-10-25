@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_019",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "So the integration writes call data into our custom objects fine most of the time. But when we change a field or add a new picklist value, it starts dropping the call outcome into the wrong field on the custom object.",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

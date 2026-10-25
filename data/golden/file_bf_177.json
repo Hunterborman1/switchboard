@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bf_177",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Every time something new gets added, it's a separate approval with a separate justification, and by the time we get to renewal it feels like we're re-buying the platform three more times.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "They came in under what we're paying now on a per-rooftop basis, and they were throwing call scoring into the number.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Customer links \"add-on pricing friction at renewal\" to the renewal decision.",
+      "quote": "If that doesn't get easier, I can't promise we're not looking at what else is out there before January.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

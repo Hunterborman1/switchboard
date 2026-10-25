@@ -1,0 +1,33 @@
+Northwind Telecom / Invoca | exec sponsor | Thu, Oct 15, 2026
+
+[00:00:06] Tom Lindqvist: Hey Owen, hey Michelle. Thanks for making the time. How's the week going out there?
+[00:00:13] Owen Price: Busy. We're two weeks into the fiber push in the northern suburbs, so marketing and the sales floor are both stretched.
+[00:00:23] Michelle Tran: Same on my side. I've got two people out, one on PTO and one covering a queue, so I'm in the admin console more than I'd like.
+[00:00:34] Tom Lindqvist: Understood. Anything on the platform side that's been making that harder?
+[00:00:39] Michelle Tran: Yeah, actually. When Genesys moves a call between queues or from one agent to another, the screen pop lands on the receiving agent's desktop but it's blank. No journey, no campaign, nothing. It's fine on a fresh inbound, but the moment they transfer, the agent is talking to someone with no context.
+[00:00:59] Tom Lindqvist: So on the warm transfer specifically, the receiving agent gets the pop but not the content.
+[00:01:06] Michelle Tran: Exactly. And it's not every transfer, but it's often enough that the supervisors on the sales floor have started telling people to just ask the caller again. Which is not where we want to be.
+[00:01:21] Tom Lindqvist: How long has that been showing up?
+[00:01:25] Michelle Tran: Six weeks, maybe. It got louder when we added the second sales queue for the fiber campaign. Our Genesys admin has the transfer logs pulled, I can send you a couple of call IDs.
+[00:01:38] Tom Lindqvist: Please do. Call IDs plus a timestamp on each, and I'll get it in front of the right team with the Genesys config alongside it. I'm not going to guess at a cause on this call.
+[00:01:53] Michelle Tran: Fair. I'll get them to you by end of day tomorrow.
+[00:01:58] Owen Price: I'll add one thing to that, Tom. We're mapping out next year's budget now, and the renewal is in March. If the picture on transfers doesn't change, I have to be honest, that's a scope conversation. We'd either trim what we run or drop something, and PreSense is the piece that's in the crosshairs because it's the one the floor can't rely on.
+[00:02:22] Tom Lindqvist: That's clear, Owen. I'd rather hear it now than in February. Can I get you a written status on the transfer item before your budget review, so at least the decision isn't made on an open question?
+[00:02:38] Owen Price: That would help. Give me something I can put in front of our CFO.
+[00:02:45] Tom Lindqvist: I'll have it to you in two weeks. Michelle, anything else that's come up?
+[00:02:51] Michelle Tran: Small one. Every Monday morning one of my analysts pulls the campaign report out as a CSV and hand-builds the same deck for the Monday leadership call. She's been asking whether we can push those dashboards to Looker on a schedule instead, or Google Sheets, or whatever BI tool, so nobody is exporting by hand.
+[00:03:14] Tom Lindqvist: Scheduled delivery out to a BI tool rather than the manual export.
+[00:03:20] Michelle Tran: Right. Manual export is the part that eats the morning.
+[00:03:25] Tom Lindqvist: I'll log that as a request. I can't tell you it's on a roadmap, but I'll make sure it's in front of product with your name on it.
+[00:03:36] Michelle Tran: That's all I'm asking.
+[00:03:39] Tom Lindqvist: While I have you, how are volumes looking? I want to make sure the numbers I bring into our next check-in are current.
+[00:03:48] Owen Price: We're tracking around 11,400 calls a month across the sales queues, maybe up 8 percent since the fiber launch. The AI Voice Agent is taking the after-hours overflow like we set it up, and I haven't heard any complaints about it.
+[00:04:06] Tom Lindqvist: Good. Signal AI and the Google Ads side are quiet on my end too. Anything on Adobe?
+[00:04:13] Michelle Tran: No, that's been steady.
+[00:04:15] Owen Price: One scheduling note. I'm out the last week of October, so if you need a decision from me on anything, get it to me before the 23rd.
+[00:04:26] Tom Lindqvist: Noted. I'll send the transfer write-up before then so it's in your inbox when you're back.
+[00:04:33] Owen Price: Appreciate it. Michelle, can you loop me on the call IDs when you send them?
+[00:04:39] Michelle Tran: Will do.
+[00:04:41] Tom Lindqvist: Alright. I'll follow up tomorrow with a short recap, and you'll have the call IDs request from me in writing so it doesn't sit. Thanks both.
+[00:04:52] Owen Price: Thanks, Tom.
+[00:04:54] Michelle Tran: Talk soon.

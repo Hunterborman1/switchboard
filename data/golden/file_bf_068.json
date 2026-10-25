@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_068",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail is pitching same-day conversion sync to Google Ads, often with a lower quote.",
+      "quote": "they keep pitching same-day conversion sync to google ads like the numbers land in the account the same day and their quote is basically half of what we're paying you all",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Signal AI spam detection flags legitimate after-hours or weekend callers as spam, removing real customers from reporting.",
+      "quote": "the spam detection is flagging legitimate callers as spam after-hours stuff, weekends mostly. somebody calls at like 8:40 at night doesn't get an answer hangs up calls right back",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

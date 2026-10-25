@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_059",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "medium",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "So what I'd love, and I know I'm not the only one asking, is for those to just land in Looker, or Sheets, or whatever BI tool, on a schedule.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

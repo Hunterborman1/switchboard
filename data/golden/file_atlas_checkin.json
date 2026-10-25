@@ -1,0 +1,32 @@
+{
+  "fileId": "file_atlas_checkin",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Marchex quoted about $40 less per rooftop per month across 22 stores.",
+      "quote": "Marchex came in last week and quoted us about forty dollars less per rooftop per month. That's real money across twenty-two stores.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Appointment-set conversions reach Google Ads two to three days after the call.",
+      "quote": "Our appointment-set conversions aren't hitting Google Ads until two days later, sometimes three.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Wants the BDC scorecard dashboard delivered automatically into Google Sheets.",
+      "quote": "If I could get the BDC scorecard dashboard into Google Sheets automatically, my managers would actually look at it.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

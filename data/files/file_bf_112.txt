@@ -1,0 +1,31 @@
+Keystone Mutual / Invoca | working session | Fri, Sep 25, 2026
+
+[00:00:03] Rachel Okafor: Morning, Nate. How was the drive in?
+[00:00:07] Nate Simmons: Not bad. 315 to 270 was actually moving for once. You?
+[00:00:12] Rachel Okafor: Fine, I'm at home today, so my commute was a flight of stairs.
+[00:00:18] Nate Simmons: Nice. Okay, so I've got about a half hour before our eleven o'clock with the claims leadership. What did you want to cover?
+[00:00:28] Rachel Okafor: A few things. Wanted to check the after-hours voice agent numbers, and then I had a couple of questions about the QM scorecards.
+[00:00:38] Nate Simmons: Sure. The voice agent pilot is going fine, by the way. We've been running it on claims intake after 7pm and weekends. About 1,100 calls since the start of the month, and the transfer rate into Genesys is holding around 28 percent.
+[00:00:53] Rachel Okafor: That's in the range we'd expect. Any complaints from the agents picking up the transfers?
+[00:01:00] Nate Simmons: Not really. PreSense is showing them the screen pop before the call lands, so they're not starting cold. That part's working the way we hoped.
+[00:01:10] Rachel Okafor: Good. What about the messaging agent on the follow-up side?
+[00:01:16] Nate Simmons: Fine. We're using it for the SMS follow-up after a claim is filed, and the response rate is decent. Nothing to flag there.
+[00:01:26] Rachel Okafor: Okay. And volumes overall look steady. I was looking at your call tracking report earlier, the Google Ads conversions are still matching cleanly on GCLID, no gaps.
+[00:01:37] Nate Simmons: Yeah, that's been solid. The only thing I wanted to raise, and it's more of a wish-list thing than a problem, is on the QM side.
+[00:01:48] Rachel Okafor: Go ahead.
+[00:01:50] Nate Simmons: So we've got the scorecard that's out of the box, and it's fine for a baseline. But our compliance team wants to score to our own criteria. Specific disclosures we have to hit on every call, plus different scoring depending on the call type. A claims call shouldn't be scored the same way as a billing call, you know?
+[00:02:11] Rachel Okafor: Right. So call-type-specific scorecards and your own criteria, not the default set.
+[00:02:16] Nate Simmons: Exactly. And then weighting, which is the part that matters most to us. We want to be able to weight criteria differently depending on the agent's tenure. If somebody's been on the phones three weeks, missing a disclosure is a coaching moment. If it's somebody who's been here four years, that's a bigger deal, and the score should reflect that.
+[00:02:41] Rachel Okafor: So the same call, same criteria, but different weights for new versus tenured agents.
+[00:02:48] Nate Simmons: Yeah. We've got roughly 80 new hires in the first ninety days at any given time, out of the 300 plus licensed agents, so it's not a small group. Right now we're doing that weighting by hand in a spreadsheet after the fact, and it's a mess.
+[00:03:07] Rachel Okafor: Okay. Let me write this down properly so I take it back accurately. You want configurable criteria, including your exact disclosure language, scoring that varies by call type, and then a weighting layer that can flex by agent tenure.
+[00:03:25] Nate Simmons: That's it. I'm not expecting it next week. I just want it in front of the product team, because I think every carrier our size would ask for the same thing.
+[00:03:38] Rachel Okafor: Fair. I'll get it written up and route it. Can I come back to you if they have questions about the tenure piece specifically?
+[00:03:47] Nate Simmons: Please do. I can get you whatever examples you need.
+[00:03:52] Rachel Okafor: Perfect. Anything else on your list before I let you go?
+[00:03:57] Nate Simmons: No, that was the main one. Oh, one logistics thing, we're onboarding a new group of agents the first week of October, so if there's any seat provisioning on your end, heads up.
+[00:04:11] Rachel Okafor: How many are we talking?
+[00:04:13] Nate Simmons: Twenty-two. I'll send you the roster once HR finalizes it, probably Monday or Tuesday.
+[00:04:19] Rachel Okafor: Okay, send it to me and I'll make sure the QM seats line up. And I'll follow up on the scorecard request by end of next week, even if it's just to say where it landed.
+[00:04:32] Nate Simmons: Sounds good. Thanks, Rachel.
+[00:04:35] Rachel Okafor: Thanks, Nate. Talk soon.

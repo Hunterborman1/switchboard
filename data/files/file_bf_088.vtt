@@ -1,0 +1,161 @@
+WEBVTT
+
+1
+00:00:06.622 --> 00:00:15.153
+Aisha Coleman: Hi both, thanks for making time. I know Mondays are heavy on the phones. How are things looking on your side?
+
+2
+00:00:15.390 --> 00:00:22.848
+Andre Williams: Morning, Aisha. Busy. We ran about 4,100 inbound calls last week, which is up maybe six percent from the week before.
+
+3
+00:00:22.848 --> 00:00:25.689
+Andre Williams: Refi activity picked up after that rate dip.
+
+4
+00:00:26.358 --> 00:00:33.992
+Stacy Klein: And we're short two loan officers on the evening shift, so the queue's been lumpy. We're interviewing this week, so hopefully that settles.
+
+5
+00:00:35.139 --> 00:00:46.149
+Aisha Coleman: Got it. Do you want me to pull the abandoned call numbers for that evening block so you have something concrete for the hiring conversation?
+
+6
+00:00:46.582 --> 00:00:51.132
+Andre Williams: That would actually help. Anything where wait times spiked after six.
+
+7
+00:00:52.296 --> 00:01:00.184
+Aisha Coleman: I'll have that to you by Wednesday. And Stacy, you had something you wanted to talk through on PreSense?
+
+8
+00:01:01.038 --> 00:01:18.017
+Stacy Klein: Yeah. I wanted to say it out loud because it doesn't come through in the usage reports. When a borrower comes in from a Google search on a rate page, the agent sees that before they pick up, and it changes the whole call.
+
+9
+00:01:19.339 --> 00:01:28.967
+Stacy Klein: They're not asking 'how can I help you' and starting from zero. They already know the person was comparing a 30 year fixed against an ARM.
+
+10
+00:01:29.628 --> 00:01:41.148
+Andre Williams: The officers bring it up in huddles. They like walking in with the pages the caller looked at, especially on purchase calls where the borrower has been on three or four lender sites.
+
+11
+00:01:42.591 --> 00:01:47.617
+Aisha Coleman: So the context is landing in Five9 before the call connects, on the screen pop?
+
+12
+00:01:48.749 --> 00:01:58.341
+Stacy Klein: Right. It's the routing piece too. The digital shoppers who get matched to someone who handles that product tend to stay on the line.
+
+13
+00:01:58.625 --> 00:02:08.118
+Aisha Coleman: That's good to hear. I'll note it, and if you ever want it in a QBR slide, I can pull a couple of examples.
+
+14
+00:02:09.200 --> 00:02:14.875
+Stacy Klein: Maybe. The bigger thing I want to raise is on the Signal AI side.
+
+15
+00:02:15.654 --> 00:02:16.796
+Aisha Coleman: Okay, go ahead.
+
+16
+00:02:17.895 --> 00:02:26.311
+Stacy Klein: We're a regulated lender. Every transcript and every AI summary that touches a loan file is something our examiners can ask about.
+
+17
+00:02:26.311 --> 00:02:31.667
+Stacy Klein: Right now the redaction is what it is, and it's the same for everyone.
+
+18
+00:02:31.972 --> 00:02:46.099
+Stacy Klein: I need to be able to decide what gets masked. Social Security numbers, account numbers, dates of birth, and I need that to be configurable by us, not a setting we request and wait on.
+
+19
+00:02:47.349 --> 00:02:50.443
+Aisha Coleman: So configurable redaction, set on your end.
+
+20
+00:02:51.509 --> 00:03:01.764
+Stacy Klein: Yes. And it has to follow the person. An underwriter who needs the full transcript should see something different from a loan officer who just needs the summary.
+
+21
+00:03:02.741 --> 00:03:06.712
+Stacy Klein: Role-based access, so the view changes by who's logged in.
+
+22
+00:03:07.192 --> 00:03:21.008
+Andre Williams: And we need the audit trail on top of that. If compliance asks who opened a transcript on a specific application, we should be able to answer that in a minute, not a day.
+
+23
+00:03:21.460 --> 00:03:28.997
+Stacy Klein: An audit log of who viewed a transcript. That's the piece that makes the rest of it defensible in an exam.
+
+24
+00:03:29.548 --> 00:03:39.355
+Aisha Coleman: Let me make sure I have it. Configurable redaction of identifiers in transcripts and summaries, role-based access to what each person sees, and an audit log of transcript views.
+
+25
+00:03:39.355 --> 00:03:44.427
+Aisha Coleman: Is the audit log scoped to transcripts, or do you need it on summaries too?
+
+26
+00:03:44.738 --> 00:03:52.747
+Stacy Klein: Both, honestly. If the summary is what gets pasted into the loan application record, that's the one people will ask about.
+
+27
+00:03:53.356 --> 00:03:59.747
+Aisha Coleman: Okay. Who else needs to be in the room when we talk about this? Your compliance lead?
+
+28
+00:04:01.195 --> 00:04:06.817
+Stacy Klein: Probably. Let me talk to him first so we're not bringing three versions of the same requirement.
+
+29
+00:04:07.123 --> 00:04:22.120
+Aisha Coleman: Makes sense. I'll write it up as you've described it and take it to our product team. I'm not going to promise a date on this call, but I'll come back with what I learn.
+
+30
+00:04:22.657 --> 00:04:32.817
+Andre Williams: That's fair. One other thing, small. The Salesforce call records are writing to the Loan Application object fine, we checked a sample last week.
+
+31
+00:04:32.817 --> 00:04:34.087
+Andre Williams: No issues there.
+
+32
+00:04:34.969 --> 00:04:37.393
+Aisha Coleman: Good. And Google Ads offline conversions?
+
+33
+00:04:38.402 --> 00:04:43.416
+Andre Williams: Fine as far as we can tell. Stacy would know better than me.
+
+34
+00:04:44.562 --> 00:04:46.423
+Stacy Klein: They're going through. No problems.
+
+35
+00:04:46.944 --> 00:04:54.859
+Aisha Coleman: Okay. I'll put the write-up together this week. Do you want to review it before it goes to product, Stacy?
+
+36
+00:04:55.883 --> 00:04:59.318
+Stacy Klein: Yes, send it over. I'll get you comments by Thursday.
+
+37
+00:04:59.522 --> 00:05:07.409
+Aisha Coleman: Perfect. And I'll have the evening queue numbers to Andre by Wednesday. Anything else before I let you go?
+
+38
+00:05:08.173 --> 00:05:10.013
+Andre Williams: No, that's it. Thanks, Aisha.
+
+39
+00:05:10.461 --> 00:05:11.261
+Stacy Klein: Thanks.
+
+40
+00:05:11.480 --> 00:05:12.976
+Aisha Coleman: Thanks both. Talk soon.

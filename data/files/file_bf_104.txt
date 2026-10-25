@@ -1,0 +1,91 @@
+auto-transcript | audio_1012_harborfcu | duration 00:04:39 | speakers detected: 3
+
+Speaker 1  00:00:04
+hey linda hey tyler. um how's monday treating you both?
+
+Speaker 2  00:00:09
+oh, you know. i mean it's monday we we had a branch all-hands this morning so i'm running on coffee number three.
+
+Speaker 3  00:00:20
+and i'm running on a salesforce release that went out over the weekend so, yeah fun times
+
+Speaker 1  00:00:27
+ha, okay i'll keep this quick then um anything you want to start with
+
+Speaker 2  00:00:36
+actually, yeah. i was on a call with our contact center leads last week and they brought up something i wanted to pass along, and it's positive for once
+
+Speaker 3  00:00:54
+which is a nice change.
+
+Speaker 2  00:00:57
+right so tyler you'd know the the numbers better than me on this [crosstalk]
+
+Speaker 3  00:01:04
+so the summary thing, the ai call summaries, the front-line folks have really latched onto it um our [inaudible] servicing team the ones doing callbacks they said it saves them i don't know a few minutes per callback because they're not re-listening to the whole recording and the dispatch side too and when calls bounce to another rep [crosstalk]
+
+Speaker 1  00:01:28
+Okay, good to hear And that's the summary field coming into the call record in Financial Services Cloud or are they reading it in invoke a?
+
+Speaker 3  00:01:37
+both honestly some of them pull it up in the call record some still just live in the invoke a ui either way they're not re-listening to recordings uh, which was the whole complaint uh, before
+
+Speaker 2  00:01:53
+the other piece, and this is the one that surprised me is new hires. we brought on four reps in september, and their supervisor told me they're getting up to to speed faster because they can read the summaries from prior calls instead of sitting through hours of recordings in training
+
+Speaker 1  00:02:15
+that's great. do you know if the supervisor is using them in a structured way or is it more informal?
+
+Speaker 2  00:02:23
+i think informal right now, but she mentioned wanting [inaudible] it into the onboarding checklist i told her i'd mention it to you
+
+Speaker 1  00:02:33
+okay, noted. i can ask around on how other financial services customers do that but nothing formal from me right now
+
+Speaker 3  00:02:43
+yeah, no rush it's working, that's the main thing
+
+Speaker 1  00:02:47
+how are your call volumes looking? last time we talked you were around the 60,000 mark for the quarter
+
+Speaker 3  00:02:55
+We're at about 61,500 for um the quarter so far, so pretty flat Maybe up a a little because of the HELOC promo that marketing ran
+
+Speaker 2  00:03:07
+in september and that's with one of our tacoma reps out on leave uh so the team's stretched a a bit we're covering with two folks from the puyallup branch a couple days a week.
+
+Speaker 1  00:03:23
+you know, got i mean it anything on the the q m side i should like know or is that holding steady?
+
+Speaker 2  00:03:31
+um it's fine. nothing new
+
+Speaker 3  00:03:36
+yeah, same as always compliance looks at every scorecard change so we uh just plan around that
+
+Speaker 1  00:03:43
+makes sense like, okay, scheduling stuff next do you want to do the next check-in before or after your november board meeting? i know it's early in the month.
+
+Speaker 2  00:03:54
+after definitely first week of december works better.
+
+Speaker 1  00:03:57
+i'll send something for the week of the seventh um then. [crosstalk]
+
+Speaker 3  00:04:04
+perfect oh, one totally so unrelated thing are you guys doing anything for the holidays this year? someone on my my team asked if invoke a still does that ugly sweater thing
+
+Speaker 1  00:04:19
+we do and it is still ugly i'll
+
+Speaker 2  00:04:22
+spare you the photos. please do alright
+
+Speaker 1  00:04:26
+i'll write up the notes and get that december hold out to you you both this week
+
+Speaker 2  00:04:34
+so thanks aisha.
+
+Speaker 3  00:04:35
+thanks talk soon

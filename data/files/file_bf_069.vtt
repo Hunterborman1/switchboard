@@ -1,0 +1,149 @@
+WEBVTT
+
+1
+00:00:02.107 --> 00:00:07.868
+Marcus Bell: Hey Kyle, hey Ashley. Thanks for making time. How's the week going over there?
+
+2
+00:00:09.307 --> 00:00:15.826
+Ashley Moore: Pretty good. Busy. We're heading into the fall pest season so the phones are starting to pick up.
+
+3
+00:00:16.861 --> 00:00:22.579
+Kyle Brennan: Yeah, it's that time. We usually see a jump in ant and rodent calls around now.
+
+4
+00:00:23.262 --> 00:00:32.399
+Marcus Bell: Makes sense. I pulled the numbers before this. You had about 1,400 calls last month across the six locations, up maybe 9 percent from July.
+
+5
+00:00:32.399 --> 00:00:34.957
+Marcus Bell: Does that track with what you're seeing?
+
+6
+00:00:35.730 --> 00:00:39.517
+Ashley Moore: That sounds about right. August was strong. We're hoping September holds.
+
+7
+00:00:40.387 --> 00:00:46.023
+Kyle Brennan: Raleigh and Cary are carrying most of it. The Wilmington office is still slow.
+
+8
+00:00:46.235 --> 00:00:52.813
+Marcus Bell: Okay. Ashley, I know you run all of this yourself. Anything on your list you want to walk through today?
+
+9
+00:00:53.754 --> 00:01:01.758
+Ashley Moore: A few things. First, the Google Ads side is fine. The offline conversions are landing and we can see them in the campaigns.
+
+10
+00:01:01.758 --> 00:01:02.802
+Ashley Moore: No complaints there.
+
+11
+00:01:03.839 --> 00:01:09.943
+Marcus Bell: Good to hear. And the signal setup, appointment booked and quote given, still tagging the way you want?
+
+12
+00:01:11.198 --> 00:01:18.789
+Ashley Moore: Yeah, those are working. We tweaked the quote signal in July so it catches the estimate calls and that helped.
+
+13
+00:01:20.080 --> 00:01:24.062
+Kyle Brennan: That was a good fix. Less junk in the report.
+
+14
+00:01:24.532 --> 00:01:27.016
+Marcus Bell: Nice. So what's on your mind?
+
+15
+00:01:28.076 --> 00:01:41.954
+Kyle Brennan: I'll jump in. This is more of a wish than a problem. Every Monday Ashley pulls the call report out as a CSV and then she's the one pasting it into a Google Sheet for me and the branch managers.
+
+16
+00:01:42.916 --> 00:01:52.210
+Ashley Moore: It's not hard, but it's a chore. And then Kyle wants it sliced by location, so I'm doing pivot tables before I've had coffee.
+
+17
+00:01:53.361 --> 00:02:03.757
+Kyle Brennan: What I'd really like is for that dashboard to just show up. In Looker, or a Google Sheet, or whatever BI tool, on a schedule.
+
+18
+00:02:03.757 --> 00:02:07.916
+Kyle Brennan: So Monday morning it's there and nobody's copying and pasting.
+
+19
+00:02:08.203 --> 00:02:15.975
+Marcus Bell: So the ask is a way to push dashboard metrics out on a schedule, rather than exporting the file by hand.
+
+20
+00:02:16.452 --> 00:02:28.414
+Kyle Brennan: Right. And honestly if there were an API endpoint for the dashboard numbers, I've got a guy who could wire it into Looker and we'd never touch it again.
+
+21
+00:02:28.624 --> 00:02:37.378
+Marcus Bell: Got it. Let me write that down. So scheduled delivery, and an endpoint for the metrics. Which numbers matter most to you?
+
+22
+00:02:37.737 --> 00:02:44.564
+Kyle Brennan: Calls by location, calls by campaign, and how many turned into booked appointments. That's the three I look at.
+
+23
+00:02:45.303 --> 00:02:53.522
+Marcus Bell: Okay. I'll take that back to the product team and see what's possible. I can't promise anything on timing.
+
+24
+00:02:54.827 --> 00:02:55.651
+Kyle Brennan: Yep, understood.
+
+25
+00:02:56.669 --> 00:03:04.336
+Ashley Moore: One other thing, totally separate. We hired two new CSRs in Raleigh, so I need to get them set up as users.
+
+26
+00:03:04.336 --> 00:03:06.776
+Ashley Moore: Can you point me to the steps?
+
+27
+00:03:08.185 --> 00:03:14.573
+Marcus Bell: Sure, I'll email you the invite flow after this. Takes about five minutes per seat.
+
+28
+00:03:15.819 --> 00:03:16.619
+Ashley Moore: Perfect.
+
+29
+00:03:16.850 --> 00:03:22.313
+Marcus Bell: How's everything else holding up? Tracking numbers, the dynamic number insertion on the site?
+
+30
+00:03:23.482 --> 00:03:25.021
+Ashley Moore: Fine. No issues there.
+
+31
+00:03:26.207 --> 00:03:30.647
+Kyle Brennan: Hey, did you all get that storm last night? Power blinked here twice.
+
+32
+00:03:31.923 --> 00:03:37.481
+Marcus Bell: Just rain on my side of town. My dog was not thrilled about it.
+
+33
+00:03:37.786 --> 00:03:38.951
+Kyle Brennan: Ha. Same here.
+
+34
+00:03:39.837 --> 00:03:47.760
+Marcus Bell: Okay, so I'll follow up on the scheduled reporting ask and send the user setup steps. Anything else before we hop off?
+
+35
+00:03:48.212 --> 00:03:50.480
+Ashley Moore: That's it from us. Thanks Marcus.
+
+36
+00:03:51.612 --> 00:03:52.412
+Kyle Brennan: Appreciate it.
+
+37
+00:03:53.862 --> 00:03:55.350
+Marcus Bell: Thanks both. Talk soon.

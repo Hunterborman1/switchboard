@@ -1,0 +1,86 @@
+Coastal Comfort Mattress escalation
+Fri, Oct 16, 2026, 3:00PM • 3:40
+
+Tom Lindqvist  0:06
+Hey Julie, how's it going down there in Tampa? Still hurricane season, um, right?
+
+Julie Hammond  0:12
+Yeah, we got lucky this week. Just a lot of rain. How about you?
+
+Tom Lindqvist  0:19
+Not bad, not bad. I saw the volume numbers for September, looks like you all stayed busy.
+
+Julie Hammond  0:27
+We did. Actually, that's kind of why I wanted to talk.
+
+Tom Lindqvist  0:32
+Okay, what's going on?
+
+Julie Hammond  0:35
+So we turned on the AI Voice Agent for after-hours and the order-status line, what, I mean, six weeks ago? And it's mostly fine, but when it hands off to a live agent, the screen in Amazon Connect comes up basically blank.
+
+Tom Lindqvist  0:51
+Blank meaning...
+
+Julie Hammond  0:53
+Meaning none of what the caller just told the agent shows up. So my team is sitting there going, okay, what's your order number, and the customer's like, I just said it. It's embarrassing.
+
+Tom Lindqvist  1:07
+Got it. So the caller already gave the account or order number to the voice agent, and then has to say it again to the person.
+
+Julie Hammond  1:19
+Exactly. Every single time. And it's not like ten calls a day, Tom.
+
+Tom Lindqvist  1:24
+How many are we talking?
+
+Julie Hammond  1:26
+Last week we had I think you know, 412 transfers, uh, and I'd guess most of them. My reps have started apologizing before the customer even finishes.
+
+Tom Lindqvist  1:37
+Okay. Do you have a couple of call IDs where I can hear it happen?
+
+Julie Hammond  1:43
+I can pull some. Give me until Monday, I'm short two people this week, one's out on leave.
+
+Tom Lindqvist  1:51
+No rush. And is this every showroom line, or just the ones routing into the main center?
+
+Julie Hammond  2:00
+I mean, Hmm. Let me think. The ones that go to the center, mostly. The store-level ones I think are okay? I haven't heard complaints from the stores.
+
+Tom Lindqvist  2:11
+That's helpful. I want to take this to the team and get it looked at properly, but I don't want to guess at what's happening until I have those examples.
+
+Julie Hammond  2:22
+Yeah, no, I get it. I just, it's a bad look when the whole point was to save the customer from repeating themselves.
+
+Tom Lindqvist  2:31
+Right. Before I forget, did you all set the Q4 review yet? So, I know we floated the 12th.
+
+Julie Hammond  2:40
+Oh, shoot. I need to check with the ops director, she's the one who owns that calendar. I'll send you a couple of dates.
+
+Tom Lindqvist  2:51
+Perfect. And aside from this, everything else running okay? Google Ads, the numbers?
+
+Julie Hammond  2:57
+Fine, yeah. Nothing else on my list.
+
+Tom Lindqvist  3:00
+Good. So here's what I'll do. I'll open this up with our engineering folks today so it's on record, and once you send me those call IDs I'll attach them.
+
+Julie Hammond  3:13
+Okay. And you'll tell me what they find?
+
+Tom Lindqvist  3:18
+Soon as I know something, you'll know. Might be a few days.
+
+Julie Hammond  3:22
+That works. Hey, I mean, and tell your daughter congrats on the soccer thing, if that's still happening.
+
+Tom Lindqvist  3:30
+Ha, it is, thank you. She'll be thrilled somebody asked. Talk Monday.
+
+Julie Hammond  3:36
+Monday. Bye, Tom.

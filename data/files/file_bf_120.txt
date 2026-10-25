@@ -1,0 +1,40 @@
+Keystone Mutual / Invoca | check-in | Tue, Oct 6, 2026
+
+[00:00:02] Rachel Okafor: Hey Nate, hey Luis. How's the week going over there?
+[00:00:07] Nate Simmons: Hey Rachel. Busy, but fine. Open enrollment stuff is behind us, so we're mostly just watching call volume settle back down.
+[00:00:16] Luis Ortega: Yeah, it's been steady. We're running around 11,000 calls a week across auto and home, give or take. The weekends are always the wild card.
+[00:00:28] Rachel Okafor: Good to hear. Any staffing shifts I should know about?
+[00:00:32] Nate Simmons: We finished moving the last of the overflow folks onto the Genesys queues last month, so we're fully on one platform now. Three hundred and some licensed agents. Nothing dramatic.
+[00:00:44] Rachel Okafor: That's a big milestone. Does that change anything about how the Invoca numbers are attached to agents?
+[00:00:52] Nate Simmons: Not really. Same tagging, same reporting. Honestly the PreSense piece has been the bright spot lately.
+[00:01:00] Rachel Okafor: Oh? Tell me more.
+[00:01:01] Nate Simmons: Agents really like seeing the pages a caller browsed before they pick up. It gives them something to work with right away, and it's helping them close more of those calls that started as digital shoppers.
+[00:01:17] Luis Ortega: Yeah, the screen pop with the ad and the pages viewed, that's been a nice change. My claims folks use it constantly.
+[00:01:26] Rachel Okafor: That's great to hear. I'll note it for the account team.
+[00:01:30] Nate Simmons: How about on your end, anything new with the platform I should be tracking?
+[00:01:37] Rachel Okafor: Nothing major. I want to walk the QM scorecards with your team before the end of the quarter, just to make sure the weights still match how you're coaching.
+[00:01:48] Nate Simmons: That's fine. We can pull in whoever needs to be there.
+[00:01:53] Rachel Okafor: Also, how's the after-hours AI Voice Agent pilot going?
+[00:01:57] Nate Simmons: It's early. It's handling the overnight claims intake, mostly simple stuff, and transferring to a live person when it gets complicated. We're watching it closely through October.
+[00:02:07] Luis Ortega: Actually, Rachel, can I bring something up? There's one thing that's been biting us.
+[00:02:14] Rachel Okafor: Of course, go ahead.
+[00:02:16] Luis Ortega: Signal AI is flagging legitimate after-hours or weekend callers as spam. So real customers are getting pulled out of our reporting entirely.
+[00:02:26] Rachel Okafor: Hmm. How long has that been happening?
+[00:02:31] Luis Ortega: Few weeks. The weekend calls are the worst. Saturday and Sunday nights, we're losing a big chunk of the calls that should be counted.
+[00:02:41] Rachel Okafor: Do you have examples you can share? Even a handful of call IDs would help.
+[00:02:48] Luis Ortega: Yeah, I'll pull a list together and send it over. It's not every call, but it's enough to skew the numbers we show leadership.
+[00:02:59] Rachel Okafor: Okay. Let me take that back to the team. What's the impact on your side right now?
+[00:03:05] Luis Ortega: Mostly reporting. The claims numbers we report up the chain are off, and it makes the after-hours team look like they're not getting the volume they're actually getting.
+[00:03:17] Nate Simmons: It's been a topic in our ops review for two weeks now. We just want it fixed so we can trust the numbers again.
+[00:03:25] Rachel Okafor: Understood. I'll flag it with the team today and follow up with you both by end of week.
+[00:03:33] Luis Ortega: Appreciate that.
+[00:03:35] Rachel Okafor: Anything else on the reporting side I should know about?
+[00:03:39] Nate Simmons: No, everything else looks fine. The Google Ads conversions are matching cleanly, and Salesforce is writing the call outcomes the way we expect.
+[00:03:49] Rachel Okafor: Good. And Adobe Analytics?
+[00:03:52] Nate Simmons: That's fine too.
+[00:03:54] Rachel Okafor: Alright. Let's plan to check back in two weeks, same time. Does Tuesday at 3:15 still work?
+[00:04:02] Nate Simmons: Works for me. Luis?
+[00:04:05] Luis Ortega: Fine by me.
+[00:04:06] Rachel Okafor: I'll send the invite and a short note on what we covered. Talk soon, both.
+[00:04:14] Nate Simmons: Thanks, Rachel.
+[00:04:16] Luis Ortega: Thanks. I'll get you those call IDs.

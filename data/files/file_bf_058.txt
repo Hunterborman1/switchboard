@@ -1,0 +1,31 @@
+Coastal Comfort Mattress / Invoca | check-in | Tue, Sep 29, 2026
+
+[00:00:03] Tom Lindqvist: Hey Julie, how's it going down there in Tampa?
+[00:00:07] Julie Hammond: Pretty good, Tom. Busy week. We're getting ready for the fall mattress event, so the phones are already picking up.
+[00:00:16] Tom Lindqvist: Makes sense. What kind of volume are you seeing?
+[00:00:20] Julie Hammond: Last month we were around 11,200 calls across all 64 showrooms. That's up maybe 9% from August. The AI Voice Agent is handling close to 2,800 of those on its own, mostly store hours and order status.
+[00:00:35] Tom Lindqvist: That's a solid share. How's the Amazon Connect side holding up?
+[00:00:41] Julie Hammond: It's fine. We had two agents out last week, so hold times crept up, but we're fully staffed again now.
+[00:00:49] Tom Lindqvist: Good. I saw a note that you're adding a couple of new showrooms in the spring?
+[00:00:57] Julie Hammond: Yeah, two in the Atlanta area, probably March. I'll loop you in on the number provisioning when we get closer. Anyway, I do have a couple of things I wanted to run by you.
+[00:01:09] Tom Lindqvist: Go ahead.
+[00:01:11] Julie Hammond: First one, when the AI Voice Agent transfers to a live agent, the details it collected don't arrive on our end. The transfer note comes through empty, so the caller has to repeat their order number and everything else.
+[00:01:25] Tom Lindqvist: Is it happening on every transfer, or just certain call types?
+[00:01:30] Julie Hammond: I'd say most of the order-status transfers. My team started writing a little script to ask for the order number again, but it's clunky.
+[00:01:39] Tom Lindqvist: How long has that been going on?
+[00:01:43] Julie Hammond: A couple of weeks, maybe since the second week of September. It's not breaking anything, but it's a bad first impression when someone already gave you the info.
+[00:01:56] Tom Lindqvist: Okay. Can you send me a few example call IDs, maybe five or six, so I can take it to the product team with something concrete?
+[00:02:07] Julie Hammond: Sure, I'll pull those tomorrow morning and email them over.
+[00:02:11] Tom Lindqvist: Perfect. What's the other thing?
+[00:02:14] Julie Hammond: The other one's more of a finance thing. Procurement is pushing back on paying separately for the add-ons at renewal. PreSense, the QM seats, the AI Voice Agent minutes... they want everything in one bundled price.
+[00:02:27] Tom Lindqvist: When did that come up?
+[00:02:30] Julie Hammond: Last week. Renee in finance asked me why we have four line items when other vendors give one number. I told her it's not my call, but I said I'd ask.
+[00:02:45] Tom Lindqvist: I can't promise anything on packaging, but I can get it in front of the right people. Do you know if they want a single figure for budget planning, or is it about the contract structure?
+[00:02:59] Julie Hammond: Honestly, probably both. Their words were 'one bundled price,' so I'd start there.
+[00:03:05] Tom Lindqvist: Got it. I'll raise it internally and come back to you with what's possible.
+[00:03:11] Julie Hammond: That's all I can ask. One more thing, completely unrelated. Do you still have that slide deck from the June business review? I want to borrow the format for our ops meeting.
+[00:03:26] Tom Lindqvist: I do. I'll send it after this call.
+[00:03:30] Julie Hammond: Thanks. Otherwise things are quiet on our side. No other issues worth mentioning.
+[00:03:35] Tom Lindqvist: Great. So I'll look for those call IDs tomorrow, and I'll follow up on the packaging question by end of next week.
+[00:03:44] Julie Hammond: Sounds good. Talk soon, Tom.
+[00:03:46] Tom Lindqvist: Talk soon, Julie. Have a good one.

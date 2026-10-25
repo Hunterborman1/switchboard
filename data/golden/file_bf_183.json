@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_183",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+      "quote": "we've got the voice agent handling the after-hours stuff, right and when it hands somebody to a live person the caller ends up repeating everything",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

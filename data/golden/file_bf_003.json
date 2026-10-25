@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_003",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Marchex is quoting lower per-rooftop pricing to dealer groups, sometimes with call scoring included.",
+      "quote": "marquex has been in our ear. they came in with a per-rooftop number that's meaningfully below what we're paying you and i think they're doing it with everybody in the dealer space right now",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

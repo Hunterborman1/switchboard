@@ -1,0 +1,32 @@
+{
+  "fileId": "file_meridian_exec",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Wants QM to score schedulers on whether they offered the earliest available appointment.",
+      "quote": "I want QM to score our schedulers on whether they offered the earliest available appointment. That's the metric my board looks at.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Signal Discovery found a third of cardiology calls were parking/directions questions; landing page fix halved them.",
+      "quote": "Signal Discovery found that a third of our cardiology calls were people asking about parking and directions. We fixed the landing page and those calls dropped by half.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Legal requires role-based access so only compliance can see unredacted transcripts before expansion.",
+      "quote": "Before we expand to the other twelve clinics, legal wants role-based access, so only compliance can see an unredacted transcript.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

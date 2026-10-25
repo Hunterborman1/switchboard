@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_023",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "We've got two custom objects for Medicare Advantage dispositions and one for P&C referrals. Those are the ones that go dark.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "Finance and procurement are pushing back on paying separately for the add-ons. PreSense, the QM seats, any AI Voice Agent minutes. They want one number.",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

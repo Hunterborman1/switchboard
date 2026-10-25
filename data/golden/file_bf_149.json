@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_149",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "What I'd love is a native Looker connection so our team can pull Invoca data straight into their models instead of me emailing files around.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

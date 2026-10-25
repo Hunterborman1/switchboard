@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_139",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "So right now redaction is all or nothing across transcripts and summaries, and legal wants us to be able to choose which identifiers get masked, like dates of birth or member IDs, and keep some fields visible for certain roles.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

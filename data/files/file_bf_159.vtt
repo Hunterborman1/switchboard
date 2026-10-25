@@ -1,0 +1,173 @@
+WEBVTT
+
+1
+00:00:02.203 --> 00:00:07.948
+Tom Lindqvist: Morning Kayla. How's you know, Denver treating you? Getting cold up there yet?
+
+2
+00:00:08.455 --> 00:00:17.631
+Kayla Jensen: Hey Tom. Yeah, it dropped to like thirty overnight. Uh, I had to scrape my windshield for the first time this season.
+
+3
+00:00:17.631 --> 00:00:20.134
+Kayla Jensen: You know, Not ready for it.
+
+4
+00:00:21.032 --> 00:00:35.974
+Tom Lindqvist: Ha, I bet. I saw flurries in the forecast for you all. Anyway, thanks for making time. I know this is the renewal window, so I figured we could just walk through it together.
+
+5
+00:00:37.092 --> 00:00:47.163
+Kayla Jensen: You know, yeah, that's what I'm here for. I've got the numbers in front of me. Give me a sec, I'm pulling up the sheet.
+
+6
+00:00:47.872 --> 00:00:48.756
+Tom Lindqvist: No rush.
+
+7
+00:00:49.825 --> 00:00:58.562
+Kayla Jensen: Okay. So before we get into the actual terms, I need to flag something that came out of our our finance review.
+
+8
+00:00:58.562 --> 00:01:02.533
+Kayla Jensen: It's not a dealbreaker, but it's going to come up.
+
+9
+00:01:03.275 --> 00:01:04.351
+Tom Lindqvist: Sure, go ahead.
+
+10
+00:01:05.090 --> 00:01:18.380
+Kayla Jensen: So, um, the way the pricing is structured right now, um, we're paying for the base uh, call tracking, and then everything that actually makes it useful is a separate line item.
+
+11
+00:01:18.380 --> 00:01:31.254
+Kayla Jensen: Signal AI is tacked on like it's an extra, PreSense is its own thing, the QM seats are per seat, and then the AI Voice Agent is billed by the minute.
+
+12
+00:01:31.254 --> 00:01:34.992
+Kayla Jensen: When you add it all up, it's not small.
+
+13
+00:01:36.146 --> 00:01:45.886
+Tom Lindqvist: Okay, so the concern is that the add-ons are stacking. Is that the finance team's read, or is it more about how it's it's presented?
+
+14
+00:01:46.290 --> 00:02:04.763
+Kayla Jensen: Honestly? Both. My CFO looked at it and said, 'Why are we paying extra for the intelligence layer on top of the thing that's supposed to be the intelligence platform?' Signal AI being an add-on on top of call tracking is the one that gets him the most.
+
+15
+00:02:06.239 --> 00:02:15.316
+Tom Lindqvist: Got it. Let me ask, is this coming from a budget uh, number they've already set, or is it more of a benchmarking thing?
+
+16
+00:02:15.758 --> 00:02:27.206
+Kayla Jensen: A bit of both. We're at about nine twenty a year, and they want to see that come down or at least be justified line by line.
+
+17
+00:02:27.206 --> 00:02:33.142
+Kayla Jensen: I don't have a target number yet, but I need something to take back.
+
+18
+00:02:34.486 --> 00:02:43.682
+Tom Lindqvist: Okay. That's really helpful. I don't want I mean, to react on the the spot, but let me take that back to our team and see what's possible.
+
+19
+00:02:43.682 --> 00:02:46.309
+Tom Lindqvist: I'll come back to you with something concrete.
+
+20
+00:02:47.667 --> 00:02:54.140
+Kayla Jensen: That's all I'm asking. I just don't want to get to March and be surprised.
+
+21
+00:02:54.552 --> 00:03:07.015
+Tom Lindqvist: Understood. Before we go further, how's everything else running? I I saw your call volume ticked up last month. You're north of two hundred thousand calls a month now, right?
+
+22
+00:03:07.555 --> 00:03:15.943
+Kayla Jensen: Yeah, about two fifteen last month. We added a couple of markets in the Southwest, so it's been busy. My team's stretched thin, honestly.
+
+23
+00:03:15.943 --> 00:03:22.234
+Kayla Jensen: We had someone out on leave, so the routing configs got a little messy for a few weeks.
+
+24
+00:03:22.770 --> 00:03:28.877
+Tom Lindqvist: That's a lot of volume. Is the Genesys side holding up okay with the screen pops?
+
+25
+00:03:29.140 --> 00:03:43.914
+Kayla Jensen: That's actually the other thing. The PreSense pops are fine when they show up, but we've had a couple of instances where a call transfers and the screen pop either doesn't fire on the second leg or it fires to the wrong agent.
+
+26
+00:03:43.914 --> 00:03:47.693
+Kayla Jensen: It's happened twice this quarter, both times on high-value sales calls.
+
+27
+00:03:49.089 --> 00:03:56.526
+Tom Lindqvist: Twice this quarter, and both on sales calls. Do you have the call IDs or timestamps for those?
+
+28
+00:03:57.723 --> 00:04:06.775
+Kayla Jensen: I don't have them handy, but I can get them from my ops lead. His name is Devin. Uh, He's the one who flagged it.
+
+29
+00:04:07.977 --> 00:04:25.038
+Tom Lindqvist: Okay, send me what he has and I'll open it up with our support team. I'm not going to guess at what's causing it, but I want to make sure it's on the radar before we talk renewal again.
+
+30
+00:04:25.934 --> 00:04:34.966
+Kayla Jensen: Appreciate that. Like I said, it's not constant, but when it happens, the agent's sitting there with no context, and the caller's already annoyed.
+
+31
+00:04:36.336 --> 00:04:45.344
+Tom Lindqvist: Makes sense. Okay, let me get those details and then we can schedule a follow-up. Does next Thursday work? Uh, Same time?
+
+32
+00:04:45.851 --> 00:04:51.1000
+Kayla Jensen: Thursday's good. I'll get Devin's notes over to to you by Tuesday so you have time to look.
+
+33
+00:04:53.389 --> 00:05:06.054
+Tom Lindqvist: I mean, Perfect. And on the pricing side, I'll bring something back to you by then too. I can't promise what it'll look like, but I'll have an answer.
+
+34
+00:05:06.930 --> 00:05:17.577
+Kayla Jensen: That's fine. One more thing, and this is minor. Uh, your Adobe Analytics connector, is that still pulling in the campaign data the way it should?
+
+35
+00:05:17.577 --> 00:05:20.034
+Kayla Jensen: We haven't touched it in months.
+
+36
+00:05:20.511 --> 00:05:24.277
+Tom Lindqvist: Yeah, so, that's been solid. No issues on our end.
+
+37
+00:05:25.133 --> 00:05:34.418
+Kayla Jensen: Good. And Google Ads offline conversions are still flowing? Because we're in the middle of Q4 and I don't want that to break.
+
+38
+00:05:34.910 --> 00:05:40.103
+Tom Lindqvist: Those are both fine. I checked uh, before the call. Nothing flagged.
+
+39
+00:05:40.729 --> 00:05:49.866
+Kayla Jensen: Okay, good. Sorry, one tangent. Did you all ever get that new hire in support? I remember you mentioning someone was starting.
+
+40
+00:05:51.244 --> 00:06:01.473
+Tom Lindqvist: We did, yeah. She started two weeks ago, so that should help with turnaround times. I'll make sure your ticket gets to the the right person.
+
+41
+00:06:02.101 --> 00:06:07.011
+Kayla Jensen: Great. That's all I've got, Tom. Thanks for hearing me out on the pricing stuff.
+
+42
+00:06:08.277 --> 00:06:11.879
+Tom Lindqvist: Of course. I'll talk to you Thursday. Stay warm out there.
+
+43
+00:06:13.254 --> 00:06:15.296
+Kayla Jensen: Like, Ha, I'll try. Talk soon.

@@ -1,0 +1,32 @@
+{
+  "fileId": "file_frontier_checkin",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "competitor_mention",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Sales leadership uses Gong for loan officers and questions paying for Invoca QM too.",
+      "quote": "Our sales leadership has Gong for the loan officers, and they keep asking why we need Invoca's QM on top of it.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Five9 integration stamps transfer time instead of answer time, skewing speed-to-answer by ~40s on transferred calls.",
+      "quote": "The Five9 integration is stamping the transfer time instead of the answer time, so our speed-to-answer report is off by about forty seconds on every transferred call.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Wants an API endpoint for dashboard metrics to feed Looker instead of CSV exports.",
+      "quote": "We'd love an API endpoint for the dashboard metrics so we can pull them into Looker without the CSV export.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

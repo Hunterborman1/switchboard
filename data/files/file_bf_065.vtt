@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:02.623 --> 00:00:12.988
+Tom Lindqvist: Hey Vanessa, how's it going? How was the drive down from Tampa? Wait, no, you're already in Tampa. Sorry, I just got off another call.
+
+2
+00:00:13.310 --> 00:00:20.933
+Vanessa Grant: Ha, no problem. Yeah, I'm in Tampa. It's still stupid hot for October, but we survived. How about you?
+
+3
+00:00:21.916 --> 00:00:31.062
+Tom Lindqvist: Can't complain. Busy week. I saw the AI Voice Agent had a big jump in handled calls last month, that's good to see.
+
+4
+00:00:31.788 --> 00:00:41.727
+Vanessa Grant: Yeah, we're at about 11,400 calls a month now across the 64 showrooms, and the agent's taking maybe a third of them for store hours and order status.
+
+5
+00:00:41.727 --> 00:00:51.311
+Vanessa Grant: You know, our night shift in the call center is down to four people, so it's helping. But, um, that's actually not why I wanted to talk.
+
+6
+00:00:52.255 --> 00:00:53.055
+Tom Lindqvist: Okay, shoot.
+
+7
+00:00:53.579 --> 00:01:05.136
+Vanessa Grant: So something's off with the Google Ads side. Our offline call conversions, the ones you all send over, they're not landing until one to three days after the call. And I mean consistently.
+
+8
+00:01:05.136 --> 00:01:11.090
+Vanessa Grant: We had a call Monday at 10am, conversion didn't show up in Google Ads until Wednesday night.
+
+9
+00:01:11.737 --> 00:01:18.436
+Tom Lindqvist: Okay. So when you say landing, you mean you can see the conversion in Google Ads, it's just delayed?
+
+10
+00:01:19.079 --> 00:01:26.037
+Vanessa Grant: Right. The call shows in Invoca same day, transcript and all. But Google only sees it a day or three later.
+
+11
+00:01:26.037 --> 00:01:30.345
+Vanessa Grant: Which means Smart Bidding is out there making decisions on half the picture.
+
+12
+00:01:30.773 --> 00:01:34.252
+Tom Lindqvist: Got it. And when did you first notice this?
+
+13
+00:01:34.878 --> 00:01:44.651
+Vanessa Grant: Mid-September is when I started staring at it. Our cost per lead on the paid search campaigns has gone from like $41 to $58 since then.
+
+14
+00:01:44.651 --> 00:01:48.786
+Vanessa Grant: Same creative, same budget. It's not the market, I don't think.
+
+15
+00:01:49.360 --> 00:01:59.731
+Tom Lindqvist: Like, that's a real jump. Let me write this down. One to three day lag on offline conversions into Google Ads, started mid-September, CPL up from $41 to $58.
+
+16
+00:02:00.060 --> 00:02:10.366
+Vanessa Grant: And to be fair, some of the campaigns are worse than others. The showroom ones are the worst. Um, but I don't want to overcomplicate it.
+
+17
+00:02:11.768 --> 00:02:20.783
+Tom Lindqvist: No, that's helpful. Do you know if the GCLID is coming through on those calls, like, or is it just the timing?
+
+18
+00:02:22.035 --> 00:02:31.993
+Vanessa Grant: The GCLID's there. I checked with our paid media person... sorry, her name's Renata, she runs the Google side... she pulled a few examples and the click IDs match.
+
+19
+00:02:31.993 --> 00:02:33.023
+Vanessa Grant: It's purely timing.
+
+20
+00:02:33.246 --> 00:02:40.849
+Tom Lindqvist: Okay. I want to take this back to the team and have them look at the send schedule on your account specifically.
+
+21
+00:02:40.849 --> 00:02:44.651
+Tom Lindqvist: I'm not going to guess at a cause on the call.
+
+22
+00:02:45.676 --> 00:02:53.567
+Vanessa Grant: That's fine. Um, I just need someone looking at it, because every day this drags, we're basically teaching the bidding algorithm wrong.
+
+23
+00:02:54.574 --> 00:03:02.956
+Tom Lindqvist: Understood. I'll open it today and you know, get you an update by, let's say Tuesday. Does Tuesday work?
+
+24
+00:03:04.247 --> 00:03:09.930
+Vanessa Grant: Tuesday's fine. I've got a showroom walkthrough Monday anyway, in Savannah, so I'll be useless.
+
+25
+00:03:11.149 --> 00:03:14.431
+Tom Lindqvist: Oh nice, Savannah. Is that the new one?
+
+26
+00:03:15.528 --> 00:03:20.433
+Vanessa Grant: Not new, we're remodeling it. New mattresses, new signage, the whole thing. Fun stuff.
+
+27
+00:03:21.892 --> 00:03:28.823
+Tom Lindqvist: You know, Anything else you want me to look at while I'm in there? PreSense, the agent, messaging?
+
+28
+00:03:29.864 --> 00:03:41.283
+Vanessa Grant: No, those are fine. The screen pop thing... the agents like seeing what page the customer was on. And the SMS follow-up is doing its job.
+
+29
+00:03:42.461 --> 00:03:46.018
+Tom Lindqvist: Good. And the Amazon Connect routing, no complaints there?
+
+30
+00:03:46.846 --> 00:03:52.508
+Vanessa Grant: No, that's been solid. Okay, one more thing on the conversions, and then I'll let you go.
+
+31
+00:03:53.913 --> 00:03:54.713
+Tom Lindqvist: Sure.
+
+32
+00:03:55.667 --> 00:04:13.154
+Vanessa Grant: If it turns out the delay is on your end, can we get the backlog re-sent? Because those conversions from the last month are just sitting there, and Google's never going to learn from them if they trickle in this slow.
+
+33
+00:04:14.604 --> 00:04:24.117
+Tom Lindqvist: I'll ask about backfilling when I bring it to the team. I don't want to promise it it before I know what's happening.
+
+34
+00:04:24.422 --> 00:04:26.520
+Vanessa Grant: Fair enough. That's all I've got.
+
+35
+00:04:27.908 --> 00:04:34.079
+Tom Lindqvist: Okay. I'll send a note today so you have it in writing, and update Tuesday. Enjoy the heat.
+
+36
+00:04:35.152 --> 00:04:37.297
+Vanessa Grant: Ha, thanks. Talk soon, Tom.

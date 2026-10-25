@@ -1,0 +1,32 @@
+{
+  "fileId": "file_sunpeak_renewal",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Spend grew from $190k to $268k in two years, mostly AI Voice Agent; finance needs the number to come down.",
+      "quote": "We went from a hundred and ninety to two sixty-eight over two years, and the AI Voice Agent piece is most of that. I need that number to come down.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "CallRail claims same-day Google conversion sync and quoted lower.",
+      "quote": "CallRail told us they can send conversions to Google the same day, and their quote was a lot lower.",
+      "owner": "ppl_jordan"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance will not sign at the current price and will run an RFP.",
+      "quote": "I'm not going to sign a renewal at this number. We'll run an RFP if we have to.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

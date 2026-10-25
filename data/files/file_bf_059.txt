@@ -1,0 +1,122 @@
+Coastal Comfort Mattress QBR
+Mon, Oct 5, 2026, 9:00AM • 4:46
+
+Tom Lindqvist  0:02
+Morning, both. How's the weather down in Tampa? I saw there was some rain over the weekend.
+
+Vanessa Grant  0:10
+Oh, it it dumped. My drive in you know, this morning was basically a boat ride. But it's cleared up now.
+
+Julie Hammond  0:19
+Yeah, our store in Brandon had water coming in near the loading dock. Nothing serious, just a mop situation.
+
+Tom Lindqvist  0:26
+Glad it wasn't worse. Okay, so we've got the QBR today. I want to spend most of the time on the AI Voice Agent, since that's the newest piece, and then look at the rest of the account. Does that work?
+
+Vanessa Grant  0:45
+Works for me. Julie's got the numbers pulled.
+
+Tom Lindqvist  0:48
+Uh, Perfect. Julie, walk me through it.
+
+Julie Hammond  0:51
+Sure. So for September, total inbound across all 64 showrooms was about 41,200 calls. That's up from 38,600 in August. Tracking numbers are live on every campaign, DNI is working on the site.
+
+Tom Lindqvist  1:06
+And how much of that hit the voice agent?
+
+Julie Hammond  1:10
+Roughly 11,400. Store hours and order status, mostly. About 62 percent of those resolved without a transfer to a live agent.
+
+Tom Lindqvist  1:19
+That's solid. Is the transfer rate holding where you want it?
+
+Vanessa Grant  1:24
+It's fine. We're not worried about it.
+
+Tom Lindqvist  1:28
+Good. And Amazon Connect, any changes on your side?
+
+Julie Hammond  1:32
+No, same setup. We did add six seats in the contact center in September, so we're at 55 now.
+
+Tom Lindqvist  1:41
+Noted. I'll make sure the seat count is right on our end before renewal.
+
+Julie Hammond  1:47
+Renewal's not till August, right?
+
+Tom Lindqvist  1:50
+August 15th, yeah. Plenty of runway.
+
+Vanessa Grant  1:53
+Okay, so, there's one thing I want to bring up while we have you. It's not urgent, but it keeps coming uh, up on my side.
+
+Tom Lindqvist  2:04
+Go ahead.
+
+Vanessa Grant  2:06
+Every Monday morning, Julie sits down and exports CSVs out of the platform by hand. Call volumes by showroom, by campaign, a couple of other cuts. Then she loads them into Looker for the regional directors.
+
+Julie Hammond  2:22
+And into a Google Sheet for the store managers, because they don't have Looker access. So it's two places every week.
+
+Tom Lindqvist  2:29
+How long does that take you?
+
+Julie Hammond  2:32
+If nothing breaks, maybe an hour and a half. Last Monday it was closer to three because one like, of the exports timed out and I had to redo it.
+
+Vanessa Grant  2:44
+And it's the same six or seven reports every week. So what I'd love, and I know I'm not the only one asking, is for those to just land in Looker, or Sheets, or whatever BI tool, on a schedule. Push, not pull. Julie shouldn't be the integration.
+
+Tom Lindqvist  3:06
+So scheduled delivery into Looker and so, Google Sheets, and probably other BI tools too, so nobody's hand-exporting.
+
+Vanessa Grant  3:12
+Right. Same reports, same schedule, every Monday at seven.
+
+Tom Lindqvist  3:16
+Got it. Is it the same report definitions each week, or does the list change?
+
+Julie Hammond  3:23
+Same ones. Occasionally I add a column, but the reports themselves don't change.
+
+Tom Lindqvist  3:29
+Okay. Let me write this up and take it to the product team. I can't tell you what they'll say or when, but I'll come back to you you with an answer either way.
+
+Vanessa Grant  3:44
+That's all I'm asking.
+
+Tom Lindqvist  3:46
+Anything else on the reporting side, or is that the one?
+
+Julie Hammond  3:52
+That's the one.
+
+Tom Lindqvist  3:54
+Okay. Switching gears, Google Ads offline conversions. Are those still matching the way they should?
+
+Julie Hammond  4:01
+Yep, no issues there. Meta's the same.
+
+Tom Lindqvist  4:04
+Good. Anything you want me to look at before the next check-in?
+
+Vanessa Grant  4:10
+I don't think so. Oh, one scheduling thing. Can we move the next one earlier? I mean, First week of December gets messy with holiday staffing.
+
+Tom Lindqvist  4:23
+Sure. I'll send options for the week of November 16th. Julie, you're on that too?
+
+Julie Hammond  4:29
+I'll be there.
+
+Tom Lindqvist  4:31
+Great. I'll get the recap out this afternoon with the reporting ask in writing so it's documented.
+
+Vanessa Grant  4:38
+Perfect. Thanks, Tom.
+
+Tom Lindqvist  4:41
+Thanks both. Stay dry down there.

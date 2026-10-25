@@ -1,0 +1,165 @@
+WEBVTT
+
+1
+00:00:05.339 --> 00:00:10.642
+Rachel Okafor: Hi Luis, thanks for grabbing the time. How's your week going over there?
+
+2
+00:00:11.196 --> 00:00:17.924
+Luis Ortega: Hey Rachel. Busy, but that's normal for September. We're heading into storm season, so claims volume is starting to climb.
+
+3
+00:00:18.893 --> 00:00:30.227
+Rachel Okafor: Makes sense. I saw the call volume ticked up about twelve percent month over month across your tracking numbers. Is that the storm activity or just seasonal?
+
+4
+00:00:30.809 --> 00:00:40.518
+Luis Ortega: Mostly seasonal, plus the new home bundle campaign that marketing launched on the fifteenth. That one's been driving a lot of after-hours calls.
+
+5
+00:00:41.572 --> 00:00:50.978
+Rachel Okafor: Okay so that brings me to something I wanted to check in on. How's the AI Voice Agent pilot going on the after-hours claims intake?
+
+6
+00:00:51.467 --> 00:01:02.661
+Luis Ortega: Mostly good. It's catching calls that would have gone to voicemail, and the transcripts are way better than I expected. But there's one thing that's been bugging my team.
+
+7
+00:01:03.697 --> 00:01:04.959
+Rachel Okafor: Tell me more.
+
+8
+00:01:06.247 --> 00:01:15.924
+Luis Ortega: When the AI agent transfers over to one of our live reps, the information it gathered doesn't show up on the Genesys screen.
+
+9
+00:01:15.924 --> 00:01:25.180
+Luis Ortega: So the rep is starting from scratch, and the caller has to repeat their account number or policy number all over again.
+
+10
+00:01:25.180 --> 00:01:27.284
+Luis Ortega: It makes us look disorganized.
+
+11
+00:01:27.486 --> 00:01:32.214
+Rachel Okafor: Got it. Does that happen on every transfer, or only some of them?
+
+12
+00:01:32.546 --> 00:01:43.633
+Luis Ortega: Every transfer I've listened to so far, which is maybe a dozen calls. My supervisor pulled a few recordings this week and saw the same thing.
+
+13
+00:01:44.260 --> 00:01:53.303
+Rachel Okafor: And when you say the information doesn't show up, is that the AI's summary, or the raw details like name and claim number?
+
+14
+00:01:53.892 --> 00:02:03.253
+Luis Ortega: Both, really. The rep sees the incoming call but nothing the agent collected. No name, no policy, no reason for the call.
+
+15
+00:02:03.484 --> 00:02:14.126
+Rachel Okafor: Okay, let me take that back to the team and see what we're working with. Can you send me two or three call IDs from this week?
+
+16
+00:02:14.126 --> 00:02:14.914
+Rachel Okafor: That'll help.
+
+17
+00:02:15.898 --> 00:02:21.147
+Luis Ortega: Sure, I'll pull them this afternoon. I've got a list in the pilot tracker.
+
+18
+00:02:22.404 --> 00:02:26.759
+Rachel Okafor: Perfect. Anything else on the pilot side? How's the after-hours coverage looking?
+
+19
+00:02:27.180 --> 00:02:34.545
+Luis Ortega: Coverage is fine. We've got two new hires starting on the twenty-eighth, so that'll help with the queue once they're trained.
+
+20
+00:02:35.129 --> 00:02:41.228
+Rachel Okafor: Nice. Are they going through the standard onboarding, or something different for the after-hours team?
+
+21
+00:02:42.222 --> 00:02:48.604
+Luis Ortega: Standard. My team lead is handling it. They'll shadow for a week and then take live calls.
+
+22
+00:02:49.951 --> 00:02:59.636
+Rachel Okafor: Good. Let me know if you want a refresher on the QM scorecards for that group. I know the new hires will be scored on the claims intake card.
+
+23
+00:03:00.007 --> 00:03:04.253
+Luis Ortega: That's probably fine. The scorecards have been working well. No complaints there.
+
+24
+00:03:04.714 --> 00:03:12.546
+Rachel Okafor: Good to hear. And what about the Google Ads side? Any shifts in spend you want me to know about?
+
+25
+00:03:13.689 --> 00:03:18.767
+Luis Ortega: Not really. Marketing handles that. They mentioned they're happy with the offline conversion match rates.
+
+26
+00:03:19.544 --> 00:03:31.625
+Rachel Okafor: Okay. I'll leave that with them. Now, on the transfer thing, just so I have it straight. Is it happening on every after-hours call that hits the AI agent and then goes to a live rep?
+
+27
+00:03:32.233 --> 00:03:39.668
+Luis Ortega: Every one we've checked. It doesn't seem to matter which queue or which rep. The details just don't land.
+
+28
+00:03:40.930 --> 00:03:48.195
+Rachel Okafor: Understood. I'll open a case and keep you posted. In the meantime, are your reps working around it somehow?
+
+29
+00:03:48.571 --> 00:03:59.014
+Luis Ortega: They're just asking the caller to repeat themselves. It's not the end of the world, but it's not great for the member experience either.
+
+30
+00:03:59.952 --> 00:04:11.587
+Rachel Okafor: Yeah, I get that. I'll flag it with the product team and see what we can find. Probably need the call IDs before I can say much more.
+
+31
+00:04:13.075 --> 00:04:16.039
+Luis Ortega: Fair enough. I'll send those over today.
+
+32
+00:04:16.494 --> 00:04:25.375
+Rachel Okafor: Thanks. Before I let you go, is there anything else on your list? Anything coming up that I should know about?
+
+33
+00:04:25.858 --> 00:04:37.941
+Luis Ortega: Not really. We're in good shape otherwise. The only thing is my director wants a quick readout on the pilot by mid-October, so if you have any early data, that'd help.
+
+34
+00:04:38.458 --> 00:04:44.949
+Rachel Okafor: I can put together a short summary from the dashboards. What kind of numbers does she want to see?
+
+35
+00:04:45.180 --> 00:04:52.213
+Luis Ortega: Containment rate, average handle time, and how many calls the AI is catching after hours. Just a page or so.
+
+36
+00:04:52.587 --> 00:05:01.681
+Rachel Okafor: Got it. I'll have something for you the week of the fifth. That gives us a little buffer before your deadline.
+
+37
+00:05:02.036 --> 00:05:02.836
+Luis Ortega: That works.
+
+38
+00:05:03.590 --> 00:05:14.278
+Rachel Okafor: Okay, so to recap, I'll open the case on the transfer details, you'll send call IDs today, and I'll send a pilot summary in early October.
+
+39
+00:05:15.458 --> 00:05:16.785
+Luis Ortega: Sounds right. Thanks Rachel.
+
+40
+00:05:17.826 --> 00:05:22.690
+Rachel Okafor: Any time. I'll follow up by Monday either way. Have a good one, Luis.
+
+41
+00:05:24.174 --> 00:05:25.720
+Luis Ortega: You too. Talk soon.

@@ -1,0 +1,72 @@
+Return-Path: <marcus.bell@invoca.example>
+Received: from smtp-out.invoca.example (smtp-out.invoca.example [10.33.217.119])
+        by mx1.invoca.example with ESMTPS id 902417.6391
+        for <sam.whitaker@invoca.example>; Tue, 13 Oct 2026 12:18:00 -0400
+MIME-Version: 1.0
+Date: Tue, 13 Oct 2026 12:18:00 -0400
+Message-ID: <CAlHbxxIWUNiT8DYEttQIS59B9gYL4EoW4zev3Kh@mail.invoca.example>
+In-Reply-To: <CAwxFiJxoXvgr1BjfYrF0yvbU9Nk0trvg9mjKlWn@mail.invoca.example>
+References: <CAwN5izEnKxFB7nvJOdKyX451SoqkpeVoUT1lLg8@mail.invoca.example>
+        <CAwxFiJxoXvgr1BjfYrF0yvbU9Nk0trvg9mjKlWn@mail.invoca.example>
+Subject: Fwd: RE: conversion upload timing
+From: Marcus Bell <marcus.bell@invoca.example>
+To: Sam Whitaker <sam.whitaker@invoca.example>
+Cc: Mei Tanaka <mei.tanaka@invoca.example>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+sam, mei, forwarding the brightline thread. priyanka has the timing data on the google ads uploads & dana's on it too b/c their cmo noticed the cpa jump. fyi they're also getting callrail outreach claiming same-day sync. pasting the bit from our call last week where priyanka walked me through it (below).
+
+need to get ahead of this before it turns into a renewal conversation, they renew jan 15. mei, can you pull the upload logs for their account for the last two weeks? want to see if it's consistent or just this batch.
+
+Priyanka Shah: i pulled the timestamps [inaudible] last batch. call came in october 6 at 9:14am, conversion didn't land in google adds until october 9 that's 72 hours
+Dana Ortiz: and the cmo saw the cpa spike before the conversions even posted. so he's looking at a number that doesn't have the full picture yet
+Priyanka Shah: Right And it's not just that one. Every batch I've checked is landing at least 48 hours out
+
+---------- Forwarded message ---------
+From: Dana Ortiz <dana.ortiz@brightlinehome.example>
+Date: Tue, Oct 13, 2026 at 8:53 AM
+Subject: RE: conversion upload timing
+To: Marcus Bell <marcus.bell@invoca.example>
+Cc: Priyanka Shah <priyanka.shah@brightlinehome.example>
+
+Marcus,
+
+Adding to what Priyanka sent. Our CMO flagged the CPA jump on the HVAC campaigns in Monday's standup. He's asking why our cost per booked job went up 18% week-over-week when nothing changed on our end in Google Ads.
+
+My read is that the delayed conversions are the reason. Google can't optimize toward conversions it doesn't have yet, so it's spending against a two-day-old signal. But I want to confirm that with you before I tell him that's the cause.
+
+Priyanka has been tracking this for a couple weeks now. It's not a one-off. Every batch I've looked at is landing 48 to 72 hours out. We're also getting some noise from a competitor reaching out, which is its own distraction I'd rather not deal with right now.
+
+Can we get someone from your integrations team on a call this week? I'd like to walk through the timing with whoever owns the Google Ads connection.
+
+Dana
+
+Dana Ortiz
+Director of Marketing
+Brightline Home Services
+dana.ortiz@brightlinehome.example
+
+On Tue, Oct 13, 2026 at 7:53 AM Priyanka Shah <priyanka.shah@brightlinehome.example> wrote:
+> Marcus,
+>
+> Wanted to put some specifics in writing since we've been going back and forth on this for a bit.
+>
+> Our offline conversion uploads for the Booked Job action are arriving in Google Ads 48 to 72 hours after the call. I pulled a few examples from last week so you can see what I'm looking at:
+>
+> Call date          | Conversion date in Google Ads
+> Oct 5, 10:22am     | Oct 7, 3:48pm
+> Oct 6, 9:14am      | Oct 9, 8:02am
+> Oct 7, 2:05pm      | Oct 9, 11:31pm
+> Oct 8, 4:40pm      | Oct 11, 8:55am
+>
+> For Smart Bidding this is a problem because the bids are working off stale data. We're bidding on what happened two days ago instead of what's happening now. Dana can speak to the business impact better than I can but I wanted you to have the raw timing.
+>
+> Is there anything on the Invoca side that would explain why the uploads are landing that late? Happy to pull more examples if it helps.
+>
+> Priyanka
+>
+> Priyanka Shah
+> Marketing Operations Specialist
+> Brightline Home Services
+> priyanka.shah@brightlinehome.example

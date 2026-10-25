@@ -1,0 +1,61 @@
+auto-transcript | rec_20261020_atlas_raw | duration 00:03:50 | speakers detected: 2
+
+Speaker 1  00:00:07
+um hey diego, like how's it going? sorry running a couple minutes behind i just got out of a store walk at camelback
+
+Speaker 2  00:00:18
+no worries at um all. how's the new gm settling in over there? he's fine
+
+Speaker 1  00:00:35
+he's fine. [inaudible] asking me why our bdc guys are on the phone so much but that's that's uh, a different conversation. anyway what's on the agenda?
+
+Speaker 2  00:00:46
+just the quarterly check in call volumes look steady, we're tracking around 41,000 calls a month across the 22 rooftops which is up maybe 4 percent from summer
+
+Speaker 1  00:00:57
+yeah that tracks we added two rooftops in henderson so that's part of it hey before we get too far i want to talk about the renewal my boss ron he's asking me flat out whether we're renewing in december
+
+Speaker 2  00:01:14
+okay what's driving that
+
+Speaker 1  00:01:17
+honestly, it's the um, pricing. not the core platform that's fine it's that everything's a la carte finance and procurement keep pushing back on paying separately for the add ons the pre-sense, the q m seats the a i voice agent minutes they want one bundled price, one number not five line items they have to defend
+
+Speaker 2  00:01:40
+[inaudible] so it's less about the total and more about how it's structured
+
+Speaker 1  00:01:52
+yeah, exactly ron looks at the invoice and sees four different skus and goes why are we buying this piecemeal? like, and i don't have a great answer for him.
+
+Speaker 2  00:02:04
+That's fair Let me ask, is this something procurement raised at the last review or is it um new
+
+Speaker 1  00:02:12
+new-ish. they flagged it in september when we did budget planning and now it's tied to the renewal decision ron's literally asking me do we renew or do we look at what else is out there.
+
+Speaker 2  00:02:28
+okay so the add on pricing friction is now a renewal question. um that's what i'm hearing.
+
+Speaker 1  00:02:35
+yeah i'm not saying we're walking, but it's on the table i i need something i can take to him
+
+Speaker 2  00:02:44
+so understood let me take that back to our team and see [inaudible] we can do on the packaging side. i can't promise anything today but i'll get you you an i mean, answer.
+
+Speaker 1  00:02:58
+i appreciate that. also small thing we've got a new bdc manager starting in tucson next week so if your team can do a refresher on the salesforce call logging that'd help
+
+Speaker 2  00:03:12
+yeah i'll set that up do you want me on the the call or just my enablement person?
+
+Speaker 1  00:03:20
+uh either's fine just somebody who knows the lead routing oh and tell me how's the google ad attribution holding up we bumped spend in phoenix like it's fine no
+
+Speaker 2  00:03:32
+issues there. conversions are flowing through
+
+Speaker 1  00:03:36
+good alright uh, i gotta run um but send me something on the pricing before the end of the month if you can.
+
+Speaker 2  00:03:45
+will do talk soon greg

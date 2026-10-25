@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_038",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "signal_ai",
+      "severity": "low",
+      "summary": "Front-line teams say AI call summaries save time on callbacks, dispatch and handoffs.",
+      "quote": "they've started reading the summary instead of listening to the first minute of every call, and they say it saves them a ton of time",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

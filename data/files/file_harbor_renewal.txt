@@ -1,0 +1,182 @@
+Harbor Federal Credit Union renewal
+Thu, Oct 22, 2026, 10:00AM • 9:22
+
+Aisha Coleman  0:04
+Morning everyone. How's the weather up in Tacoma today?
+
+Linda Sorensen  0:09
+Oh, you know, gray and drizzly. Classic October.
+
+Jason Park  0:12
+Like, it's actually not bad. I got out for a walk at lunch yesterday and only got rained on once.
+
+Tyler Reed  0:21
+Once is pretty good for us.
+
+Aisha Coleman  0:24
+Ha, fair. Well, thanks for making time. I know we're about four months out from your renewal, so I wanted to check in early, see how things are going, and talk through anything you want to flag before we you know, get into the formal stuff.
+
+Linda Sorensen  0:42
+Appreciate that. And yeah, we're... we're in a good place with the platform overall. But I'll be honest, I've got some pressure from our board on vendor spend this year. So I want to use this call to get ahead of that.
+
+Aisha Coleman  0:57
+Got it. Well, let's dig in. What's top of mind?
+
+Linda Sorensen  1:02
+So, a couple things. First, how's our usage looking? Are we actually using what we we pay for?
+
+Aisha Coleman  1:10
+Let me pull that up. So you're at forty-five seats on QM, and your call tracking volume is running about... twelve percent above where you were this time last year. Signal AI is processing everything, no issues there. QM adoption, though, that's where I see room. About sixty percent of your seats are active in a given month.
+
+Jason Park  1:35
+Sixty percent. Huh. I thought it was higher.
+
+Tyler Reed  1:38
+That's probably the branch teams. Uh, They've been slow to pick it up.
+
+Linda Sorensen  1:45
+Right, and that's part of my problem. If we're not using all the seats, the board's going to ask why we're paying I mean, for them.
+
+Aisha Coleman  1:54
+That's a a fair question. Can I ask what's driving the low adoption on the branch side? Is it training, or something else?
+
+Linda Sorensen  2:05
+Honestly, uh, it's a mix. Some of it is just bandwidth. We opened the Gig Harbor branch in August, and that's been a whole thing. Training fell by the wayside.
+
+Jason Park  2:16
+The Gig Harbor opening was insane. We had a ribbon cutting, and and the first week we had like three times the call volume we projected.
+
+Aisha Coleman  2:25
+Oh wow. How's it settling in now?
+
+Jason Park  2:29
+Better. It's calmed down. But those first few weeks were a lot of 'where do I park' calls.
+
+Linda Sorensen  2:38
+You know, Ha, yeah. Not exactly high-value conversations.
+
+Aisha Coleman  2:43
+So, well, congrats on getting it open. That's a big lift. And it makes sense that QM training slipped. Maybe we can talk about a refresh for those teams before renewal.
+
+Linda Sorensen  2:57
+Um, Maybe. But here's the thing, Aisha. QM was sold to us as part of the bundle and now it's a separate line at renewal. That's a hard conversation with our board.
+
+Aisha Coleman  3:09
+Okay. I hear that. Can you tell me a little more about how it's showing up on your end? Is it the line item itself, or the amount?
+
+Linda Sorensen  3:21
+Both, honestly. When we signed, it was all one number. Now I'm looking at a renewal quote that breaks out QM as its own thing, and it's not a small number. Our CFO is going to look at that and say, 'why are we paying extra for something we already had?'
+
+Aisha Coleman  3:43
+That's helpful context. I don't want to get into pricing on this call because I need to check a few things on my side, but I can take that back and see what options we have. Would it help if I put um, together a one-pager on QM usage and value that you could bring to the board?
+
+Linda Sorensen  4:07
+That would actually be really helpful. Something that shows what we're getting for it.
+
+Aisha Coleman  4:14
+Done. I'll have that to you by early next week. Um, now, Jason, you mentioned a couple of things when we set this up. Want to walk through those?
+
+Jason Park  4:26
+Yeah, two things. One is the spam tagging issue. We're seeing, um, about one in ten of our Saturday calls are getting tagged as spam, and they're members calling about fraud alerts.
+
+Aisha Coleman  4:38
+That's That's a problem. Are these calls coming into a specific number or campaign?
+
+Jason Park  4:43
+It's our main member services line. Saturday so, mornings, you know, mostly. The calls are real, members calling because they got a text about a suspicious charge. But Signal AI is flagging them as spam and they're not getting routed to the fraud team.
+
+Aisha Coleman  5:00
+Okay. And is that that a routing issue or a scoring issue? Like, I mean, are they getting the spam signal and then dropped?
+
+Jason Park  5:10
+I think it's the signal. They're getting tagged before they even hit the IVR. So by the time the call flow tries to route, it's already marked as spam.
+
+Aisha Coleman  5:22
+Got it. I'll need to look at some examples. Can you send me a few call IDs from last Saturday?
+
+Jason Park  5:29
+Yeah, I can pull those. I've got a list somewhere.
+
+Tyler Reed  5:33
+I can grab them from Salesforce if you want. They're all logged there.
+
+Jason Park  5:39
+Oh, right. Yeah, that's easier.
+
+Aisha Coleman  5:42
+Perfect. And Tyler, I know you had something on the Salesforce side too. What's going on there?
+
+Tyler Reed  5:49
+Um, yeah, so, the sync breaks every time we add a field to our Member Interaction object. I've rebuilt the mapping three times since July.
+
+Aisha Coleman  6:00
+Three times. Okay. Can you walk me through what happens when it breaks?
+
+Tyler Reed  6:06
+So we add a field, say we added a 'Preferred Contact Method' field in August, and then the next day the call records stop syncing. The mapping just... drops. I have to go back into the Invoca Salesforce integration and re-map everything.
+
+Aisha Coleman  6:25
+Uh, and this started in July?
+
+Tyler Reed  6:28
+Uh, First time was July. Then again in August, and then just last week. It's not every field, but it's happened three you know, times now.
+
+Aisha Coleman  6:38
+Okay. I want to get our support team on this. Can you send me the case um, numbers if you have them? Or I can open a new one.
+
+Tyler Reed  6:48
+I've got two open cases already. I can send you those.
+
+Aisha Coleman  6:53
+Great. And just so I understand, is this happening in your sandbox first, or is it going straight to production?
+
+Tyler Reed  7:01
+Production. We don't have a sandbox for the Invoca integration. Well, we do, but it's not set up the same way.
+
+Aisha Coleman  7:11
+Okay, that's good to know. Um, I'll take this back with the cases and see if we can figure out what's happening. I don't want to guess at a cause on the call.
+
+Tyler Reed  7:24
+Appreciate it. It's just frustrating. Every time I think it's fixed, we add another field and it breaks again.
+
+Aisha Coleman  7:32
+Totally get it. Let's get the cases in front of the right people. Now, anything else on your list?
+
+Linda Sorensen  7:40
+I think that's the big stuff. The QM pricing and the two technical issues.
+
+Jason Park  7:47
+Oh, one more thing. Not a problem, just a question. Our compliance team is asking about the QM scorecard change log. They want to know who changed what and when. Is that something we can pull?
+
+Aisha Coleman  7:59
+I believe there's an audit trail in the QM admin settings. I can double-check and send you the steps.
+
+Jason Park  8:06
+That'd be great. They review every scorecard change, so they just want to have a record.
+
+Aisha Coleman  8:12
+Makes sense. I'll send that over. I mean, Anything else?
+
+Linda Sorensen  8:17
+No, I think that covers it. Aisha, I appreciate you getting ahead of this. The board stuff is real, but I don't want to make it a bigger deal than it is.
+
+Aisha Coleman  8:32
+Of course. I'd rather know now than in February. Let me recap what I'm taking away: the QM value one-pager, the spam tagging examples from Jason, the Salesforce cases from Tyler, and the QM audit trail steps. I'll follow up by Monday with next steps on all of it.
+
+Linda Sorensen  8:51
+Perfect. And hey, if you're ever up in Gig Harbor, let me know. I'll buy you a coffee at the new branch.
+
+Aisha Coleman  9:00
+You know, I might take you up on that. I've heard the views are great.
+
+Jason Park  9:07
+They are. On a clear day you can see the water.
+
+Tyler Reed  9:11
+Clear day in October. Good luck.
+
+Linda Sorensen  9:14
+Ha, fair. Alright, thanks everyone. Talk soon.
+
+Aisha Coleman  9:17
+Thanks, all. Have a good one.

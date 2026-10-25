@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_125",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "low",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "The PreSense handoff, honestly, has been the thing that moved the needle for us... agents picking up a call already knowing the quote page the caller was on are closing more of those digital shoppers than they used to.",
+      "owner": "ppl_elena"
+    }
+  ],
+  "phiTokens": []
+}

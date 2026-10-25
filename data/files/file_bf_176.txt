@@ -1,0 +1,116 @@
+Ridgeway Motor Group working session
+Wed, Oct 14, 2026, 10:30AM • 6:05
+
+Diego Alvarez  0:07
+Morning, Brittany. How's Tulsa treating you? Traffic on the way in was actually not terrible for once.
+
+Brittany Sawyer  0:14
+Morning. Yeah, it's been one of those weeks already. We We had two people out in the BDC so I've been on the phones myself since Monday.
+
+Diego Alvarez  0:23
+Oh man. How's the queue holding up?
+
+Brittany Sawyer  0:27
+We're getting through it. Probably a couple hundred calls a day across the rooftops, so it's not insane, but when you're down two bodies you you feel every one of them.
+
+Diego Alvarez  0:41
+Uh, yeah, I bet. Do you want to start with the Google Ads piece? I know that was the main thing you flagged.
+
+Brittany Sawyer  0:51
+Yeah, let's do that. So, uh, our agency, the guys who run our paid search, they sent over a deck last week. They're saying we should take a look at CallRail.
+
+Diego Alvarez  1:05
+Okay. What's their angle?
+
+Brittany Sawyer  1:07
+The pitch is that they sync conversions into Google Ads same day. Like, call comes in, it's in the account by end of day. And the quote they sent is lower than what we're paying, so the GM is asking questions.
+
+Diego Alvarez  1:24
+Got it. And this is coming from the agency directly, or is it something the GM brought up on his own?
+
+Brittany Sawyer  1:32
+Bit of both. The agency recommended it, and then our new GM, he started in August, he's been going through every vendor line by line. So it landed at a bad time.
+
+Diego Alvarez  1:45
+That makes sense. What's the timing he's working against, is there a date on it?
+
+Brittany Sawyer  1:53
+He wants a recommendation by early November. Not a renewal thing, our contract runs to the end of January, you know, but he wants the comparison done before budget planning.
+
+Diego Alvarez  2:06
+Okay. So what I'm hearing is the specific claim is same-day conversion sync, and the number on the quote is lower. Do you know what's in their quote, like how they're counting seats or calls?
+
+Brittany Sawyer  2:22
+I don't have the detail on that yet. Honestly it was one slide and a price. I can send you you the deck if that helps.
+
+Diego Alvarez  2:34
+Yeah, send it over. I want to see what they're actually comparing, because a lot of the time those quotes are scoped to to one rooftop or one campaign, and you've um, got seven stores.
+
+Brittany Sawyer  2:47
+Right. Um, and to uh, be fair, the thing that actually matters to me is whether the conversions are um, landing right. If Google's not seeing the good calls, our Smart Bidding drifts and then the lead quality drops and I'm the one hearing about it.
+
+Diego Alvarez  3:07
+Yeah. How are you feeling about what's landing now, just in terms of what you can see in the Ads account?
+
+Brittany Sawyer  3:14
+It's fine. I mean, we're not sitting here chasing missing conversions. It's more the speed question they raised. I don't have a number for you on it.
+
+Diego Alvarez  3:26
+That's fair. Let me take the speed piece back to the team and get you something concrete, rather than me guessing at it on a call. And I'll ask them to look at how your setup is configured, because with seven rooftops and the number pools you've got, uh, there may be something in the routing that's worth checking.
+
+Brittany Sawyer  3:47
+Okay. Just so I can tell the GM something, what's the turnaround on that?
+
+Diego Alvarez  3:53
+Give me until Monday and I'll have a written answer for you, something you can forward.
+
+Brittany Sawyer  4:01
+That works.
+
+Diego Alvarez  4:03
+In the meantime, is there anything on the Salesforce side I should know about? I saw the BDC leads are still writing over.
+
+Brittany Sawyer  4:11
+Yeah, that's all fine. No issues there.
+
+Diego Alvarez  4:15
+Good. And the signals, appointment booked, quote given, those are still matching what your team expects?
+
+Brittany Sawyer  4:22
+Yep, no complaints. We've been using those in the Monday review and they're holding up.
+
+Diego Alvarez  4:30
+Great. Okay, what else did you want to cover? Um, I had down that we'd look at the campaign naming since you added the two new stores.
+
+Brittany Sawyer  4:42
+Oh, right. Yeah, the two new rooftops, we've got tracking numbers on them but the campaign names are a mess. Half of them say the old store name from when we acquired the franchise.
+
+Diego Alvarez  4:56
+So the reporting's getting muddled?
+
+Brittany Sawyer  4:58
+A little. When I pull the weekly numbers I have to remember which ones map to which store, and if I'm out, whoever covers for me won't know.
+
+Diego Alvarez  5:08
+Okay. That one I can actually help with. If you send me the list of what each one should be called, I can walk your team through the rename so the history stays intact.
+
+Brittany Sawyer  5:23
+Oh, that'd be great. I'll get you the the list by Friday.
+
+Diego Alvarez  5:29
+Perfect. And how's the hiring going for the two open seats? Is that close?
+
+Brittany Sawyer  5:36
+We've got one offer out. The other one, we're still interviewing. Hopefully by the first week of November we're back to full strength.
+
+Diego Alvarez  5:46
+Good. Anything else before I let you get back to the phones?
+
+Brittany Sawyer  5:51
+No, that's it. I'll send the deck and the naming list. Thanks, Diego.
+
+Diego Alvarez  5:57
+Sounds good. Talk Monday. Hang in there.
+
+Brittany Sawyer  6:00
+Ha, I'll try. Bye.

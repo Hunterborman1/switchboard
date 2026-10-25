@@ -1,0 +1,24 @@
+{
+  "fileId": "file_keystone_escalation_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "Voice agent claim handoffs reach the adjuster with no policy number and no loss description.",
+      "quote": "the voice agent hands off claims and the adjuster gets nothing no policy number, no description of the loss nothing",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense pop still blank on queue transfers.",
+      "quote": "side the pre sense pop is still blank on the queue transfers which so, i know you you",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

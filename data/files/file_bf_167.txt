@@ -1,0 +1,16 @@
+Slack export · #ext-prairielink-invoca (Slack Connect: shared with Prairie Link Broadband)
+Exported 10/19/2026 1:28 PM · 13 messages
+
+[10/19/2026 1:00 PM] tom.lindqvist: morning! quick sync on prairie link before my 2pm. how'd the weekend outage volume look?
+[10/19/2026 1:02 PM] ryan.fischer: heh, busy. ~3,400 calls sat/sun, ai agent took about 68% w/o a xfer. not bad. also did you see the note from our sioux falls osp lead? he said the new routing script cut avg handle time by like 40 sec
+[10/19/2026 1:04 PM] tom.lindqvist: nice. glad that's holding up. anything else on your list or just the DNI thing?
+[10/19/2026 1:06 PM] ryan.fischer: ok so here's the thing i need to flag. since we relaunched the order flow as a single-page app back in september, dynamic number insertion basically stops swapping after a client-side route change. like you land on /order, you click through a couple steps, url changes but no full reload, and the number in the header just... stays whatever loaded first. mobile click-to-call is the worst, people tapping the button get our default 800 number instead of the campaign one. we only caught it b/c paid search conversions for september looked light
+    ↳ [10/19/2026 1:08 PM] tom.lindqvist: ugh. okay, i want to get this in front of the right folks today. two questions: is the swap happening on the initial page load at all, or is it fully broken on the spa? & does it reproduce on desktop or just mobile?
+    ↳ [10/19/2026 1:09 PM] tom.lindqvist: also, is the google ads acocunt the one where you noticed the dip, or was it marketo too? mostly trying to understand blast radius before i write it up
+[10/19/2026 1:12 PM] ryan.fischer: initial load is fine, it's after the pushState navigation. desktop does it too if you click through, just less obvious b/c nobody click-to-calls from a laptop. Google Ads for sure, haven't dug into Marketo yet
+[10/19/2026 1:15 PM] tom.lindqvist: got it. i'll open a ticket this afternoon with the repro steps and loop in support. can you drop me the staging URL where it's easiest to see?
+[10/19/2026 1:17 PM] ryan.fischer: yep. https://staging.prairielink.example/order - you'll want to start on the homepage for the campaign param to stick
+[10/19/2026 1:20 PM] tom.lindqvist: :+1: hey one more: our QBR is still on for nov 12 at 10 central, right? i had 9:30 in my head
+[10/19/2026 1:22 PM] ryan.fischer: 10 central is right. i can bring our new marketing ops person, started two weeks ago. she's been living in the ad platform so she'll have questions
+[10/19/2026 1:24 PM] tom.lindqvist: perfect. i'll send the agenda friday. :eyes: on the DNI ticket, i'll ping you once it's in
+[10/19/2026 1:25 PM] ryan.fischer: appreciate it

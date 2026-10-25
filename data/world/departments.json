@@ -1,0 +1,128 @@
+[
+  {
+    "personId": "ppl_marcus",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_priya",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_diego",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_rachel",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_tom",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_aisha",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": "ppl_renee"
+  },
+  {
+    "personId": "ppl_renee",
+    "role": "csm",
+    "department": "Customer Success",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_nina",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_omar",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_lena",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_sam",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_grace",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_ben",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_alex",
+    "role": "pm",
+    "department": "Product",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_elena",
+    "role": "vp_product",
+    "department": "Product",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_jordan",
+    "role": "competitive_intel",
+    "department": "Product Marketing",
+    "reportsTo": "ppl_elena"
+  },
+  {
+    "personId": "ppl_kate",
+    "role": "pricing",
+    "department": "Finance & Strategy",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_derek",
+    "role": "support_escalation",
+    "department": "Support",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_mei",
+    "role": "eng_manager",
+    "department": "Engineering",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_chris",
+    "role": "sales_lead",
+    "department": "Sales",
+    "reportsTo": null
+  },
+  {
+    "personId": "ppl_jamie",
+    "role": "triage",
+    "department": "Product Operations",
+    "reportsTo": "ppl_elena"
+  }
+]

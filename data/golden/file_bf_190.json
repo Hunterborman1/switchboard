@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_190",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Finance and procurement push back on paying separately for add-ons (PreSense, QM seats, AI Voice Agent minutes) at renewal.",
+      "quote": "When finance and procurement look at renewal pricing, they push back on paying separately for the add-ons.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Customer links \"add-on pricing friction at renewal\" to the renewal decision.",
+      "quote": "We've started taking calls from other vendors because of this.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

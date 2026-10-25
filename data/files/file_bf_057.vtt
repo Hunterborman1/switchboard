@@ -1,0 +1,173 @@
+WEBVTT
+
+1
+00:00:04.355 --> 00:00:07.769
+Tom Lindqvist: Hey Vanessa, Darnell. How's the weather down in Tampa today?
+
+2
+00:00:08.524 --> 00:00:18.864
+Vanessa Grant: Hot. I mean, it's September in Florida, so... you know how it goes. Ninety-four degrees and it rained sideways for ten minutes at lunch.
+
+3
+00:00:20.153 --> 00:00:26.500
+Darnell Wright: I got caught in that walking back from the parking garage. Um, Looked like I'd been swimming.
+
+4
+00:00:27.194 --> 00:00:34.042
+Tom Lindqvist: Ha. Uh, well, I'm sorry. I'm up in Portland, it's sixty-two and drizzling, so we're even.
+
+5
+00:00:34.517 --> 00:00:38.714
+Vanessa Grant: Okay, so, agenda. You sent a couple of things over.
+
+6
+00:00:39.820 --> 00:00:50.160
+Tom Lindqvist: Yeah. I mostly wanted to check in on the voice agent numbers and whatever Darnell's got running, and then look at where we are before the fall push.
+
+7
+00:00:51.215 --> 00:01:00.053
+Darnell Wright: Before we get into that, one thing I want to put on I mean, the record, because I've been meaning to send it up to you you.
+
+8
+00:01:01.215 --> 00:01:02.015
+Tom Lindqvist: Go ahead.
+
+9
+00:01:02.721 --> 00:01:14.188
+Darnell Wright: So, our website's one of those single-page apps, right? When somebody taps a phone number on a showroom page, the page doesn't do a full reload, it swaps the content underneath.
+
+10
+00:01:14.188 --> 00:01:18.257
+Darnell Wright: And what we're seeing is the number doesn't swap with it.
+
+11
+00:01:18.661 --> 00:01:23.377
+Tom Lindqvist: Meaning the dynamic number insertion isn't firing on the route change.
+
+12
+00:01:24.335 --> 00:01:36.475
+Darnell Wright: Right. So a customer on the mobile site, they click to call, and they're getting the default number, not the one tied to whatever page or campaign brought them in.
+
+13
+00:01:36.475 --> 00:01:42.950
+Darnell Wright: It's not every call, but it's enough that I don't trust the attribution on mobile anymore.
+
+14
+00:01:44.023 --> 00:01:48.906
+Tom Lindqvist: I mean, okay. How long do you figure this has been going on?
+
+15
+00:01:49.835 --> 00:02:03.176
+Darnell Wright: Honestly? Probably since the site rebuild over the like, summer. Nobody flagged it until my team lead on the queue started comparing call logs to the ad reports and the numbers didn't line up.
+
+16
+00:02:04.011 --> 00:02:14.352
+Vanessa Grant: And I care about so, this because if mobile click-to-call isn't attributing, then Google Ads is getting fed garbage, and I'm making budget calls off garbage.
+
+17
+00:02:15.022 --> 00:02:25.528
+Tom Lindqvist: No, that makes sense. Let me ask a couple of things so I can describe it accurately when I bring it to to the team.
+
+18
+00:02:25.528 --> 00:02:31.412
+Tom Lindqvist: Is it happening on both iOS and Android, or did you only test one?
+
+19
+00:02:31.890 --> 00:02:44.420
+Darnell Wright: We saw it on both. My analyst pulled a sample last week, I want to say around nine hundred mobile sessions, and about forty of them showed the wrong number in the source.
+
+20
+00:02:45.587 --> 00:02:51.778
+Tom Lindqvist: Okay. And is it just the showroom pages or also the campaign landing pages?
+
+21
+00:02:52.527 --> 00:02:59.175
+Darnell Wright: Both, I think. The landing pages are simpler so it's harder to to catch, but yeah.
+
+22
+00:02:59.948 --> 00:03:15.629
+Tom Lindqvist: Got it. I'm not going to guess at what's behind it. Let me write it up with those details and get it in front of the right folks, and I'll come back to you with questions rather than a theory.
+
+23
+00:03:16.011 --> 00:03:22.299
+Darnell Wright: That's you know, all I'm asking. Put it in writing so I've got something to point at.
+
+24
+00:03:23.306 --> 00:03:28.375
+Tom Lindqvist: Will do. Okay, other side of the house. How's the voice agent doing?
+
+25
+00:03:28.594 --> 00:03:35.463
+Darnell Wright: Good. It's handling store hours and order status, those two intents, and it's taking a real bite out of the queue.
+
+26
+00:03:36.680 --> 00:03:40.170
+Vanessa Grant: Last month it was, what, about a third of inbound?
+
+27
+00:03:40.839 --> 00:03:45.675
+Darnell Wright: Thirty-four percent, yeah. And on Sundays it's higher because we run lean.
+
+28
+00:03:46.246 --> 00:03:51.062
+Tom Lindqvist: And the transfers to live agents, are those landing where you want them?
+
+29
+00:03:51.494 --> 00:04:02.602
+Darnell Wright: They are. Amazon Connect's been solid. Had to move one supervisor to a later shift because the call curve shifted, but that's a staffing thing, not a system thing.
+
+30
+00:04:03.191 --> 00:04:06.171
+Vanessa Grant: Speak for yourself, I'm still fighting for that headcount.
+
+31
+00:04:06.607 --> 00:04:08.473
+Darnell Wright: You and me um, both.
+
+32
+00:04:08.723 --> 00:04:13.483
+Tom Lindqvist: Anything else that's come up that you want me to carry back?
+
+33
+00:04:14.292 --> 00:04:20.419
+Darnell Wright: No. Everything else we're running is fine. This is the one that's bugging me.
+
+34
+00:04:20.639 --> 00:04:27.192
+Vanessa Grant: Same. We're heads down on Q4, so I don't have bandwidth for a project right now anyway.
+
+35
+00:04:27.706 --> 00:04:35.556
+Tom Lindqvist: Understood. So what I'll do, I'll get the write-up together today or tomorrow, and copy you both so you can add anything I missed.
+
+36
+00:04:36.732 --> 00:04:40.838
+Vanessa Grant: I mean, Perfect. And when do you want to talk again?
+
+37
+00:04:41.389 --> 00:04:48.193
+Tom Lindqvist: How about two weeks, same time? That gives me room to come back with something real.
+
+38
+00:04:49.062 --> 00:04:56.458
+Darnell Wright: Works for me. I'll have my analyst pull a fresh sample before then so we're comparing apples to apples.
+
+39
+00:04:57.931 --> 00:05:03.222
+Tom Lindqvist: That'd help. Send it over whenever, you don't need to wait for the meeting.
+
+40
+00:05:04.217 --> 00:05:07.897
+Darnell Wright: Will do. Alright, I mean, I've got a one-on-one in five.
+
+41
+00:05:09.025 --> 00:05:12.252
+Vanessa Grant: Yeah, I need to run too. Thanks, Tom.
+
+42
+00:05:13.086 --> 00:05:15.098
+Tom Lindqvist: Thanks both. Stay dry, Darnell.
+
+43
+00:05:15.907 --> 00:05:17.399
+Darnell Wright: I mean, no promises.

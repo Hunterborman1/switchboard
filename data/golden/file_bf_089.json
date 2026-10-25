@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_089",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "we want to set a clock like auto delete transcripts after ninety days or a hundred and eighty whatever legal lands on and have it actually purge, not just hide them",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

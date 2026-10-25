@@ -1,0 +1,149 @@
+WEBVTT
+
+1
+00:00:07.446 --> 00:00:14.916
+Marcus Bell: Hey Priyanka, hey Carla. How's it going? You're on the road, Carla? I hear some background noise.
+
+2
+00:00:16.070 --> 00:00:23.162
+Carla Nguyen: Yeah, sorry, I'm in the truck. Just left the the Pineville branch. Give me one sec, let me pull over. Okay.
+
+3
+00:00:23.162 --> 00:00:23.837
+Carla Nguyen: Hi Marcus.
+
+4
+00:00:24.888 --> 00:00:30.453
+Priyanka Shah: Hi Marcus. Sorry we're a couple minutes late. Carla had to run something over to dispatch.
+
+5
+00:00:31.315 --> 00:00:36.323
+Marcus Bell: Uh, no worries at all. How's the the start of the week looking?
+
+6
+00:00:36.684 --> 00:00:45.380
+Priyanka Shah: Busy. We're seeing the usual fall HVAC rush. Last week we we had, I I think, 4,100 calls total across like, all 14 branches.
+
+7
+00:00:45.380 --> 00:00:49.004
+Priyanka Shah: Around 2,600 were HVAC, rest split between plumbing and electrical.
+
+8
+00:00:49.212 --> 00:00:58.375
+Carla Nguyen: Feels like more, honestly. We had two dispatchers out with that stomach thing, so the board was a mess Thursday and Friday.
+
+9
+00:00:59.070 --> 00:01:00.394
+Marcus Bell: Ugh. Are they back?
+
+10
+00:01:00.968 --> 00:01:04.212
+Carla Nguyen: One's back today. The other, Wednesday. We're limping along.
+
+11
+00:01:04.982 --> 00:01:17.702
+Marcus Bell: Okay. So what I wanted to do today, quick check-in. Anything on your list. I know PreSense went live in June, um, so I want to hear how that's I mean, sitting with the branches.
+
+12
+00:01:17.702 --> 00:01:20.246
+Marcus Bell: And then anything on the tracking side.
+
+13
+00:01:20.640 --> 00:01:29.064
+Priyanka Shah: PreSense is good. The agents like seeing the ad and the pages before they pick up. We haven't had any complaints there.
+
+14
+00:01:29.064 --> 00:01:34.807
+Priyanka Shah: Google Ads side is fine too, the offline conversions are flowing, Smart Bidding's been steady.
+
+15
+00:01:35.022 --> 00:01:37.874
+Carla Nguyen: Yeah, that part's fine. It's the spam thing.
+
+16
+00:01:38.075 --> 00:01:39.812
+Marcus Bell: I mean, the spam signals.
+
+17
+00:01:40.305 --> 00:01:56.998
+Carla Nguyen: So here's what's happening. Our after-hours line, right? People call at like 10:30 at night, or Saturday morning, because their AC died or a water heater's leaking. And Signal AI is tagging a bunch of those as spam.
+
+18
+00:01:56.998 --> 00:02:00.073
+Carla Nguyen: So they drop out of the reporting.
+
+19
+00:02:00.426 --> 00:02:04.334
+Marcus Bell: Okay. So real customers, calling after hours, getting flagged.
+
+20
+00:02:05.265 --> 00:02:15.216
+Carla Nguyen: Real customers. I had one Saturday, guy called at 11:40 p.m. about a burst pipe, we booked him, tech went out at 6 a.m.
+
+21
+00:02:15.216 --> 00:02:24.337
+Carla Nguyen: Sunday. And in the report that call is spam. So as far as the report is concerned we never got that call.
+
+22
+00:02:25.525 --> 00:02:38.014
+Priyanka Shah: And And it's not just one. I pulled last month, and I'd say there were, I don't know, 60, 70 calls flagged that way that had actual booked appointments attached.
+
+23
+00:02:38.014 --> 00:02:39.679
+Priyanka Shah: Mostly nights and weekends.
+
+24
+00:02:40.419 --> 00:02:48.854
+Marcus Bell: Got it. And is it the after-hours number specifically, or are you seeing it on the main tracking numbers too?
+
+25
+00:02:50.189 --> 00:02:53.719
+Priyanka Shah: Mostly the after-hours line. Some on the weekend campaign numbers.
+
+26
+00:02:55.026 --> 00:03:01.838
+Marcus Bell: Okay. Let me ask a couple things. Are those calls coming in through the the IVR, or ringing straight through?
+
+27
+00:03:02.551 --> 00:03:08.622
+Carla Nguyen: Straight through, mostly. After 8 p.m. the IVR just forwards to the on-call phone.
+
+28
+00:03:09.855 --> 00:03:21.024
+Marcus Bell: Uh, that might be part of it, but I don't want to guess. Let me take this back to the Signal AI team, get the call IDs, and see what's tripping the classification.
+
+29
+00:03:21.024 --> 00:03:25.086
+Marcus Bell: Can you send me, say, five or six examples with the timestamps?
+
+30
+00:03:25.742 --> 00:03:30.162
+Priyanka Shah: Yeah, I'll pull them and send them over. Today or tomorrow.
+
+31
+00:03:31.521 --> 00:03:40.393
+Marcus Bell: Perfect. And Priyanka, is this something you've been working around in your reports, or is it just noise at this point?
+
+32
+00:03:41.109 --> 00:03:50.807
+Priyanka Shah: Workaround. I've been manually checking the recordings for the flags, but that's, you know, an hour or two a week I don't really have.
+
+33
+00:03:51.378 --> 00:03:58.265
+Marcus Bell: Understood. Okay. Uh, Anything else before I let you two go? I know Carla's double-parked or whatever.
+
+34
+00:03:59.173 --> 00:04:06.170
+Carla Nguyen: Ha, close. No, that's it from me. Just fix the spam thing so my guys get credit for the midnight calls.
+
+35
+00:04:07.257 --> 00:04:10.946
+Marcus Bell: Fair. I'll follow up once I hear back. Talk soon, both.
+
+36
+00:04:11.884 --> 00:04:13.080
+Priyanka Shah: Thanks Marcus. Bye.
+
+37
+00:04:13.697 --> 00:04:14.497
+Carla Nguyen: Um, Bye.

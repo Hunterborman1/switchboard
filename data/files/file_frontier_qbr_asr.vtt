@@ -1,0 +1,565 @@
+WEBVTT
+
+1
+00:00:07.139 --> 00:00:12.019
+Speaker 1: Hey Monica Stacy Can you [inaudible] me okay? I see Monica's connection is
+
+2
+00:00:12.019 --> 00:00:13.146
+Speaker 1: a little spotty
+
+3
+00:00:13.484 --> 00:00:16.864
+Speaker 2: yeah i'm, sorry i'm at the mba conference
+
+4
+00:00:16.864 --> 00:00:21.088
+Speaker 2: in chicago, hotel wifi is basically um chewing on a
+
+5
+00:00:21.088 --> 00:00:25.734
+Speaker 2: tin can. but i can hear you um, you're breaking up
+
+6
+00:00:27.363 --> 00:00:31.636
+Speaker 3: a little but we'll get through it. i'm on my laptop so so
+
+7
+00:00:31.636 --> 00:00:35.580
+Speaker 3: i've got the deck up if you want me to just walk
+
+8
+00:00:35.580 --> 00:00:36.238
+Speaker 3: through numbers
+
+9
+00:00:35.783 --> 00:00:39.176
+Speaker 1: that works. before we do, is there anything either
+
+10
+00:00:39.176 --> 00:00:42.946
+Speaker 1: of you wants to put on the table first i
+
+11
+00:00:42.946 --> 00:00:45.962
+Speaker 1: know quarter end was busy on your side
+
+12
+00:00:47.718 --> 00:00:51.648
+Speaker 2: go ahead stacy you've got the sales force side i'll
+
+13
+00:00:51.648 --> 00:00:53.613
+Speaker 2: jump in where i can.
+
+14
+00:01:02.892 --> 00:01:05.967
+Speaker 3: so quick thing before we get to
+
+15
+00:01:05.967 --> 00:01:16.512
+Speaker 3: to the qvr stuff. wanted to flag the loan application object mapping broke again after our last release, so call outcomes aren't writing back
+
+16
+00:01:17.319 --> 00:01:19.376
+Speaker 1: okay when did that start?
+
+17
+00:01:24.441 --> 00:01:29.030
+Speaker 3: um i want to say the 6th? we did the release the 5th
+
+18
+00:01:29.030 --> 00:01:33.266
+Speaker 3: and the first calls that came through with outcomes that didn't land
+
+19
+00:01:33.266 --> 00:01:36.796
+Speaker 3: were probably the morning of the 6th. so, a little
+
+20
+00:01:36.796 --> 00:01:38.914
+Speaker 3: over you know a week [crosstalk]
+
+21
+00:01:41.017 --> 00:01:45.193
+Speaker 1: and it's it's the outcome field specifically i mean, or the whole
+
+22
+00:01:45.193 --> 00:01:45.541
+Speaker 1: record?
+
+23
+00:01:46.559 --> 00:01:50.209
+Speaker 3: the whole thing is inconsistent, honestly some records it's writing the
+
+24
+00:01:50.209 --> 00:01:54.191
+Speaker 3: call activity but not the outcome some it's not writing anything my
+
+25
+00:01:54.191 --> 00:01:58.174
+Speaker 3: team has been doing a manual pass so loan officers aren't blind
+
+26
+00:01:58.174 --> 00:01:59.169
+Speaker 3: in the morning.
+
+27
+00:01:58.885 --> 00:02:01.897
+Speaker 1: Okay, that's helpful I want to grab
+
+28
+00:02:01.897 --> 00:02:07.059
+Speaker 1: a couple details before we lose the thread You said after the
+
+29
+00:02:07.059 --> 00:02:12.221
+Speaker 1: last release was that a salesforce release or something on your side?
+
+30
+00:02:12.214 --> 00:02:14.965
+Speaker 3: sales force we moved to a new sandbox
+
+31
+00:02:14.965 --> 00:02:16.341
+Speaker 3: flow and pushed it
+
+32
+00:02:17.707 --> 00:02:21.667
+Speaker 1: got it. can you send me a couple of
+
+33
+00:02:21.667 --> 00:02:24.747
+Speaker 1: the affected record ids after this? just
+
+34
+00:02:24.747 --> 00:02:29.148
+Speaker 1: two or three i'll take it back to our integrations
+
+35
+00:02:29.148 --> 00:02:34.868
+Speaker 1: team and have them look i don't want to guess at it on
+
+36
+00:02:34.868 --> 00:02:35.748
+Speaker 1: the call
+
+37
+00:02:37.471 --> 00:02:41.581
+Speaker 3: yeah for sure i'll drop them in the shared folder tonight
+
+38
+00:02:41.598 --> 00:02:44.804
+Speaker 2: and just that one's been our recurring headache
+
+39
+00:02:44.804 --> 00:02:49.615
+Speaker 2: every release so if there's a way to i don't know make
+
+40
+00:02:49.615 --> 00:02:53.623
+Speaker 2: it less brittle that's, that's the thing i'd spend money
+
+41
+00:02:53.623 --> 00:02:54.425
+Speaker 2: on [crosstalk]
+
+42
+00:02:55.662 --> 00:03:00.784
+Speaker 1: understood let me take it back, i'll loop in the team and
+
+43
+00:03:00.784 --> 00:03:05.052
+Speaker 1: come to you with what they find. i'm not going
+
+44
+00:03:05.052 --> 00:03:09.320
+Speaker 1: to sit here and pretend i can debug it live.
+
+45
+00:03:10.469 --> 00:03:12.993
+Speaker 2: no that's fair okay what else.
+
+46
+00:03:13.209 --> 00:03:15.972
+Speaker 1: so, top of the qvr. call volume
+
+47
+00:03:15.972 --> 00:03:20.313
+Speaker 1: you guys are um running about 41,000 calls a month across
+
+48
+00:03:20.313 --> 00:03:23.471
+Speaker 1: the 180 loan officers that's up maybe 6%
+
+49
+00:03:23.471 --> 00:03:27.418
+Speaker 1: quarter over quarter. is [inaudible] line with what you're seeing
+
+50
+00:03:28.520 --> 00:03:31.875
+Speaker 3: that's about right summer was softer september picked
+
+51
+00:03:31.875 --> 00:03:33.133
+Speaker 3: back up [crosstalk]
+
+52
+00:03:33.662 --> 00:03:38.336
+Speaker 1: and tracking numbers, d n i, all of that's been clean?
+
+53
+00:03:38.336 --> 00:03:39.610
+Speaker 1: any attribution gaps?
+
+54
+00:03:41.735 --> 00:03:45.348
+Speaker 3: that's all been fine i mean, no issues there
+
+55
+00:03:44.394 --> 00:03:48.491
+Speaker 1: good. signals look healthy too, appointment booked is firing on about,
+
+56
+00:03:48.491 --> 00:03:52.216
+Speaker 1: i think 22% of calls to the website numbers you
+
+57
+00:03:52.216 --> 00:03:54.451
+Speaker 1: worried about that number at all?
+
+58
+00:03:55.346 --> 00:03:57.108
+Speaker 2: no no that's been steady.
+
+59
+00:03:59.626 --> 00:04:04.468
+Speaker 1: um okay so the thing i actually want to spend time
+
+60
+00:04:04.468 --> 00:04:05.348
+Speaker 1: on pre-sense.
+
+61
+00:04:06.007 --> 00:04:06.807
+Speaker 2: yeah
+
+62
+00:04:07.509 --> 00:04:10.499
+Speaker 1: how's the routing piece working for you all
+
+63
+00:04:10.411 --> 00:04:18.802
+Speaker 2: so pre-sense routing sending the refi shoppers to our refi team that's been a big win conversion on those is up
+
+64
+00:04:18.802 --> 00:04:23.198
+Speaker 2: i mean we're talking what stacy was it like six points?
+
+65
+00:04:24.784 --> 00:04:28.217
+Speaker 3: something like that low single digit you know to six
+
+66
+00:04:28.217 --> 00:04:29.933
+Speaker 3: depending like on the week.
+
+67
+00:04:31.343 --> 00:04:35.804
+Speaker 2: right and the agents love it they uh see the ad
+
+68
+00:04:35.804 --> 00:04:39.453
+Speaker 2: they they see the pages they know what the
+
+69
+00:04:39.453 --> 00:04:44.319
+Speaker 2: person wants before they pick up you know it's the first thing
+
+70
+00:04:44.319 --> 00:04:47.969
+Speaker 2: that's actually changed how they sound on the phone
+
+71
+00:04:47.517 --> 00:04:52.104
+Speaker 1: that's really good to hear. do you remember what it was before? were
+
+72
+00:04:52.104 --> 00:04:54.926
+Speaker 1: refi calls just going into the general queue?
+
+73
+00:04:56.734 --> 00:05:00.467
+Speaker 2: everything went to general. refi, purchase whatever you'd get
+
+74
+00:05:00.467 --> 00:05:03.372
+Speaker 2: a refi call answered by someone who'd
+
+75
+00:05:03.372 --> 00:05:08.350
+Speaker 2: been doing purchase all morning and they'd have to you know reset.
+
+76
+00:05:09.691 --> 00:05:15.319
+Speaker 3: the screen pop is the part the reps care about. um they're not
+
+77
+00:05:15.319 --> 00:05:16.185
+Speaker 3: cold anymore
+
+78
+00:05:16.181 --> 00:05:20.035
+Speaker 1: great i'll put that in the notes uh that's
+
+79
+00:05:20.035 --> 00:05:25.601
+Speaker 1: a good story to have internally anything about like the presence setup you'd
+
+80
+00:05:25.601 --> 00:05:26.030
+Speaker 1: change
+
+81
+00:05:26.942 --> 00:05:28.139
+Speaker 2: not really no
+
+82
+00:05:27.843 --> 00:05:30.568
+Speaker 1: okay let me get i mean um
+
+83
+00:05:30.568 --> 00:05:32.904
+Speaker 1: q m how's the seat usage?
+
+84
+00:05:34.210 --> 00:05:39.185
+Speaker 3: fine we're at i think 62 active scorers out of the seat count
+
+85
+00:05:39.746 --> 00:05:42.686
+Speaker 1: uh, good. and scorecards [inaudible] you want adjusted
+
+86
+00:05:44.227 --> 00:05:49.481
+Speaker 2: victor's team owns the uh, scorecards, and and you already have their list
+
+87
+00:05:49.481 --> 00:05:51.502
+Speaker 2: from the the last qbr.
+
+88
+00:05:51.263 --> 00:05:52.609
+Speaker 3: yep no issues [crosstalk]
+
+89
+00:05:53.349 --> 00:05:57.882
+Speaker 1: okay, so that's presense and tracking like, what about the google adds
+
+90
+00:05:57.882 --> 00:06:00.148
+Speaker 1: side offline conversions? are those matching?
+
+91
+00:06:00.861 --> 00:06:04.185
+Speaker 3: match rates have been steady no i mean complaints there
+
+92
+00:06:05.263 --> 00:06:06.485
+Speaker 1: good. adobe analytics
+
+93
+00:06:08.009 --> 00:06:08.809
+Speaker 3: fine.
+
+94
+00:06:09.259 --> 00:06:13.925
+Speaker 2: fine yeah. we're not we're not worried about that at all
+
+95
+00:06:14.441 --> 00:06:18.730
+Speaker 1: okay. so um oh, before i forget like, monica you
+
+96
+00:06:18.730 --> 00:06:23.020
+Speaker 1: had flagged the roadmap thing in our so, last check
+
+97
+00:06:23.020 --> 00:06:26.881
+Speaker 1: in and i wanted like, to just make sure
+
+98
+00:06:26.881 --> 00:06:30.742
+Speaker 1: i noted it for the record you were going
+
+99
+00:06:30.742 --> 00:06:32.029
+Speaker 1: to ask again
+
+100
+00:06:34.032 --> 00:06:39.239
+Speaker 2: oh yeah i keep asking for a looker connector, i know i know
+
+101
+00:06:39.239 --> 00:06:42.043
+Speaker 2: it's not on the roadmap uh, it's
+
+102
+00:06:42.043 --> 00:06:45.647
+Speaker 2: not going to be on the roadmap i just
+
+103
+00:06:45.647 --> 00:06:48.852
+Speaker 2: like saying it it makes me feel better
+
+104
+00:06:48.852 --> 00:06:49.252
+Speaker 2: [crosstalk]
+
+105
+00:06:48.369 --> 00:06:52.555
+Speaker 3: it's a running joke on our team at uh this
+
+106
+00:06:52.555 --> 00:06:52.974
+Speaker 3: point
+
+107
+00:06:54.108 --> 00:06:57.365
+Speaker 1: i will absolutely log it again. that's all i
+
+108
+00:06:57.365 --> 00:07:01.708
+Speaker 1: can do if it helps, i can also make sure your account
+
+109
+00:07:01.708 --> 00:07:04.603
+Speaker 1: team hears it one more time please do
+
+110
+00:07:04.603 --> 00:07:05.327
+Speaker 1: i want
+
+111
+00:07:06.318 --> 00:07:09.382
+Speaker 2: it in the the um, record every time.
+
+112
+00:07:09.133 --> 00:07:13.870
+Speaker 1: okay um, so looking ahead you mentioned you'd be expanding into the,
+
+113
+00:07:13.870 --> 00:07:17.423
+Speaker 1: was it it the texas markets, the the new
+
+114
+00:07:17.423 --> 00:07:18.212
+Speaker 1: branch footprint?
+
+115
+00:07:19.915 --> 00:07:22.277
+Speaker 2: yeah we're adding i think it's 14
+
+116
+00:07:22.277 --> 00:07:26.325
+Speaker 2: loan officers in the next two quarters mostly in austin like and
+
+117
+00:07:26.325 --> 00:07:30.373
+Speaker 2: san antonio so the tracking numbers are going to go up and
+
+118
+00:07:30.373 --> 00:07:32.060
+Speaker 2: so, pre-sense seat count will
+
+119
+00:07:32.115 --> 00:07:35.284
+Speaker 1: go up okay. do you want me to do
+
+120
+00:07:35.284 --> 00:07:38.454
+Speaker 1: anything on the tracking number side now or wait
+
+121
+00:07:38.454 --> 00:07:40.566
+Speaker 1: until you have the final headcount?
+
+122
+00:07:41.159 --> 00:07:44.089
+Speaker 2: let's wait i don't want to over
+
+123
+00:07:44.089 --> 00:07:46.181
+Speaker 2: build and then you know
+
+124
+00:07:48.267 --> 00:07:51.690
+Speaker 1: makes sense i'll pencil it in for december we can
+
+125
+00:07:51.690 --> 00:07:52.032
+Speaker 1: revisit
+
+126
+00:07:52.318 --> 00:07:53.118
+Speaker 2: sure
+
+127
+00:07:54.094 --> 00:07:57.878
+Speaker 1: okay, like anything else either of you want to cover um
+
+128
+00:07:57.878 --> 00:08:02.007
+Speaker 1: because i know you're technically at a conference right now and i
+
+129
+00:08:02.007 --> 00:08:04.071
+Speaker 1: don't want to hold you [crosstalk]
+
+130
+00:08:03.253 --> 00:08:06.209
+Speaker 2: no, i think that's it stacy, anything
+
+131
+00:08:07.904 --> 00:08:12.691
+Speaker 3: no, i'll get you those record ids tonight and then aisha
+
+132
+00:08:12.691 --> 00:08:18.349
+Speaker 3: if [inaudible] want me to get on a call with your integration folks
+
+133
+00:08:18.349 --> 00:08:21.395
+Speaker 3: sometime next week i can do that
+
+134
+00:08:22.115 --> 00:08:25.997
+Speaker 1: Yes please that'd be great I'll send something around with a
+
+135
+00:08:25.997 --> 00:08:28.468
+Speaker 1: couple of times and you can pick.
+
+136
+00:08:29.616 --> 00:08:30.416
+Speaker 3: perfect. [crosstalk]
+
+137
+00:08:31.073 --> 00:08:35.027
+Speaker 1: alright i'll get the q b r summary out
+
+138
+00:08:35.027 --> 00:08:39.861
+Speaker 1: by end of week with all of this and monica good
+
+139
+00:08:39.861 --> 00:08:42.936
+Speaker 1: luck with the so, conference say hi
+
+140
+00:08:42.936 --> 00:08:44.254
+Speaker 1: to everyone [crosstalk]
+
+141
+00:08:45.629 --> 00:08:46.685
+Speaker 2: will do bye

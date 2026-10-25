@@ -1,0 +1,24 @@
+SunPeak Solar / Invoca | QBR | Wed, Sep 23, 2026
+
+[00:00:04] Diego Alvarez: Morning, both. Thanks for making time. I know it's a busy week on the Texas side. How's everything looking?
+[00:00:12] Cody Barrett: Morning, Diego. Yeah, we're in the middle of the fall push. Volumes are up. Last month we ran about 14,200 inbound calls across the three states, and Texas is roughly half of that.
+[00:00:26] Amanda Pierce: And that's up from around 12,000 in July, so the spend is following it.
+[00:00:33] Diego Alvarez: Got it. And the bilingual queue, is that still split the way it was last quarter?
+[00:00:40] Cody Barrett: Yeah, Spanish is about 30 percent of the Texas volume. We added two agents on that side in August. Hiring's been slow, so we're running a little thin on the late shift.
+[00:00:52] Diego Alvarez: Okay. Anything on the Google Ads side you want to walk through? I saw the offline conversion volume held steady.
+[00:01:00] Cody Barrett: It did. Attribution looks right. The one thing I keep coming back to, and it's not urgent, is reporting. Right now I pull the dashboard numbers manually, export the CSV, then paste them into Looker for the weekly growth meeting. Every Monday. If I could just point Looker at an API endpoint for the dashboard metrics, or have it drop into Sheets on a schedule, I'd get that hour back.
+[00:01:24] Amanda Pierce: It's more than an hour. He's also doing a version of it for me every month for the board packet.
+[00:01:34] Diego Alvarez: So it's the same data, two audiences, two manual pulls.
+[00:01:38] Cody Barrett: Exactly. Same numbers, different format. If there were an endpoint I could schedule, both of those go away.
+[00:01:46] Diego Alvarez: Okay. Let me write that up. Is it dashboard metrics specifically, or are you also thinking about the call-level records?
+[00:01:54] Cody Barrett: Dashboard metrics first. The call records we already get through Salesforce, so that part's fine.
+[00:02:01] Diego Alvarez: Understood. I'll take that to the product team and see where it sits. No promises on timing.
+[00:02:08] Amanda Pierce: That's all we're asking.
+[00:02:11] Diego Alvarez: On my side, quick recap on usage. Signal AI is tagging around 96 percent of calls, appointment booked and quote given are the two you look at most. The Voice Agent is handling about 1,100 calls a month after hours, mostly scheduling and basic questions, and the transfer rate to live agents is holding around 40 percent.
+[00:02:31] Cody Barrett: That sounds right. The after-hours piece has been good for us on the Arizona leads.
+[00:02:38] Diego Alvarez: Good. Renewal's not until the end of November 2026, so we've got room, but I'll start putting together the value summary in October if that works.
+[00:02:50] Amanda Pierce: October works. Send it to me and Cody both.
+[00:02:54] Diego Alvarez: Will do. Anything else before we wrap?
+[00:02:56] Cody Barrett: No, that's the main one. Appreciate you writing it up.
+[00:03:01] Diego Alvarez: Of course. I'll follow up by Friday with what I hear. Talk soon, both.
+[00:03:06] Amanda Pierce: Thanks, Diego. Bye.

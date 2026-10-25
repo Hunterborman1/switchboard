@@ -1,0 +1,141 @@
+WEBVTT
+
+1
+00:00:07.451 --> 00:00:11.347
+Tom Lindqvist: Hey Michelle, hey Brandon. How's it going over there?
+
+2
+00:00:11.831 --> 00:00:20.565
+Michelle Tran: Hey Tom. Busy week. We just finished open enrollment for the sales floor, so half my team is out, but we're getting through it.
+
+3
+00:00:21.735 --> 00:00:27.579
+Brandon Hughes: Yeah, and Q3 closed out yesterday, so everybody's buried in reporting. But good to see you.
+
+4
+00:00:27.903 --> 00:00:42.636
+Tom Lindqvist: Nice. I won't keep you long. I mostly wanted to check in on call volumes and see how the PreSense side is holding up, since we talked about it a couple times this quarter.
+
+5
+00:00:43.861 --> 00:00:51.174
+Brandon Hughes: Volumes are up. August was around 41,000 inbound across the sales queues, and September looks like it'll land close to 44,000.
+
+6
+00:00:51.174 --> 00:00:53.960
+Brandon Hughes: The fiber promo drove a lot of that.
+
+7
+00:00:54.802 --> 00:00:59.686
+Tom Lindqvist: That's a solid jump. How's the routing holding up with that volume?
+
+8
+00:01:01.041 --> 00:01:10.982
+Brandon Hughes: Mostly fine. The sales queues are where we feel it. We had to add two more agents to the Denver queue last week to keep wait times reasonable.
+
+9
+00:01:12.009 --> 00:01:18.999
+Michelle Tran: Which is partly why I want to bring something up. It's the transfer thing again, and it's gotten worse.
+
+10
+00:01:20.132 --> 00:01:21.889
+Tom Lindqvist: Okay, tell me more.
+
+11
+00:01:22.245 --> 00:01:30.975
+Michelle Tran: So when a call gets transferred from one queue to another, or from one agent to another, the receiving agent's screen pop comes up empty.
+
+12
+00:01:30.975 --> 00:01:35.165
+Michelle Tran: No journey, no page history, nothing. Just a blank panel in Genesys.
+
+13
+00:01:36.395 --> 00:01:39.859
+Tom Lindqvist: Is that on every transfer, or specific types?
+
+14
+00:01:40.921 --> 00:01:49.497
+Michelle Tran: It's the warm ones. If the agent does a cold transfer with the original call leg intact, the pop shows up fine.
+
+15
+00:01:49.497 --> 00:01:58.853
+Michelle Tran: But when they do a warm transfer, where the first agent stays on and introduces, the pop is blank for whoever picks it up.
+
+16
+00:01:59.615 --> 00:02:02.908
+Tom Lindqvist: And when did you first start noticing this?
+
+17
+00:02:04.405 --> 00:02:13.953
+Michelle Tran: We saw it maybe six weeks ago, but it was intermittent. Now it's pretty much every warm transfer in the sales queues.
+
+18
+00:02:13.953 --> 00:02:18.727
+Michelle Tran: My leads are complaining because agents go into the call blind.
+
+19
+00:02:20.091 --> 00:02:31.320
+Brandon Hughes: It's not just annoying. We're seeing handle time go up by maybe forty seconds on those calls because the second agent has to ask everything again.
+
+20
+00:02:32.244 --> 00:02:40.646
+Tom Lindqvist: Okay. Do you have a recent example, a call ID or timestamp, that I can hand to the team?
+
+21
+00:02:41.346 --> 00:02:50.877
+Michelle Tran: I can pull a few. There was one yesterday, maybe 2:15 PM, transferred from the Denver sales queue to the retention queue.
+
+22
+00:02:50.877 --> 00:02:54.342
+Michelle Tran: I'll send you the interaction ID this afternoon.
+
+23
+00:02:55.743 --> 00:03:04.115
+Tom Lindqvist: Perfect. And is this affecting the Genesys side only, or are you seeing anything odd in the Invoca reporting?
+
+24
+00:03:05.606 --> 00:03:15.696
+Michelle Tran: Just Genesys. The Invoca side looks normal. Signals are firing, the call logs are complete, it's only the screen pop that goes blank.
+
+25
+00:03:16.495 --> 00:03:26.937
+Tom Lindqvist: Got it. I'll take that back to the team and see what they need. In the meantime, is there a workaround your leads can use?
+
+26
+00:03:27.523 --> 00:03:35.084
+Michelle Tran: Right now they're just telling agents to cold transfer if they can. But that's not always the right call for the customer.
+
+27
+00:03:36.067 --> 00:03:40.878
+Tom Lindqvist: Understood. I'll flag it and follow up by Friday with an update.
+
+28
+00:03:42.046 --> 00:03:52.024
+Brandon Hughes: Appreciate it. On the flip side, the Google Ads offline conversions are still flowing fine, and Adobe Analytics is picking up the call data like it should.
+
+29
+00:03:52.024 --> 00:03:53.133
+Brandon Hughes: No issues there.
+
+30
+00:03:53.504 --> 00:03:58.533
+Tom Lindqvist: Good to hear. How's the AI Voice Agent handling the after hours traffic?
+
+31
+00:03:59.541 --> 00:04:08.068
+Brandon Hughes: It's doing its job. Overnight calls are mostly billing questions and it routes them to the right place. Nothing to report.
+
+32
+00:04:08.597 --> 00:04:11.574
+Tom Lindqvist: Great. Anything else on your radar before we wrap?
+
+33
+00:04:12.925 --> 00:04:15.921
+Michelle Tran: Not from me. I'll get you those call examples.
+
+34
+00:04:17.036 --> 00:04:18.727
+Brandon Hughes: Same here. Thanks Tom.
+
+35
+00:04:20.160 --> 00:04:24.674
+Tom Lindqvist: Sounds good. I'll send a follow-up note and we'll talk soon.

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_090",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "When Robert's team added a field to our Loan Application object, the Salesforce sync just stopped writing call records to the custom objects.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "high",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "On our new single-page application, once the borrower moves past the first step, dynamic number insertion stops swapping the number.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

@@ -1,0 +1,24 @@
+{
+  "fileId": "file_coastal_escalation_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense missing from the Amazon Connect panel on about a third of calls since last Thursday.",
+      "quote": "pre-sense isn't showing up in the amazon connect panel for about a third of calls since last thursday",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "medium",
+      "summary": "Hedged/sarcastic: paying extra for PreSense is fine only if it works.",
+      "quote": "i mean i guess paying extra for presence is fine if it actually shows up",
+      "owner": "ppl_kate"
+    }
+  ],
+  "phiTokens": []
+}

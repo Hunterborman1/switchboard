@@ -1,0 +1,115 @@
+auto-transcript | nw_checkin_1023 | duration 00:06:20 | speakers detected: 3
+
+Speaker 1  00:00:07
+hey owen hey kayla thanks for making time. how's the week
+
+Speaker 2  00:00:11
+going out there? busy we're in the middle of fall promo planning, uh, so this is a nice little break uh honestly speak [inaudible]. i've
+
+Speaker 3  00:00:20
+got four vendor calls today and this is the fun one
+
+Speaker 1  00:00:25
+i'll take that um, let me pull up the the account. michelle's still working the pre-sense transfer issue with lena and derek, so i'll leave that one to them today
+
+Speaker 1  00:00:35
+anything else on the call tracking side? i know you've got the fall campaign numbers coming together
+
+Speaker 2  00:00:42
+that that side's fine the attribution's been rolling in the way we expect no changes needed there.
+
+Speaker 1  00:00:50
+good and signal a.i. i saw you've been running it across more of the sales calls lately.
+
+Speaker 2  00:00:58
+yeah, that's actually the thing i wanted to talk about signal a.i is calling a bunch of our late-night install reschedules spam which is a problem because those are the people most likely to cancel
+
+Speaker 1  00:01:13
+so the reschedule calls are getting tagged as spam is it happening at a specific time window or across the whole overnight block?
+
+Speaker 2  00:01:24
+Mostly after ten at night which is when the overnight install teams call people back The calls are short the customer says yeah move it to Tuesday, and it's done. That's apparently reading as junk to the model
+
+Speaker 3  00:01:47
+and those are the customers we actually want to keep um if someone bothers to reschedule instead of just not showing up, that's a good sign, not a bad one
+
+Speaker 1  00:01:59
+how long has this been going on? like is this a two-week thing or has it been months [crosstalk]
+
+Speaker 2  00:02:07
+i'd say six weeks maybe. it started right after the schedule shift it's not huge volume, but it's the wrong calls getting flagged
+
+Speaker 1  00:02:16
+okay like, do you have a couple call ids you know you can send me? um if i can grab a handful of examples i i can get it it in front of the team and we can look at what's driving the classification
+
+Speaker 2  00:02:37
+i can get you ten or so. i'll have my ops lead pull them monday
+
+Speaker 3  00:02:43
+is that something that would need a change on your end or ours? i'm trying to figure out if this is a march conversation or a next-week conversation.
+
+Speaker 1  00:02:54
+honestly i don't know yet let me get the examples first and i'll come back with what the team says. i don't want to guess at it it on a friday.
+
+Speaker 3  00:03:08
+that's fair that's the uh right answer even if it's it's not the fast one
+
+Speaker 3  00:03:14
+since we're both on the line, and since renewal planning is going to start on our side probably in january i want to flag something
+
+Speaker 1  00:03:24
+go ahead
+
+Speaker 3  00:03:26
+i'm not saying it's a dealbreaker but the add-ons are adding up and i'll need to see them bundled at renewal
+
+Speaker 1  00:03:35
+you know bundled meaning the seats and the add-ons come together at one number or bundled as in a different structure
+
+Speaker 3  00:03:43
+i mean i need to look at the whole thing as one line item and see it make sense. right now it's a lot of small pieces and and my cfo likes clean numbers
+
+Speaker 1  00:03:59
+okay i can't promise anything on structure, that's not my my call but i can make sure it's it's on the table when we start renewal talks do you know roughly when [inaudible] cycle kicks off? [crosstalk]
+
+Speaker 3  00:04:14
+mid-january is when we start pulling everything together. so i'd want to have [inaudible] conversation before then honestly earlier [inaudible] for me
+
+Speaker 1  00:04:24
+Got it Let's get something on the calendar in December then before the holidays get in the way
+
+Speaker 3  00:04:39
+that works and just so so i'm clear i'm not asking for a number today. i just don't want to be surprised in march.
+
+Speaker 1  00:04:48
+Totally reasonable You'll see it I mean before March I can promise you that
+
+Speaker 2  00:04:54
+one other thing small, but but does the the spam stuff affect any of the reporting we're sending to google ads? [crosstalk]
+
+Speaker 1  00:05:03
+not directly. the [inaudible] that go out are based on your signals firing and and this is a signal getting applied where it probably shouldn't. so it's more about what shows up on your uh dashboards than what leaves the building.
+
+Speaker 2  00:05:18
+okay then it's it's an internal visibility thing for
+
+Speaker 3  00:05:22
+us more than anything which is still worth fixing my my ops team runs on those dashboards
+
+Speaker 1  00:05:37
+agreed. send me the call ids and i'll follow up by wednesday one way or the other even if the answer is we need more time
+
+Speaker 2  00:05:49
+will do and thanks for staying on the transfer issue with michelle i know that's that's been a long one
+
+Speaker 1  00:05:58
+it um, has. lena's team is uh, still uh on it and i'll keep you posted. anything else before i let you both go? nope.
+
+Speaker 3  00:06:09
+go enjoy your friday
+
+Speaker 2  00:06:11
+um, thanks tom. talk soon [crosstalk]
+
+Speaker 1  00:06:14
+thanks both december invite coming your way

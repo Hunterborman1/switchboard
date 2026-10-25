@@ -1,0 +1,110 @@
+Atlas Auto Group escalation
+Thu, Oct 22, 2026, 12:30PM • 5:25
+
+Diego Alvarez  0:07
+Hey Greg, how's it going? Sorry for the delay, my previous call ran a few minutes over.
+
+Greg Hollis  0:14
+No worries. I was just catching up on email. How's the weather in Santa Barbara?
+
+Diego Alvarez  0:21
+Sixty-eight and sunny, pretty nice for late October. I saw Phoenix is finally out of the triple digits?
+
+Greg Hollis  0:30
+Barely. It was 99 yesterday. My daughter has a a soccer tournament this weekend, so I'm hoping it cools off.
+
+Diego Alvarez  0:38
+Good luck with that. Okay, so I have us down as an escalation. What's going on?
+
+Greg Hollis  0:45
+You know, yeah. So I guess the big thing that's been bugging me for a few weeks now is our offline conversions to Google Ads. They're landing late. I'll see a call come in on Tuesday and the conversion doesn't show up in Google Ads until Wednesday, sometimes even Thursday.
+
+Diego Alvarez  1:04
+So one to two business days after the call happens?
+
+Greg Hollis  1:08
+One to three, really. Depends on the day. And that means Smart Bidding is making decisions based on incomplete data. It's like it's blind to half the leads we're sending it it.
+
+Diego Alvarez  1:22
+And when did you first notice this? Roughly?
+
+Greg Hollis  1:25
+Mid-September. Like, our CPA across the Phoenix Honda stores went from around 48 bucks to 61, 62. That's a big swing for us. My media team is pulling their hair out.
+
+Diego Alvarez  1:37
+Okay. So CPA up about 25 or 30 percent since mid-September. And you're fairly confident it's tied to the conversion delay?
+
+Greg Hollis  1:46
+I mean, what else? The campaigns haven't changed. Like, Creative's the same. Budget's the same. The only thing that's different is Invoca sitting in the middle.
+
+Diego Alvarez  1:56
+Got it. Let me take this back and get some eyes on it. Can you you do me a favor and send me a couple of specific call IDs and the GCLIDs where you saw the delay? Dates too.
+
+Greg Hollis  2:13
+Um, yeah, I can pull that. Give me until tomorrow morning. I'll have my marketing ops guy, Derek, pull it. He's the one who flagged it to me originally.
+
+Diego Alvarez  2:25
+Perfect. And just so I understand the scope, is it all 22 rooftops or just the Phoenix ones?
+
+Greg Hollis  2:33
+I've mostly been looking at Phoenix because that's where our biggest spend is. But honestly, I haven't checked Vegas. Could be everywhere.
+
+Diego Alvarez  2:41
+Okay. I'll I mean, ask about both. Um, Anything else on the Google side, or should we move on?
+
+Greg Hollis  2:48
+No, that's the main one. The Salesforce sync, the call records showing up on the lead, that's been fine. No issues there.
+
+Diego Alvarez  2:57
+Good. And how are your volumes looking? I saw the dashboard showed about 41,000 calls last month, up uh, from 38 the month before.
+
+Greg Hollis  3:08
+Yeah, that's about right. We had a big push on the service drive. And we're actually onboarding three new rooftops in Tucson in Q1, so that number's gonna go up again.
+
+Diego Alvarez  3:20
+Like, Nice. That's the Genesis stores, right?
+
+Greg Hollis  3:24
+Two Genesis, one Ford. But yeah, we're excited. It's been a long time coming.
+
+Diego Alvarez  3:31
+Makes sense. Okay, like, so I'll pull in our support team on the conversion timing. I'll also check if there's anything on the Google Ads side that would explain a delay of that length.
+
+Greg Hollis  3:43
+Appreciate it. I just want to get ahead of this before it starts bleeding into Q4.
+
+Diego Alvarez  3:50
+Absolutely. And while I have you, I wanted to make sure you're set for the November business review. I know we moved it from the 5th to the 12th.
+
+Greg Hollis  4:02
+The 12th works. I'll have my team pull the Q3 numbers. Is it still at 2 o'clock?
+
+Diego Alvarez  4:08
+Yeah, 2 PM Phoenix time. I'll send the invite again just in case.
+
+Greg Hollis  4:15
+Good. Oh, and one more thing on staffing. My marketing ops manager, Priya, she's out on maternity leave until January, I mean, so Derek's covering. He's sharp but new to the Invoca side.
+
+Diego Alvarez  4:28
+Got it. I'll make sure to cc him on everything and maybe do a quick walkthrough with him if that would help.
+
+Greg Hollis  4:38
+That'd be great. He's been asking about how the dynamic number insertion works on the new site pages, so maybe a refresher there.
+
+Diego Alvarez  4:46
+Happy to. I'll put something on the calendar for next week.
+
+Greg Hollis  4:52
+Perfect. And I'm assuming you'll keep me posted on the conversion thing?
+
+Diego Alvarez  4:58
+Yeah, like, I'll follow up by Monday at the latest. If I hear anything from the team sooner, I'll shoot you an email.
+
+Greg Hollis  5:09
+Sounds good. Thanks, Diego.
+
+Diego Alvarez  5:12
+Of course. Talk soon. And good luck with the soccer tournament.
+
+Greg Hollis  5:17
+Thanks, I'll need it. Her team hasn't won a game all season.

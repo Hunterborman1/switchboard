@@ -1,0 +1,32 @@
+{
+  "fileId": "file_bluewater_pricing_eml",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "pricing_objection",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Cannot justify per-seat QM pricing for part-time agents.",
+      "quote": "We cannot justify QM at a per-seat price for agents who work twelve hours a week.",
+      "owner": "ppl_kate"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Medicare disclaimer check must match exact language; today it does not.",
+      "quote": "the Medicare disclaimer check needs to match exact language, and today it doesn't",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "churn_risk",
+      "productArea": "billing_pricing",
+      "severity": "high",
+      "summary": "Would scale back to call tracking only at renewal if pricing structure is not resolved.",
+      "quote": "If we can't land on a structure that works, we'd scale back to call tracking only at renewal.",
+      "owner": "ppl_renee"
+    }
+  ],
+  "phiTokens": []
+}

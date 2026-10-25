@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_180",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Invoca offline call conversions reach Google Ads one to three days after the call, so Smart Bidding optimizes on incomplete data.",
+      "quote": "when a call comes in and it's a quote or an appointment that conversion isn't showing up in google ads until a day sometimes three days after the call",
+      "owner": "ppl_mei"
+    }
+  ],
+  "phiTokens": []
+}

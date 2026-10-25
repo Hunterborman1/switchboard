@@ -1,0 +1,32 @@
+{
+  "fileId": "file_keystone_slack",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "high",
+      "summary": "PreSense pop still blank on sales-to-service Genesys transfers for a third week.",
+      "quote": "nate says presense pop still blank on sales->service xfers in genesys, 3rd wk in a row",
+      "owner": "ppl_lena"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "high",
+      "summary": "On voice agent claim handoffs, the adjuster has to ask for the policy number again.",
+      "quote": "when the voice agent xfers the claim, the adjuster picks up and has to ask for the policy number again",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Wants QM to score claims empathy separately from sales criteria.",
+      "quote": "erin asking if qm can score claims empathy separately from the sales stuff",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

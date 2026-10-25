@@ -1,0 +1,185 @@
+WEBVTT
+
+1
+00:00:03.708 --> 00:00:07.718
+Marcus Bell: Hey Dana, hey Priyanka. How's everybody doing? How's Charlotte treating you you?
+
+2
+00:00:08.605 --> 00:00:14.076
+Dana Ortiz: Hey Marcus. Good, busy. It's been hot, so HVAC is still humming along.
+
+3
+00:00:14.859 --> 00:00:19.568
+Priyanka Shah: Yeah, we're in the middle of a heat wave, so the phones are nonstop.
+
+4
+00:00:19.854 --> 00:00:29.880
+Marcus Bell: I bet. I saw the volume tick up in I mean, the dashboard, looks like you're tracking toward, what, 12,000 calls this month?
+
+5
+00:00:30.825 --> 00:00:37.437
+Dana Ortiz: Yeah, we're at about 11,800 so far, so probably closer to 13,000 by the 30th.
+
+6
+00:00:38.377 --> 00:00:44.904
+Marcus Bell: You know, Nice. And how's the PreSense rollout going? I know you added it mid-term.
+
+7
+00:00:46.048 --> 00:00:50.795
+Dana Ortiz: It's fine. The screen pops are showing up for the agents. No issues there.
+
+8
+00:00:51.954 --> 00:01:01.216
+Priyanka Shah: Yeah, that's been good. But I wanted to talk about the Google Ads piece. That's why I asked for this call.
+
+9
+00:01:02.300 --> 00:01:05.090
+Marcus Bell: Okay, let's dig in. What's going on?
+
+10
+00:01:05.485 --> 00:01:14.841
+Priyanka Shah: So we send offline call conversions to Google Ads. I mean, and I've been noticing they land one to three days after the call. Sometimes longer.
+
+11
+00:01:15.566 --> 00:01:20.421
+Marcus Bell: Okay. And that's a change from what you were seeing before?
+
+12
+00:01:20.667 --> 00:01:33.570
+Priyanka Shah: It's been like this for a few weeks. Uh, it used to be same day, mostly. Now I'm pulling reports and half the conversions from Monday aren't in Google until Wednesday or Thursday.
+
+13
+00:01:33.798 --> 00:01:43.043
+Dana Ortiz: And that's a problem because we're bidding on Smart Bidding. If Google's optimizing on incomplete data, it's it's making decisions on a partial picture.
+
+14
+00:01:43.512 --> 00:01:51.716
+Marcus Bell: Right. So the conversions are eventually getting there, but the delay means the bidding algorithm is working with stale info.
+
+15
+00:01:52.423 --> 00:02:02.277
+Priyanka Shah: Exactly. And last week we had a campaign where the conversions were so late that Google was basically bidding blind for two days.
+
+16
+00:02:02.277 --> 00:02:06.991
+Priyanka Shah: We moved that campaign to manual bidding as a a stopgap.
+
+17
+00:02:07.483 --> 00:02:09.353
+Marcus Bell: Okay. Which campaign was that?
+
+18
+00:02:09.791 --> 00:02:17.506
+Priyanka Shah: The fall tune-up one. It's not huge, maybe 8% of our spend, but we don't want to run manual forever.
+
+19
+00:02:18.289 --> 00:02:27.289
+Dana Ortiz: And the bigger issue is we can't trust the conversion numbers when we're looking at week-over-week performance. Priyanka spends half her day reconciling.
+
+20
+00:02:27.551 --> 00:02:34.094
+Priyanka Shah: Yeah, I've been exporting from Invoca and from Google and matching them up manually. It's not sustainable.
+
+21
+00:02:34.444 --> 00:02:43.359
+Marcus Bell: Got it. So two things: the delay itself, and the manual work it's creating. Let me ask a couple of questions.
+
+22
+00:02:43.359 --> 00:02:45.907
+Marcus Bell: When did you first notice it?
+
+23
+00:02:46.872 --> 00:02:55.978
+Priyanka Shah: I'd say the first week of August. I flagged it to our Google rep, and they said it's on the Invoca side.
+
+24
+00:02:57.375 --> 00:03:05.508
+Marcus Bell: Okay. And is it all conversions or specific ones? Like, are the appointment booked signals coming through faster than the quote given ones?
+
+25
+00:03:05.712 --> 00:03:11.365
+Priyanka Shah: It's all of them. I checked. Even the ones that should be near real-time.
+
+26
+00:03:11.990 --> 00:03:18.182
+Marcus Bell: Okay. And have you changed anything in the integration setup? New tracking numbers, new campaigns?
+
+27
+00:03:18.548 --> 00:03:27.235
+Priyanka Shah: No, nothing on our end. Like, we added a couple of new numbers for the fall campaign, but the delay started before that.
+
+28
+00:03:28.655 --> 00:03:34.645
+Dana Ortiz: And we're not doing anything weird with the data. It's the same fields we've always sent.
+
+29
+00:03:35.686 --> 00:03:44.899
+Marcus Bell: Got it. I'm going to take this back to our integrations team. I don't want to guess at a cause. Can you send me a couple of examples?
+
+30
+00:03:44.899 --> 00:03:47.861
+Marcus Bell: Call IDs and the timestamps when they hit Google?
+
+31
+00:03:48.981 --> 00:03:53.160
+Priyanka Shah: Yeah, I can pull that together. I have a spreadsheet already.
+
+32
+00:03:54.038 --> 00:04:00.036
+Marcus Bell: Perfect. And if you can include the campaign and the GCLID, that would help them trace it.
+
+33
+00:04:00.792 --> 00:04:04.363
+Priyanka Shah: Will do. I'll send it by end of day Monday.
+
+34
+00:04:04.959 --> 00:04:14.425
+Marcus Bell: Great. I'll open a ticket and loop you like, in. In the meantime, is there anything else on the Google side that's acting up?
+
+35
+00:04:15.249 --> 00:04:21.056
+Dana Ortiz: No, the rest is fine. The call tracking and the signals are working like they should.
+
+36
+00:04:21.651 --> 00:04:27.525
+Marcus Bell: Good. And how's the team holding up? I know you mentioned you were down a person.
+
+37
+00:04:28.986 --> 00:04:36.051
+Dana Ortiz: Yeah, we lost our paid search manager in July. We're interviewing, but it's slow. Priyanka's been covering.
+
+38
+00:04:36.730 --> 00:04:44.897
+Priyanka Shah: It's I mean, fine. I just don't have time for manual reconciliation, which is why this is bugging me.
+
+39
+00:04:46.373 --> 00:04:55.134
+Marcus Bell: Totally fair. Let me also check on the Meta side while I'm at it. Are those conversions coming through on time?
+
+40
+00:04:55.411 --> 00:04:57.419
+Priyanka Shah: Meta looks normal. It's just Google.
+
+41
+00:04:57.806 --> 00:05:02.235
+Marcus Bell: Okay. So I'll focus on Google. Anything else before we wrap?
+
+42
+00:05:02.488 --> 00:05:08.373
+Dana Ortiz: No, that's the the main thing. We just need it fixed before Q4 um, planning.
+
+43
+00:05:09.295 --> 00:05:16.609
+Marcus Bell: Understood. I'll get the ticket going today and follow up with the team. And Priyanka, send those examples when you can.
+
+44
+00:05:17.633 --> 00:05:19.058
+Priyanka Shah: Will do. Thanks, Marcus.
+
+45
+00:05:20.287 --> 00:05:21.930
+Marcus Bell: Thanks, both. Talk soon.
+
+46
+00:05:22.289 --> 00:05:23.089
+Dana Ortiz: Bye.

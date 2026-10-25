@@ -1,0 +1,153 @@
+WEBVTT
+
+1
+00:00:06.216 --> 00:00:10.514
+Diego Alvarez: Hey Mike, how's it going? Thanks for making time this afternoon.
+
+2
+00:00:11.611 --> 00:00:18.950
+Mike Castillo: Good, good. Busy week. We just wrapped a tent sale at the Tulsa store, so the BDC is digging out.
+
+3
+00:00:19.340 --> 00:00:28.215
+Diego Alvarez: Yeah, I saw the call volume tick up. You were right around 11,400 calls across the seven rooftops in August, yeah?
+
+4
+00:00:29.091 --> 00:00:34.845
+Mike Castillo: That's about right. September's tracking a little higher, maybe 12,200 if the last week holds.
+
+5
+00:00:35.248 --> 00:00:41.363
+Diego Alvarez: Okay. And you wanted to spend today on the Google Ads conversions side, is that still the plan?
+
+6
+00:00:41.643 --> 00:00:53.998
+Mike Castillo: Yeah, that's the main thing. I've got Brent's team asking me questions I can't answer, so I want to get this straight before I go back to them.
+
+7
+00:00:55.087 --> 00:00:57.597
+Diego Alvarez: Sure. Walk me through what you're seeing.
+
+8
+00:00:58.332 --> 00:01:06.420
+Mike Castillo: So we pull the conversion date column in Google Ads and compare it to the call date, and there's a gap.
+
+9
+00:01:06.420 --> 00:01:08.731
+Mike Castillo: Every time. Two, sometimes three days.
+
+10
+00:01:09.671 --> 00:01:14.198
+Diego Alvarez: So the call happens Tuesday and the conversion lands Thursday or Friday?
+
+11
+00:01:15.132 --> 00:01:26.149
+Mike Castillo: Right. I ran it two weeks back, 240-some calls with a booked appointment signal, and the median gap was two days, a handful were three.
+
+12
+00:01:26.475 --> 00:01:30.502
+Diego Alvarez: And is that across all the rooftops or heavier in one store?
+
+13
+00:01:30.716 --> 00:01:36.267
+Mike Castillo: Pretty even. Maybe slightly worse out of the Broken Arrow store, but that's probably just volume.
+
+14
+00:01:36.697 --> 00:01:39.401
+Diego Alvarez: Okay. When did you first notice it?
+
+15
+00:01:40.205 --> 00:01:49.873
+Mike Castillo: Honestly, it's been like this. I just didn't have a reason to dig until the new GM started asking about Smart Bidding.
+
+16
+00:01:51.333 --> 00:01:55.122
+Diego Alvarez: Got it. And what's the concern on his side?
+
+17
+00:01:55.640 --> 00:02:06.251
+Mike Castillo: If Google is bidding on Tuesday's calls before Thursday's conversions show up, it's optimizing on half the picture. That's the way I explained it to him, anyway.
+
+18
+00:02:07.600 --> 00:02:11.321
+Diego Alvarez: Yeah. And who owns the Google Ads account day to day?
+
+19
+00:02:11.796 --> 00:02:18.312
+Mike Castillo: Brent runs paid search, he's got two analysts under him. They're the ones who pulled the date comparison.
+
+20
+00:02:19.684 --> 00:02:24.014
+Diego Alvarez: Okay. So the offline conversions are landing, just later than you'd expect.
+
+21
+00:02:24.927 --> 00:02:29.484
+Mike Castillo: They land. Nothing's missing that I can find. It's the timing.
+
+22
+00:02:29.833 --> 00:02:39.407
+Diego Alvarez: Let me write this down properly. Call date versus conversion date, 2 to 3 day gap, roughly 240 calls in a two week sample, all seven rooftops.
+
+23
+00:02:40.309 --> 00:02:47.849
+Mike Castillo: That's it. And it's medium as far as I'm concerned. It's not breaking anything, but it's the thing the GM keeps poking at.
+
+24
+00:02:49.059 --> 00:03:03.794
+Diego Alvarez: Understood. I can't tell you today why the timing looks like that, but I'll take it to the team that handles the Google Ads connection and come back to you with what they say.
+
+25
+00:03:04.098 --> 00:03:07.529
+Mike Castillo: Fair enough. What do you need from me?
+
+26
+00:03:08.821 --> 00:03:17.742
+Diego Alvarez: A couple of call IDs and the matching conversion rows from Brent's export if he can pull them. That gives the team something concrete to look at.
+
+27
+00:03:18.951 --> 00:03:25.478
+Mike Castillo: I can get you ten calls by Monday. Brent's out today, but he's back Monday morning.
+
+28
+00:03:26.249 --> 00:03:36.282
+Diego Alvarez: That works. I'll also check whether anything changed on our side in the last month or two, so I'm not asking you for the same thing twice.
+
+29
+00:03:36.906 --> 00:03:37.738
+Mike Castillo: Appreciate that.
+
+30
+00:03:39.109 --> 00:03:41.836
+Diego Alvarez: While we're here, anything else on your list?
+
+31
+00:03:43.087 --> 00:03:48.304
+Mike Castillo: No, tracking's been solid. Signal AI is doing what we need it to.
+
+32
+00:03:48.952 --> 00:03:53.054
+Diego Alvarez: Good. How's the BDC staffing looking? You mentioned the tent sale earlier.
+
+33
+00:03:54.363 --> 00:04:02.958
+Mike Castillo: We're down one rep, so the remaining five are covering evenings. Should be back to full headcount first week of October.
+
+34
+00:04:03.664 --> 00:04:07.624
+Diego Alvarez: Okay. And the Salesforce side, leads still flowing like normal?
+
+35
+00:04:08.371 --> 00:04:10.776
+Mike Castillo: Yeah, that's fine. No issues there.
+
+36
+00:04:11.440 --> 00:04:19.708
+Diego Alvarez: Good. So I'll follow up Monday once I have Brent's export, and I'll let you know what the team comes back with.
+
+37
+00:04:20.947 --> 00:04:22.499
+Mike Castillo: Sounds good. Thanks, Diego.
+
+38
+00:04:23.401 --> 00:04:24.622
+Diego Alvarez: Yep. Talk Monday.

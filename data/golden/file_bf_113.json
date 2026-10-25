@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_113",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "When the AI Voice Agent transfers to a live agent, the details it collected do not arrive, so callers repeat themselves.",
+      "quote": "So the voice agent's sending callers to the wrong queue, and they get bounced again.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

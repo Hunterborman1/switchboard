@@ -1,0 +1,37 @@
+Ridgeway Motor Group / Invoca | exec sponsor | Fri, Oct 23, 2026
+
+[00:00:06] Diego Alvarez: Morning, both. Thanks for making time. How's the store this week?
+[00:00:10] Mike Castillo: Busy. We're up, I think, twenty five percent in inbound calls over last October. Football season always does that to us.
+[00:00:19] Brittany Sawyer: It's mostly the F-150 stuff off the two Tulsa stores. The Broken Arrow store is quieter but they always are.
+[00:00:27] Diego Alvarez: Got it. And how are you staffed through the month?
+[00:00:31] Brittany Sawyer: Two BDC agents out the first week of November, so I'm shifting one of the night folks to days for a bit. It'll be fine.
+[00:00:41] Diego Alvarez: Okay. I'll keep an eye on volume alerts in case staffing changes what shows up on the scorecard.
+[00:00:49] Mike Castillo: Appreciate it. While we're here, I want to walk through something the agency flagged.
+[00:00:54] Diego Alvarez: Sure, go ahead.
+[00:00:56] Mike Castillo: So our paid search agency, they pull the Google Ads account every Monday. Last Monday they asked why our call conversions land in batches, like eight on Monday, three Tuesday, none Wednesday, then eleven Thursday.
+[00:01:10] Diego Alvarez: Like delayed?
+[00:01:11] Mike Castillo: Delayed and lumpy. I went in and looked at a call from Wednesday last week, the fourteenth, and the conversion didn't show in Google Ads until Friday the sixteenth. So one to three days.
+[00:01:26] Brittany Sawyer: That's not great when we're making bid decisions daily.
+[00:01:30] Mike Castillo: Right. Smart Bidding is optimizing on an incomplete picture. If Tuesday's calls aren't in yet, the system thinks Tuesday was a bad day and it thins out the campaigns we actually want.
+[00:01:43] Diego Alvarez: Okay. So the call attribution itself is fine, it's the write to Google Ads that's running behind.
+[00:01:50] Mike Castillo: As far as I can tell, yeah. The calls show in Invoca same day. The conversions, they're the stragglers.
+[00:01:58] Diego Alvarez: Do you know if this started around a specific date?
+[00:02:03] Mike Castillo: Honestly, I don't. The agency noticed it maybe two, three weeks ago, but I couldn't tell you when it began.
+[00:02:10] Diego Alvarez: Okay. I want to take that back with the dates you gave me and get a real answer, not a guess. Is there a report in Google Ads they can send me?
+[00:02:21] Mike Castillo: Yeah, I'll have them export the conversion times and email it to you. Probably this afternoon.
+[00:02:29] Diego Alvarez: Perfect. And the calls that did convert, any pattern? Certain stores, certain campaigns?
+[00:02:35] Mike Castillo: I didn't spot one. Seemed like everything.
+[00:02:39] Diego Alvarez: Alright. Let me get that in front of the team and I'll come back to you with something concrete.
+[00:02:46] Brittany Sawyer: Can I add something to that?
+[00:02:49] Diego Alvarez: Please.
+[00:02:51] Brittany Sawyer: My boss, the VP of sales, is already asking whether we renew in January. And I'm not going to tell her yes if our conversions are landing in Google Ads late.
+[00:03:04] Diego Alvarez: Understood.
+[00:03:05] Brittany Sawyer: The BDC runs off those numbers. If we can't trust the timing on the Google Ads side, it makes the whole renewal conversation harder than it needs to be.
+[00:03:18] Diego Alvarez: I hear that, and I don't want to guess at it either. Let me get the agency's timing report and take it to the team. I'll have an update for you by early next week.
+[00:03:31] Brittany Sawyer: That works.
+[00:03:32] Diego Alvarez: Mike, can you get me the agency's contact too? I'd rather hear it from them than secondhand.
+[00:03:38] Mike Castillo: Yeah, I'll send it over.
+[00:03:40] Diego Alvarez: Alright. Anything else before we wrap?
+[00:03:43] Mike Castillo: No, that's the one.
+[00:03:46] Diego Alvarez: Okay. I'll follow up by Tuesday. Thanks, both.
+[00:03:49] Brittany Sawyer: Thanks, Diego.

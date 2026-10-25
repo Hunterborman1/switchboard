@@ -1,0 +1,101 @@
+Northwind Telecom check-in
+Thu, Sep 24, 2026, 11:00AM • 4:47
+
+Tom Lindqvist  0:06
+Hey Brandon. How's it going?
+
+Brandon Hughes  0:09
+Not bad, busy week. You?
+
+Tom Lindqvist  0:12
+Same, same. I was just looking at your numbers before this, and call volume looks healthy. Around 47,000 calls last month, right?
+
+Brandon Hughes  0:22
+Yeah, roughly. Maybe a touch under, we had some weather stuff in the mountain markets. But pretty steady.
+
+Tom Lindqvist  0:31
+Good. Anything change on the team side? I know you had some movement over the summer.
+
+Brandon Hughes  0:39
+We uh, did. Wendy took over the Genesys admin stuff back in July, so she's been handling the screen pop configuration. She's picking it up, um, but there's a lot of tribal knowledge that left with the last person.
+
+Tom Lindqvist  0:55
+Got it. Does she need anything from us, like a refresher on how the PreSense payload maps to the Genesys fields?
+
+Brandon Hughes  1:04
+Um, Maybe down the road. She's been reading the docs. I I think she's fine for now.
+
+Tom Lindqvist  1:10
+Okay, just let me know. So, what's on your list today?
+
+Brandon Hughes  1:15
+Couple things. The transfer thing came up again last week.
+
+Tom Lindqvist  1:20
+The one where the screen pop doesn't follow the call when it transfers out of the sales queue?
+
+Brandon Hughes  1:28
+Yeah. It's not every transfer. But when a call comes in, agent sees the PreSense stuff, and then if they push it to a supervisor or another team, the second person gets nothing. Just a bare call.
+
+Tom Lindqvist  1:43
+How often are we talking?
+
+Brandon Hughes  1:46
+Hard to say. I'd guess... maybe fifteen, twenty percent of transfers? Enough that Wendy flagged it. Um, it was the same thing back in June. We talked about it then and I don't think it got logged anywhere, honestly. That one's on me.
+
+Tom Lindqvist  2:03
+Okay. Can you get me a few example call IDs from last week? Like three or four. I'll take it to the team and see what's happening in the transfer path. I can't promise a fix on this call, but I can get it in front of the right people with real examples.
+
+Brandon Hughes  2:24
+Yeah, uh, Wendy can pull those. I'll have her send them over by Monday.
+
+Tom Lindqvist  2:32
+Perfect. What else?
+
+Brandon Hughes  2:33
+The other one is more of a request. So every Monday I pull the call data out as CSV and I rebuild the same three views in Google Sheets for our sales leadership. Calls by campaign, calls by region, conversion rate. Takes me about two hours. Every single week.
+
+Tom Lindqvist  2:51
+And that's feeding the Monday leadership meeting?
+
+Brandon Hughes  2:54
+Yeah, 8 AM Monday. And people keep asking if we could just have it land in um, Looker or Sheets automatically on a schedule. Honestly if it just showed up in a Google Sheet every Monday morning without me touching it, that'd be huge. I don't need a whole dashboard build, just uh, the scheduled piece.
+
+Tom Lindqvist  3:16
+So the destination matters less than not doing it by hand.
+
+Brandon Hughes  3:21
+Right, exactly. Sheets would be the easy one for us, but if it could go to Looker too that'd cover the other team.
+
+Tom Lindqvist  3:31
+Okay, that's a clear ask. I'll write it up and bring it to product. I don't know where it lands on the roadmap, so I'll set expectations there, but I'll get it in as a request from you with the time-savings detail.
+
+Brandon Hughes  3:47
+Appreciate it. That's really it from my side.
+
+Tom Lindqvist  3:52
+One quick thing before we wrap. You know, Renewal's still March 31, so we're a ways out, but do you want to do a mid-year business review in like November? Get the exec team in, go over what's working.
+
+Brandon Hughes  4:07
+Uh, yeah, November works. Maybe second week?
+
+Tom Lindqvist  4:11
+Like, I'll send a couple dates.
+
+Brandon Hughes  4:14
+Sounds good. Hey, did you end up doing that hike you were talking about last time?
+
+Tom Lindqvist  4:21
+I did. Got rained on for the last uh, two miles, but worth it. You get out at all?
+
+Brandon Hughes  4:30
+Not lately. Kids' soccer eats the weekends.
+
+Tom Lindqvist  4:34
+Ha, fair. Okay, so call IDs by Monday, and I'll follow up on both items by end of next week.
+
+Brandon Hughes  4:41
+Perfect. Thanks Tom.
+
+Tom Lindqvist  4:43
+Talk soon, Brandon.

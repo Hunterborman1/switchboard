@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_091",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "call_tracking",
+      "severity": "high",
+      "summary": "Dynamic number insertion stops swapping numbers after client-side route changes on single-page apps.",
+      "quote": "But the minute somebody navigates inside the app, like from the rate page to the pre-qual flow, the number flips back to our main 800 line.",
+      "owner": "ppl_alex"
+    }
+  ],
+  "phiTokens": []
+}

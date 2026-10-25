@@ -1,0 +1,95 @@
+Brightline Home Services QBR
+Wed, Sep 30, 2026, 11:30AM • 4:19
+
+Marcus Bell  0:02
+Morning, Dana. How's Charlotte treating you? I know you've got that cold snap coming through this week.
+
+Dana Ortiz  0:08
+Hey Marcus. Yeah, it's finally feeling like fall. Which, honestly, is good for us. HVAC tune-up calls are starting to pick up.
+
+Marcus Bell  0:18
+That tracks. How's the volume looking across the branches?
+
+Dana Ortiz  0:23
+September we're tracking right around 41,000 calls total. HVAC's carrying most of it, plumbing's flat, electrical's a little soft.
+
+Marcus Bell  0:31
+Okay. And PreSense, is that still so, just on the HVAC inbound queue or did you roll it out wider?
+
+Dana Ortiz  0:41
+Just HVAC still. We talked about plumbing for Q4 but I don't want you know, to add anything until we get through the heating season.
+
+Marcus Bell  0:52
+That makes sense. Let me pull up the dashboard here. Uh, I see the call flows are routing the same as last quarter.
+
+Dana Ortiz  1:02
+Yeah, that part's fine. Actually, can I you know, jump in on something? This is the main thing I wanted to talk about.
+
+Marcus Bell  1:14
+Please.
+
+Dana Ortiz  1:16
+So our offline conversions to Google Ads are landing one to three days after the call. Not all of them, but enough that Smart Bidding is basically optimizing on half the picture.
+
+Marcus Bell  1:27
+One to three days. Is that consistent or does it vary by branch?
+
+Dana Ortiz  1:34
+It varies. Some come through same day, like, some take three. And since mid-September our CPA on the HVAC campaigns has jumped, like, from the low 90s to almost 140. We're not doing anything different on the bidding side.
+
+Marcus Bell  1:52
+Okay, so the lag is feeding Google incomplete conversion data and it's bidding into that gap.
+
+Dana Ortiz  1:59
+That's my read. I flagged it to our paid media lead, Renata, and she's seeing the same thing on her end. She's been pulling GCLID match reports all week.
+
+Marcus Bell  2:10
+Got it. When did you first notice the delay starting?
+
+Dana Ortiz  2:15
+Honestly, maybe the second week of September? It's hard to pin down because it's not every call.
+
+Marcus Bell  2:22
+Okay. I want to get the exact timestamps, so can you send me a handful of call IDs where you saw the lag, and the corresponding conversion timestamps in Google Ads? Even five or six would help.
+
+Dana Ortiz  2:37
+Yeah, I can get you that by tomorrow. Renata can pull the Google side.
+
+Marcus Bell  2:43
+Perfect. I'll take it to our integrations team and come back to you with what they find. I don't want to guess at it on this call.
+
+Dana Ortiz  2:53
+Appreciate that. And just so you know, we're still running the same budget. Nobody's panicking yet, but if it keeps going we'll be over on cost per booked job by a lot.
+
+Marcus Bell  3:07
+Understood. Anything else on the Signal AI side? Appointment booked, quote given, all that still classifying the way you expect?
+
+Dana Ortiz  3:16
+That's fine. No issues there.
+
+Marcus Bell  3:19
+Good. One housekeeping thing, your renewal's up in January, but I'm not going to bug you about that today. We can pick it up in November once this is sorted.
+
+Dana Ortiz  3:32
+Yeah, let's do that. Oh, and heads up, we're onboarding two new dispatchers in the Raleigh branch next month, so there might be a few extra calls while they train.
+
+Marcus Bell  3:44
+Noted. That's usually a blip, not a spike.
+
+Dana Ortiz  3:47
+That's what I'm hoping. Also, are you still doing the Thursday office hours? I might have Renata join one.
+
+Marcus Bell  3:55
+Yep, Thursdays at two. I'll send her the invite.
+
+Dana Ortiz  3:59
+Great. Okay, I should run, I've got a branch call at noon.
+
+Marcus Bell  4:05
+No problem. Send me those call IDs and I'll follow up by Friday.
+
+Dana Ortiz  4:11
+Will do. Thanks Marcus.
+
+Marcus Bell  4:14
+Thanks Dana. Talk soon.

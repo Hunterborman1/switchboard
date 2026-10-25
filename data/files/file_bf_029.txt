@@ -1,0 +1,75 @@
+Brightline / Marcus Bell
+Fri Oct 9, 2026
+
+11:15a
+P: Priyanka Shah, Mktg Ops
+m: me
+
+---
+
+p: "so we're still seeing the spam flag hit after-hours calls... the ones where someone just gives an address and hangs up. those are real. we're losing them from reporting."
+
+M: how many, roughly
+
+P: "Charlotte and Raleigh mostly, weekends. Maybe 30-40 a month? Some are just HVAC calls where the cust gives the address & says 'how soon can you get here' & that's it."
+
+M: ok. is it the short-duration ones
+
+P: "yeah, under 30 seconds. If they say anything else it doesn't flag."
+
+m: i'm going to bring this back to the signal team, get you a ticket number
+
+p: "thanks. it's not huge volume but it's real revenue walking out of the dashboard."
+
+---
+
+p: "google ads is fine. convrsions landing, smart bidding looks stable. no notes there."
+
+P: "PreSense added mid-term, working like we expected. No issues."
+
+---
+
+Volumes: Sept total 41,800 calls, up ~6% MoM. 14 branches. Charlotte ~11k, Raleigh ~7k, rest spread. After-hours ~18%.
+
+headcount: they're down one marketing coordinator, posting req next week.
+
+---
+
+from: priyanka
+Subject: Re: Q4 review scheduling
+
+marcus,
+
+can we push the q4 business review to the week of nov 9? i'm out the last week of oct and don't want to leave it to the last minute.
+
+Also, did the updated call flows go live?
+
+Priyanka
+
+---
+
+To-do:
+- open ticket re: spam flag on short after-hours calls (address-only)
+- send Q4 review hold for Nov 9
+- confirm call flow publish status
+- check if their new coordinator start date affects training
+
+---
+
+Tangent: her daughter's soccer tournament in Greenville, she's driving up Saturday. Said the drive is worth it.
+
+---
+
+ntoes for me:
+- no other open items
+- renewal Jan 2027, on track
+
+---
+
+P: "One more thing, can you get me the list of flagged calls from last weekend? I want to look at a few before we talk again."
+
+M: yes, sending over this afternoon.
+
+---
+
+End 11:42a

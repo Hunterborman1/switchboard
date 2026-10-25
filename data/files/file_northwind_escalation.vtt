@@ -1,0 +1,269 @@
+WEBVTT
+
+1
+00:00:04.029 --> 00:00:14.193
+Tom Lindqvist: Hey Michelle, Brandon. Thanks for jumping on. I know we had this on the calendar but appreciate you making time on a Friday.
+
+2
+00:00:14.193 --> 00:00:16.845
+Tom Lindqvist: So, How's Denver? Getting cold yet?
+
+3
+00:00:17.612 --> 00:00:23.860
+Michelle Tran: It snowed Tuesday. Not a lot, but enough that everyone forgot how to drive. How are you?
+
+4
+00:00:24.502 --> 00:00:35.436
+Tom Lindqvist: Good, good. Busy week. Before we get into it, I've got Lena Brooks on from the PreSense product team and Derek Shaw from support escalations.
+
+5
+00:00:35.436 --> 00:00:40.684
+Tom Lindqvist: Lena, Derek, this is uh, Michelle Tran and Brandon Hughes from Northwind.
+
+6
+00:00:41.758 --> 00:00:44.401
+Lena Brooks: Hi both. Thanks for the time.
+
+7
+00:00:45.755 --> 00:00:52.787
+Derek Shaw: Hey. I've been reading through the tickets from the last couple weeks, so I'm roughly up to speed.
+
+8
+00:00:53.195 --> 00:00:56.667
+Brandon Hughes: Appreciate you both being here. Let's get into it.
+
+9
+00:00:56.880 --> 00:00:59.710
+Tom Lindqvist: Michelle, you want to kick us off?
+
+10
+00:01:00.594 --> 00:01:10.593
+Michelle Tran: Yeah. So, short version. Since the Genesys update on the third, we're losing PreSense on basically every warm transfer. Not some. Every one.
+
+11
+00:01:11.975 --> 00:01:19.166
+Lena Brooks: Okay. When you say losing PreSense, what does the agent actually see? Blank screen pop, wrong data, nothing at all?
+
+12
+00:01:20.266 --> 00:01:30.104
+Michelle Tran: Nothing. The screen pop just doesn't fire. Caller gets to the second agent, the Genesys window comes up, and there's no PreSense panel.
+
+13
+00:01:30.104 --> 00:01:32.671
+Michelle Tran: No journey, no ad source, nothing.
+
+14
+00:01:33.598 --> 00:01:40.167
+Lena Brooks: And on a cold transfer, so a straight transfer with no consult, does it fire?
+
+15
+00:01:40.805 --> 00:01:51.251
+Michelle Tran: Cold transfers are fine. That's the weird part. It's um, warm transfers specifically. Agent hits consult, talks to the second agent, then completes the transfer, and the pop is gone.
+
+16
+00:01:51.515 --> 00:01:55.716
+Lena Brooks: Okay, that's helpful. Uh, Which Genesys version are you on now?
+
+17
+00:01:56.442 --> 00:02:09.674
+Michelle Tran: Whatever they pushed on the third. I'd have to pull the exact build. Our platform team manages that. I think it's a 2026 release, but I don't have the number in front of me.
+
+18
+00:02:11.148 --> 00:02:18.559
+Derek Shaw: I can grab that from the ticket. I think your platform contact listed it. Was it the cloud release or on-prem?
+
+19
+00:02:19.375 --> 00:02:22.843
+Michelle Tran: Cloud. We moved off on-prem two years ago.
+
+20
+00:02:24.054 --> 00:02:24.854
+Derek Shaw: Got it.
+
+21
+00:02:25.198 --> 00:02:30.245
+Lena Brooks: And is this every queue, or specific ones? Sales queues, service queues, both?
+
+22
+00:02:30.938 --> 00:02:39.858
+Michelle Tran: Sales, mostly. Our inbound sales queue. That's where we use PreSense the most. Service uses it less, so honestly I haven't tested service much.
+
+23
+00:02:40.295 --> 00:02:54.180
+Brandon Hughes: Sales is the one that matters. That's the whole reason we bought it. If a caller clicks an ad, fills out a form, we want the agent to see that before they say hello.
+
+24
+00:02:54.945 --> 00:03:01.958
+Lena Brooks: Right. So on the warm transfer, the second agent is in the same queue or a different one?
+
+25
+00:03:03.305 --> 00:03:12.542
+Michelle Tran: Different. First agent is a general sales rep, then they consult with a specialist. Fiber specialist, wireless specialist, that kind of thing.
+
+26
+00:03:13.488 --> 00:03:18.265
+Lena Brooks: And the specialist is the one who should get the pop?
+
+27
+00:03:19.133 --> 00:03:29.324
+Michelle Tran: Yes. The specialist. The first agent already has the context, they're the one who um, took the call. The specialist is cold, they need the journey.
+
+28
+00:03:30.097 --> 00:03:39.481
+Lena Brooks: Okay. And when you say the pop doesn't fire, is it that the panel loads empty, or the panel doesn't load at all?
+
+29
+00:03:40.526 --> 00:03:49.984
+Michelle Tran: Doesn't load at all. The Genesys screen comes up with the normal stuff, contact record, notes, but the PreSense panel isn't there.
+
+30
+00:03:49.984 --> 00:03:52.993
+Michelle Tran: It's like it never got the data.
+
+31
+00:03:53.846 --> 00:04:00.856
+Derek Shaw: Do you have a recent call ID we can look at? Even one from this week?
+
+32
+00:04:02.160 --> 00:04:10.877
+Michelle Tran: Yeah, I sent a few in the ticket. Um, Tuesday morning, I think three of them. I can send more if that helps.
+
+33
+00:04:11.286 --> 00:04:17.044
+Derek Shaw: The three you sent are enough to start. I'll pull the signal logs on those.
+
+34
+00:04:17.377 --> 00:04:27.996
+Brandon Hughes: How long does that take? Because we're three uh, weeks in and my team is manually pulling up the customer record before they pick up.
+
+35
+00:04:27.996 --> 00:04:34.791
+Brandon Hughes: That's thirty, forty seconds per call. On a thousand calls a day, um, that's real money.
+
+36
+00:04:36.245 --> 00:04:48.212
+Lena Brooks: I get it. That's a real cost. Let me ask one more thing. When the first agent consults, do they use the Genesys consult button, or do they do I mean, something else, like a conference?
+
+37
+00:04:48.412 --> 00:04:52.297
+Michelle Tran: Consult button. Standard. That's how we've always done it.
+
+38
+00:04:52.697 --> 00:04:56.095
+Lena Brooks: And it worked before the third? Same flow, same button?
+
+39
+00:04:57.198 --> 00:05:06.829
+Michelle Tran: Yes. Nothing changed on our side. That's what's so frustrating. We didn't touch anything, they pushed an update, and now it's broken.
+
+40
+00:05:08.028 --> 00:05:25.736
+Lena Brooks: Okay. So the most likely thing is something in how the transfer event gets surfaced to us changed. I don't want to guess at a root cause yet, but the pattern, warm transfer only, different queue, cloud version, points at the transfer signaling.
+
+41
+00:05:26.619 --> 00:05:34.716
+Derek Shaw: That matches what I'm seeing in the logs. The PreSense payload is being built, I can see it on the first leg.
+
+42
+00:05:34.716 --> 00:05:38.397
+Derek Shaw: It's the handoff to the second leg where it drops.
+
+43
+00:05:39.080 --> 00:05:41.163
+Michelle Tran: So it's on your side?
+
+44
+00:05:41.867 --> 00:05:51.584
+Derek Shaw: Not saying that. I'm saying the handoff is where the like, data stops. Whether that's us, Genesys, or the way the two are talking, I need to dig in.
+
+45
+00:05:51.584 --> 00:05:54.600
+Derek Shaw: I don't want to point fingers before I know.
+
+46
+00:05:55.037 --> 00:06:00.098
+Michelle Tran: Fine. But we need this fixed. My agents are complaining every day.
+
+47
+00:06:00.989 --> 00:06:11.969
+Brandon Hughes: And it's not just the agents. I've got my VP asking whether we should even keep PreSense next year if it doesn't survive a transfer.
+
+48
+00:06:13.338 --> 00:06:21.791
+Tom Lindqvist: Brandon, I hear that. Let's get to a test plan today so we're not sitting on this over the weekend.
+
+49
+00:06:22.493 --> 00:06:33.287
+Lena Brooks: Yeah. Here's what I'd like to do. Michelle, can you get me the exact Genesys build number, and a screenshot of the specialist's screen on a warm transfer?
+
+50
+00:06:33.287 --> 00:06:36.371
+Lena Brooks: Even a photo of the monitor is fine.
+
+51
+00:06:36.584 --> 00:06:46.471
+Michelle Tran: I can get you the build number. The screenshot is trickier, we have a no-phone-on-the-floor policy, but I can grab a screen capture from the desktop.
+
+52
+00:06:47.842 --> 00:06:57.218
+Lena Brooks: That works. And can you run a a controlled test? One call, warm transfer, same queue, then one warm transfer across queues.
+
+53
+00:06:57.218 --> 00:07:02.758
+Lena Brooks: Note the time and the call IDs. That'll tell us if it's queue-specific.
+
+54
+00:07:04.214 --> 00:07:08.099
+Michelle Tran: Okay. I can do that Monday morning when the floor's quieter.
+
+55
+00:07:09.340 --> 00:07:19.826
+Derek Shaw: Send me uh, the call IDs as soon as you have them and I'll pull the logs in parallel. I'll also open a case with our platform team so it's tracked formally.
+
+56
+00:07:20.471 --> 00:07:24.600
+Michelle Tran: Good. Because the ticket I opened has been sitting for a week.
+
+57
+00:07:25.685 --> 00:07:30.125
+Derek Shaw: That's on us. I'll own it from here. You'll have my direct line.
+
+58
+00:07:30.601 --> 00:07:32.262
+Brandon Hughes: What's the timeline? Realistically.
+
+59
+00:07:33.525 --> 00:07:42.120
+Lena Brooks: Uh, if the test confirms what I think, we'll know by Wednesday. Fix depends on what we find. I'm not going to promise a date today.
+
+60
+00:07:42.854 --> 00:07:49.221
+Brandon Hughes: I'd rather have a real answer than a fast one. Just keep us in the loop.
+
+61
+00:07:50.163 --> 00:07:55.928
+Tom Lindqvist: I'll set up a check-in for Wednesday, same time. Michelle, Brandon, anything else before we wrap?
+
+62
+00:07:57.341 --> 00:08:00.727
+Michelle Tran: No, that's it. Just, please, get this fixed.
+
+63
+00:08:01.500 --> 00:08:05.716
+Tom Lindqvist: We're on it. And hey, good luck with the snow.
+
+64
+00:08:06.583 --> 00:08:07.673
+Michelle Tran: Thanks. Talk Wednesday.
+
+65
+00:08:08.159 --> 00:08:08.959
+Brandon Hughes: Thanks everyone.
+
+66
+00:08:10.246 --> 00:08:11.124
+Lena Brooks: Thanks. Bye.
+
+67
+00:08:12.146 --> 00:08:12.946
+Derek Shaw: Bye.

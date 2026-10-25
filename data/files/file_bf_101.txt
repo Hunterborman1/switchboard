@@ -1,0 +1,50 @@
+Harbor FCU sync notes - Mon Oct 5, 2026
+
+Participants: Jason Park (Mktg Ops Mgr), Linda Sorensen (VP Member Exp), Aisha Coleman (Invoca CSM)
+
+Agenda: Q3 volumes, QM scorecard review, Salesforce sync, scheduling
+
+aisha: thanks for making time. how's call volume looking for q3?
+Jason: Up about 12% over Q2. Hit 48,000 inbound calls across the branch & member support lines. Tacoma and Spokane are the busiest. We're short two agents on the member support team, so hold times are a little longer than we'd like.
+Linda: Yeah, we're interviewing but it's slow. In the meantime, the front-line teams have been leaning on the AI call summaries a lot. They save a ton of time on callbacks and handoffs. Instead of listening to a whole call, they read the summary & know exactly what the member needed.
+aisha: good to hear. any otehr feedback on signal ai?
+jason: no, that's the main thing. the summaries have been solid.
+
+Linda: One thing on the Salesforce side. Our compliance team has been reviewing the QM scorecards every month, & they flagged something. The call outcome is landing in the wrong field on the custom object. We changed a picklist value on the Member_Interaction__c object last month, & now some calls aren't writing the outcome to the right place. It's not every call, but it's enough that the compliance reports are off.
+Aisha: Can you send me an example? I'll take it to the integrations team and see what they say.
+jason: i'll grab a couple of call ids & send them over this afternoon.
+
+Aisha: Anything else?
+linda: no, everything else is fine.
+
+aisha: okay. i'll follow up w/ the integrations team & let you know what i find. also, i'll send over the q4 business review deck by friday.
+
+To-dos:
+- Jason: send example call IDs to Aisha by EOD today
+- aisha: escalate salesforce sync issue to integrations team
+- aisha: send q4 business review deck by friday oct 9
+- Jason: confirm QM scorecard review mtg for Oct 20
+
+next call: monday, oct 19 at 1pm pt
+
+From: Jason Park <jason.park@harborfcu.example>
+Sent: Monday, October 5, 2026 2:47 PM
+To: Aisha Coleman <aisha.coleman@invoca.example>
+subject: re: call examples
+
+Aisha,
+
+here are two call ids where the outcome didn't write correctly: 8842109 and 8842334. let me know if you need more.
+
+thx,
+Jason
+
+transcript snippet from call 8842109:
+Agent: Thank you for calling Harbor Federal Credit Union, this is Derek.
+Member: Hi, I need to check on a loan application.
+Agent: I can help with that. Can I get your member number?
+
+error message from salesforce sync log:
+"Error: Field 'Call_Outcome__c' not found on object Member_Interaction__c. Please check field name and picklist values."
+
+Jason mentioned that the Spokane branch is getting a new phone system next month, so we might see some call routing changes. I'll keep an eye on it.

@@ -1,0 +1,34 @@
+Slack export · #ext-keystone-invoca (Slack Connect: shared with Keystone Mutual)
+Exported 10/21/2026 9:39 AM · 28 messages
+
+[10/21/2026 8:55 AM] rachel.okafor: morning all :coffee: quick roundup from the calls w/ nate and erin yesterday, then a couple asks
+[10/21/2026 8:56 AM] rachel.okafor: nate says presense pop still blank on sales->service xfers in genesys, 3rd wk in a row
+[10/21/2026 8:58 AM] nate.simmons: yep. saw it again this morning. i can pull 2-3 call examples from yesterday if that helps
+[10/21/2026 8:59 AM] rachel.okafor: yes pls, times + agent names is enough
+[10/21/2026 9:00 AM] nate.simmons: will send after standup
+[10/21/2026 9:01 AM] rachel.okafor: fyi on the voice agent pilot, luis walked me through the after-hours claims intake on our call. pasing the relevant bit from the recording:
+[10/21/2026 9:02 AM] rachel.okafor: [00:14:02] luis ortega: when the voice agent xfers the claim, the adjuster picks up and has to ask for the policy number again
+  [00:14:19] luis ortega: caller already gave it once to the agent so it comes off a little rough
+  [00:14:31] Rachel Okafor: got it, so the handoff itself works, it's what travels with it
+  [00:14:38] Luis Ortega: right, xfer lands fine, just nothing on the screen for them
+[10/21/2026 9:04 AM] nate.simmons: the after-hours volume is ~40-60 claims a night if that matters for scoping
+[10/21/2026 9:05 AM] rachel.okafor: erin asking if qm can score claims empathy separately from the sales stuff
+[10/21/2026 9:06 AM] erin.walsh: to add: compliance scoring is fine as is, this is purely about the claims team coaching
+[10/21/2026 9:07 AM] rachel.okafor: noted. also erin, can you send the scorecard you're using for claims now? just want to see the sections
+[10/21/2026 9:08 AM] erin.walsh: sure, it's the old one we built in a sheet. sending today
+[10/21/2026 9:09 AM] rachel.okafor: tracking + signal ai + google ads all quiet on our side, no action needed there
+[10/21/2026 9:10 AM] rachel.okafor: one logistics thing: our sync tomorrow is 9:30 ET not 9. invite has the wrong zoom, use this one https://invoca.zoom.example/j/8841203
+[10/21/2026 9:12 AM] nate.simmons: got it, 9:30 et. i'll bring luis
+[10/21/2026 9:13 AM] erin.walsh: +1
+[10/21/2026 9:15 AM] rachel.okafor: taking the presense xfer thing and the qm scoring question to ben & lena internally, will report back
+    ↳ [10/21/2026 9:19 AM] ben.adeyemi: saw it. for the voice agent handoff, can you get me one example call id where the xfer to claims happened after hours? want to hear the last 30 sec before xfer
+    ↳ [10/21/2026 9:21 AM] rachel.okafor: yep, nate's sending times + agent names this morning, i'll pull ids from there
+    ↳ [10/21/2026 9:23 AM] ben.adeyemi: also helpful: is the policy number captured as a field on the claims flow or just spoken? don't need an answer now, just flagging what i'll look for
+    ↳ [10/21/2026 9:24 AM] rachel.okafor: i'll ask luis
+    ↳ [10/21/2026 9:26 AM] lena.brooks: on presense: is it every sales->service xfer or only certain queues? & is the pop empty or showing the wrong contact?
+    ↳ [10/21/2026 9:28 AM] rachel.okafor: nate said empty, not wrong. i'll confirm whether it's all queues or just the ones that route to the service team
+    ↳ [10/21/2026 9:30 AM] lena.brooks: ty. if you can grab a genesys interaction id & an invoca call id for the same call that would let me line them up
+    ↳ [10/21/2026 9:31 AM] ben.adeyemi: same for me on the claims xfer if it's easy
+    ↳ [10/21/2026 9:33 AM] rachel.okafor: will do. & erin's qm question is about splitting empathy scoring for claims vs sales, i'll write it up properly after i see the sheet
+    ↳ [10/21/2026 9:35 AM] lena.brooks: :+1:
+    ↳ [10/21/2026 9:36 AM] ben.adeyemi: :eyes:

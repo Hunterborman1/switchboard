@@ -1,0 +1,40 @@
+Frontier Home Lending / Invoca | check-in | Fri, Sep 25, 2026
+
+[00:00:05] Aisha Coleman: Morning Andre, morning Victor. Thanks for making the time.
+[00:00:09] Andre Williams: Morning Aisha. Victor's joining us for part of this, he's got a hard stop at nine forty.
+[00:00:17] Victor Huang: Hi Aisha. Andre said you'd want a few minutes on the QM side, so I moved some things around.
+[00:00:25] Aisha Coleman: Appreciate that. Let's start with volumes, then QM, then whatever else is on your list.
+[00:00:31] Andre Williams: Sounds good. August we ran about 41,200 inbound calls into the Five9 queue. That's up maybe six percent from July.
+[00:00:40] Aisha Coleman: Six percent, that tracks with what I see on the call tracking side. Is the mix still mostly purchase inquiries?
+[00:00:49] Andre Williams: Yeah, purchase is around seventy percent, refi is the rest. The Google Ads campaigns are still the biggest source, and the offline conversion sends into Google are going out every night like they should.
+[00:01:03] Aisha Coleman: Good. Any gaps on the Salesforce side, the loan application object?
+[00:01:08] Andre Williams: No, that's been clean. Records are landing, the loan officers see the call outcome on the application. Nothing to report there.
+[00:01:16] Aisha Coleman: And PreSense?
+[00:01:17] Andre Williams: Fine. The screen pop is doing what we need.
+[00:01:21] Aisha Coleman: Okay, so staffing. I know you mentioned some movement last month.
+[00:01:25] Andre Williams: We had two loan officers leave in August, so we're at 178 right now. We're hiring for three, interviews are happening. Should be back to full by mid October.
+[00:01:37] Aisha Coleman: Does that change how the calls are routing?
+[00:01:41] Andre Williams: A little. We shifted the overflow to the Plano team for now. Renee's group is handling it.
+[00:01:49] Aisha Coleman: Got it. Victor, over to you on QM.
+[00:01:52] Victor Huang: So we've been running the QM scorecards for about four months now, and the scoring itself is working. The issue is the scorecard structure. Right now every call gets scored against the same set of criteria, and that doesn't fit how we operate.
+[00:02:09] Aisha Coleman: Can you give me an example?
+[00:02:12] Victor Huang: Take a purchase inquiry versus a refi inquiry versus a servicing call. The disclosures we're required to hit are different for each one. The refi call has to include specific APR language, and the purchase call has its own set of required statements. When we score all of them against one scorecard, we're marking people down for missing a disclosure that was never required on that call type.
+[00:02:39] Aisha Coleman: So you want to be able to build a separate scorecard per call type.
+[00:02:46] Victor Huang: Exactly. And not just the criteria, the weighting too. On a purchase call, the required disclosures should carry more weight than they do on a servicing call. We also want to define the exact disclosure language ourselves, because compliance has to sign off on the wording and it changes. If we can't edit the criteria, we're stuck with what's in there.
+[00:03:10] Aisha Coleman: How many scorecards are you thinking? Roughly.
+[00:03:14] Victor Huang: Four, maybe five. Purchase, refi, servicing, and then a separate one for the Spanish language calls. That last one matters because the disclosure wording isn't a direct translation, it's a different approved script.
+[00:03:29] Aisha Coleman: That makes sense. So the ask is configurable criteria per call type, custom disclosure text, and weighting by call type.
+[00:03:38] Victor Huang: That's the whole of it. I'm not asking for a date, I just want it on the record so it's in the queue.
+[00:03:48] Aisha Coleman: Understood. I'll write it up and take it to the product team. Can I follow up with you if they have questions about the disclosure piece?
+[00:03:58] Victor Huang: Yes, email is best. I have the approved scripts I can send you.
+[00:04:04] Aisha Coleman: Perfect. Andre, anything else before Victor steps out?
+[00:04:07] Andre Williams: No, I think that covers it. Victor, I'll walk you out.
+[00:04:12] Victor Huang: Thanks Aisha. Talk soon.
+[00:04:15] Aisha Coleman: Thanks Victor.
+[00:04:16] Andre Williams: Okay, just us. One small thing, we're doing the quarterly business review the week of October 19. Would the Tuesday work?
+[00:04:25] Aisha Coleman: Tuesday the twentieth, let me check. That should be fine, I'll send an invite and I'll bring the QM write-up so you can see what went to product.
+[00:04:38] Andre Williams: That works. And the invoice for the QM seats, we got it, it's in AP. No issue there.
+[00:04:45] Aisha Coleman: Good to hear. Anything on the call tracking side you want me to look at before the QBR?
+[00:04:53] Andre Williams: No, that's all running. I'll pull the numbers for the QBR on my end.
+[00:04:58] Aisha Coleman: Then I'll let you go. Thanks Andre.
+[00:05:01] Andre Williams: Thanks Aisha. Have a good one.

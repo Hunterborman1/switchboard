@@ -187,6 +187,26 @@ export function resolveRoute(
   throw new Error('no routing rule matched (fallback missing)');
 }
 
+/** Department per role (people.json carries the role; this is the org-chart grouping). */
+export const ROLE_DEPARTMENT: Record<Person['role'], string> = {
+  csm: 'Customer Success',
+  pm: 'Product',
+  vp_product: 'Product',
+  competitive_intel: 'Product Marketing',
+  pricing: 'Finance & Strategy',
+  support_escalation: 'Support',
+  eng_manager: 'Engineering',
+  sales_lead: 'Sales',
+  triage: 'Product Operations',
+};
+
+/** Simple reporting lines for org-chart views. */
+export const REPORTS_TO: Record<string, string> = {
+  ppl_marcus: 'ppl_renee', ppl_priya: 'ppl_renee', ppl_diego: 'ppl_renee', ppl_rachel: 'ppl_renee', ppl_tom: 'ppl_renee', ppl_aisha: 'ppl_renee',
+  ppl_nina: 'ppl_elena', ppl_omar: 'ppl_elena', ppl_lena: 'ppl_elena', ppl_sam: 'ppl_elena', ppl_grace: 'ppl_elena', ppl_ben: 'ppl_elena', ppl_alex: 'ppl_elena',
+  ppl_jamie: 'ppl_elena', ppl_jordan: 'ppl_elena',
+};
+
 export type TaxonomyEntry = { id: string; label: string; definition: string; examples: string[]; counterExamples: string[] };
 
 export const TAXONOMY: {
@@ -300,6 +320,8 @@ export function writeWorld(): void {
   writeFileSync(join(dir, 'accounts.json'), JSON.stringify(ACCOUNTS, null, 2) + '\n');
   writeFileSync(join(dir, 'people.json'), JSON.stringify(PEOPLE, null, 2) + '\n');
   writeFileSync(join(dir, 'routing.json'), JSON.stringify(ROUTING, null, 2) + '\n');
+  const departments = PEOPLE.map((p) => ({ personId: p.id, role: p.role, department: ROLE_DEPARTMENT[p.role], reportsTo: REPORTS_TO[p.id] ?? null }));
+  writeFileSync(join(dir, 'departments.json'), JSON.stringify(departments, null, 2) + '\n');
   writeFileSync(join(dir, 'taxonomy.json'), JSON.stringify(TAXONOMY, null, 2) + '\n');
   console.log(`world: ${ACCOUNTS.length} accounts, ${PEOPLE.length} people, ${ROUTING.length} rules`);
 }

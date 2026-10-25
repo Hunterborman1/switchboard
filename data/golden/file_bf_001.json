@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_001",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "feature_request",
+      "productArea": "platform",
+      "severity": "low",
+      "summary": "Customers want dashboards delivered to Looker, Google Sheets or BI tools on a schedule instead of manual CSV exports.",
+      "quote": "So this is more of an ask than a problem, honestly. Our marketing ops person, Renee, she pulls the call data out of Invoca every Monday morning. Manually. She logs in, sets the date range, exports the CSV, then loads it into Looker for our weekly rooftop review.",
+      "owner": "ppl_nina"
+    }
+  ],
+  "phiTokens": []
+}

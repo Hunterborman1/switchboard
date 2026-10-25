@@ -1,0 +1,20 @@
+Slack export · #ext-prairielink-invoca (Slack Connect: shared with Prairie Link Broadband)
+Exported 9/29/2026 3:10 PM · 17 messages
+
+[9/29/2026 2:45 PM] tom.lindqvist: hey becca! quick sync on q4 + a couple of things from my side. how's the new spa order flow holding up?
+[9/29/2026 2:47 PM] becca.lund: morning tom. it's been live since sept 2. mostly good, a few edge cases w/ business accounts. call volume is tracking ~8,900/mo, up 6% from aug.
+[9/29/2026 2:48 PM] becca.lund: staffing note: we're down two reps on the overnight desk until mid-oct, so the voice agent is catching more than usual after 10pm.
+[9/29/2026 2:50 PM] tom.lindqvist: got it. one thing i want to flag before it gets lost: when the ai voice agent hands a caller to a live agent, the stuff it collected doesn't show up for the rep. so the caller starts over from scratch.
+[9/29/2026 2:51 PM] becca.lund: yes. saw it twice last week. caller gave their acct number and address to the agent, then the rep asked for both again. :facepalm:
+    ↳ [9/29/2026 2:52 PM] tom.lindqvist: how often would you say? daily, or more like a few a week?
+    ↳ [9/29/2026 2:53 PM] becca.lund: a few a week right now, but it'll bite harder once the overnight crew is back and we're routing more xfers.
+    ↳ [9/29/2026 2:55 PM] tom.lindqvist: ok. i'm going to pull some example calls and get this in front of our product team. can you send me two or three call ids where it happened?
+    ↳ [9/29/2026 2:56 PM] becca.lund: yep, i'll dig them out this afternoon. probably easier if i just paste them here.
+[9/29/2026 2:58 PM] tom.lindqvist: perfect. separate thing: i noticed the google ads conversion import ran clean for sept. marketo sync looks fine too, no errors on our end.
+[9/29/2026 2:59 PM] becca.lund: good to hear. nothing on our side either.
+[9/29/2026 3:01 PM] tom.lindqvist: cool. can we do a 30-min working session next tues or weds to walk through the xfer flow? i'll bring what i find.
+[9/29/2026 3:02 PM] becca.lund: tues works. 10am ct?
+[9/29/2026 3:03 PM] tom.lindqvist: 10am ct = 8am my time, fine. i'll send an invite. oh & fyi i'm out fri for a school thing, back monday.
+[9/29/2026 3:05 PM] becca.lund: no worries. also random: did you see the northern lights forecast for thursday? might actually be visible this far south.
+[9/29/2026 3:06 PM] tom.lindqvist: i did! might drive out past the edge of town if it clears up. :eyes:
+[9/29/2026 3:07 PM] becca.lund: worth it. ok sending those call ids in a bit.

@@ -1,0 +1,193 @@
+WEBVTT
+
+1
+00:00:03.533 --> 00:00:10.348
+Marcus Bell: Hey Ashley, how's it going? Sorry, I think I'm... there we go. Can you hear me okay?
+
+2
+00:00:10.756 --> 00:00:18.246
+Ashley Moore: Hey Marcus. Yeah, loud and clear. I'm in the truck today, so if it sounds weird it's just the road.
+
+3
+00:00:19.280 --> 00:00:23.968
+Marcus Bell: No worries. Are you driving? We can push this if that's easier.
+
+4
+00:00:25.265 --> 00:00:31.804
+Ashley Moore: No no, I'm parked. Just finished dropping flyers at the Durham office. It's It's fine.
+
+5
+00:00:32.641 --> 00:00:40.493
+Marcus Bell: Okay good. How's October treating you? I mean, I saw your call volume ticked up a bit versus September.
+
+6
+00:00:41.664 --> 00:00:54.289
+Ashley Moore: Yeah, we're up, um... I want to say 11 percent. Fall is always busy for us, people want the lawn treatments before winter and then the pest side picks up when everything comes inside.
+
+7
+00:00:55.334 --> 00:01:03.830
+Marcus Bell: Makes sense. Anything weird in the data on your end? I noticed the Raleigh number had a couple of quiet days last week.
+
+8
+00:01:04.155 --> 00:01:14.939
+Ashley Moore: Uh, Oh, um, that was just Darnell out sick and then, you know, we had two techs at that training in Charlotte, so the routing was a little thin Tuesday and Wednesday.
+
+9
+00:01:14.939 --> 00:01:16.287
+Ashley Moore: Back to normal now.
+
+10
+00:01:17.701 --> 00:01:24.797
+Marcus Bell: Got it. Speaking of which, I wanted to check in on a couple of things before your campaign review next month.
+
+11
+00:01:24.797 --> 00:01:26.824
+Marcus Bell: How's the Google Ads side looking?
+
+12
+00:01:28.028 --> 00:01:32.276
+Ashley Moore: It's fine. Conversions are flowing. Nothing's broken, which is nice for once.
+
+13
+00:01:33.297 --> 00:01:35.775
+Marcus Bell: Good. So what's on your mind?
+
+14
+00:01:37.215 --> 00:01:46.646
+Ashley Moore: Two things. Um, the first one, honestly, is that I keep getting emails from a CallRail rep. Like, four in the last two weeks.
+
+15
+00:01:46.646 --> 00:02:03.543
+Ashley Moore: And the pitch is always the same, same-day conversion sync to Google Ads. They're saying we're losing bidding time, that if a call comes in at 2pm the conversion doesn't hit Ads until the next day so we're basically bidding on yesterday's information.
+
+16
+00:02:04.856 --> 00:02:09.080
+Marcus Bell: Okay. And is that... are they quoting you anything specific?
+
+17
+00:02:09.758 --> 00:02:18.243
+Ashley Moore: They came in about 20 percent under our current spend. Which, you know, I'm not going to pretend that doesn't get my attention.
+
+18
+00:02:18.243 --> 00:02:24.514
+Ashley Moore: Colby, our owner, he forwards me their emails now. He doesn't even say anything, just forwards them.
+
+19
+00:02:25.008 --> 00:02:34.122
+Marcus Bell: That's fair. I'd rather hear it from you than find out later. Can you forward me the last one or two?
+
+20
+00:02:34.122 --> 00:02:52.784
+Marcus Bell: I'm not going to promise anything on pricing in this call, but I want to make sure whoever needs to see it does, and I can at least get you a clear answer on what the sync timing actually is on our side.
+
+21
+00:02:53.498 --> 00:03:04.981
+Ashley Moore: Yeah, I'll send them over. It's not like we're unhappy, it's just... you know how it it is. Um, when um, the owner forwards you an email he's asking a question.
+
+22
+00:03:05.394 --> 00:03:09.807
+Marcus Bell: Totally. And you own Google Ads in-house, right? Nobody else touches it?
+
+23
+00:03:10.528 --> 00:03:13.943
+Ashley Moore: Just me. Which is the other thing, actually.
+
+24
+00:03:14.510 --> 00:03:15.310
+Marcus Bell: Go ahead.
+
+25
+00:03:15.816 --> 00:03:31.856
+Ashley Moore: So the spam flagging in Signal AI. It's marking real customers as spam. I was pulling the October numbers Monday and we're down, and I'm sitting there thinking, we are not down, the phones have not stopped ringing.
+
+26
+00:03:31.856 --> 00:03:41.142
+Ashley Moore: So So I start reading transcripts. And there's this one, Saturday morning, 7:40. Caller says the street address, that's it. Eleven seconds.
+
+27
+00:03:41.142 --> 00:03:49.161
+Ashley Moore: Flagged as spam. That's a real person, Marcus. That's somebody standing in their yard looking at the wasp nest.
+
+28
+00:03:49.634 --> 00:03:54.894
+Marcus Bell: Okay. So it's the short ones where they just give you the address.
+
+29
+00:03:56.212 --> 00:04:08.956
+Ashley Moore: That's the pattern I'm seeing, yeah. Short calls, weekend, after hours, caller uh, gives an address and hangs up. The The system seems to think it's a robocall or a survey or something.
+
+30
+00:04:08.956 --> 00:04:17.838
+Ashley Moore: And it's not ten calls, it's more like 30 or 40 this month across the six locations, and those just vanish from reporting.
+
+31
+00:04:17.838 --> 00:04:25.561
+Ashley Moore: So my cost per lead looks worse than it is and I look like I don't know what I'm doing.
+
+32
+00:04:26.301 --> 00:04:30.614
+Marcus Bell: How are you catching them? Are you reading through transcripts one by one?
+
+33
+00:04:31.571 --> 00:04:41.070
+Ashley Moore: I filtered by spam and by call duration under 30 seconds, and then just, so, yeah, read them. It took me most of Monday afternoon.
+
+34
+00:04:41.070 --> 00:04:49.049
+Ashley Moore: I only found it because a customer called back Tuesday and was annoyed nobody had followed up on her Saturday message.
+
+35
+00:04:50.228 --> 00:04:57.782
+Marcus Bell: Okay. I want to get this in front of the right folks. Can you send me three or four call IDs?
+
+36
+00:04:57.782 --> 00:05:03.537
+Marcus Bell: The weekend ones especially, and the one where she called back, if you have it it.
+
+37
+00:05:04.858 --> 00:05:10.981
+Ashley Moore: I can do like, that today. I already have a little list in a spreadsheet.
+
+38
+00:05:12.162 --> 00:05:20.456
+Marcus Bell: Perfect. I don't have an answer for you on this call, and I'm not going to guess at why it's happening.
+
+39
+00:05:20.456 --> 00:05:28.749
+Marcus Bell: I'll take the examples, get them to the team, and come back to you with what they say and a timeline.
+
+40
+00:05:29.975 --> 00:05:34.239
+Ashley Moore: That's all I need. Um, I just don't want it to sit.
+
+41
+00:05:34.516 --> 00:05:38.237
+Marcus Bell: It won't. Anything else, or is that the list?
+
+42
+00:05:38.456 --> 00:05:46.162
+Ashley Moore: That's the list. Everything else is quiet. Numbers are tracking right, the campaigns are set up the way we talked about in August.
+
+43
+00:05:46.521 --> 00:05:56.183
+Marcus Bell: Good. One logistics thing, your campaign review is the first week of November, I'm thinking Tuesday the 3rd. Does 2pm work, or is that school pickup?
+
+44
+00:05:57.247 --> 00:06:02.592
+Ashley Moore: Ha, uh, 2pm is fine, pickup's at 3:15. Tuesday the 3rd, put it on the calendar.
+
+45
+00:06:03.259 --> 00:06:10.433
+Marcus Bell: Done. And I'll send you a note after this with the call ID format so you know exactly what to pull.
+
+46
+00:06:11.501 --> 00:06:22.065
+Ashley Moore: Great. Hey, I'm going to run, I've got a tech waiting on me about a truck. Thanks for listening on the spam thing, seriously.
+
+47
+00:06:23.553 --> 00:06:28.408
+Marcus Bell: Of course. Send those over when you get a chance. Talk soon, Ashley.
+
+48
+00:06:29.534 --> 00:06:30.900
+Ashley Moore: Will do. Bye Marcus.

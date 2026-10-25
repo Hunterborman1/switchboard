@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_018",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "The Salesforce integration stops writing call data to custom objects when fields or picklist values change.",
+      "quote": "Last month someone added a new field and a couple new picklist values, and the Invoca sync just stopped writing to that object.",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "quality_management",
+      "severity": "medium",
+      "summary": "Customers want to define their own QM scorecard criteria (exact disclosures, call-type-specific scoring, weighting).",
+      "quote": "We want to weight the criteria differently for new versus tenured agents.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

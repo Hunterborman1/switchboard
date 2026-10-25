@@ -1,0 +1,30 @@
+{
+  "fileId": "file_cedarridge_phi_email",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Daily summary email includes patient full name and DOB despite PHI redaction being enabled.",
+      "quote": "The daily summary email is including the patient's full name and date of birth, even though we have PHI redaction turned on.",
+      "owner": "ppl_omar"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "medium",
+      "summary": "Wants summaries that omit patient identifiers entirely (new vs existing patient only).",
+      "quote": "Could the summaries for our offices leave out patient identifiers entirely and just say new patient or existing patient?",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": [
+    "Daniel Okoro",
+    "07/22/1991",
+    "208-555-0193",
+    "1450 W Hillcrest Dr",
+    "BCI-55821930"
+  ]
+}

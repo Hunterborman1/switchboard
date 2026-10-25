@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:07.079 --> 00:00:10.312
+Tom Lindqvist: Afternoon, Dale. Afternoon, Ryan. How's Sioux Falls treating you?
+
+2
+00:00:10.796 --> 00:00:15.145
+Dale Henderson: Cold for October, but we're surviving. Good to hear from you, Tom.
+
+3
+00:00:16.175 --> 00:00:18.131
+Ryan Fischer: Yeah, we're good. Busy week.
+
+4
+00:00:19.033 --> 00:00:23.588
+Tom Lindqvist: Let's start with how things are running. Anything unusual since we last talked?
+
+5
+00:00:25.010 --> 00:00:33.708
+Dale Henderson: Mostly quiet. Call volume's around 6,200 a month across the five states, a little up from August because of the storm season.
+
+6
+00:00:34.227 --> 00:00:41.455
+Ryan Fischer: The AI Voice Agent's been picking up the outage calls fine. People calling about downed lines get routed quick.
+
+7
+00:00:42.698 --> 00:00:46.150
+Tom Lindqvist: Good. And the messaging agent? Still doing the follow-ups?
+
+8
+00:00:46.942 --> 00:00:53.913
+Dale Henderson: Yeah, it sends the confirmation texts after the voice agent transfers. No complaints from the field techs.
+
+9
+00:00:55.221 --> 00:00:58.201
+Tom Lindqvist: Nice. How's the new order flow holding up?
+
+10
+00:00:59.643 --> 00:01:09.322
+Ryan Fischer: The single-page app went live in September. Took a couple weeks to settle, but the DNI numbers are tracking right and the Google Ads conversions are landing.
+
+11
+00:01:10.678 --> 00:01:14.371
+Tom Lindqvist: Any issues with the tag firing on the SPA?
+
+12
+00:01:15.083 --> 00:01:20.799
+Ryan Fischer: Had to tweak the history listener once, but that's on our side. It's fine now.
+
+13
+00:01:21.735 --> 00:01:28.726
+Dale Henderson: One thing, Tom. Now that we're pulling more data, the manual CSV exports are getting painful.
+
+14
+00:01:29.112 --> 00:01:29.963
+Tom Lindqvist: Go on.
+
+15
+00:01:31.272 --> 00:01:42.098
+Dale Henderson: Our marketing team wants the call data in Looker. Right now I'm exporting a CSV every Monday and dropping it in a shared drive, then someone loads it.
+
+16
+00:01:42.098 --> 00:01:44.031
+Dale Henderson: It's a whole afternoon gone.
+
+17
+00:01:44.430 --> 00:01:49.057
+Ryan Fischer: And the numbers are stale by the time anyone looks at them.
+
+18
+00:01:50.260 --> 00:01:58.485
+Dale Henderson: Right. What we'd really want is a native Looker connection so the dashboards update on a schedule instead of me babysitting files.
+
+19
+00:01:59.800 --> 00:02:04.415
+Tom Lindqvist: So the ask is a direct Looker connection, not just the export?
+
+20
+00:02:05.008 --> 00:02:11.302
+Dale Henderson: Yeah. Something that pushes to Looker, or honestly Sheets or a BI tool, on a set schedule.
+
+21
+00:02:12.031 --> 00:02:14.724
+Tom Lindqvist: How often would you want it refreshed?
+
+22
+00:02:16.222 --> 00:02:19.760
+Dale Henderson: Daily would be plenty. Weekly at the worst.
+
+23
+00:02:20.857 --> 00:02:29.470
+Tom Lindqvist: Got it. Let me write that up and take it to the product team. I can't promise anything, but I'll get it in front of them.
+
+24
+00:02:29.868 --> 00:02:30.668
+Dale Henderson: Appreciate it.
+
+25
+00:02:31.421 --> 00:02:34.194
+Tom Lindqvist: Anything else on the platform you're worried about?
+
+26
+00:02:35.499 --> 00:02:39.006
+Dale Henderson: No, everything else is running the way it should.
+
+27
+00:02:39.466 --> 00:02:42.340
+Ryan Fischer: Yeah, tracking and the agents are solid.
+
+28
+00:02:43.747 --> 00:02:46.189
+Tom Lindqvist: Good. How's the team holding up otherwise?
+
+29
+00:02:47.620 --> 00:02:53.583
+Dale Henderson: We lost a support person last month, so we're down to eight on the phones. Hiring, but slowly.
+
+30
+00:02:54.042 --> 00:02:57.504
+Tom Lindqvist: That's tough. Does it affect coverage on the outage line?
+
+31
+00:02:58.170 --> 00:03:03.893
+Dale Henderson: A little, but the voice agent takes the first wave, so we manage.
+
+32
+00:03:05.170 --> 00:03:13.973
+Tom Lindqvist: Okay. Should we do the next check-in in six weeks? I can send an invite for the week of November 16.
+
+33
+00:03:15.410 --> 00:03:17.467
+Dale Henderson: That works. Send it over.
+
+34
+00:03:17.849 --> 00:03:22.946
+Tom Lindqvist: Will do. And I'll follow up on the Looker ask once I hear back.
+
+35
+00:03:24.023 --> 00:03:24.823
+Ryan Fischer: Thanks, Tom.
+
+36
+00:03:25.329 --> 00:03:26.747
+Tom Lindqvist: Thanks, both. Talk soon.

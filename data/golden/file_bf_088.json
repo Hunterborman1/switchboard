@@ -1,0 +1,24 @@
+{
+  "fileId": "file_bf_088",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "praise",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "PreSense routing and context help agents close more calls from digital shoppers.",
+      "quote": "They like walking in with the pages the caller looked at, especially on purchase calls where the borrower has been on three or four lender sites.",
+      "owner": "ppl_elena"
+    },
+    {
+      "type": "feature_request",
+      "productArea": "signal_ai",
+      "severity": "high",
+      "summary": "Regulated customers want configurable redaction of identifiers in transcripts and summaries, with role-based access and audit.",
+      "quote": "An audit log of who viewed a transcript. That's the piece that makes the rest of it defensible in an exam.",
+      "owner": "ppl_omar"
+    }
+  ],
+  "phiTokens": []
+}

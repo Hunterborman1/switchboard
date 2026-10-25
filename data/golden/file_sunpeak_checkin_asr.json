@@ -1,0 +1,32 @@
+{
+  "fileId": "file_sunpeak_checkin_asr",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "integrations",
+      "severity": "high",
+      "summary": "Google Ads conversions arrive about two days late; Smart Bidding is effectively guessing.",
+      "quote": "our google adds conversions are showing up like two days late and smart bidding is basically guessing",
+      "owner": "ppl_mei"
+    },
+    {
+      "type": "bug",
+      "productArea": "ai_agents",
+      "severity": "medium",
+      "summary": "Voice agent books the consult then transfers to a closer with zero context.",
+      "quote": "the voice agent books the consult and then transfers to my closer with zero context so they're starting cold",
+      "owner": "ppl_alex"
+    },
+    {
+      "type": "competitor_mention",
+      "productArea": "integrations",
+      "severity": "medium",
+      "summary": "Sarcastic: CallRail keeps claiming same-day conversion sync.",
+      "quote": "call rail keeps telling me they do same-day conversion sync which great cool, love that for them",
+      "owner": "ppl_jordan"
+    }
+  ],
+  "phiTokens": []
+}

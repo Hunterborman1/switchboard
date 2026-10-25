@@ -1,0 +1,16 @@
+{
+  "fileId": "file_bf_119",
+  "expectActionable": true,
+  "expectInjectionFlag": false,
+  "insights": [
+    {
+      "type": "bug",
+      "productArea": "presense",
+      "severity": "medium",
+      "summary": "When Genesys transfers a call between queues or agents, the PreSense screen pop arrives blank for the receiving agent.",
+      "quote": "when genesys xfers a call btwn queues or agents, the screen pop lands blank for the agent picking it up second",
+      "owner": "ppl_lena"
+    }
+  ],
+  "phiTokens": []
+}

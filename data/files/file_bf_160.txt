@@ -1,0 +1,124 @@
+auto-transcript | rec_20260918_prairielink_raw | duration 00:05:37 | speakers detected: 3
+
+Speaker 1  00:00:05
+Morning both How's Sioux Falls treating you? Still smoky up there from I mean the fires out west? Morning Tom.
+
+Speaker 2  00:00:13
+um no, uh, it cleared up tuesday. we had that weird orange sky for like two days and then [inaudible]
+
+Speaker 3  00:00:22
+it smelled like a campfire inside the building. anyway we're good uh busy
+
+Speaker 1  00:00:27
+yeah [inaudible] the volume tick up in the account um you're around what thirty-eight hundred calls a month
+
+Speaker 2  00:00:34
+now thirty-six thirty-seven we added the two new markets in nebraska in july so it's creeping uh nice.
+
+Speaker 1  00:00:43
+and the order flow rebuild like that went live when um early september?
+
+Speaker 3  00:00:48
+the ninth. um, single page app um one form no more five-step wizard my team hates me a little less now. [crosstalk]
+
+Speaker 1  00:00:58
+ha. did the tag survive the rebuild okay? i know replatforms can be rough on dynamic number insertion
+
+Speaker 3  00:01:05
+Yeah, that that part was fine. We tested it the week before Attribution looks I mean normal Honestly the whole thing has been quiet which is strange for us
+
+Speaker 1  00:01:17
+quiet is good. anything on the google ads side you want me to look at while i'm in here?
+
+Speaker 3  00:01:26
+No, that's fine Conversions are flowing. [crosstalk]
+
+Speaker 2  00:01:30
+can i jump in on something while we have you? [crosstalk]
+
+Speaker 1  00:01:34
+Like, Please
+
+Speaker 2  00:01:36
+so this is not urgent i want to say that up front uh, but every monday i pull the call report as a csv and then i rebuild the same three tabs in excel, and then i email it to our exec team i mean, it's like an hour, hour and a half. [crosstalk]
+
+Speaker 1  00:01:56
+every monday.
+
+Speaker 2  00:01:59
+every monday and the execs, they don't want a login you know they don't want to click anything they they want it in their inbox monday morning ideally they'd just see it in the tools we already use, you know we have [inaudible] looker instance some of the finance folks live in google sheets so if there was a way to schedule that delivery instead of me hand-carrying it that would give me back most of a day a week okay.
+
+Speaker 1  00:02:31
+so a a scheduled push not a manual export. to looker or sheets or wherever
+
+Speaker 2  00:02:37
+or email whichever i'm not picky i just don't want to be the report
+
+Speaker 1  00:02:43
+got it let me write that that down properly and take it to the product team can you uh send me the three tabs you you know build just so they see the actual shape of it.
+
+Speaker 2  00:02:58
+yeah like, i'll send it this afternoon.
+
+Speaker 3  00:03:01
+while you're writing things down the voice agent handoff that one's actually giving us trouble
+
+Speaker 1  00:03:06
+The transfer to a live agent
+
+Speaker 3  00:03:10
+yeah the agent collects the account number [inaudible] outage address what it's it's for and then it hands off and none of um that shows up on the other side so the caller tells the whole story again to a person. we've had customers mention it. more than a couple.
+
+Speaker 1  00:03:29
+where are they landing which queue? like outage
+
+Speaker 3  00:03:33
+queue mostly that's where the agent does most of its work but i don't think it's just that one.
+
+Speaker 1  00:03:42
+and how long has this been going on?
+
+Speaker 3  00:03:45
+hard to say a few weeks? it built up slowly so nobody flagged it as a thing. but my supervisors tell me the reps have basically stopped looking for the details. they just open the call and start over which, honestly, uh, is worse than the bug the trust is gone
+
+Speaker 2  00:04:08
+yeah, we had one rep tell a so customer 'i know you just said this sorry just walk me through it again.' that's not a great look
+
+Speaker 1  00:04:18
+no it's not can you get me two or three call ids where it happened and roughly when the customer got transferred
+
+Speaker 3  00:04:28
+yeah, i can pull those. probably monday
+
+Speaker 1  00:04:32
+that's fine. i'll open it with support and keep you posted i'm not going to guess at what's happening from here
+
+Speaker 3  00:04:39
+Appreciate it
+
+Speaker 1  00:04:42
+like anything else marketing side marketo, all that
+
+Speaker 3  00:04:45
+fine nothing to report. oh
+
+Speaker 2  00:05:00
+one logistics thing. we're hiring two more care reps in october so we'll probably need seats added i'll email you the names when they clear onboarding.
+
+Speaker 1  00:05:11
+perfect and i'll get you on the calendar for a mid-october check-in. same time?
+
+Speaker 2  00:05:15
+same time works
+
+Speaker 3  00:05:18
+i'll be late i have a budget meeting that morning.
+
+Speaker 1  00:05:23
+noted okay i'll send the invite and the call ids when they come in. thanks, both
+
+Speaker 2  00:05:31
+thanks, tom
+
+Speaker 3  00:05:33
+yep. talk soon

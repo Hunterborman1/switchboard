@@ -1,0 +1,15 @@
+Slack export · #ext-keystone-invoca (Slack Connect: shared with Keystone Mutual)
+Exported 10/5/2026 3:25 PM · 12 messages
+
+[10/5/2026 3:00 PM] rachel.okafor: morning! quick sync notes from our call w/ luis @ keystone. dropping the main thing here so it's not lost
+[10/5/2026 3:01 PM] rachel.okafor: he flagged a presense issue, medium from his side. when genesys xfers a call btwn queues or agents, the screen pop lands blank for the agent picking it up second. so the person who gets it has to ask the caller what they were even looking at. he said it happens on after-hours claims xfers mostly. i asked how often, which queues, whether it's every xfer or just some. he's going to send a few call ids. taking it back to the team, no eta yet.
+    ↳ [10/5/2026 3:04 PM] luis.ortega: yep that's it. second agent gets nothing, just dead air on the panel
+    ↳ [10/5/2026 3:06 PM] rachel.okafor: got it. any pattern on which queues? or is it all of them
+    ↳ [10/5/2026 3:08 PM] luis.ortega: seems worse on the overnight ones. i'll pull a couple ids today
+[10/5/2026 3:11 PM] rachel.okafor: :+1: thx. other stuff from the call: volumes are holding around 11k calls/mo on the claims line, auto is up a bit w/ the storm stuff last month. nothing wild.
+[10/5/2026 3:13 PM] rachel.okafor: staffing note, they're adding ~15 licensed aegnts to the genesys floor in nov so expect a bump in qm scoring volume. luis said his supe is handling the seat adds, i'll confirm counts w/ him next week.
+[10/5/2026 3:15 PM] rachel.okafor: voice agent pilot on after-hours claims intake is still going. he didn't raise anything on it, said it's fine for now. i didn't push.
+[10/5/2026 3:17 PM] rachel.okafor: tangent: he asked if i'd been to the new coffee place on high st, apparently it's good. told him i'm still a dutch bros person :sweat_smile:
+[10/5/2026 3:19 PM] rachel.okafor: next check-in i put on the calendar for mon oct 19 at 2pm et. heads up i told him 3pm on the call, corrected after. so if he references 3 that's my fault
+[10/5/2026 3:20 PM] rachel.okafor: fyi calendar invite is here: https://calendar.example/keystone-checkin-oct19
+[10/5/2026 3:22 PM] rachel.okafor: that's it for now. will update once i have the call ids :eyes:

@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:06.702 --> 00:00:13.742
+Rachel Okafor: Hey Patricia, hey Luis. How's the weather up there today? I heard Columbus got some rain.
+
+2
+00:00:15.132 --> 00:00:21.417
+Luis Ortega: Oh, yeah. I mean, Drizzled all morning. My kid had soccer practice and the field was just mud.
+
+3
+00:00:22.046 --> 00:00:31.935
+Patricia Hale: I was in Cleveland for a broker event, so I missed the mud. But I'm glad we're all on. Rachel, thanks for making the time.
+
+4
+00:00:33.046 --> 00:00:43.117
+Rachel Okafor: Of course. I know a 2 PM Wednesday isn't always easy. Luis, did your team get the new Genesys screen pop layout rolled out?
+
+5
+00:00:44.109 --> 00:00:52.303
+Luis Ortega: We did. Took a little getting used to, but the agents like seeing the page history before they answer.
+
+6
+00:00:53.686 --> 00:00:56.702
+Rachel Okafor: Good to hear. So, Patricia, you flagged something?
+
+7
+00:00:57.095 --> 00:01:03.905
+Patricia Hale: I did. We've got a problem with the spam flagging. I'll be blunt: it's making our after-hours ads look terrible.
+
+8
+00:01:04.512 --> 00:01:06.092
+Rachel Okafor: Okay, tell me more.
+
+9
+00:01:07.008 --> 00:01:16.919
+Patricia Hale: Our after-hours claims line is getting tagged as spam by Signal AI. Real customers. People who call at 9 PM after a fender bender.
+
+10
+00:01:16.919 --> 00:01:25.178
+Patricia Hale: And once they're tagged, they drop out of campaign reporting completely, so our Google Ads spend looks like it's underperforming.
+
+11
+00:01:25.478 --> 00:01:32.784
+Rachel Okafor: You know, so the calls are showing as spam, and that's removing them from the conversion reporting?
+
+12
+00:01:33.942 --> 00:01:46.341
+Patricia Hale: Exactly. When a call gets the spam tag, it's like it never happened for reporting purposes. Our weekend campaign numbers look awful, but we know people are like, calling.
+
+13
+00:01:46.739 --> 00:01:57.540
+Luis Ortega: And it's not just reporting. Those calls hit my queue too. Agents are spending time on things they think are junk, but then it turns out it's a real claim.
+
+14
+00:01:57.540 --> 00:01:58.980
+Luis Ortega: We can't have that.
+
+15
+00:01:59.901 --> 00:02:11.630
+Rachel Okafor: Got it. Let me ask a couple things. Do you have examples with call IDs and timestamps? And is this happening mostly outside business hours, or during the week too?
+
+16
+00:02:12.626 --> 00:02:20.023
+Luis Ortega: Mostly nights and weekends. I pulled three from Saturday. Two were new claims, one was a policyholder checking on a rental car.
+
+17
+00:02:20.393 --> 00:02:28.517
+Patricia Hale: And from my side, I can see the campaign that's driving those calls. Our after-hours home campaign. It's the one taking the hit.
+
+18
+00:02:29.812 --> 00:02:39.205
+Rachel Okafor: I'll take that back to our signals team. I can't fix it from here, but I'll get it in front of the right people.
+
+19
+00:02:39.205 --> 00:02:42.728
+Rachel Okafor: Can you send me those call IDs after this?
+
+20
+00:02:43.340 --> 00:02:48.978
+Luis Ortega: Yeah, I'll have my admin pull a report. Give me until end of day tomorrow.
+
+21
+00:02:50.375 --> 00:02:59.356
+Rachel Okafor: Perfect. Now, other than that, how are things? I know you're still in the middle of the AI Voice Agent pilot.
+
+22
+00:03:00.172 --> 00:03:06.986
+Luis Ortega: Pilot's going fine. We're only running it after hours right now, maybe forty calls a night. Still watching it.
+
+23
+00:03:07.959 --> 00:03:15.989
+Patricia Hale: We're at about 1,200 calls a day across the contact center, so the pilot is a small slice. But the early numbers are okay.
+
+24
+00:03:16.841 --> 00:03:20.730
+Rachel Okafor: Good. And the QM rollout? I saw you added seats.
+
+25
+00:03:21.360 --> 00:03:28.809
+Luis Ortega: We're at 420 now. My supervisor team is finally using the scorecards. Took some training, but they're on board.
+
+26
+00:03:29.480 --> 00:03:36.792
+Rachel Okafor: That's great. Like, I'll check back in November on the scorecards and the spam issue. Uh, Anything else on your list?
+
+27
+00:03:37.588 --> 00:03:41.105
+Patricia Hale: No, that's the big one. The rest is fine.
+
+28
+00:03:41.536 --> 00:03:50.946
+Luis Ortega: Oh, one scheduling thing. We're doing a hiring push for the contact center next month. Ten new agents. Can we get a refresher on Invoca basics for them?
+
+29
+00:03:51.368 --> 00:03:55.949
+Rachel Okafor: Absolutely. I'll send you our standard onboarding deck. It's about twenty minutes.
+
+30
+00:03:56.586 --> 00:04:00.683
+Patricia Hale: That would um, help. So, Luis, make sure they actually watch it.
+
+31
+00:04:01.163 --> 00:04:04.261
+Luis Ortega: I'll try. You know how new hires are.
+
+32
+00:04:05.269 --> 00:04:16.834
+Rachel Okafor: Okay, so action items: you send me call IDs by tomorrow EOD, I mean, I take the spam tagging to our signals team, and I'll follow up early next week.
+
+33
+00:04:16.834 --> 00:04:17.605
+Rachel Okafor: Sound good?
+
+34
+00:04:18.059 --> 00:04:20.551
+Patricia Hale: Sounds good. I mean, Thanks, Rachel.
+
+35
+00:04:21.186 --> 00:04:22.593
+Luis Ortega: Appreciate it. Talk soon.
+
+36
+00:04:23.729 --> 00:04:26.776
+Rachel Okafor: Thanks, both. Enjoy the rest of your week.
