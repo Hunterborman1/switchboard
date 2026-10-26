@@ -3,11 +3,13 @@ import { currentStep, expectStep, go, guide } from './helpers';
 
 /** Every narrative scene: the route part, its step, the scene it draws, where Next goes, and the parts that must be on screen without a click. */
 const SCENES: { part: string; step: string; scene: string; next: string; parts: string[] }[] = [
-  { part: 'signal', step: 'signal', scene: 'signal', next: 'real', parts: ['signal-call', 'signal-lost', 'signal-becomes'] },
-  { part: 'real', step: 'real', scene: 'real', next: 'why', parts: ['real-built', 'real-simulated', 'real-repo'] },
-  { part: 'why', step: 'why', scene: 'why', next: 'call.platform', parts: ['why-options', 'why-build'] },
+  { part: 'signal', step: 'signal', scene: 'signal', next: 'jobs', parts: ['signal-call', 'signal-lost', 'signal-becomes'] },
+  { part: 'jobs', step: 'jobs', scene: 'jobs', next: 'built', parts: ['jobs-people', 'jobs-today', 'jobs-tomorrow'] },
+  { part: 'built', step: 'built', scene: 'built', next: 'call.platform', parts: ['built-repo', 'built-options', 'built-how', 'built-real', 'built-simulated'] },
   { part: 'call', step: 'call.platform', scene: 'platform', next: 'call.intro', parts: [] },
-  { part: 'production', step: 'production', scene: 'production', next: 'scorecard', parts: ['production-rollout', 'production-horizon', 'production-stack'] },
+  { part: 'operate', step: 'operate.hood', scene: 'hood', next: 'operate.metrics', parts: ['hood-prompts', 'hood-errors', 'hood-data'] },
+  { part: 'trust', step: 'trust', scene: 'trust', next: 'future', parts: ['trust-rollout', 'trust-helpful', 'trust-reasons'] },
+  { part: 'future', step: 'future', scene: 'future', next: 'future.scorecard', parts: ['future-roadmap', 'future-change', 'future-stack'] },
 ];
 
 /** Fully drawn: the entrance has finished on its own (opacity 1), with no click or key press. */
@@ -64,46 +66,46 @@ test.describe('narrative scenes', () => {
   });
 
   test('scenes move with the arrow keys, not with Space or Enter on the page', async ({ page }) => {
-    await go(page, '/walkthrough/real');
-    await expect(page.getByTestId('scene-real')).toBeVisible();
-    await expectStep(page, 'real');
+    await go(page, '/walkthrough/signal');
+    await expect(page.getByTestId('scene-signal')).toBeVisible();
+    await expectStep(page, 'signal');
     await page.locator('body').press('Space');
     await page.locator('body').press('Enter');
     await page.waitForTimeout(300);
-    expect(await currentStep(page)).toBe('real');
+    expect(await currentStep(page)).toBe('signal');
     await page.keyboard.press('ArrowRight');
-    await expectStep(page, 'why');
+    await expectStep(page, 'jobs');
     await page.keyboard.press('ArrowLeft');
-    await expectStep(page, 'real');
+    await expectStep(page, 'signal');
   });
 
-  test('what’s real: the source link sits under the headline, next to the byline', async ({ page }) => {
-    await go(page, '/walkthrough/real');
-    const head = page.locator('.n-head', { has: page.getByRole('heading', { name: /Built from scratch in 48.hours/ }) });
-    await expect(head.getByRole('heading', { name: /Built from scratch in 48.hours/ })).toBeVisible();
-    await expect(head).toContainText('By Hunter Borman');
-    const repo = head.getByTestId('real-repo');
+  test('what I built: the source link sits under the headline, next to the byline', async ({ page }) => {
+    await go(page, '/walkthrough/built');
+    const head = page.locator('.n-head', { has: page.getByRole('heading', { name: /What I built, and why/ }) });
+    await expect(head.getByRole('heading', { name: /What I built, and why/ })).toBeVisible();
+    await expect(head).toContainText('Built from scratch in 48 hours by Hunter Borman');
+    const repo = head.getByTestId('built-repo');
     await expect(repo).toBeVisible();
     await expect(repo).toHaveAttribute('href', 'https://github.com/Hunterborman1/switchboard');
     await expect(repo).toHaveAttribute('target', '_blank');
     await expect(repo).toContainText('github.com/Hunterborman1/switchboard');
-    const built = page.getByTestId('real-built');
-    await expect(built).toContainText('Triage by the decision model');
+    const built = page.getByTestId('built-real');
+    await expect(built).toContainText('Triage and a second opinion');
     await expect(built).toContainText('Evals with a promotion gate');
-    const sim = page.getByTestId('real-simulated');
+    const sim = page.getByTestId('built-simulated');
     await expect(sim).toContainText(/Connections to Slack, Jira/);
     await expect(sim).toContainText('a demo must never message real people');
-    await expect(sim).toContainText('RFP Responder');
+    await expect(sim).toContainText('second agent');
   });
 
-  test('why this option: the three verdicts and how it was built, together', async ({ page }) => {
-    await go(page, '/walkthrough/why');
-    const options = page.getByTestId('why-options');
+  test('what I built: the three verdicts and how it was built, together', async ({ page }) => {
+    await go(page, '/walkthrough/built');
+    const options = page.getByTestId('built-options');
     await expect(options).toContainText('RFP Responder');
     await expect(options).toContainText('Churn Predictor');
     await expect(options).toContainText('Chosen');
-    await expect(page.getByTestId('why-build')).toContainText('Raw TypeScript, not n8n, Gumloop or Zapier');
-    await expect(page.getByTestId('why-build')).toContainText('One Cloudflare Worker');
+    await expect(page.getByTestId('built-how')).toContainText('TypeScript, not n8n, Gumloop or Zapier');
+    await expect(page.getByTestId('built-how')).toContainText('One Cloudflare Worker, for now');
   });
 
   test('every call is a signal: the call, where it gets lost (an assumption), and what it becomes', async ({ page }) => {
@@ -125,7 +127,7 @@ test.describe('narrative scenes', () => {
       w.__rail = document.querySelector('[data-testid="chapter-rail"]');
       w.__bottom = document.querySelector('.n-bottombar');
     });
-    for (const next of ['real', 'why']) {
+    for (const next of ['jobs', 'built']) {
       await page.getByTestId('scene-next').click();
       await expectStep(page, next);
     }
@@ -134,11 +136,14 @@ test.describe('narrative scenes', () => {
       return w.__bar === document.querySelector('.n-topbar') && w.__rail === document.querySelector('[data-testid="chapter-rail"]') && w.__bottom === document.querySelector('.n-bottombar');
     });
     expect(same).toBe(true);
-    await expect(page.locator('.n-topbar__chapter')).toHaveText('Why this option');
+    await expect(page.locator('.n-topbar__chapter')).toHaveText('What I built, and why');
   });
 
   test('scorecard unlocks free explore, with the Guide in explore mode', async ({ page }) => {
-    await go(page, '/walkthrough/scorecard');
+    await go(page, '/walkthrough/future');
+    await expectStep(page, 'future');
+    await page.getByTestId('scene-next').click();
+    await expectStep(page, 'future.scorecard');
     await expect(page.getByTestId('scorecard')).toBeVisible();
     await page.getByTestId('explore-freely').click();
     await expect(page).toHaveURL(/\/app\/new/);

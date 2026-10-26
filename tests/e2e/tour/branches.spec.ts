@@ -35,8 +35,8 @@ test('main branch end to end: every product chapter, real actions where the step
   await advanceUntil(page, /^operate\.promote$/);
   await page.locator('[data-tour="evals.promote"]').first().click();
   await expectStep(page, 'operate.gate', 30_000);
-  await advanceUntil(page, /^production$/);
-  await expect(page).toHaveURL(/\/walkthrough\/production/);
+  await advanceUntil(page, /^trust$/);
+  await expect(page).toHaveURL(/\/walkthrough\/trust/);
 });
 
 const BRANCHES: { path: string; expectSeen?: string; expectNotSeen?: string }[] = [
