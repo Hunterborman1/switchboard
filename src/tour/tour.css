@@ -798,3 +798,13 @@ html[data-sl-guide] .ds-drawer {
 html[data-sl-guide='dock'] .ds-sidebar {
   height: calc(100dvh - var(--sl-guide-h, 0px));
 }
+/* The menu loses the Guide's height, so it tightens slightly to still fit whole on a 900px screen. */
+html[data-sl-guide='dock'] .ds-nav-item {
+  height: 30px;
+}
+html[data-sl-guide='dock'] .ds-nav-group {
+  padding-top: var(--space-3);
+}
+html[data-sl-guide='dock'] .ds-nav-group:first-child {
+  padding-top: 4px;
+}
