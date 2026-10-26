@@ -16,7 +16,7 @@ import type { LogsPage, RegistryRow, YourLastRun } from '../../worker/platform/t
 import { ApiError, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { IconTrace } from '../ui/icons';
-import { agentLabel, LoadError, SourceBadge, useOpsTitle } from '../ui/kit';
+import { agentLabel, agentOptions, canOpenAgent, LoadError, SourceBadge, useOpsTitle } from '../ui/kit';
 
 const LEVELS = ['debug', 'info', 'warn', 'error'] as const;
 const LEVEL_LABEL: Record<string, string> = { debug: 'Debug', info: 'Info', warn: 'Warning', error: 'Error' };
@@ -111,6 +111,8 @@ export function Logs() {
   const webForced = !!params.get('traceId') || !!params.get('runId') || params.get('component') === 'api';
   const webOn = webForced || params.get('web') === '1';
   const firstLoad = loading && pages.length === 0;
+  // A trace filter on the simulated agent's lines has no trace page to open.
+  const traceOpens = !rows.length || canOpenAgent(rows[0]!.agentId, reg.data);
 
   const yourLastRun = async () => {
     setLastRun({ state: 'loading' });
@@ -196,7 +198,7 @@ export function Logs() {
               aria-label="Agent"
               value={params.get('agentId') ?? ''}
               onChange={(e) => set('agentId', e.target.value || null)}
-              options={[{ value: '', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source) }))]}
+              options={agentOptions(reg.data)}
               style={{ width: 200 }}
             />
             <Select
@@ -252,7 +254,7 @@ export function Logs() {
           <Button size="sm" variant="ghost" onClick={() => setParams(new URLSearchParams())}>
             Clear all
           </Button>
-          {params.get('traceId') ? (
+          {params.get('traceId') && traceOpens ? (
             <span className="ao-chips__end">
               <ButtonLink to={`/ops/traces/${params.get('traceId')}`} size="sm" variant="primary" icon={<IconTrace size={14} />}>
                 Open trace
@@ -316,50 +318,68 @@ export function Logs() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((l) => (
-                    <tr
-                      key={l.id}
-                      className="is-clickable"
-                      tabIndex={0}
-                      onClick={(e) => {
-                        if ((e.target as HTMLElement).closest('a,button')) return;
-                        setOpen(l);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
-                      }}
-                      aria-label={`${levelLabel(l.level)} ${l.event}: ${rewriteModelIds(l.message)}`}
-                    >
-                      <td className="is-nowrap ds-num" title={f.time(l.at, timezone, true)}>
-                        <span className="ao-hide-sm">{f.day(l.at)}, </span>
-                        {f.clock(l.at, timezone)}
-                      </td>
-                      <td className="is-nowrap">
-                        <LevelBadge level={l.level} />
-                      </td>
-                      <td className="ao-hide-sm is-nowrap">
-                        <span className="ds-table__primary">{names[l.agentId] ?? l.agentId}</span>
-                        <span className="ds-table__secondary">
-                          {AREA_LABEL[l.component] ?? l.component}
-                          {l.source === 'live' ? ', live' : ', simulated'}
-                        </span>
-                      </td>
-                      <td className="ao-hide-sm ao-hide-md is-nowrap">
-                        <span className="ao-mono ds-muted">{l.event}</span>
-                      </td>
-                      <td className="ao-end-sm">
-                        <span className="ao-msg" title={rewriteModelIds(l.message)}>
-                          {rewriteModelIds(l.message)}
-                        </span>
-                      </td>
-                      <td className="ao-hide-sm ao-end-md is-nowrap">
-                        <Link className="ao-mono" to={`/ops/traces/${l.traceId}`} title={`Open trace ${l.traceId}`}>
-                          {l.traceId.slice(0, 8)}
-                        </Link>
-                      </td>
-                      <td className="is-num ao-hide-sm ao-hide-md ds-muted">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
-                    </tr>
-                  ))}
+                  {rows.map((l) => {
+                    // A simulated agent's line is plain: no detail, no trace (see canOpenAgent).
+                    const opens = canOpenAgent(l.agentId, reg.data);
+                    return (
+                      <tr
+                        key={l.id}
+                        data-agent={l.agentId}
+                        data-opens={opens}
+                        className={opens ? 'is-clickable' : undefined}
+                        tabIndex={opens ? 0 : undefined}
+                        onClick={
+                          opens
+                            ? (e) => {
+                                if ((e.target as HTMLElement).closest('a,button')) return;
+                                setOpen(l);
+                              }
+                            : undefined
+                        }
+                        onKeyDown={
+                          opens
+                            ? (e) => {
+                                if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
+                              }
+                            : undefined
+                        }
+                        aria-label={opens ? `${levelLabel(l.level)} ${l.event}: ${rewriteModelIds(l.message)}` : undefined}
+                      >
+                        <td className="is-nowrap ds-num" title={f.time(l.at, timezone, true)}>
+                          <span className="ao-hide-sm">{f.day(l.at)}, </span>
+                          {f.clock(l.at, timezone)}
+                        </td>
+                        <td className="is-nowrap">
+                          <LevelBadge level={l.level} />
+                        </td>
+                        <td className="ao-hide-sm is-nowrap">
+                          <span className="ds-table__primary">{names[l.agentId] ?? l.agentId}</span>
+                          <span className="ds-table__secondary">
+                            {AREA_LABEL[l.component] ?? l.component}
+                            {l.source === 'live' ? ', live' : ', simulated'}
+                          </span>
+                        </td>
+                        <td className="ao-hide-sm ao-hide-md is-nowrap">
+                          <span className="ao-mono ds-muted">{l.event}</span>
+                        </td>
+                        <td className="ao-end-sm">
+                          <span className="ao-msg" title={rewriteModelIds(l.message)}>
+                            {rewriteModelIds(l.message)}
+                          </span>
+                        </td>
+                        <td className="ao-hide-sm ao-end-md is-nowrap">
+                          {opens ? (
+                            <Link className="ao-mono" to={`/ops/traces/${l.traceId}`} title={`Open trace ${l.traceId}`}>
+                              {l.traceId.slice(0, 8)}
+                            </Link>
+                          ) : (
+                            <span className="ao-mono ds-muted">{l.traceId.slice(0, 8)}</span>
+                          )}
+                        </td>
+                        <td className="is-num ao-hide-sm ao-hide-md ds-muted">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </Table>
             </div>

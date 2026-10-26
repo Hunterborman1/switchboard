@@ -3,7 +3,7 @@
  * workflow and its steps, each AI call and delivery), then the correlated log lines.
  */
 import { useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { Badge, Button, ButtonLink, Card, CopyText, EmptyState, Page, PageHeader, Stats, Table, useCrumbs } from '../../ds';
 import { IconFileText } from '../../ds/icons';
 import type { Span } from '../../shared/platform-contracts';
@@ -16,7 +16,7 @@ import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { ChartLegend, ChartSummary } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { LoadError, OpsSkeleton, SourceBadge, useOpsTitle } from '../ui/kit';
+import { canOpenAgent, LoadError, OpsSkeleton, SourceBadge, useOpsTitle } from '../ui/kit';
 import { AREA_LABEL, LevelBadge } from './Logs';
 
 const KINDS = [
@@ -96,9 +96,11 @@ export function Trace() {
   const [sel, setSel] = useState<string | null>(null);
   const built = useMemo(() => buildRows(tr.data?.spans ?? []), [tr.data]);
   const runId = tr.data ? ((tr.data.spans.find((s) => s.attrs.runId)?.attrs.runId as string | undefined) ?? tr.data.logs.find((l) => l.runId)?.runId ?? null) : null;
-  const title = runId ? `Run ${runId}` : 'Trace';
+  // A simulated agent's run has no trace page: its URL goes back to the logs (see canOpenAgent).
+  const locked = !!tr.data?.agentId && !canOpenAgent(tr.data.agentId, reg.data);
+  const title = locked ? null : runId ? `Run ${runId}` : 'Trace';
   useOpsTitle(title);
-  useCrumbs([{ label: title }], [title]);
+  useCrumbs(title ? [{ label: title }] : null, [title]);
 
   if (tr.error && !tr.data)
     return (
@@ -123,6 +125,7 @@ export function Trace() {
     );
   if (!tr.data) return <OpsSkeleton />;
   const d = tr.data;
+  if (locked || !title) return <Navigate to="/ops/logs" replace />;
   const agent = reg.data?.find((r) => r.id === d.agentId);
   const ai = d.spans.filter((s) => s.name.startsWith('ai.'));
   const tokens = ai.reduce((s, x) => s + Number(x.attrs.tokensIn ?? 0) + Number(x.attrs.tokensOut ?? 0), 0);

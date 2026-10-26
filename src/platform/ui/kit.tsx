@@ -5,11 +5,12 @@
  * meaning one hover away; never colour alone.
  */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Avatar, Badge, Card, Meter, Skeleton, Tooltip, type SortDir, type Tone } from '../../ds';
-import { IconArrowDown, IconArrowUp, IconChevronsUpDown } from '../../ds/icons';
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
+import { Avatar, Badge, Card, Meter, Skeleton, Tooltip, type Option, type SortDir, type Tone } from '../../ds';
+import { IconArrowDown, IconArrowUp, IconChevronRight, IconChevronsUpDown } from '../../ds/icons';
 import { InfoTip } from './InfoTip';
 import { SIGNAL_LOOP_AGENT_ID, type AgentRecord, type Alert, type DataSource, type Slo } from '../../shared/platform-contracts';
-import type { ReviewStatus } from '../../worker/platform/types';
+import type { RegistryRow, ReviewStatus } from '../../worker/platform/types';
 import { modelAgentId, modelLabel } from '../../shared/modelLabels';
 import { ErrorState } from '../../app/components/domain';
 
@@ -104,12 +105,55 @@ export function SourceBadge({ source, label, help }: { source: DataSource | 'mix
 
 const AGENT_SRC_HELP: Record<DataSource, string> = {
   live: 'A real agent: its runs in this demo report here live. The six weeks before today are simulated history.',
-  simulated: 'A simulated agent: it, its users and its whole history are made up, to show a second agent held to the same standard.',
+  simulated: 'A simulated agent: it, its users and its whole history are made up, to show a second agent held to the same standard. It is listed for comparison and does not open.',
 };
 
 /** Whether an agent is real or simulated. Rows that carry `source` win; otherwise only Signal Loop is live (the contract). */
 export function agentSource(agentId: string, rows?: { id: string; source: DataSource }[] | null): DataSource {
   return rows?.find((r) => r.id === agentId)?.source ?? (agentId === SIGNAL_LOOP_AGENT_ID ? 'live' : 'simulated');
+}
+
+/**
+ * Only a real agent opens in Agent Ops. A simulated agent is listed for comparison and counts in
+ * every total, but has no page, runbook, trace or filter of its own: it shows as plain text
+ * wherever it appears, and its old URLs fall back to the list page.
+ */
+export function canOpenAgent(agentId: string, rows?: { id: string; source: DataSource }[] | null): boolean {
+  return isOpenable(agentSource(agentId, rows));
+}
+/** The same rule for a row that already carries its agent's source. */
+export const isOpenable = (source: DataSource): boolean => source === 'live';
+
+/**
+ * Last column of an agent table: a quiet chevron on a row that opens the agent's page, nothing
+ * on one that does not, so the difference reads as intended. Decorative; the first cell's link
+ * is what assistive technology uses.
+ */
+export const GoHead = () => <th className="ao-go" aria-hidden="true" />;
+export function GoCell({ opens }: { opens: boolean }) {
+  return (
+    <td className="ao-go" aria-hidden="true">
+      {opens ? <IconChevronRight size={16} /> : null}
+    </td>
+  );
+}
+
+/**
+ * Route guard for pages that take `?agentId=`: a filter naming an agent that cannot open (the
+ * simulated one, or an id not in the registry) drops back to the same page without it, before
+ * the page mounts. Decided from the contract (only Signal Loop is live), so it needs no fetch.
+ */
+export function AgentFilterGuard({ children }: { children: ReactNode }) {
+  const [params] = useSearchParams();
+  const { pathname, hash } = useLocation();
+  const id = params.get('agentId');
+  if (id && id !== 'all' && !canOpenAgent(id)) {
+    const next = new URLSearchParams(params);
+    next.delete('agentId');
+    const qs = next.toString();
+    return <Navigate replace to={{ pathname, search: qs ? `?${qs}` : '', hash }} />;
+  }
+  return <>{children}</>;
 }
 
 /** "Live" for the real agent, "Simulated" for a simulated one; one per agent in a list or header. */
@@ -120,6 +164,11 @@ export function AgentSourceBadge({ source }: { source: DataSource }) {
 /** An agent's name where only text fits (selects, legends, chart tips): a simulated agent says so. */
 export function agentLabel(name: string, source: DataSource): string {
   return source === 'simulated' ? `${name} (simulated)` : name;
+}
+
+/** Options for an agent filter: every agent is listed, and one that cannot open is listed but not selectable. */
+export function agentOptions(rows: RegistryRow[] | null, allValue = ''): Option[] {
+  return [{ value: allValue, label: 'All agents' }, ...(rows ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source), disabled: !isOpenable(r.source) }))];
 }
 
 // ---------------------------------------------------------------- small pieces

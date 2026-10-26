@@ -526,6 +526,27 @@
   color: var(--text-tertiary);
 }
 
+/* A model with its owning agent under it: the agent line wraps so the table fits its card. */
+.ao-model-col .ds-table__secondary {
+  white-space: normal;
+}
+
+/* Chevron column (GoCell): always the last column, so it also ends the row at every width. */
+.ds-table th.ao-go,
+.ds-table td.ao-go {
+  width: 1%;
+  padding-left: var(--space-2);
+  color: var(--text-tertiary);
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.ds-table td.ao-go svg {
+  display: block;
+  margin-left: auto;
+}
+.ds-table tbody tr.is-clickable:hover td.ao-go {
+  color: var(--text-secondary);
+}
+
 /* The cell that ends a row once later columns hide keeps the table's 20px end padding. */
 @media (max-width: 1599px) {
   .ds-table .ao-end-lg {
@@ -554,6 +575,10 @@
 @media (max-width: 760px) {
   .ao-agent-col {
     min-width: 140px;
+  }
+  /* On phones the second line wraps too, so the chevron column fits without a sideways scroll. */
+  .ao-agent-col .ds-table__secondary {
+    white-space: normal;
   }
 }
 
@@ -1475,6 +1500,13 @@
 }
 .ao-mcell[aria-pressed='true'] {
   border-color: var(--text);
+}
+/* The simulated agent's checks: the same verdict, nothing to select. */
+.ao-mcell--static {
+  cursor: default;
+}
+.ao-mcell--static:hover {
+  border-color: transparent;
 }
 .ao-evidence {
   display: flex;

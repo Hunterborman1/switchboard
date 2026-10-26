@@ -29,13 +29,6 @@ test('overview: funnel tile filters the table and syncs to the URL', async ({ pa
   await expect(page).not.toHaveURL(/stage=/);
 });
 
-test('overview: needs-attention items link to their evidence', async ({ page }) => {
-  await open(page, '/ops');
-  await anchor(page, 'ops.overview.attention').getByRole('link', { name: /eval suite/ }).click();
-  await expect(page).toHaveURL(/\/ops\/agents\/agt_rfp_responder#standard/);
-  await expect(anchor(page, 'ops.agent.standard')).toBeVisible();
-});
-
 test('assumptions: a workspace override changes value, then resets', async ({ page }) => {
   await open(page, '/ops');
   await page.getByRole('button', { name: 'Assumptions' }).first().click();

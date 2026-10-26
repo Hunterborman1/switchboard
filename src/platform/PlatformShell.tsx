@@ -184,7 +184,7 @@ export function AboutDataDrawer({ open, onClose }: { open: boolean; onClose: () 
           { title: 'Live activity from this demo', body: 'Signal Loop is a real agent. Its runs, AI calls and deliveries, and the people using this demo right now, report here live and are labelled Live.' },
           {
             title: 'One simulated agent',
-            body: 'The RFP & Security Questionnaire Responder is simulated, with its users and its whole history, to show a second agent held to the same standard. It is labelled Simulated wherever it appears.',
+            body: 'The RFP & Security Questionnaire Responder is simulated, with its users and its whole history, to show a second agent held to the same standard. It is labelled Simulated wherever it appears and counts in every total, but it has no page of its own to open.',
           },
           {
             title: 'Hours saved and value are estimates',

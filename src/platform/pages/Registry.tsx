@@ -10,7 +10,7 @@ import { tourAnchor } from '../../tour/anchors';
 import type { RegistryRow } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { AgentCell, AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
+import { AgentCell, AgentStatus, canOpenAgent, GoCell, GoHead, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 export function Registry() {
   useOpsTitle('Agent registry');
@@ -72,7 +72,7 @@ export function Registry() {
               <SortHead className="ao-hide-sm" active={state('review')} onSort={() => by('review')}>
                 Next review
               </SortHead>
-              <SortHead className="ao-end-md ao-end-sm" active={state('std')} onSort={() => by('std', true)} help="How many of the nine agent standard checks this agent passes.">
+              <SortHead active={state('std')} onSort={() => by('std', true)} help="How many of the nine agent standard checks this agent passes.">
                 Standard
               </SortHead>
               <SortHead num className="ao-hide-sm ao-hide-md" active={state('hours')} onSort={() => by('hours', true)}>
@@ -84,49 +84,61 @@ export function Registry() {
               <th className="ao-hide-sm ao-hide-md">
                 <span className="ds-sr-only">Open the agent</span>
               </th>
+              <GoHead />
             </tr>
           </thead>
           <tbody>
-            {sorted.map((r) => (
-              <tr
-                key={r.id}
-                className="is-clickable has-row-link"
-                onClick={() => navigate(`/ops/agents/${r.id}`)}
-                data-agent={r.id}
-                {...(r.id === SIGNAL_LOOP_AGENT_ID ? tourAnchor('ops.registry.signal') : {})}
-              >
-                <td className="ao-agent-col">
-                  <Link to={`/ops/agents/${r.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
-                    <AgentCell color={f.seriesColor(r.profile.color)} primary={r.name} secondary={`${r.department}, ${r.builtWith === 'Code' ? 'code' : r.builtWith}`} source={r.source} />
-                  </Link>
-                </td>
-                <td className="ao-hide-sm is-nowrap">
-                  <span className="ds-table__primary">{r.ownerName}</span>
-                  <span className="ds-table__secondary">{r.businessOwner.replace(/ \(.*/, '')}</span>
-                </td>
-                <td className="is-nowrap ao-hide-md">
-                  <AgentStatus value={r.status} />
-                </td>
-                <td className="ao-hide-sm is-nowrap">
-                  <ReviewBadge value={r.reviewStatus} />
-                  <span className="ds-table__secondary">
-                    {f.day(r.nextReview)}, every {r.reviewCadenceDays} days
-                  </span>
-                </td>
-                <td className="is-nowrap ao-end-md ao-end-sm">
-                  <Score passed={r.standardScore.passed} total={r.standardScore.total} />
-                </td>
-                <td className="is-num ao-hide-sm ao-hide-md">{f.hours(r.hours30d)}</td>
-                <td className="is-num ao-hide-sm ao-hide-lg">{f.money(r.cost30d)}</td>
-                <td className="ao-hide-sm ao-hide-md is-shrink">
-                  {r.href ? (
-                    <ButtonLink to={r.href} size="sm" variant="ghost" iconRight={<IconExternal size={13} />} onClick={(e) => e.stopPropagation()} title={`Open ${r.name} itself`}>
-                      Open
-                    </ButtonLink>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
+            {sorted.map((r) => {
+              // A simulated agent is a plain row: no link, hover or pointer (see canOpenAgent).
+              const opens = canOpenAgent(r.id, rows);
+              const cell = <AgentCell color={f.seriesColor(r.profile.color)} primary={r.name} secondary={`${r.department}, ${r.builtWith === 'Code' ? 'code' : r.builtWith}`} source={r.source} />;
+              return (
+                <tr
+                  key={r.id}
+                  className={opens ? 'is-clickable has-row-link' : undefined}
+                  onClick={opens ? () => navigate(`/ops/agents/${r.id}`) : undefined}
+                  data-agent={r.id}
+                  data-opens={opens}
+                  {...(r.id === SIGNAL_LOOP_AGENT_ID ? tourAnchor('ops.registry.signal') : {})}
+                >
+                  <td className="ao-agent-col">
+                    {opens ? (
+                      <Link to={`/ops/agents/${r.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
+                        {cell}
+                      </Link>
+                    ) : (
+                      cell
+                    )}
+                  </td>
+                  <td className="ao-hide-sm is-nowrap">
+                    <span className="ds-table__primary">{r.ownerName}</span>
+                    <span className="ds-table__secondary">{r.businessOwner.replace(/ \(.*/, '')}</span>
+                  </td>
+                  <td className="is-nowrap ao-hide-md">
+                    <AgentStatus value={r.status} />
+                  </td>
+                  <td className="ao-hide-sm is-nowrap">
+                    <ReviewBadge value={r.reviewStatus} />
+                    <span className="ds-table__secondary">
+                      {f.day(r.nextReview)}, every {r.reviewCadenceDays} days
+                    </span>
+                  </td>
+                  <td className="is-nowrap">
+                    <Score passed={r.standardScore.passed} total={r.standardScore.total} />
+                  </td>
+                  <td className="is-num ao-hide-sm ao-hide-md">{f.hours(r.hours30d)}</td>
+                  <td className="is-num ao-hide-sm ao-hide-lg">{f.money(r.cost30d)}</td>
+                  <td className="ao-hide-sm ao-hide-md is-shrink">
+                    {opens && r.href ? (
+                      <ButtonLink to={r.href} size="sm" variant="ghost" iconRight={<IconExternal size={13} />} onClick={(e) => e.stopPropagation()} title={`Open ${r.name} itself`}>
+                        Open
+                      </ButtonLink>
+                    ) : null}
+                  </td>
+                  <GoCell opens={opens} />
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </Card>

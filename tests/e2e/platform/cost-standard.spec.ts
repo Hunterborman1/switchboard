@@ -19,7 +19,9 @@ test('standard: matrix of agents × 9 checks, evidence on click', async ({ page 
   const matrix = page.getByRole('table', { name: 'Agent standard matrix' });
   await expect(matrix.locator('tbody tr')).toHaveCount(2);
   await expect(matrix.locator('.ao-mcell')).toHaveCount(18);
-  await matrix.getByRole('button', { name: /RFP & Security Questionnaire Responder: Eval suite with promotion gate: gap/ }).click();
+  await matrix.getByRole('button', { name: /Signal Loop: Eval suite with promotion gate: passes/ }).click();
+  await expect(page.locator('.ao-evidence')).toContainText('promotion gate blocked prompt v5');
+  // The simulated agent's gap reads in the open-gaps list; its cells are not selectable.
   await expect(page.getByText(/Spot-checks only/).first()).toBeVisible();
 });
 

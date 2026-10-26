@@ -13,7 +13,7 @@ import { putAssumptions, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { ChartLegend, ChartSummary, Lines, Spark, StackedBars } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentCell, agentLabel, AgentSourceBadge, LoadError, OpsSkeleton, SortHead, useOpsTitle, useSorted } from '../ui/kit';
+import { AgentCell, agentLabel, AgentSourceBadge, GoCell, GoHead, isOpenable, LoadError, OpsSkeleton, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 type Stage = 'invoked' | 'output' | 'reviewed' | 'automatic';
 const STAGES: { key: Stage; label: string; help: string }[] = [
@@ -214,7 +214,7 @@ function HoursChart({ d }: { d: OverviewX }) {
 
 // ---------------------------------------------------------------- needs attention
 
-/** `simulated`: the item is about a simulated agent, so it says so. */
+/** `simulated`: the item is about a simulated agent, so it says so and does not link anywhere (see canOpenAgent). */
 type AttItem = { key: string; tone: 'warning' | 'danger' | 'info'; icon: JSX.Element; title: string; detail: string; href: string; simulated: boolean };
 
 function buildAttention(d: OverviewX): AttItem[] {
@@ -264,12 +264,12 @@ function buildAttention(d: OverviewX): AttItem[] {
 function Attention({ d }: { d: OverviewX }) {
   const items = buildAttention(d);
   return (
-    <Card className="ao-fill" title="Needs attention" description="Each item links to its evidence." flush attrs={tourAnchor('ops.overview.attention')}>
+    <Card className="ao-fill" title="Needs attention" description="What needs an owner, and why." flush attrs={tourAnchor('ops.overview.attention')}>
       {items.length ? (
         <ul className="ds-list">
-          {items.map((a) => (
-            <li key={a.key}>
-              <Link to={a.href} className="ds-list__item ao-att">
+          {items.map((a) => {
+            const body = (
+              <>
                 <span className={`ao-att-icon ao-att-icon--${a.tone}`} aria-hidden="true">
                   {a.icon}
                 </span>
@@ -285,10 +285,24 @@ function Attention({ d }: { d: OverviewX }) {
                   </span>
                   {a.detail ? <span className="ao-att__detail">{rewriteModelIds(a.detail)}</span> : null}
                 </span>
-                <IconChevronRight size={14} className="ao-att__go" />
-              </Link>
-            </li>
-          ))}
+              </>
+            );
+            // An item about the simulated agent is plain text: it has nothing to open.
+            return (
+              <li key={a.key}>
+                {a.simulated ? (
+                  <div className="ds-list__item ao-att" data-simulated="true">
+                    {body}
+                  </div>
+                ) : (
+                  <Link to={a.href} className="ds-list__item ao-att">
+                    {body}
+                    <IconChevronRight size={14} className="ao-att__go" />
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <EmptyState compact icon={<IconCheckCircle />} title="Nothing needs attention" description="No overdue reviews, missed service targets, standard gaps, cost spikes or drops in use." />
@@ -411,13 +425,13 @@ function ImpactTable({ d, stage, onClear }: { d: OverviewX; stage: Stage | null;
             <SortHead num className="ao-hide-sm" active={state('units')} onSort={() => by('units', true)} help={`Units of work each agent completed. ${unitHelp}.`}>
               Tasks
             </SortHead>
-            <SortHead num className="ao-end-sm" active={state('hours')} onSort={() => by('hours', true)}>
+            <SortHead num active={state('hours')} onSort={() => by('hours', true)}>
               Hours saved
             </SortHead>
             <SortHead num className="ao-hide-sm" active={state('value')} onSort={() => by('value', true)}>
               Estimated value
             </SortHead>
-            <SortHead num className="ao-hide-sm ao-end-md" active={state('cost')} onSort={() => by('cost', true)}>
+            <SortHead num className="ao-hide-sm" active={state('cost')} onSort={() => by('cost', true)}>
               AI cost
             </SortHead>
             <SortHead num className="ao-hide-md" active={state('acc')} onSort={() => by('acc', true)} help="Share of tasks whose output was kept: accepted by a reviewer or delivered automatically.">
@@ -427,40 +441,52 @@ function ImpactTable({ d, stage, onClear }: { d: OverviewX; stage: Stage | null;
               People
             </SortHead>
             <th className="ao-hide-md">Weekly trend</th>
+            <GoHead />
           </tr>
         </thead>
         <tbody>
-          {sorted.map((r) => (
-            <tr key={r.agentId} className="is-clickable has-row-link" onClick={() => navigate(`/ops/agents/${r.agentId}`)}>
-              <td className="ao-agent-col">
-                <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
-                  <AgentCell color={r.color} primary={r.name} secondary={`${r.department}, built with ${r.builtWith}`} source={r.source} />
-                </Link>
-              </td>
-              {stage ? <td className="is-num">{f.int(stageCount(r.outcomes, stage))}</td> : null}
-              <td className="is-num ao-hide-sm">{f.int(r.workUnits)}</td>
-              <td className="is-num ao-end-sm">{f.hours(r.hoursReturned)}</td>
-              <td className="is-num ao-hide-sm">{f.money(r.valueUsd)}</td>
-              <td className="is-num ao-hide-sm ao-end-md">{f.money(r.aiCostUsd)}</td>
-              <td className="is-num ao-hide-md">{f.pct(r.acceptanceRate)}</td>
-              <td className="is-num ao-hide-md">{f.int(r.activeUsers)}</td>
-              <td className="ao-hide-md">
-                <Spark values={r.weeklyHours} color={r.color} label={`${agentLabel(r.name, r.source)} hours saved per week`} />
-              </td>
-            </tr>
-          ))}
+          {sorted.map((r) => {
+            // A simulated agent is a plain row: no link, hover or pointer (see canOpenAgent).
+            const opens = isOpenable(r.source);
+            const cell = <AgentCell color={r.color} primary={r.name} secondary={`${r.department}, built with ${r.builtWith}`} source={r.source} />;
+            return (
+              <tr key={r.agentId} className={opens ? 'is-clickable has-row-link' : undefined} onClick={opens ? () => navigate(`/ops/agents/${r.agentId}`) : undefined} data-agent={r.agentId} data-opens={opens}>
+                <td className="ao-agent-col">
+                  {opens ? (
+                    <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
+                      {cell}
+                    </Link>
+                  ) : (
+                    cell
+                  )}
+                </td>
+                {stage ? <td className="is-num">{f.int(stageCount(r.outcomes, stage))}</td> : null}
+                <td className="is-num ao-hide-sm">{f.int(r.workUnits)}</td>
+                <td className="is-num">{f.hours(r.hoursReturned)}</td>
+                <td className="is-num ao-hide-sm">{f.money(r.valueUsd)}</td>
+                <td className="is-num ao-hide-sm">{f.money(r.aiCostUsd)}</td>
+                <td className="is-num ao-hide-md">{f.pct(r.acceptanceRate)}</td>
+                <td className="is-num ao-hide-md">{f.int(r.activeUsers)}</td>
+                <td className="ao-hide-md">
+                  <Spark values={r.weeklyHours} color={r.color} label={`${agentLabel(r.name, r.source)} hours saved per week`} />
+                </td>
+                <GoCell opens={opens} />
+              </tr>
+            );
+          })}
         </tbody>
         <tfoot>
           <tr className="ao-total">
             <td>All agents</td>
             {stage ? <td className="is-num">{f.int(stageTotal(d, stage))}</td> : null}
             <td className="is-num ao-hide-sm">{f.int(t.workUnits)}</td>
-            <td className="is-num ao-end-sm">{f.hours(t.hoursReturned)}</td>
+            <td className="is-num">{f.hours(t.hoursReturned)}</td>
             <td className="is-num ao-hide-sm">{f.money(t.valueUsd)}</td>
-            <td className="is-num ao-hide-sm ao-end-md">{f.money(t.aiCostUsd)}</td>
+            <td className="is-num ao-hide-sm">{f.money(t.aiCostUsd)}</td>
             <td className="is-num ao-hide-md">{f.pct(d.funnel.invoked ? (d.funnel.accepted + d.funnel.automatic) / d.funnel.invoked : null)}</td>
             <td className="is-num ao-hide-md">{f.int(t.activeUsers)}</td>
             <td className="ao-hide-md" />
+            <td className="ao-go" aria-hidden="true" />
           </tr>
         </tfoot>
       </Table>

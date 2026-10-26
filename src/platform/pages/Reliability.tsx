@@ -15,7 +15,7 @@ import * as f from '../lib/format';
 import { Bars, ChartLegend, ChartSummary, Lines } from '../ui/charts';
 import { IconTrace } from '../ui/icons';
 import { InfoTip } from '../ui/InfoTip';
-import { agentLabel, AlertBadge, BudgetBar, LoadError, ModelName, OpsSkeleton, SEVERITY, SloBadge, SortHead, SourceBadge, useOpsTitle, useSorted, VocabBadge } from '../ui/kit';
+import { agentLabel, agentOptions, AlertBadge, BudgetBar, canOpenAgent, LoadError, ModelName, OpsSkeleton, SEVERITY, SloBadge, SortHead, SourceBadge, useOpsTitle, useSorted, VocabBadge } from '../ui/kit';
 import { AREA_LABEL } from './Logs';
 import { RunbookLink } from './RunbookLink';
 
@@ -85,8 +85,11 @@ export function SloCards({ slos, names }: { slos: Slo[]; names?: Record<string, 
   );
 }
 
-/** Alerts with expected against actual, an owner, a runbook and the trace that tripped them. */
-export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<string, string> }) {
+/**
+ * Alerts with expected against actual, an owner, a runbook and the trace that tripped them.
+ * An alert on an agent that cannot open (the simulated one) shows its facts and no actions.
+ */
+export function AlertList({ alerts, names, agents }: { alerts: Alert[]; names?: Record<string, string>; agents?: RegistryRow[] | null }) {
   const { timezone } = useTimezone();
   const toast = useToast();
   const [busy, setBusy] = useState<string | null>(null);
@@ -96,6 +99,7 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
     <div className="ao-alerts" {...tourAnchor('ops.alerts')} id="alerts">
       {alerts.map((a) => {
         const status = local[a.id] ?? a.status;
+        const opens = canOpenAgent(a.agentId, agents);
         return (
           <article key={a.id} className="ao-alert" data-alert={a.id} data-status={status}>
             <div className="ao-alert__main">
@@ -125,34 +129,40 @@ export function AlertList({ alerts, names }: { alerts: Alert[]; names?: Record<s
               </dl>
             </div>
             <div className="ao-alert__actions">
-              {a.traceId ? (
-                <ButtonLink size="sm" to={`/ops/traces/${a.traceId}`} icon={<IconTrace size={14} />}>
-                  View trace
-                </ButtonLink>
-              ) : null}
-              <RunbookLink url={a.runbook} />
-              {status === 'open' ? (
-                <Button
-                  size="sm"
-                  loading={busy === a.id}
-                  title="Acknowledging says an owner is on it. The alert stays until its rule stops firing."
-                  onClick={async () => {
-                    setBusy(a.id);
-                    try {
-                      await acknowledgeAlert(a.id, null);
-                      setLocal((l) => ({ ...l, [a.id]: 'acknowledged' }));
-                    } catch (e) {
-                      toast({ tone: 'danger', title: 'Couldn’t acknowledge the alert', body: e instanceof Error ? e.message : String(e) });
-                    } finally {
-                      setBusy(null);
-                    }
-                  }}
-                >
-                  Acknowledge
-                </Button>
-              ) : status === 'acknowledged' ? (
-                <span className="ao-alert__ack">Acknowledged in your workspace; resolves when the rule stops firing.</span>
-              ) : null}
+              {opens ? (
+                <>
+                  {a.traceId ? (
+                    <ButtonLink size="sm" to={`/ops/traces/${a.traceId}`} icon={<IconTrace size={14} />}>
+                      View trace
+                    </ButtonLink>
+                  ) : null}
+                  <RunbookLink url={a.runbook} />
+                  {status === 'open' ? (
+                    <Button
+                      size="sm"
+                      loading={busy === a.id}
+                      title="Acknowledging says an owner is on it. The alert stays until its rule stops firing."
+                      onClick={async () => {
+                        setBusy(a.id);
+                        try {
+                          await acknowledgeAlert(a.id, null);
+                          setLocal((l) => ({ ...l, [a.id]: 'acknowledged' }));
+                        } catch (e) {
+                          toast({ tone: 'danger', title: 'Couldn’t acknowledge the alert', body: e instanceof Error ? e.message : String(e) });
+                        } finally {
+                          setBusy(null);
+                        }
+                      }}
+                    >
+                      Acknowledge
+                    </Button>
+                  ) : status === 'acknowledged' ? (
+                    <span className="ao-alert__ack">Acknowledged in your workspace; resolves when the rule stops firing.</span>
+                  ) : null}
+                </>
+              ) : (
+                <span className="ao-alert__ack">Simulated agent, shown for comparison.</span>
+              )}
             </div>
           </article>
         );
@@ -185,7 +195,7 @@ export function Reliability() {
           aria-label="Agent"
           value={agentId || 'all'}
           onChange={(e) => set('agentId', e.target.value === SIGNAL_LOOP_AGENT_ID ? '' : e.target.value)}
-          options={[{ value: 'all', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source) }))]}
+          options={agentOptions(reg.data, 'all')}
           style={{ width: 260, maxWidth: '100%' }}
         />
       }
@@ -241,8 +251,6 @@ export function Reliability() {
     })
     .filter((x): x is { x: string; y: number } => !!x);
   const errBreaches = d.breaches.filter((b) => b.kind === 'errors').length;
-  const anyLive = (reg.data ?? []).some((r) => r.source === 'live' && (!agentId || r.id === agentId));
-  const src = agentId && !anyLive ? 'simulated' : 'mixed';
   const bucket = range === '6w' ? 'day' : 'hour';
   const totalReq = hourly.reduce((s, h) => s + h.requests, 0);
   const totalErr = hourly.reduce((s, h) => s + h.errors, 0);
@@ -267,7 +275,7 @@ export function Reliability() {
       </Section>
 
       <div className="ao-pair">
-        <Card className="ao-fill" title={`Requests and errors per ${bucket}`} actions={<SourceBadge source={src} />}>
+        <Card className="ao-fill" title={`Requests and errors per ${bucket}`} actions={<SourceBadge source="mixed" />}>
           <ChartLegend
             series={[
               { key: 'ok', label: 'Succeeded', color: 'var(--chart-2)' },
@@ -304,7 +312,7 @@ export function Reliability() {
               <InfoTip label="Response time">Typical is the median request. Slowest 5% is the 95th percentile: 95 of every 100 requests finish within it.</InfoTip>
             </span>
           }
-          actions={<SourceBadge source={src} />}
+          actions={<SourceBadge source="mixed" />}
         >
           <ChartLegend
             series={[
@@ -336,11 +344,11 @@ export function Reliability() {
       </div>
 
       <Card title="Alerts" description="Acknowledged means an owner is on it; it resolves when the rule stops firing." flush>
-        <AlertList alerts={d.alerts} names={agentId ? undefined : names} />
+        <AlertList alerts={d.alerts} names={agentId ? undefined : names} agents={reg.data} />
       </Card>
 
       <div className="ao-pair">
-        <ModelsTable models={d.models} names={agentId ? undefined : names} range={range} />
+        <ModelsTable models={d.models} names={agentId ? undefined : shortNames} range={range} />
         <AreasTable components={d.components} agentId={agentId} />
       </div>
     </Page>
@@ -375,7 +383,7 @@ function ModelsTable({ models, names, range }: { models: ObservabilityX['models'
           <tbody>
             {sorted.map((r) => (
               <tr key={r.model}>
-                <td>
+                <td className="ao-model-col">
                   <ModelName id={r.model} names={names} />
                 </td>
                 <td className="is-num">{f.int(r.calls)}</td>
