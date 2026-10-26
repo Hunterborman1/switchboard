@@ -262,6 +262,33 @@
   border-radius: var(--radius-md);
   box-shadow: 0 0 0 4px var(--accent-subtle);
   transition: box-shadow var(--dur-slow, 240ms) var(--ease-enter);
+  animation: t-ring-in var(--dur-base, 180ms) var(--ease-enter);
+}
+/* A soft green pulse spreads out from the target, so the eye finds it. */
+.t-ring:not(.t-ring--soft)::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  animation: t-ring-pulse 1.8s ease-out infinite;
+}
+@keyframes t-ring-in {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+@keyframes t-ring-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+/* The ring is the focus cue for the target; the control's own outline would double it. */
+[data-tour][data-tour-ring]:focus-visible {
+  outline: none;
 }
 .t-ring--top {
   z-index: 905;
@@ -276,6 +303,10 @@
 @media (prefers-reduced-motion: reduce) {
   .t-ring {
     transition: none;
+    animation: none;
+  }
+  .t-ring::after {
+    animation: none;
   }
 }
 
@@ -305,9 +336,69 @@
   }
 }
 .t-guide--dock {
-  left: var(--sl-content-left, var(--sidebar-w));
+  left: 0;
   right: 0;
+  display: grid;
+  grid-template-columns: var(--sl-content-left, var(--sidebar-w)) minmax(0, 1fr);
   max-height: 50vh;
+}
+.t-guide--dock > :not(.t-guide__tag):not(.t-guide__progress) {
+  grid-column: 2;
+}
+/* A green edge that breathes: this is a guided walkthrough. */
+.t-guide--dock::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: var(--accent);
+  animation: t-guide-edge 2.4s ease-in-out infinite;
+}
+@keyframes t-guide-edge {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-guide--dock::before {
+    animation: none;
+  }
+}
+/* The tag sits under the sidebar, in the sidebar's own column. */
+.t-guide__tag {
+  grid-column: 1;
+  grid-row: 1 / span 6;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) 0 var(--space-5);
+  border-right: 1px solid var(--border);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+.t-guide__tagdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+}
+.t-guide.is-present .t-guide__tagdot {
+  animation: t-guide-dot 1.6s ease-in-out infinite;
+}
+@keyframes t-guide-dot {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-guide.is-present .t-guide__tagdot {
+    animation: none;
+  }
 }
 
 /* The presentation's progress, along the top edge (as on the scenes). */
@@ -570,7 +661,7 @@
   align-items: center;
   gap: var(--space-3);
   min-height: 48px;
-  padding: var(--space-1) var(--space-3) var(--space-1) var(--page-gutter);
+  padding: var(--space-1) var(--page-gutter) var(--space-1) var(--page-gutter);
 }
 .t-guide__striptext {
   display: flex;
@@ -703,4 +794,7 @@ html[data-sl-guide] .ds-dialog {
 }
 html[data-sl-guide] .ds-drawer {
   bottom: var(--sl-guide-h, 0px);
+}
+html[data-sl-guide='dock'] .ds-sidebar {
+  height: calc(100dvh - var(--sl-guide-h, 0px));
 }

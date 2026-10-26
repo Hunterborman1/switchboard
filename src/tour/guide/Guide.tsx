@@ -153,6 +153,16 @@ function Ring({ el, soft, flashKey }: { el: HTMLElement | null; soft?: boolean; 
   const box = useRect(el, soft ? 3 : 4);
   const [flash, setFlash] = useState(false);
   const [covered, setCovered] = useState(false);
+  const [radius, setRadius] = useState(8);
+  // Follow the target's own corner radius (plus the gap), and hide its focus outline: the ring is the focus cue.
+  useEffect(() => {
+    if (!el) return;
+    const r = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+    setRadius(Math.min(r + (soft ? 3 : 4), 18));
+    if (soft) return;
+    el.setAttribute('data-tour-ring', '');
+    return () => el.removeAttribute('data-tour-ring');
+  }, [el, soft]);
   useEffect(() => {
     if (!flashKey) return;
     setFlash(true);
@@ -171,7 +181,7 @@ function Ring({ el, soft, flashKey }: { el: HTMLElement | null; soft?: boolean; 
   return (
     <div
       className={`t-ring${soft ? ' t-ring--soft' : ''}${flash ? ' is-flash' : ''}${el.closest(OBSTACLES) ? ' t-ring--top' : ''}`}
-      style={{ left: box.x, top: box.y, width: box.w, height: box.h }}
+      style={{ left: box.x, top: box.y, width: box.w, height: box.h, borderRadius: radius }}
       aria-hidden="true"
       data-tour-ui
       data-testid={soft ? undefined : 'guide-ring'}
@@ -420,6 +430,12 @@ function GuideInner() {
         {present ? (
           <div className="t-guide__progress" aria-hidden="true">
             <i style={{ width: `${Math.round(progressOf(step) * 1000) / 10}%` }} />
+          </div>
+        ) : null}
+        {!isSheet ? (
+          <div className="t-guide__tag" data-testid="guide-tag">
+            <span className="t-guide__tagdot" aria-hidden="true" />
+            <span className="t-guide__tagtext">{present ? 'Guided walkthrough' : 'Walkthrough guide'}</span>
           </div>
         ) : null}
         {isSheet ? (

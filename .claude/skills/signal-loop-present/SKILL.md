@@ -21,7 +21,7 @@ Read first, only as needed:
 ## How the viewer moves around
 
 - **Scenes:** everything is on screen at once (one short entrance animation, nothing to click open). Only Back / Next, ← → or a clicker move on; a click on the page does not. A chapter rail on the left at 1,200 px and wider; narrower, the menu button in the scene's top bar (or Esc) opens the same list.
-- **Product pages:** the Guide, a bar docked along the bottom of the page (a bottom sheet on phones). In presentation mode it shows the step, why it matters, "Your turn" when the viewer has to act (with "Show me"), Back / Next or "Skip this step", and "Explore on your own". Its chapter title opens every chapter.
+- **Product pages:** the Guide, a full-width bar along the bottom of the page, with a green "Guided walkthrough" tag (a bottom sheet on phones). In presentation mode it shows the step, why it matters, "Your turn" when the viewer has to act (with "Show me"), Back / Next or "Skip this step", and "Explore on your own". Its chapter title opens every chapter.
 - **Explore on your own** leaves the presentation and remembers the step; the Guide then suggests one thing to try on each screen; **Resume presentation** returns to the same step. If the viewer never started, it reads "Start the presentation".
 - No scrim: the target gets a calm ring and is scrolled into view above the Guide, which covers nothing (the page, dialogs and drawers keep clear of it).
 
