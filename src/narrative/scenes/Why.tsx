@@ -1,84 +1,119 @@
 /**
- * Part 3 · Why this option. Invoca turns its customers' calls into signals; the same idea,
- * pointed at Invoca's own CSM calls. Two flow rows that share a shape (the second arrives on
- * beat 1, label and all), then the four reasons and one line on where it generalises.
+ * Chapter 4 · Why this option, and not the others. Beat 0: the brief's three options as cards,
+ * each with a one-line verdict; Option 3 chosen, and Switchboard built so 1 and 2 can become
+ * analyses later. Beat 1: why it is built the way it is (raw code, three measured model roles,
+ * one Worker for the proof of concept). Both visuals share one grid cell, so nothing moves
+ * between beats. Reasons are Hunter's recorded ones; facts come from docs/reports/
+ * decision-models.md, docs/ARCHITECTURE.md and the Production scene.
  */
-import { ProductMark } from '../../ds';
-import { Appear, Arrow, Check, SceneHead } from '../components';
+import { Badge, ProductMark } from '../../ds';
+import { Check, SceneHead } from '../components';
+import { useCalm } from '../hooks';
+import { motion } from 'motion/react';
+import { DUR, EASE } from '../motion';
 
-type Row = { who: string; from: { t: string; s: string }; engine: string; to: { t: string; s: string } };
+type Option = { n: number; name: string; what: string; chosen?: boolean; verdict: string; later: string };
 
-const ROWS: Row[] = [
-  { who: 'What Invoca sells', from: { t: 'Customers’ calls', s: 'Inbound calls to Invoca’s customers' }, engine: 'Invoca Signal AI', to: { t: 'Signals for their business', s: 'Conversions, intent, coaching' } },
-  { who: 'What I built', from: { t: 'Invoca’s own CSM calls', s: 'Reviews, renewals, check-ins' }, engine: 'Signal Loop', to: { t: 'Signals for Invoca’s teams', s: 'Product, VP Product, Sales, Support' } },
+const OPTIONS: Option[] = [
+  {
+    n: 1,
+    name: 'RFP Responder',
+    what: 'An agent drafts answers to a PDF security questionnaire from internal docs.',
+    verdict: 'Mature products already do this (Loopio, Responsive, Vanta, Conveyor), so the first question is why not buy one. And a wrong answer on a security questionnaire is a compliance risk.',
+    later: 'Simulated in Agent Ops as a second agent.',
+  },
+  {
+    n: 2,
+    name: 'Churn Predictor',
+    what: 'A weekly watchdog over Zendesk, Salesforce and usage data that warns leadership before a cancellation.',
+    verdict: 'It needs believable data faked from three systems, and a prediction is hard to defend without real outcomes to check it against.',
+    later: 'On the roadmap as the Renewal risk analysis.',
+  },
+  {
+    n: 3,
+    name: 'Feedback Loop',
+    what: 'Read call transcripts and notes, extract structured insights, and route each to the right person.',
+    chosen: true,
+    verdict: 'It’s the work Invoca’s own product does, pointed at Invoca’s own CSM calls. And it shows all four pillars: several people with different jobs, real engineering, an easy additive pitch (stop retyping it into Jira) and a clear future.',
+    later: 'Built: Signal Loop, inside Switchboard.',
+  },
 ];
 
-const REASONS = ['The data already exists', 'Internal and additive, with people reviewing', 'Shows value in weeks, not quarters', 'A path into Signal AI later'];
+const BUILD = [
+  {
+    k: 'Raw TypeScript, not n8n, Gumloop or Zapier',
+    v: 'The trust features need code: quotes checked against the transcript, a typed schema validated on every model output, deterministic routing rules, an eval suite with a promotion gate, budgets and replay, and tests.',
+  },
+  {
+    k: 'Three model roles, chosen by measurement',
+    v: 'A decision model triages every input and gives a second opinion, a main model extracts, and a backup model takes over if it fails. All on OpenRouter; the decision model was the fastest of 12 candidates with every answer valid and every verdict right.',
+  },
+  {
+    k: 'One Cloudflare Worker for the proof of concept',
+    v: 'Fast to ship, one deploy, behind a gate. The production design keeps the same boundaries on Neon, Vercel and Trigger.dev, in chapter 18.',
+  },
+];
 
 const HEADS = [
-  { title: 'Invoca already turns calls into signals.', line: 'For its customers, every inbound call becomes a conversion, an intent or a coaching moment.' },
-  { title: 'The same idea, pointed inward.', line: 'Invoca’s own customer conversations carry the same kind of signal, for Invoca’s own teams.' },
-  { title: 'Why I chose the feedback loop.', line: 'It uses data Invoca already has, carries little risk, and can prove itself quickly.' },
+  { title: 'Three options. I chose the feedback loop.', line: 'Option 3 is the same work Invoca’s product does, pointed at Invoca’s own customer calls.' },
+  { title: 'Why it’s built the way it is.', line: 'Each choice is about trust: the model proposes, code checks, people decide.' },
 ];
 
-function FlowRow({ row, built, show, delay = 0 }: { row: Row; built?: boolean; show: boolean; delay?: number }) {
-  return (
-    <Appear show={show} delay={delay} className="sc-why__row">
-      <span className="sc-why__who">{row.who}</span>
-      <div className="sc-why__flow">
-        <div className="sc-why__box">
-          <b>{row.from.t}</b>
-          <span>{row.from.s}</span>
-        </div>
-        <span className="sc-why__arrow" aria-hidden="true">
-          <Arrow size={18} />
-        </span>
-        <div className="sc-why__box sc-why__box--engine" data-built={built ? 'true' : undefined}>
-          {built ? <ProductMark product="signal-loop" size={24} /> : null}
-          <b>{row.engine}</b>
-        </div>
-        <span className="sc-why__arrow" aria-hidden="true">
-          <Arrow size={18} />
-        </span>
-        <div className="sc-why__box">
-          <b>{row.to.t}</b>
-          <span>{row.to.s}</span>
-        </div>
-      </div>
-    </Appear>
-  );
-}
-
 export function Why({ beat }: { beat: number }) {
-  const b = Math.min(beat, 2);
+  const calm = useCalm();
+  const b = Math.min(beat, 1);
+  const fade = (on: boolean, delay = 0) => ({
+    initial: false as const,
+    animate: { opacity: on ? 1 : 0, y: on || calm ? 0 : 6 },
+    transition: { duration: calm ? 0 : DUR.layout, ease: EASE, delay: on && !calm ? delay : 0 },
+    style: { visibility: on ? ('visible' as const) : ('hidden' as const) },
+    'aria-hidden': on ? undefined : true,
+  });
   return (
     <div className="sc sc-why">
       <SceneHead heads={HEADS} active={b} />
-      <div className="sc-why__visual">
-        <div
-          className="sc-why__rows"
-          role="img"
-          aria-label="Top: customers’ calls go through Invoca Signal AI and become signals for their business. Below, the same shape: Invoca’s own CSM calls go through Signal Loop and become signals for Product, Sales and Support."
-        >
-          <FlowRow row={ROWS[0]!} show />
-          <FlowRow row={ROWS[1]!} built show={b >= 1} delay={0.05} />
-        </div>
-        <div className="sc-why__why">
-          <ul className="sc-why__reasons">
-            {REASONS.map((r, i) => (
-              <Appear key={r} as="li" show={b >= 2} delay={0.1 + i * 0.08}>
+      <div className="sc-why__stage">
+        <motion.div className="sc-why__layer" {...fade(b === 0)} data-testid="why-options">
+          <ol className="sc-why__options">
+            {OPTIONS.map((o) => (
+              <li key={o.n} className="sc-why__option" data-chosen={o.chosen ? 'true' : undefined}>
+                <div className="sc-why__ohead">
+                  <span className="sc-why__onum">Option {o.n}</span>
+                  {o.chosen ? (
+                    <Badge tone="accent" dot>
+                      Chosen
+                    </Badge>
+                  ) : (
+                    <Badge outline>Not chosen</Badge>
+                  )}
+                </div>
+                <h2 className="sc-why__oname">{o.name}</h2>
+                <p className="sc-why__owhat">{o.what}</p>
+                <p className="sc-why__verdict">{o.verdict}</p>
+                <p className="sc-why__later">{o.later}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="sc-why__general">
+            <ProductMark product="switchboard" size={20} />
+            <span>
+              <b>Switchboard is built so options 1 and 2 can become analyses on the same platform later.</b> Same intake, same decision model, same delivery.
+            </span>
+          </p>
+        </motion.div>
+        <motion.div className="sc-why__layer" {...fade(b === 1, 0.05)} data-testid="why-build">
+          <ul className="sc-why__build">
+            {BUILD.map((x) => (
+              <li key={x.k}>
                 <Check />
-                <span>{r}</span>
-              </Appear>
+                <div>
+                  <b>{x.k}</b>
+                  <span>{x.v}</span>
+                </div>
+              </li>
             ))}
           </ul>
-          <Appear show={b >= 2} delay={0.45} className="sc-why__general">
-            <ProductMark product="switchboard" size={24} />
-            <p>
-              <b>And it generalises: any conversation in, the right people out.</b> Signal Loop runs inside Switchboard, which can run other analyses the same way.
-            </p>
-          </Appear>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

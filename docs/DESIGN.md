@@ -22,7 +22,7 @@ intent and the rules the code cannot enforce.
 
 1. **Flat and light.** White page, quiet greys, one accent (Invoca green `--accent`). No
    gradients, glows, blurs, noise or text effects. Shadows only for things that float
-   (`--shadow-2`: menus, dialogs, drawers, toasts, the walkthrough callout); `--shadow-1` on
+   (`--shadow-2`: menus, dialogs, drawers, toasts, the walkthrough Guide); `--shadow-1` on
    secondary buttons and the selected nav item only.
 2. **One typeface: Inter.** Sentence case everywhere. No uppercase or letter-spaced labels.
    Monospace only for things a person would copy: IDs, receipts, hashes, code. File names are
@@ -100,9 +100,14 @@ quote in body text, a quiet citation). Every place evidence appears uses it.
 ## Walkthrough and narrative
 
 - Scenes are presentation pages in the same system: white page, the same top bar style
-  (product mark, chapter, "4 of 17"), content in a 1120px column, headline 40–48px/600, one
+  (product mark, chapter, "4 of 19"), content in a 1120px column, headline 40–48px/600, one
   supporting line, then one diagram or set of cards. Bottom bar: Back / Next and a thin progress
-  bar.
-- The walkthrough callout is a white card with `--shadow-2`, 8px radius, "Step 3 of 7", a 16/600
-  title, 14px body and one primary button. The spotlight dims the page with a flat `--scrim`, no
-  blur, and never covers its own target.
+  bar. From 1200px a left chapter rail the width of the product sidebar.
+- On product pages the walkthrough is the Guide: one white panel with `--shadow-2`, 8px radius,
+  380px wide (340px when narrowing clears something), in a corner of the content area. Header:
+  the chapter picker and minimize. Body: "Step 1 of 2", a 16/600 title, a 14px why of 20 words or
+  fewer, the "Your turn" line on `--accent-subtle`, "How this works". Footer, one row: "Explore on
+  your own" left, Back and one action right. Phones: a bottom sheet.
+- No scrim and no blur. The target gets a 2px accent ring. The Guide never covers its target, an
+  open dialog or drawer, or a sticky action bar; it moves corner, narrows, then folds to a compact
+  card, a bar or a pill (`src/tour/guide/dock.ts`).

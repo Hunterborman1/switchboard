@@ -1,7 +1,7 @@
 /**
- * Part 1 · Cold open. A recorded 13-minute QBR, drawn as a flat waveform with one highlighted
- * moment and its transcript. Beat 1 names the idea ("Every call is a signal.") and shows what
- * that sentence becomes once Signal Loop has read it.
+ * Chapter 1 · Every call is a signal (the cold open). A recorded 13-minute QBR, drawn as a flat
+ * waveform with one highlighted moment and its transcript. Beat 1 names the idea ("Every call is a
+ * signal.") and shows what that sentence becomes once Signal Loop has read it.
  */
 import { motion } from 'motion/react';
 import { useMemo } from 'react';

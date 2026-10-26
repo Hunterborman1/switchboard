@@ -9,6 +9,7 @@ import { ButtonLink, Callout } from '../../ds';
 import { IconArrowRight } from '../../ds/icons';
 import { SiteBar } from '../../narrative/components';
 import { BACKUPS } from '../../tour/script/chapters';
+import { REPO_URL } from '../../shared/platform';
 import './writeup.css';
 
 const TOC = [
@@ -62,7 +63,7 @@ export function WriteUp() {
     <main className="ds-app sl-n n-page wu-page" data-testid="write-up">
       <SiteBar context="Write-up">
         <ButtonLink variant="ghost" size="sm" to="/walkthrough" className="wu-top__walk">
-          Walkthrough
+          Presentation
         </ButtonLink>
         <ButtonLink variant="primary" size="sm" to="/app/overview">
           Open the product
@@ -73,12 +74,18 @@ export function WriteUp() {
         <p className="wu-kicker">Option 3, the feedback loop</p>
         <h1 className="n-display wu-title">Every call is a signal.</h1>
         <p className="n-lede wu-lede">
-          Switchboard reads any customer conversation, decides what it is, runs the analyses that apply and sends the result to the right people in their own tools. Signal Loop is the analysis built for this brief: what customers tell Invoca’s CSMs becomes product insight with the quote attached, sent to the person who can act on it.
+          Built from scratch in 48 hours by Hunter Borman. Switchboard reads any customer conversation, decides what it is, runs the analyses that apply and sends the result to the right people in their own tools. Signal Loop is the analysis built for this brief: what customers tell Invoca’s CSMs becomes product insight with the quote attached, sent to the person who can act on it.
         </p>
         <ul className="wu-facts">
-          <li>A working system, not a mock-up</li>
-          <li>Sample data and simulated connectors, labelled as such</li>
+          <li>All of the AI is built and working, not a mock-up</li>
+          <li>Fictional data and simulated connections, labelled as such</li>
           <li>Assumptions marked on the page</li>
+          <li>
+            Source code on{' '}
+            <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </li>
         </ul>
       </section>
 
@@ -367,7 +374,7 @@ export function WriteUp() {
 
           <footer className="wu-end">
             <ButtonLink variant="primary" to="/walkthrough" iconRight={<IconArrowRight size={16} />}>
-              Start the walkthrough
+              Start the presentation
             </ButtonLink>
             <ButtonLink variant="secondary" to="/app/overview">
               Open the product
@@ -375,8 +382,14 @@ export function WriteUp() {
             <ButtonLink variant="ghost" to="/ops">
               Agent Ops
             </ButtonLink>
+            <ButtonLink variant="ghost" to="/app/claude" data-testid="writeup-claude">
+              Ask Claude about it: connect over MCP
+            </ButtonLink>
             <a href={`${import.meta.env.BASE_URL}walkthrough.md`} className="ds-btn ds-btn--ghost" data-testid="writeup-markdown">
               Markdown version for AI assistants
+            </a>
+            <a href={REPO_URL} target="_blank" rel="noreferrer" className="ds-btn ds-btn--ghost" data-testid="writeup-repo">
+              Source code on GitHub
             </a>
           </footer>
         </article>

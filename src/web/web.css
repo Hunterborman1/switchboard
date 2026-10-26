@@ -164,8 +164,13 @@ body {
   padding-top: var(--space-5);
   border-top: 1px solid var(--border);
 }
+.hub__ai {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px var(--space-4);
+  font-size: var(--text-sm);
+}
 .hub__md {
-  justify-self: start;
   font-size: var(--text-sm);
 }
 .hub__note {

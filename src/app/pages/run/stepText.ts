@@ -179,7 +179,7 @@ export function stepStory(step: RunStep, ctx: { screen: ScreenOutput | null; ins
         return reviewing
           ? `Nothing was sent automatically. ${reviewing === 1 ? 'The insight waiting for review is' : `The ${reviewing} insights waiting for review are`} sent once approved.`
           : 'Skipped: nothing to deliver.';
-      if (deliveries != null) return `Delivered ${plural(deliveries, 'insight')} with receipts${retries ? ` after ${plural(retries, 'retry', 'retries')}` : ''}.`;
+      if (deliveries != null) return `Delivered ${plural(deliveries, 'insight')} as simulated previews, with receipts${retries ? ` after ${plural(retries, 'retry', 'retries')}` : ''}.`;
       break;
     }
     default:

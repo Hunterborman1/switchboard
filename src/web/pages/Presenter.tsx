@@ -1,13 +1,14 @@
 /**
  * /presenter — second-screen view. Synced with the main window over
  * BroadcastChannel('signal-loop-presenter'): current/next step, speaker notes, timers vs
- * the plan's per-part targets, a jump list, and remote next/back.
+ * each chapter's target, a jump list in the same order and numbering as the chapter rail and the
+ * Guide's picker, and remote next/back.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Badge, Button, ButtonLink, Kbd } from '../../ds';
 import { IconArrowLeft, IconArrowRight, IconExternal } from '../../ds/icons';
 import { SiteBar } from '../../narrative/components';
-import { BACKUPS, CHAPTERS, GROUPS, PRODUCT_CHAPTERS, TOTAL_TARGET_SEC, chapterById, targetOffsetSec } from '../../tour/script/chapters';
+import { BACKUPS, CHAPTERS, GROUPS, TOTAL_TARGET_SEC, chapterById, chapterLabel, targetOffsetSec } from '../../tour/script/chapters';
 import { STEP_BY_ID, firstStepOf } from '../../tour/script/steps';
 import { NOTES, STEP_NOTES } from '../../tour/script/notes';
 import { PRESENTER_CHANNEL, resolveCopy } from '../../tour/engine/TourProvider';
@@ -91,7 +92,7 @@ export function Presenter() {
   const driftTone = drift > 90_000 ? 'red' : drift > 30_000 ? 'amber' : 'green';
   const totalTone = elapsed > TOTAL_TARGET_SEC * 1000 ? 'red' : elapsed > TOTAL_TARGET_SEC * 900 ? 'amber' : 'green';
 
-  const where = ch.productIndex ? `Chapter ${ch.productIndex} of ${PRODUCT_CHAPTERS}` : `Part ${CHAPTERS.findIndex((c) => c.id === ch.id) + 1} of ${CHAPTERS.length}`;
+  const where = chapterLabel(ch.id);
   const beatNote = step?.kind === 'scene' && step.beats && step.beats > 1 ? `Step ${(state?.beat ?? 0) + 1} of ${step.beats}` : null;
   const waits = step?.waitFor && step.waitFor !== 'next' && typeof step.waitFor === 'object' ? (step.waitFor.hint ?? 'an action') : null;
 
@@ -123,7 +124,7 @@ export function Presenter() {
               <b data-testid="pv-total">{fmtClock(elapsed)}</b>
             </div>
             <div className="pv__clock" data-tone={partTone}>
-              <span className="pv__k">This part, target {fmtClock(targetMs)}</span>
+              <span className="pv__k">This chapter, target {fmtClock(targetMs)}</span>
               <b>{fmtClock(inPart)}</b>
             </div>
             <div className="pv__clock" data-tone={driftTone}>
@@ -217,7 +218,7 @@ export function Presenter() {
                     return (
                       <li key={id}>
                         <button type="button" data-current={c.id === ch.id} onClick={() => send({ type: 'goto', stepId: firstStepOf(id) })}>
-                          <span className="pv__num">{c.productIndex ? `Ch ${c.productIndex}` : CHAPTERS.findIndex((x) => x.id === id) + 1}</span>
+                          <span className="pv__num">{c.part}</span>
                           <span className="pv__jtitle">{c.title}</span>
                           <span className="pv__num">{fmtClock(c.targetSec * 1000)}</span>
                         </button>

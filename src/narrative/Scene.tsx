@@ -1,7 +1,8 @@
 /**
  * Scene: a presentation page of the product. The same 52px top bar as Switchboard (the mark
- * and name, the chapter, "4 of 18", the chapter menu), the 1120px content column, and a bottom
- * bar with one muted keyboard hint, Back / Next, and one thin progress line along its top edge.
+ * and name, the chapter, "4 of 19", the chapter menu on narrow screens), the 1120px content
+ * column, and a bottom bar with one muted keyboard hint, Back / Next, and one thin progress line
+ * along its top edge. On wide screens the chapter rail (src/tour/hud/Hud.tsx) sits to its left.
  * Only the content between the bars changes from scene to scene. Clicking empty stage advances
  * (anything interactive opts out via data-no-advance).
  */
@@ -57,7 +58,7 @@ export function SceneTopBar({ label, group, index, total }: { label?: string; gr
       ) : null}
       <span className="n-topbar__spacer" />
       {index != null && total != null ? (
-        <span className="n-topbar__count" aria-label={`Part ${index} of ${total}`}>
+        <span className="n-topbar__count" aria-label={`Chapter ${index} of ${total}`}>
           {index} of {total}
         </span>
       ) : null}
@@ -96,9 +97,7 @@ export function Scene({ label, group, index, total, beat, progress = 0, onNext, 
               <Kbd>
                 <IconArrowLeft size={12} aria-label="Left arrow" />
               </Kbd>
-              <span>for back,</span>
-              <Kbd>Esc</Kbd>
-              <span>for the menu</span>
+              <span>for back</span>
             </p>
             <div className="n-bottombar__actions">
               {onBack && (

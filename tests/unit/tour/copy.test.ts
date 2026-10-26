@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { candidateCopy, candidateTitle, introCopy, promoteCopy, themeCopy } from '../../../src/tour/script/copy';
+import { candidateCopy, candidateTitle, introCopy, introTitle, promoteCopy, themeCopy, timingCopy } from '../../../src/tour/script/copy';
 import type { TourCtx } from '../../../src/tour/engine/types';
 import type { EvalRun, RunDetail, Theme } from '../../../src/shared/contracts';
 
@@ -45,14 +45,15 @@ describe('ch7 copy agrees with the eval data on screen', () => {
   });
 
   it('the gate names only its real reasons (precision), and cost/latency as reported, not gated', () => {
-    const { title, body } = promoteCopy(ctxEvals);
+    const { title, body, more = '' } = promoteCopy(ctxEvals);
     expect(title).toBe('Promotion blocked');
-    expect(body).toMatch(/Blocked on precision: 88\.7% → 59\.7%, under the 85% bar and a 29-point regression/);
-    expect(body).not.toMatch(/invented|never raised|one regression/i);
-    expect(body).toMatch(/reported, not gated/);
-    if (evals.candidate.costUsd >= evals.promoted.costUsd) expect(body).toMatch(/costs more/);
-    if (evals.candidate.p95Ms >= evals.promoted.p95Ms) expect(body).toMatch(/runs slower/);
-    expect(body).not.toMatch(/whatever it saves/i);
+    expect(body).toMatch(/Blocked on precision: from 88\.7% to 59\.7%, under the 85% bar and a 29-point regression/);
+    expect(body).not.toMatch(/→/);
+    expect(`${body} ${more}`).not.toMatch(/invented|never raised|one regression/i);
+    expect(more).toMatch(/reported, not gated/);
+    if (evals.candidate.costUsd >= evals.promoted.costUsd) expect(more).toMatch(/costs more/);
+    if (evals.candidate.p95Ms >= evals.promoted.p95Ms) expect(more).toMatch(/runs slower/);
+    expect(more).not.toMatch(/whatever it saves/i);
   });
 
   it('uses sentence case, not all caps', () => {
@@ -69,8 +70,8 @@ describe('narration matches what is shown', () => {
   });
 
   it('ch2.intro says replay when the run is a replay', () => {
-    const run = { run: { mode: 'replay' } } as unknown as RunDetail;
-    expect(introCopy(base({ run }))).toMatch(/recorded real execution, replayed at real speed/);
+    const run = { run: { mode: 'replay', status: 'running' } } as unknown as RunDetail;
+    expect(introCopy(base({ run }))).toMatch(/recorded real execution, replayed at its recorded speed/);
     expect(introCopy(base())).toMatch(/real execution, not an animation/);
   });
 
@@ -79,5 +80,65 @@ describe('narration matches what is shown', () => {
     const copy = introCopy(base({ run, runReused: true }));
     expect(copy).toMatch(/earlier run/);
     expect(copy).not.toMatch(/real execution/);
+  });
+
+  it('ch2.intro title states the run as it is: live and running, or done with its real time', () => {
+    const running = { run: { mode: 'live', status: 'running', durationMs: null } } as unknown as RunDetail;
+    const done = { run: { mode: 'live', status: 'awaiting_review', durationMs: 6090 } } as unknown as RunDetail;
+    expect(introTitle(base({ run: running }))).toBe('Running live, right now');
+    expect(introTitle(base({ run: done }))).toBe('Done in 6.09 s, live');
+  });
+});
+
+describe('ch2.timing: why it is fast, from the run’s own timestamps', () => {
+  const t0 = Date.parse('2026-10-25T10:00:00.000Z');
+  const at = (ms: number) => new Date(t0 + ms).toISOString();
+  const step = (key: string, start: number, end: number, extra: Record<string, unknown> = {}) => ({
+    runId: 'run_1',
+    key,
+    status: 'passed',
+    startedAt: at(start),
+    finishedAt: at(end),
+    durationMs: end - start,
+    model: null,
+    tokensIn: null,
+    tokensOut: null,
+    costUsd: null,
+    summary: null,
+    detail: null,
+    ...extra,
+  });
+  // Shaped like the live Brightline run: triage on the decision model alongside extraction on the main model.
+  const live = {
+    run: { id: 'run_1', mode: 'live', status: 'awaiting_review', durationMs: 6090, createdAt: at(-20) },
+    steps: [
+      step('ingest', 0, 2),
+      step('normalize', 2, 4),
+      step('redact', 4, 9),
+      step('screen', 16, 1566, { model: 'z-ai/glm-5.3-flash', tokensIn: 3000, tokensOut: 80, costUsd: 0.0002 }),
+      step('extract', 1566, 4956, { model: 'deepseek/deepseek-v4.1-flash', tokensIn: 6000, tokensOut: 1100, costUsd: 0.0025, detail: { startedWithScreen: true, callMs: 4940 } }),
+      step('ground', 4956, 4959),
+      step('score', 4959, 6029, { model: 'z-ai/glm-5.3-flash', tokensIn: 2000, tokensOut: 185, costUsd: 0.0007 }),
+      step('theme', 6029, 6030, { detail: { embedModel: '@cf/baai/bge-base-en-v1.5' } }),
+      step('route', 6030, 6031),
+      step('deliver', 6031, 6036),
+    ],
+  } as unknown as RunDetail;
+
+  it('names triage alongside extraction with the real numbers, and the code steps', () => {
+    const c = timingCopy({ run: live });
+    expect(c.title).toBe('Why it took 6.09 s');
+    expect(c.body).toMatch(/Triage \(1\.55 s\) ran alongside extraction \(4\.94 s\), not before it\./);
+    expect(c.body).toMatch(/The 6 code steps took 18 ms in all\./);
+    expect(c.more).toMatch(/second opinion \(1\.07 s\) overlaps the theme lookups/);
+    expect(c.more).toMatch(/Agent Ops/);
+  });
+
+  it('says replay, and stays generic and honest with no data', () => {
+    const replay = { ...live, run: { ...live.run, mode: 'replay' } } as unknown as RunDetail;
+    expect(timingCopy({ run: replay }).more).toMatch(/replay of a recorded live run, at its recorded speed/);
+    const g = timingCopy({ run: null });
+    expect(g.title).toBe('Why it’s this fast');
+    expect(g.body).not.toMatch(/\d/);
   });
 });

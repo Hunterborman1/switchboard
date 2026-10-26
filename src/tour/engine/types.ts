@@ -1,4 +1,3 @@
-import type { Placement } from '@floating-ui/react';
 import type { RunDetail, EvalRun, Budget, Theme } from '../../shared/contracts';
 import type { OverviewReport, AgentRecord, AgentImpact, UsageReport } from '../../shared/platform-contracts';
 import type { SignalEvent } from '../../shared/events';
@@ -6,7 +5,6 @@ import type { AnchorId } from '../anchors';
 
 export const TOUR_PATHS = ['main', 'clean', 'messy', 'security', 'negative', 'privacy'] as const;
 export type TourPath = (typeof TOUR_PATHS)[number];
-export type FloatCorner = 'bottom-left' | 'bottom-right' | 'top-right' | 'top-left';
 
 export const PATH_LABELS: Record<TourPath, string> = {
   main: 'Main story',
@@ -19,6 +17,7 @@ export const PATH_LABELS: Record<TourPath, string> = {
 
 export type ChapterId =
   | 'cold-open'
+  | 'real'
   | 'black-hole'
   | 'why'
   | 'jtbd'
@@ -39,7 +38,7 @@ export type ChapterId =
 
 export type Chapter = {
   id: ChapterId;
-  /** Part number from the plan table (0–17). */
+  /** Position in the talk, 1-based. Every chapter, narrative and product, is numbered in one sequence. */
   part: number;
   title: string;
   layer: 'narrative' | 'product' | 'both';
@@ -52,6 +51,7 @@ export type Chapter = {
 
 export type SceneId =
   | 'cold-open'
+  | 'real'
   | 'black-hole'
   | 'why'
   | 'jtbd'
@@ -161,16 +161,11 @@ export type Step = {
   target?: AnchorId | AnchorId[] | ((ctx: TourCtx) => AnchorId | AnchorId[]);
   /** Extra anchors that get a soft ring (e.g. the recommended file inside the picker). */
   highlight?: AnchorId[];
-  placement?: Placement;
-  /** When no side has room and the callout floats: the corner to try first (default: least overlap, bottom-left first). */
-  floatCorner?: FloatCorner;
   title: Copy;
   /** ≤ 20 words: the WHY. */
   body: Copy;
-  /** Detail behind "How this works ›". */
+  /** Detail behind "How this works". */
   more?: Copy;
-  /** HUD objective override for this step. */
-  objective?: Copy;
   waitFor?: WaitFor;
   /** For 'next' steps: Continue is enabled only once this is true. */
   ready?: (ctx: TourCtx) => boolean;
@@ -178,13 +173,11 @@ export type Step = {
   next: string | ((ctx: TourCtx) => string);
   actions?: StepAction[] | ((ctx: TourCtx) => StepAction[] | undefined);
   onEnter?: (ctx: TourCtx, api: TourApi) => void;
-  /** Ask the product to slow its animations while this step is on. */
-  pace?: 'slow' | 'normal';
-  /** Chapter-end checkpoint shown when leaving this step into another chapter. */
+  /** What changed in this chapter: one quiet line in the Guide on the chapter's last step. */
   checkpoint?: (ctx: TourCtx) => CheckpointData | null;
-  /** Where clicks are allowed: just the cutout, everywhere (dimmed), or nowhere. Default: 'target' when waiting on an event, else 'none'. */
-  interact?: 'target' | 'all' | 'none';
-  /** Anchor wait before falling back to a centred callout. */
+  /** Where "Resume presentation" lands if the viewer left on this step (e.g. a step that needs an open dialog). */
+  resumeAt?: string;
+  /** Anchor wait before the Guide says the part isn't on screen. */
   anchorTimeoutMs?: number;
   /** Speaker notes for the presenter view. */
   notes?: string;

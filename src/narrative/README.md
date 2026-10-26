@@ -20,9 +20,12 @@ over the product is `sl-n-portal`.
 ## Frame and components
 
 - **Scene** (`Scene.tsx`): the product's 52px top bar (mark and "Switchboard", the chapter crumb,
-  "4 of 18", and a slot the HUD docks the chapter menu into, `tour/hud/sceneSlot.tsx`), the 1120px
-  column, and a bottom bar with one muted key hint, Back / Next and one thin progress line.
-  Clicking empty stage advances; interactive children opt out with `data-no-advance`.
+  "4 of 19", and a slot for the chapter menu and presenter timer, `tour/hud/sceneSlot.tsx`), the
+  1120px column, and a bottom bar with one muted key hint, Back / Next and one thin progress line.
+  Clicking empty stage advances; interactive children opt out with `data-no-advance`. On screens
+  1200px and wider the page is a deck: the persistent chapter rail (`tour/hud/Hud.tsx`,
+  `ChapterRailNav`) sits to the left. Scene layouts respond to the scene's own width through
+  container queries (`@container scene`), so they read the same with or without the rail.
 - **SiteBar**: the same 52px bar for the hub, write-up, Q&A, presenter and not-found pages.
 - **SceneHead**: one headline and one supporting line per beat. All beats share one grid cell, so
   the head is as tall as its longest version and nothing moves when the beat changes.
@@ -44,8 +47,9 @@ between the bars at 1440×900 and 1024×768.
 | Scene | Beats |
 |---|---|
 | ColdOpen | the recorded QBR with the 06:00 quote → "Every call is a signal." and what the sentence becomes |
+| Real | built and working (all of the AI, inputs, outputs) beside simulated, each with its reason (one beat) |
 | BlackHole | where feedback comes from and the starting 100 → the handoffs and what each loses → the total and the assumption |
-| Why | Invoca Signal AI row → the same shape for Signal Loop → four reasons and where it generalises |
+| Why | the three options, each with its verdict, Option 3 chosen → how it is built (raw code, three measured model roles, one Worker) |
 | Jtbd | four persona cards (open each) → the emotional job as the headline |
 | States | the relay → leaks one by one → Signal Loop seals them → the loop closes up the right edge |
 | Platform | In (any conversation) → Decide (the decision model) → Analyse (Signal Loop built, the rest not built) → Out (the right people, by handle) |

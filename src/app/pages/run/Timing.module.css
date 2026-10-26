@@ -1,0 +1,231 @@
+/* Run timing: the live clock and the waterfall card. Tokens only. */
+
+/* ---------------------------------------------------------------- clock */
+
+.clock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  /* Reserve the widest state ("Replaying at recorded speed · 4.2 s") so nothing moves between states. */
+  min-width: 15rem;
+  height: 28px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.clockLabel {
+  color: var(--text-secondary);
+}
+
+.clock[data-state='finished'] .clockLabel {
+  color: var(--text-tertiary);
+}
+
+.clockSep {
+  color: var(--text-tertiary);
+}
+
+.clockValue {
+  min-width: 3.6em;
+  color: var(--text);
+  font-weight: var(--weight-semibold);
+}
+
+.clock[data-state='running'] .clockValue,
+.clock[data-state='replaying'] .clockValue {
+  text-align: left;
+}
+
+.clockNote {
+  margin-left: 2px;
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--border);
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+}
+
+/* ---------------------------------------------------------------- card */
+
+.body {
+  container-type: inline-size;
+  padding: var(--space-4) var(--space-5) var(--space-3);
+  min-width: 0;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row,
+.axis {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 4.25rem;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.row {
+  min-height: 36px;
+}
+
+@container (max-width: 420px) {
+  .row,
+  .axis {
+    grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) 3.75rem;
+    gap: var(--space-2);
+  }
+}
+
+.rowLabelWrap {
+  min-width: 0;
+  border-radius: var(--radius-sm);
+}
+
+.rowLabelWrap:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.rowLabel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 16px;
+}
+
+.rowName {
+  overflow: hidden;
+  font-size: var(--text-sm);
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowSub {
+  overflow: hidden;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row[data-ai='true'] .rowSub {
+  color: var(--text-secondary);
+}
+
+.track {
+  position: relative;
+  height: 16px;
+  min-width: 0;
+  border-radius: 2px;
+  background: var(--bg-subtle);
+}
+
+.bar {
+  position: absolute;
+  top: 4px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.barAi {
+  background: var(--accent);
+}
+
+.barCode {
+  background: var(--border-strong);
+}
+
+.barFailed {
+  background: var(--danger);
+}
+
+.tick {
+  position: absolute;
+  top: 2px;
+  width: 1px;
+  height: 12px;
+  background: var(--text-tertiary);
+}
+
+.dur {
+  font-size: var(--text-sm);
+  color: var(--text);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.axis {
+  margin-top: var(--space-1);
+}
+
+.axisTrack {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.why {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: 0;
+  min-width: 0;
+}
+
+.totals > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.totals dt {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.totals dd {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.opsLink {
+  flex: none;
+}
+
+.empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}

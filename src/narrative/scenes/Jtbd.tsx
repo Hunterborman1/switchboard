@@ -1,5 +1,5 @@
 /**
- * Part 4 · Jobs to be done. Four persona cards, each showing its job; click (or Enter) to reveal
+ * Chapter 5 · Jobs to be done. Four persona cards, each showing its job; click (or Enter) to reveal
  * struggles today and the success measure. Beat 1 names the emotional job in the headline.
  */
 import { useState } from 'react';

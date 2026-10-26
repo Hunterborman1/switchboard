@@ -16,6 +16,8 @@ import { PRODUCT_AREAS, type Person } from './contracts.ts';
 
 export const PLATFORM_NAME = 'Switchboard';
 export const ANALYSIS_NAME = 'Signal Loop';
+/** The public source repository. */
+export const REPO_URL = 'https://github.com/Hunterborman1/switchboard';
 
 // ---------------------------------------------------------------- connectors
 

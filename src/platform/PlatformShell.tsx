@@ -15,7 +15,6 @@ import { IconActivity, IconChevronsUpDown, IconCpu, IconFileText, IconHome, Icon
 import { useMe } from '../app/api/hooks';
 import { PLATFORM_NAME } from '../shared/platform';
 import { tourAnchor } from '../tour/anchors';
-import { TourPillSlot } from '../tour/hud/pillSlot';
 import { TimezoneProvider, useTimezone } from '../ds/time/TimezoneContext';
 import type { ConsoleTimezone } from '../ds/time/format';
 import type { PlatformMeta } from '../worker/platform/types';
@@ -133,7 +132,6 @@ function UserMenu() {
 function Footer() {
   return (
     <>
-      <TourPillSlot placement="rail" />
       <Link to={SWITCHBOARD_HREF} className="ds-nav-item">
         <ProductMark product="switchboard" size={16} />
         <span className="ds-nav-item__label">{PLATFORM_NAME}</span>
@@ -181,9 +179,13 @@ export function AboutDataDrawer({ open, onClose }: { open: boolean; onClose: () 
         {[
           {
             title: 'Six weeks of simulated history',
-            body: `Org-wide usage, runs and costs${m ? ` from ${day(m.simulatedFrom)} to ${dayYear(m.simulatedTo)}` : ''} are simulated so the platform has a realistic history. Simulated items are labelled where they appear on their own.`,
+            body: `Org-wide usage, runs and costs${m ? ` from ${day(m.simulatedFrom)} to ${dayYear(m.simulatedTo)}` : ''} are simulated so the platform has a realistic history. The people in it are simulated employees; Signal Loop’s past runs are real pipeline runs over sample calls. Simulated items are labelled where they appear on their own.`,
           },
           { title: 'Live activity from this demo', body: 'Signal Loop is a real agent. Its runs, AI calls and deliveries, and the people using this demo right now, report here live and are labelled Live.' },
+          {
+            title: 'One simulated agent',
+            body: 'The RFP & Security Questionnaire Responder is simulated, with its users and its whole history, to show a second agent held to the same standard. It is labelled Simulated wherever it appears.',
+          },
           {
             title: 'Hours saved and value are estimates',
             body: 'Hours saved compare each task with how long it takes by hand, minus the time a person spent reviewing. Value is hours saved times a loaded hourly cost. Both are assumptions you can edit.',
@@ -208,7 +210,6 @@ function TopbarEnd() {
         <span className="ao-about-label">About this data</span>
       </Button>
       <TimezoneSelect />
-      <TourPillSlot placement="bar" />
       <AboutDataDrawer open={about} onClose={() => setAbout(false)} />
     </>
   );

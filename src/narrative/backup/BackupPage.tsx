@@ -263,7 +263,7 @@ function FailureFlow() {
 const FAILS = [
   { t: 'Provider errors', d: 'Rate limits, outages and timeouts are retried, waiting a little longer each time. Every call has a time limit. A slow or failing main model hands over to the backup model.' },
   { t: 'A quote that isn’t in the call', d: 'If a quote can’t be found in the transcript, word for word or very nearly, the insight is dropped and counted as made up. It’s never shown as fact.' },
-  { t: 'Spending limit or live failure', d: 'The run replays a recorded real run at real speed, labelled on screen. The walkthrough works for all seven days regardless.' },
+  { t: 'Spending limit or live failure', d: 'The run replays a recorded real run at real speed, labelled on screen. The presentation works for all seven days regardless.' },
   { t: 'Partial failure', d: 'If Jira succeeds and Slack fails, the delivery reads as failed, with attempts and receipts per destination. Partial is not success.' },
   { t: 'Duplicates', d: 'Every upload gets a fingerprint. Uploading the same file again opens the same run, with no double insights.' },
   { t: 'Picking up where it stopped', d: 'The ten steps run on a fast path and save as they go. If a step fails or the run takes too long, a background job resumes from the last finished step, not from scratch.' },

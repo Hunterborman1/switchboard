@@ -10,6 +10,7 @@ test('presenter view syncs with the main window and drives it', async ({ context
   await presenter.goto(`${BASE}/presenter?notrack=1`);
   await expect(presenter.getByTestId('presenter-status')).toHaveAttribute('data-on', 'true', { timeout: 10_000 });
   await expect(presenter.getByTestId('pv-current')).toContainText('Where feedback gets lost');
+  await expect(presenter.getByText('Chapter 3 of 19')).toBeVisible();
   await expect(presenter.getByTestId('pv-notes')).toBeVisible();
 
   // remote next: advances a beat on the main window
@@ -20,9 +21,9 @@ test('presenter view syncs with the main window and drives it', async ({ context
   await main.keyboard.press('ArrowRight');
   await main.keyboard.press('ArrowRight');
   await expectStep(main, 'why');
-  await expect(presenter.getByTestId('pv-current')).toContainText('Why this option');
+  await expect(presenter.getByTestId('pv-current')).toContainText('Why this option, and not the others');
 
-  // jump list
+  // jump list, in the same order and numbering as the chapter rail
   await presenter.getByRole('button', { name: /Prove it/ }).click();
   await expectStep(main, 'ch7.metrics');
 });

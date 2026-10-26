@@ -1,6 +1,7 @@
 /**
- * / — the landing page. "Every call is a signal." What Switchboard is, the analysis built for
- * this brief, and three ways in: the guided walkthrough, the product itself, and the write-up.
+ * / — the landing page. "Every call is a signal." What Switchboard is (built from scratch in 48
+ * hours), the analysis built for this brief, and three ways in: the presentation, the product
+ * itself (with the Guide on every screen), and the write-up.
  */
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -9,11 +10,10 @@ import { Button, ButtonLink } from '../../ds';
 import { IconArrowRight, IconBook, IconGrid, IconPlay } from '../../ds/icons';
 import { SiteBar } from '../../narrative/components';
 import { useCalm } from '../../narrative/hooks';
+import { REPO_URL } from '../../shared/platform';
 import { DUR, EASE } from '../../narrative/motion';
 import { useTour } from '../../tour/engine/TourProvider';
-import { BACKUPS, PRODUCT_CHAPTERS, TOTAL_TARGET_SEC, chapterById } from '../../tour/script/chapters';
-
-const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+import { BACKUPS, CHAPTERS, TOTAL_TARGET_SEC, chapterById, chapterLabel } from '../../tour/script/chapters';
 
 function DoorInner({ icon, title, body, meta, cta, primary }: { icon: ReactNode; title: string; body: string; meta: string; cta: string; primary?: boolean }) {
   return (
@@ -50,7 +50,6 @@ export function Hub() {
     navigate('/app/overview');
   };
   const enter = (i: number) => ({ initial: calm ? false : { opacity: 0, y: 6 }, animate: { opacity: 1, y: 0 }, transition: { duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : i * 0.06 } }) as const;
-  const chapters = NUMBER_WORDS[PRODUCT_CHAPTERS] ?? String(PRODUCT_CHAPTERS);
 
   return (
     <main className="ds-app sl-n n-page hub" data-testid="hub">
@@ -65,17 +64,17 @@ export function Hub() {
 
       <div className="hub__col">
         <motion.section className="hub__hero" {...enter(0)}>
-          <p className="hub__kicker">AI Operations Lead brief, option 3: the feedback loop</p>
+          <p className="hub__kicker">Built from scratch in 48 hours by Hunter Borman</p>
           <h1 className="n-display hub__title">Every call is a signal.</h1>
           <p className="n-lede hub__lede">
-            Switchboard reads any customer conversation, from a recorded call to an email thread or a PDF, works out what it is, and sends what matters to the right people in the tools they already use. Signal Loop is the analysis built for this brief: product feedback, proved with the customer’s own words, sent to its owner.
+            Switchboard reads any customer conversation, from a recorded call to an email thread or a PDF, works out what it is, and sends what matters to the right people in the tools they already use. Signal Loop is the analysis built for option 3 of the AI Operations Lead brief, the feedback loop: product feedback, proved with the customer’s own words, sent to its owner.
           </p>
         </motion.section>
 
         {resumable && (
           <motion.div className="hub__resume" {...enter(1)}>
             <span className="hub__resume-text">
-              Walkthrough in progress: <b>{chapterById(tour.step.chapter).title}</b>
+              Presentation in progress: <b>{chapterLabel(tour.step.chapter)}, {chapterById(tour.step.chapter).title}</b>
             </span>
             <Button variant="secondary" size="sm" icon={<IconPlay size={14} />} onClick={resumeTour}>
               Resume where you left off
@@ -89,8 +88,8 @@ export function Hub() {
               <DoorInner
                 primary
                 icon={<IconPlay size={18} />}
-                title="Start the walkthrough"
-                body={`The story first, then you use the real product across ${chapters} short chapters.`}
+                title="Start the presentation"
+                body={`${CHAPTERS.length} chapters: the story, then you use the real product, with a guide in the corner you can leave and resume.`}
                 meta={`About ${Math.round(TOTAL_TARGET_SEC / 60)} minutes`}
                 cta="Start"
               />
@@ -98,7 +97,7 @@ export function Hub() {
           </motion.div>
           <motion.div {...enter(3)} className="hub__doorwrap">
             <button type="button" className="hub-door" onClick={explore} data-testid="door-explore">
-              <DoorInner icon={<IconGrid size={18} />} title="Open the product" body="Bring in any conversation, review what it found, change who hears what, and check the quality tests." meta="Explore on your own" cta="Open" />
+              <DoorInner icon={<IconGrid size={18} />} title="Open the product" body="Bring in any conversation, review what it found, change who hears what. The Guide suggests something to try on every screen." meta="Explore on your own" cta="Open" />
             </button>
           </motion.div>
           <motion.div {...enter(4)} className="hub__doorwrap">
@@ -109,7 +108,7 @@ export function Hub() {
         </section>
 
         <footer className="hub__foot">
-          <p className="hub__note">Sample data only. Every account is fictional, connectors are simulated, and every panel says whether it is live or simulated.</p>
+          <p className="hub__note">All of the AI is real and runs live. Every account is fictional, the connections are simulated, and every screen says which is which.</p>
           <nav className="hub__backups" aria-label="Questions and answers">
             <span className="hub__backups-k">Questions</span>
             {BACKUPS.map((b) => (
@@ -118,9 +117,17 @@ export function Hub() {
               </Link>
             ))}
           </nav>
-          <a className="n-link hub__md" href={`${import.meta.env.BASE_URL}walkthrough.md`} data-testid="hub-markdown">
-            Markdown version for AI assistants
-          </a>
+          <span className="hub__ai">
+            <Link className="n-link" to="/app/claude" data-testid="hub-claude">
+              Ask Claude about it: connect over MCP
+            </Link>
+            <a className="n-link hub__md" href={`${import.meta.env.BASE_URL}walkthrough.md`} data-testid="hub-markdown">
+              Markdown version for AI assistants
+            </a>
+            <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer" data-testid="hub-repo">
+              Source code on GitHub
+            </a>
+          </span>
         </footer>
       </div>
     </main>

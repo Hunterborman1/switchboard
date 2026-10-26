@@ -34,7 +34,7 @@ function Pending({ what }: { what: string }) {
       <div className="nf__body">
         <div className="nf__card">
           <h1 className="nf__title">{what} is being prepared.</h1>
-          <p className="nf__text">This part of the build isn’t deployed yet. The walkthrough and the write-up are available.</p>
+          <p className="nf__text">This part of the build isn’t deployed yet. The presentation and the write-up are available.</p>
           <div className="nf__actions">
             <ButtonLink variant="secondary" to="/">
               Back to the start
