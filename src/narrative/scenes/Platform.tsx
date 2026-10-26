@@ -91,7 +91,7 @@ export function Platform() {
     <div className="sc sc-plat">
       <SceneHead
         title="Signal Loop runs inside Switchboard."
-        line="Any conversation comes in. A fast decision model reads it first, only the analyses that apply run, and the results reach the right people in their own tools."
+        line="Any conversation comes in. A fast model reads it first. Only the analyses that apply run, and the results reach the right people in their own tools."
       />
       <div className="sc-plat__diagram" role="group" aria-label="How Switchboard works: in, decide, analyse, out">
         <Column n={1} step="In" title="Any conversation">
@@ -129,7 +129,7 @@ export function Platform() {
               </li>
             ))}
           </ul>
-          <p className="sc-plat__foot">A small, fast model on OpenRouter: 0.9 s median in the speed test</p>
+          <p className="sc-plat__foot">A small, fast model on OpenRouter: 0.9 s median in testing</p>
         </Column>
 
         <Joint n={3} />

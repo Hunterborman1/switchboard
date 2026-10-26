@@ -17,12 +17,12 @@ const AI = [
   'Extraction by the main model',
   'The quote check, in code',
   'Scoring and a second opinion',
-  'Themes from embeddings and nearest neighbours',
+  'Themes, grouped by similar meaning',
   'The routing rules engine',
   'The review queue',
   'Evals with a promotion gate',
-  'A spend cap, then replay',
-  'Agent Ops telemetry for this agent',
+  'A spend cap, with replay past it',
+  'Agent Ops monitoring for this agent',
 ];
 
 const NOT_BUILT = ANALYSES.filter((a) => a.availability !== 'built').length;
@@ -33,7 +33,7 @@ const OTHER_TOOLS = CONNECTORS.length - SHOWN_TOOLS.length;
 const SIMULATED: { what: string; why: string; marks?: readonly string[] }[] = [
   {
     what: `Connections to ${SHOWN_TOOLS.map(toolName).join(', ').replace('Microsoft Teams', 'Teams')} and ${OTHER_TOOLS} more`,
-    why: 'There is no access to Invoca’s systems, and a demo must never message real people. Routing and tagging still behave exactly as they would.',
+    why: 'I have no access to Invoca’s systems, and a demo must never message real people. Routing and tagging still work exactly as they would.',
     marks: SHOWN_TOOLS,
   },
   { what: 'The data: 14 accounts, 21 people and 266 calls, notes and threads', why: 'Real customer conversations can’t leave Invoca, so every account, person and call here is fictional.' },
@@ -65,7 +65,7 @@ export function Real() {
             </ButtonLink>
           </>
         }
-        line="All of the AI is built and working: what goes in and what comes out really runs. The connections and the data are simulated, and every screen says so."
+        line="All of the AI is built and works. What goes in and what comes out really runs. The connections and data are simulated, and every screen says so."
       />
       <div className="sc-real__visual">
         <Enter delay={0.06} className="sc-real__card" attrs={{ 'data-testid': 'real-built' }}>
