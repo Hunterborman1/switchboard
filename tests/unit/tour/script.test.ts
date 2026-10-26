@@ -11,34 +11,45 @@ const ctx = (patch: Partial<TourCtx> = {}): TourCtx => ({
   run: null, evals: null, budget: null, ops: null, peek: null, theme: null, pathname: '/', lastEvent: null, ...patch,
 });
 
-describe('constant chapters', () => {
+describe('ten chapters', () => {
   it('is 25:00 in total', () => {
     expect(TOTAL_TARGET_SEC).toBe(1500);
+  });
+
+  it('is three introduction chapters, five in the platform and two to close', () => {
+    expect(CHAPTERS).toHaveLength(10);
+    expect(GROUPS.map((g) => [g.label, g.ids.length])).toEqual([
+      ['Introduction', 3],
+      ['The platform', 5],
+      ['Closing', 2],
+    ]);
+    expect(CHAPTERS.map((c) => c.id)).toEqual(['signal', 'real', 'why', 'call', 'review', 'routing', 'patterns', 'operate', 'production', 'scorecard']);
   });
 
   it('numbers every chapter in one sequence, in order, and groups each exactly once', () => {
     CHAPTERS.forEach((c, i) => expect(c.part).toBe(i + 1));
     const grouped = GROUPS.flatMap((g) => g.ids);
     expect(grouped).toEqual(CHAPTERS.map((c) => c.id));
-    expect(chapterLabel('ch3')).toBe(`Chapter 10 of ${CHAPTERS.length}`);
-  });
-
-  it('puts "What’s real" right after the cold open, and the option choice before the jobs', () => {
-    const ids = CHAPTERS.map((c) => c.id);
-    expect(ids.indexOf('real')).toBe(ids.indexOf('cold-open') + 1);
-    expect(ids.indexOf('why')).toBeLessThan(ids.indexOf('jtbd'));
+    expect(chapterLabel('review')).toBe(`Chapter 5 of ${CHAPTERS.length}`);
   });
 
   it('every chapter has speaker notes whose time matches its target', () => {
     for (const c of CHAPTERS) expect(NOTES[c.id]?.time, c.id).toBe(fmtTarget(c.targetSec));
   });
 
-  it('every scene step has a registered scene with the same beats it declares', () => {
-    for (const s of STEPS.filter((x) => x.kind === 'scene')) {
-      expect(SCENES[s.scene!], s.id).toBeDefined();
-      expect(s.beats ?? 1).toBeGreaterThanOrEqual(1);
-    }
-    expect(STEP_BY_ID['why']?.beats).toBe(2);
+  it('every scene step draws a registered scene, and no step has beats', () => {
+    for (const s of STEPS.filter((x) => x.kind === 'scene')) expect(SCENES[s.scene!], s.id).toBeDefined();
+    for (const s of STEPS) expect('beats' in s, s.id).toBe(false);
+  });
+
+  it('the platform chapter opens on the platform scene, then the product', () => {
+    expect(chapterSteps('call').slice(0, 2)).toEqual(['call.platform', 'call.intro']);
+    expect(STEP_BY_ID['call.platform']?.kind).toBe('scene');
+    expect(STEP_BY_ID['why']?.next).toBe('call.platform');
+  });
+
+  it('step ids name their chapter', () => {
+    for (const s of STEPS) expect(s.id === s.chapter || s.id.startsWith(`${s.chapter}.`), s.id).toBe(true);
   });
 });
 
@@ -49,11 +60,11 @@ describe('shorter product chapters', () => {
     expect(product.length).toBeLessThanOrEqual(23);
   });
 
-  it('each product chapter has two to five steps', () => {
-    for (const c of CHAPTERS.filter((x) => x.layer === 'product')) {
-      const n = chapterSteps(c.id).length;
-      expect(n, c.id).toBeGreaterThanOrEqual(2);
-      expect(n, c.id).toBeLessThanOrEqual(5);
+  it('each platform chapter has two to nine steps on the main path', () => {
+    for (const id of GROUPS.find((g) => g.label === 'The platform')!.ids) {
+      const n = chapterSteps(id).length;
+      expect(n, id).toBeGreaterThanOrEqual(2);
+      expect(n, id).toBeLessThanOrEqual(9);
     }
   });
 
@@ -71,15 +82,15 @@ describe('shorter product chapters', () => {
       const s = STEP_BY_ID[id]!;
       return typeof s.next === 'function' ? s.next(ctx({ path })) : s.next;
     };
-    expect(at('ch2.intro', 'privacy')).toBe('ch2.privacy');
-    expect(at('ch2.intro', 'main')).toBe('ch2.screen');
-    expect(at('ch2.ground', 'messy')).toBe('ch2.messy');
-    expect(at('ch2.timing', 'clean')).toBe('ch2.clean');
-    expect(at('ch2.screen', 'negative')).toBe('ch2.timing');
+    expect(at('call.watch', 'privacy')).toBe('call.privacy');
+    expect(at('call.watch', 'main')).toBe('call.screen');
+    expect(at('call.ground', 'messy')).toBe('call.messy');
+    expect(at('call.timing', 'clean')).toBe('call.clean');
+    expect(at('call.screen', 'negative')).toBe('call.timing');
   });
 
   it('a step that needs an open dialog resumes where it can be picked up', () => {
-    expect(STEP_BY_ID['ch1.pick']?.resumeAt).toBe('ch1.intro');
+    expect(STEP_BY_ID['call.pick']?.resumeAt).toBe('call.intro');
   });
 
   it('step bodies say why in 20 words or fewer, without arrows', () => {
