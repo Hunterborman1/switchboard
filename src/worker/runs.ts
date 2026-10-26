@@ -67,6 +67,11 @@ export function detectAccount(text: string, accounts: Account[]): Account | null
   return null;
 }
 
+/** The account a pasted or uploaded conversation is about: named in the text, else in the file name. */
+export function accountFor(text: string, filename: string, accounts: Account[]): Account | null {
+  return detectAccount(text, accounts) ?? detectAccount(filename.replace(/[-_.]+/g, ' '), accounts);
+}
+
 export type CreateResult =
   | { ok: true; runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean; duplicateScope?: 'workspace' | 'seed'; duplicateCreatedAt?: string }
   | { ok: false; status: 400 | 404 | 409 | 429 | 503; code: string; message: string };
@@ -150,7 +155,7 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
     filename = input.filename;
     sha = await sha256Hex(input.text);
     const accounts = await getAccounts(env.DB);
-    accountId = detectAccount(input.text, accounts)?.id ?? null;
+    accountId = accountFor(input.text, input.filename, accounts)?.id ?? null;
   }
 
   // Idempotency: the same bytes were already processed (by this viewer, or in seeded history).
