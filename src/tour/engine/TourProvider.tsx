@@ -382,7 +382,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   }, [step.chapter, state.status, peek, state.ctx.runId]);
 
   // patterns: the theme the copy narrates must be the one on screen. Once a theme is opened, that
-  // one; before that, the card patterns.intro spotlights (theme.c1042); else the viewer's own
+  // one; before that, the card patterns.intro points at (theme.c1042); else the viewer's own
   // insight's theme; else the biggest.
   useEffect(() => {
     if (state.status !== 'active' || step.chapter !== 'patterns') return;

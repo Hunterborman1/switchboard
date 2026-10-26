@@ -30,7 +30,7 @@ each conversation (`ScreenOutput.analyses`).
 7. **Evals.** Golden labels in `data/golden/`, a scorer in `scripts/lib/match.ts`, and a gate in
    `src/shared/scoring.ts` before it routes anything automatically.
 8. **MCP.** Expose a read tool in `src/worker/mcp/tools.ts`.
-9. **Docs.** README's "What's real" table, `docs/WALKTHROUGH.md`, and the walkthrough's platform scene.
+9. **Docs.** README's "What's real and what's simulated" list, `docs/WALKTHROUGH.md`, and the walkthrough's platform scene.
 
 ## Check
 

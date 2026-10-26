@@ -3,7 +3,7 @@
  * of deliveries on the left and a preview of the selected one on the right, built from the real
  * delivery. The tracker preview carries the ticket status the PM moves; Shipped notifies the CSM.
  * The selected tab and delivery live in the URL; the walkthrough step in the URL (?tour=) picks
- * the tab its spotlight needs.
+ * the tab that shows what the step points at.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -48,7 +48,7 @@ const KINDS: { value: Kind; label: string; noun: string; channels: Channel[]; pr
 ];
 const kindOf = (c: Channel): Kind | null => KINDS.find((k) => k.channels.includes(c))?.value ?? null;
 
-/** Walkthrough steps that spotlight something on this page, and the tab that shows it. */
+/** Walkthrough steps that point at something on this page, and the tab that shows it. */
 const TOUR_KIND: Record<string, Kind> = { 'routing.delivery': 'issues', 'patterns.ship': 'issues' };
 
 const TOOL_NOUN: Record<Channel, string> = {
@@ -149,7 +149,7 @@ export default function DestinationsPage() {
     setParams(next, { replace: true });
   };
 
-  // The walkthrough names its step in the URL; show the tab that step spotlights.
+  // The walkthrough names its step in the URL; show the tab that step points at.
   const tourStep = params.get('tour');
   useEffect(() => {
     const want = tourStep ? TOUR_KIND[tourStep] : undefined;

@@ -308,8 +308,8 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?:
 }
 
 /**
- * The theme card patterns.intro spotlights. Mirrors isC1042Theme in src/app/pages/Themes.tsx, which
- * places the `theme.c1042` anchor: the copy and the spotlight must name the same theme.
+ * The theme card patterns.intro points at. Mirrors isC1042Theme in src/app/pages/Themes.tsx, which
+ * places the `theme.c1042` anchor: the copy and the ring must name the same theme.
  */
 export function isSpotlitTheme(t: Pick<Theme, 'id' | 'name'>): boolean {
   return t.id === 'thm_offline_conv' || /offline conversions/i.test(t.name);
@@ -377,7 +377,7 @@ export function opsTraceCopy(ctx: TourCtx): string {
 
 /**
  * routing.rule revisit: the pricing rule already carries this workspace's override, so choosing the
- * same owner again shows no Save. Read from the routing table the step spotlights.
+ * same owner again shows no Save. Read from the routing table the step points at.
  */
 export function pricingRuleOverridden(_ctx?: TourCtx): boolean {
   return typeof document !== 'undefined' && !!document.querySelector('[data-tour="routing.rule.pricing"][data-override="true"]');

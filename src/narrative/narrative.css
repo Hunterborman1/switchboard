@@ -453,7 +453,7 @@ a.n-brand:hover .n-brand__name {
   text-decoration-color: currentColor;
 }
 
-/* A gentle nudge when a click lands outside the spotlight: 4px, once. */
+/* A 4px shake, once. Nothing applies .n-shake at the moment. */
 @keyframes n-nudge {
   0%,
   100% {

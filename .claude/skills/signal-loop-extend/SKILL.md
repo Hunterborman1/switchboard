@@ -13,7 +13,7 @@ Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `t
 - Sentence case. Plain English for a VP of Customer Success; keep jargon behind "How this works" (`more`).
 - A step's `body` is 20 words or fewer and says why; detail goes in `more` ("How this works").
 - Motion only shows a change of state: 120–240 ms for UI, data reveals up to 600 ms once, no bounce or loops; reduced motion draws the final frame.
-- A scene shows all of its content at once, with one staggered entrance on arrival (`Enter` in `src/narrative/components.tsx`). No beats, no click-to-reveal, no flip cards; only Back / Next and ← → move on, never a click on the page.
+- A scene shows all of its content at once, with one staggered entrance on arrival (`Enter` in `src/narrative/components.tsx`). No step-by-step reveals, no click-to-reveal, no flip cards; only Back / Next and ← → move on, never a click on the page.
 - "Decision model", "Main model" and "Backup model" on screen; exact model ids only on `/app/settings`.
 - Product UI is built only from `src/ds` (tokens, components, Shell) and `src/app/components/domain.tsx`; see `docs/DESIGN.md`.
 - Every number on screen is either read from real data or labelled as an assumption or simulated.
@@ -29,7 +29,7 @@ Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `t
 Edit `src/tour/script/steps.ts`. A step needs `id`, `chapter`, `kind`, `title`, `body`, `next`, and usually `route`, `target`, `waitFor` (`highlight` adds soft rings). The Guide places itself; there is no per-step placement.
 - `waitFor`: an event from `src/shared/events.ts` (`{ event, where?, hint }`), a `{ predicate }`, or `'next'` with a `ready` check (for example `stepDone(ctx.run, 'ground')`).
 - Data-driven copy goes in `src/tour/script/copy.ts` and must degrade to honest generic text when data is missing; never promise something the screen may not show.
-- Branch-only steps: route to them from `next: (ctx) => …` using `ctx.path`, and add their ids to the exclusion list in `MAIN_ORDER` at the bottom of `steps.ts`.
+- Branch-only steps: route to them from `next: (ctx) => …` using `ctx.path`, and add their ids to `BRANCH_STEPS` at the bottom of `steps.ts`, which keeps them out of `MAIN_ORDER`.
 - New routes go in `src/tour/script/routes.ts` (`R`) and must match `src/app/routes.tsx` / `src/platform`.
 - Presenter notes: `STEP_NOTES` in `src/tour/script/notes.ts`.
 

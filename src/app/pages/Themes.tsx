@@ -39,7 +39,7 @@ export function ThemeStatusBadge({ status }: { status: Theme['status'] }) {
 
 /**
  * The theme the C-1042 walkthrough insight joins (by id, or by name for real data). Mirrors
- * isSpotlitTheme in src/tour/script/copy.ts: the copy and the spotlight must name the same one.
+ * isSpotlitTheme in src/tour/script/copy.ts: the copy and the ring must name the same one.
  */
 export function isC1042Theme(t: Pick<Theme, 'id' | 'name'>): boolean {
   return t.id === 'thm_offline_conv' || /offline conversions/i.test(t.name);
@@ -79,7 +79,7 @@ export default function ThemesPage() {
   const sortState = (k: SortKey) => (sortKey === k ? sortDir : null);
 
   const all = themes.data ?? [];
-  // The walkthrough spotlights the first matching theme in API order, the same one its copy names.
+  // The walkthrough points at the first matching theme in API order, the same one its copy names.
   const spotlitId = useMemo(() => all.find(isC1042Theme)?.id ?? null, [all]);
 
   const searched = useMemo(
@@ -104,7 +104,7 @@ export default function ThemesPage() {
   }, [searched, status, sortKey, sortDir]);
   const count = (f: StatusFilter) => searched.filter((t) => f === 'all' || t.status === f).length;
   const filtered = !!(type || area || q || status !== 'all');
-  // Show a page at a time, always far enough to include the theme the walkthrough spotlights.
+  // Show a page at a time, always far enough to include the theme the walkthrough points at.
   const spotIndex = rows.findIndex((t) => t.id === spotlitId);
   const visible = rows.slice(0, Math.max(limit, spotIndex + 1));
 

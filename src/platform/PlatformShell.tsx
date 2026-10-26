@@ -1,7 +1,7 @@
 /**
  * The Agent Ops shell: the shared design-system Shell (the same frame as Switchboard),
  * configured for this product. A product switcher top-left, Platform / Observe / Govern
- * navigation, a footer with the walkthrough pill, the way back to Switchboard and the user,
+ * navigation, a footer with the way back to Switchboard and the user menu,
  * and a top bar with breadcrumbs, "About this data" and the time zone.
  *
  * Mount it as the layout for /ops (it renders <Outlet/> unless given children). Rendering it
