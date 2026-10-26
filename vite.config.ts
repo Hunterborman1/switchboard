@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   publicDir: 'static',
   build: { outDir: 'dist', emptyOutDir: true, sourcemap: false, chunkSizeWarningLimit: 900 },
-  server: { port: Number(process.env.VITE_PORT ?? 5178), proxy: { '/repo/invoca/api': workerProxy(WORKER), '/repo/invoca/login': workerProxy(WORKER) } },
+  server: { port: Number(process.env.VITE_PORT ?? 5178), proxy: { '/repo/invoca/api': workerProxy(WORKER), '/repo/invoca/login': workerProxy(WORKER), '/repo/invoca/mcp': workerProxy(WORKER) } },
 });
 
 /**

@@ -1,0 +1,87 @@
+/* Connect Claude: capability tiles, the token row, copyable code blocks and example prompts. */
+
+.can {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  min-width: 0;
+}
+.canTitle {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+.canBody {
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+
+.tokenRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.tokenRow > svg {
+  color: var(--text-tertiary);
+}
+
+.code {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  min-width: 0;
+}
+.codeHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 4px 8px 4px var(--space-4);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+.pre {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text);
+  white-space: pre;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+.note code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.asks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.asks li {
+  padding: 12px var(--space-5);
+  border-bottom: 1px solid var(--border-row);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.asks li:last-child {
+  border-bottom: 0;
+}
