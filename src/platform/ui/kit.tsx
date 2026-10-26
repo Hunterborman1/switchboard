@@ -8,7 +8,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, Badge, Card, Meter, Skeleton, Tooltip, type SortDir, type Tone } from '../../ds';
 import { IconArrowDown, IconArrowUp, IconChevronsUpDown } from '../../ds/icons';
 import { InfoTip } from './InfoTip';
-import type { AgentRecord, Alert, DataSource, Slo } from '../../shared/platform-contracts';
+import { SIGNAL_LOOP_AGENT_ID, type AgentRecord, type Alert, type DataSource, type Slo } from '../../shared/platform-contracts';
 import type { ReviewStatus } from '../../worker/platform/types';
 import { modelAgentId, modelLabel } from '../../shared/modelLabels';
 import { ErrorState } from '../../app/components/domain';
@@ -81,19 +81,45 @@ const SRC_HELP: Record<DataSource | 'mixed', string> = {
   simulated: 'A seeded six-week history shaped like Invoca usage.',
   mixed: 'The simulated six-week history plus live activity from this demo.',
 };
-/** Live, simulated or both. Live is the accent; simulated is quiet. */
-export function SourceBadge({ source, label }: { source: DataSource | 'mixed'; label?: string }) {
+/**
+ * Live, simulated or both. Live is the accent; simulated is quiet (the same outline badge as
+ * Switchboard's SimulatedBadge). `help` replaces the generic meaning when the context is narrower.
+ */
+export function SourceBadge({ source, label, help }: { source: DataSource | 'mixed'; label?: string; help?: string }) {
   const text = label ?? (source === 'live' ? 'Live' : source === 'simulated' ? 'Simulated' : 'Live and simulated');
+  const tip = help ?? SRC_HELP[source];
   return (
-    <Tooltip label={SRC_HELP[source]}>
+    <Tooltip label={tip}>
       <span className="ao-badge-wrap">
         <Badge tone={source === 'live' ? 'success' : 'neutral'} outline={source !== 'live'}>
           {text}
         </Badge>
-        <span className="ds-sr-only">{SRC_HELP[source]}</span>
+        <span className="ds-sr-only">{tip}</span>
       </span>
     </Tooltip>
   );
+}
+
+// ---------------------------------------------------------------- real or simulated agent
+
+const AGENT_SRC_HELP: Record<DataSource, string> = {
+  live: 'A real agent: its runs in this demo report here live. The six weeks before today are simulated history.',
+  simulated: 'A simulated agent: it, its users and its whole history are made up, to show a second agent held to the same standard.',
+};
+
+/** Whether an agent is real or simulated. Rows that carry `source` win; otherwise only Signal Loop is live (the contract). */
+export function agentSource(agentId: string, rows?: { id: string; source: DataSource }[] | null): DataSource {
+  return rows?.find((r) => r.id === agentId)?.source ?? (agentId === SIGNAL_LOOP_AGENT_ID ? 'live' : 'simulated');
+}
+
+/** "Live" for the real agent, "Simulated" for a simulated one; one per agent in a list or header. */
+export function AgentSourceBadge({ source }: { source: DataSource }) {
+  return <SourceBadge source={source} help={AGENT_SRC_HELP[source]} />;
+}
+
+/** An agent's name where only text fits (selects, legends, chart tips): a simulated agent says so. */
+export function agentLabel(name: string, source: DataSource): string {
+  return source === 'simulated' ? `${name} (simulated)` : name;
 }
 
 // ---------------------------------------------------------------- small pieces
@@ -103,13 +129,20 @@ export function AgentDot({ color }: { color: string }) {
   return <span className="ao-agent-dot" style={{ background: color }} aria-hidden="true" />;
 }
 
-/** Agent name with its colour key and a quieter second line. */
-export function AgentCell({ color, primary, secondary }: { color: string; primary: ReactNode; secondary?: ReactNode }) {
+/** Agent name with its colour key, whether it is live or simulated, and a quieter second line. */
+export function AgentCell({ color, primary, secondary, source }: { color: string; primary: ReactNode; secondary?: ReactNode; source?: DataSource }) {
   return (
     <span className="ao-agent">
       <AgentDot color={color} />
       <span className="ao-agent__text">
-        <span className="ds-table__primary">{primary}</span>
+        {source ? (
+          <span className="ao-agent__name">
+            <span className="ds-table__primary">{primary}</span>
+            <AgentSourceBadge source={source} />
+          </span>
+        ) : (
+          <span className="ds-table__primary">{primary}</span>
+        )}
         {secondary ? <span className="ds-table__secondary">{secondary}</span> : null}
       </span>
     </span>

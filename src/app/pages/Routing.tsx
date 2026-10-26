@@ -14,8 +14,8 @@ import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChevronDown, IconRou
 import { api } from '../api/client';
 import { invalidate, keys, useConnections, useDeliveries, usePeople, useQuery, useRules } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { CHANNELS, ChannelMark, channelConnector, channelLabel, channelReady } from '../components/destinations/channel';
-import { ErrorState } from '../components/domain';
+import { CHANNELS, ChannelMark, channelConnector, channelLabel, channelReady, DEFAULT_DESTINATION } from '../components/destinations/channel';
+import { ErrorState, SIMULATED_TIP, SimulatedBadge } from '../components/domain';
 import { AREA_SHORT, SEVERITY_LABEL, TYPE_LABEL } from '../lib/labels';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
@@ -214,7 +214,12 @@ export default function RoutingPage() {
               <tr>
                 <th>Rule</th>
                 <th>Owner</th>
-                <th>Channel</th>
+                <th>
+                  <span className="ds-row" style={{ gap: 6 }}>
+                    Channel
+                    <SimulatedBadge tip={SIMULATED_TIP.routing} />
+                  </span>
+                </th>
                 <th>Destination</th>
                 <th>Priority</th>
                 <th>Enabled</th>
@@ -242,7 +247,7 @@ export default function RoutingPage() {
                     <span className={styles.noteWarning}>
                       <IconAlertTriangle size={14} />
                       <span>
-                        {connector.name} isn’t connected. Matches go to triage. <Link to={`/app/connections/${connector.id}`}>Connect {connector.name}</Link>
+                        {connector.name} isn’t connected (simulated), so matches go to triage. <Link to={`/app/connections/${connector.id}`}>Connect {connector.name}</Link>
                       </span>
                     </span>
                   ) : null;
@@ -272,7 +277,7 @@ export default function RoutingPage() {
                         <OwnerPicker rule={rule} value={d.ownerId} owner={owner} directory={directory} onChange={(ownerId) => edit(rule, { ownerId })} />
                       </td>
                       <td>
-                        <ChannelPicker rule={rule} value={d.channel} connections={connections} onChange={(channel) => edit(rule, { channel })} />
+                        <ChannelPicker rule={rule} value={d.channel} connections={connections} onChange={(channel) => edit(rule, { channel, destination: channel === rule.channel ? rule.destination : DEFAULT_DESTINATION[channel] })} />
                       </td>
                       <td>
                         <Input inputSize="sm" aria-label={`Destination for ${ruleName(rule.name)}`} value={d.destination} onChange={(e) => edit(rule, { destination: e.target.value })} />
@@ -368,7 +373,7 @@ export default function RoutingPage() {
       <Card
         title="Delivery log"
         description={
-          deliveries.length ? `${deliveries.length.toLocaleString()} deliveries, ${retried} needed a retry. Open a row to see each attempt.` : 'Every send, with the receipt from the tool it went to.'
+          deliveries.length ? `${deliveries.length.toLocaleString()} simulated deliveries, ${retried} needed a retry. Open a row to see each attempt.` : 'Every simulated send, with the receipt it produced.'
         }
         actions={log.actions}
         footer={log.footer}

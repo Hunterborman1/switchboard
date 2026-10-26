@@ -39,7 +39,8 @@ function editValue(key: string, v: unknown): string {
 const ACTION_VERB: Record<ReviewRecord['action'], string> = { approve: 'approved and sent it', edit: 'edited and sent it', reject: 'rejected it' };
 
 const DELIVERY_TONE: Record<Delivery['status'], Tone> = { delivered: 'success', queued: 'neutral', retrying: 'warning', failed: 'danger' };
-const DELIVERY_LABEL: Record<Delivery['status'], string> = { delivered: 'Delivered', queued: 'Queued', retrying: 'Retrying', failed: 'Failed' };
+/** Connectors are simulated, so a delivered item says so. */
+const DELIVERY_LABEL: Record<Delivery['status'], string> = { delivered: 'Delivered (simulated)', queued: 'Queued', retrying: 'Retrying', failed: 'Failed' };
 const TICKET_LABEL: Record<NonNullable<Delivery['ticketState']>, string> = { open: 'Open', in_progress: 'In progress', shipped: 'Shipped', wont_do: 'Won’t do' };
 
 const NOT_SENT: Record<InsightStatus, string> = {

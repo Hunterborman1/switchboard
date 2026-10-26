@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { Channel, Delivery, Person } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { CHANNEL_CONNECTOR, connectorById } from '../../shared/platform';
-import { Badge, ButtonLink, Card, CopyText, EmptyState, Page, PageHeader, Skeleton, Tabs, Tooltip, useToast, type Tone } from '../../ds';
+import { Badge, ButtonLink, Card, CopyText, EmptyState, Page, PageHeader, Skeleton, Tabs, useToast, type Tone } from '../../ds';
 import { IconPlug, IconRoute, IconSend } from '../../ds/icons';
 import { api } from '../api/client';
 import { invalidate, useConnections, useDeliveries, usePeople, useSession } from '../api/hooks';
@@ -32,7 +32,7 @@ import {
   type PeopleLookup,
   type TicketState,
 } from '../components/destinations/Previews';
-import { ErrorState, When } from '../components/domain';
+import { ErrorState, SIMULATED_TIP, SimulatedBadge, When } from '../components/domain';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
 import { isoWeekOf, weekStart } from './themes/weeks';
@@ -63,8 +63,9 @@ const TOOL_NOUN: Record<Channel, string> = {
   triage: 'Triage item',
 };
 
+/** Every connector is simulated, so a delivery is never "Delivered" without saying so. */
 const STATUS: Record<Delivery['status'], { label: string; tone: Tone }> = {
-  delivered: { label: 'Delivered', tone: 'success' },
+  delivered: { label: 'Delivered (simulated)', tone: 'success' },
   queued: { label: 'Queued', tone: 'neutral' },
   retrying: { label: 'Retrying', tone: 'warning' },
   failed: { label: 'Failed', tone: 'danger' },
@@ -251,13 +252,7 @@ export default function DestinationsPage() {
       <PageHeader
         title="Deliveries"
         description="What owners see in the tools they already use."
-        badge={
-          <Tooltip label="Connectors are simulated. Each preview is built from the real delivery and its receipt; nothing is sent to the actual tool.">
-            <span tabIndex={0} className={styles.badgeWrap}>
-              <Badge>Simulated connectors</Badge>
-            </span>
-          </Tooltip>
-        }
+        badge={<SimulatedBadge tip={SIMULATED_TIP.deliveries} />}
       />
 
       <Tabs<Kind>

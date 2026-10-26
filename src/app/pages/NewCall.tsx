@@ -16,7 +16,7 @@ import { api, ApiError } from '../api/client';
 import { invalidate, keys, setCached, useLibrary, useLibraryFile, useSession } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
 import { FilePicker } from '../components/FilePicker';
-import { sourceLabel, When } from '../components/domain';
+import { SIMULATED_TIP, SimulatedBadge, sourceLabel, When } from '../components/domain';
 import { ACCEPT, convertFile, ConvertError, extOf, MAX_TEXT_CHARS, MIN_TEXT_CHARS, pagesLabel, type ConvertResult } from '../lib/convert';
 import { bytes, dateShort } from '../lib/labels';
 import { previewLines } from '../lib/preview';
@@ -317,9 +317,12 @@ export default function NewCallPage() {
                       <ConnectorMark key={id} id={id} size={28} />
                     ))}
                   </span>
-                  <p className={styles.emptyTitle}>Choose a conversation</p>
+                  <p className={cx(styles.emptyTitle, styles.titleRow)}>
+                    Choose a conversation
+                    <SimulatedBadge tip={SIMULATED_TIP.sources} />
+                  </p>
                   <p className={styles.emptyText}>
-                    {libCount ? `${libCount} recorded calls, notes, email threads and chat exports from your connected tools.` : 'Recorded calls, notes, email threads and chat exports from your connected tools.'}
+                    {libCount ? `${libCount} sample calls, notes, email threads and chat exports, standing in for your connected tools.` : 'Sample calls, notes, email threads and chat exports, standing in for your connected tools.'}
                   </p>
                   <Button variant="secondary" icon={<IconFolder />} onClick={() => setPickerOpen(true)} {...tourAnchor('new.upload')}>
                     Browse conversations
@@ -540,6 +543,7 @@ function LibraryChoice({ file, accountName, onChange }: { file: LibraryFile; acc
               <span className={styles.sourceValue}>
                 <ConnectorMark id={source} size={16} />
                 {sourceLabel(source)}
+                <SimulatedBadge tip={SIMULATED_TIP.sources} />
               </span>
             ),
           },

@@ -31,7 +31,7 @@ import { IconActivity, IconArrowDown, IconArrowUp, IconPlug, IconRoute, IconSend
 import { api } from '../api/client';
 import { invalidate, useConnection, usePeople, useRules } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { ErrorState, When } from '../components/domain';
+import { ErrorState, SIMULATED_TIP, SimulatedBadge, When } from '../components/domain';
 import { useWorldIndex } from '../lib/world';
 import { CATEGORY_LABEL, directionLabel } from './Connections';
 import { ConnectDialog } from './connections/ConnectDialog';
@@ -101,7 +101,8 @@ export default function ConnectionDetailPage() {
     try {
       const { data: r } = await api.testConnection(def.id);
       invalidate(`connections/${def.id}`);
-      toast({ tone: r.ok ? 'success' : 'danger', title: r.ok ? `Test sent to ${def.name}` : `${def.name} test failed`, body: r.ok ? `${r.message}${r.receipt ? ` (${r.receipt})` : ''} in ${r.ms} ms.` : r.message });
+      // The message already names the receipt; nothing leaves the Worker, so the title says so.
+      toast({ tone: r.ok ? 'success' : 'danger', title: r.ok ? `Test sent to ${def.name} (simulated)` : `${def.name} test failed`, body: r.ok ? `${r.message.replace(/\.$/, '')}, in ${r.ms} ms.` : r.message });
     } catch (err) {
       toast({ tone: 'danger', title: 'Test failed', body: err instanceof Error ? err.message : String(err) });
     } finally {
@@ -143,7 +144,12 @@ export default function ConnectionDetailPage() {
             {def.name}
           </span>
         }
-        badge={on ? <Badge tone="success" dot>Connected</Badge> : <Badge dot>Not connected</Badge>}
+        badge={
+          <>
+            {on ? <Badge tone="success" dot>Connected</Badge> : <Badge dot>Not connected</Badge>}
+            <SimulatedBadge tip={SIMULATED_TIP.connection} />
+          </>
+        }
         description={def.description}
         actions={
           on ? (

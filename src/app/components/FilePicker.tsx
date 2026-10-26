@@ -1,5 +1,6 @@
 /**
- * The library picker: conversations from the workspace's connected tools (GET /library), in a
+ * The library picker: conversations from the workspace's connected tools (GET /library: a
+ * simulated library of sample files with fictional accounts; the header says Simulated), in a
  * two-pane dialog (folders, then files with a preview of the selected one). Folders come from
  * LibraryFile.folder ("Calls/Week 43"); each file shows the tool it came from. Mess levels are
  * never shown here, so the choice feels real; the New conversation page reveals them after.
@@ -22,7 +23,7 @@ import { previewLines } from '../lib/preview';
 import { librarySource } from '../lib/source';
 import { useWorldIndex } from '../lib/world';
 import { useTourState } from '../state';
-import { sourceLabel } from './domain';
+import { SIMULATED_TIP, SimulatedBadge, sourceLabel } from './domain';
 import styles from './FilePicker.module.css';
 
 type SortKey = 'newest' | 'oldest' | 'name' | 'name_desc' | 'largest';
@@ -237,11 +238,14 @@ export function FilePicker({
         >
           <div className="ds-dialog__header">
             <div className={styles.heading}>
-              <h2 id={titleId} className="ds-dialog__title">
-                Choose a conversation
-              </h2>
+              <div className={styles.titleRow}>
+                <h2 id={titleId} className="ds-dialog__title">
+                  Choose a conversation
+                </h2>
+                <SimulatedBadge tip={SIMULATED_TIP.sources} />
+              </div>
               <p id={descId} className="ds-dialog__description">
-                Recorded calls, notes, email threads and chat exports from your connected tools.
+                Sample calls, notes, email threads and chat exports, standing in for your connected tools.
               </p>
             </div>
             <IconButton className="ds-dialog__close" size="sm" label="Close" icon={<IconX />} tooltip={false} onClick={() => close('cancel')} />

@@ -1,7 +1,7 @@
 /**
  * Conversation page building blocks: the triage card, insight rows (with the score, the gate,
- * the decision model's second opinion and where it went), the dropped-quote card and the trace
- * table. All on the design system; walkthrough anchors live on the same elements as before.
+ * the decision model's second opinion and where it went) and the dropped-quote card. Step timing
+ * lives in ./Timing.tsx. All on the design system; walkthrough anchors live on the same elements.
  */
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,14 +9,14 @@ import { THRESHOLDS, type Delivery, type Insight, type ScreenOutput } from '../.
 import { SIGNAL_LOOP_AGENT_ID } from '../../../shared/platform-contracts';
 import { ANALYSES, CHANNEL_CONNECTOR, CHANNEL_LABEL } from '../../../shared/platform';
 import { tourAnchor } from '../../../tour/anchors';
-import { Badge, ButtonLink, Callout, Card, ConnectorMark, CopyText, cx, KeyValue, Meter, Quote, Skeleton, Spinner, Table, Tooltip } from '../../../ds';
-import { IconExternal, IconInbox } from '../../../ds/icons';
-import { GateBadge, SeverityBadge, TypeLabel } from '../../components/domain';
-import { AREA_LABEL, money, ms } from '../../lib/labels';
+import { Badge, Callout, Card, ConnectorMark, CopyText, cx, KeyValue, Meter, Quote, Skeleton, Spinner, Tooltip } from '../../../ds';
+import { IconInbox } from '../../../ds/icons';
+import { GateBadge, SeverityBadge, SimulatedBadge, SIMULATED_TIP, TypeLabel } from '../../components/domain';
+import { AREA_LABEL, ms } from '../../lib/labels';
 import { INSTANT_STEP_HELP } from '../../../shared/format';
 import type { DisplayStep } from './useReveal';
 import { RedactedText, redactedPlain } from './Transcript';
-import { languageName, STEP_NAME } from './stepText';
+import { languageName } from './stepText';
 import styles from './RunParts.module.css';
 
 // ---------------------------------------------------------------- triage
@@ -287,6 +287,7 @@ export function InsightRow({
               {connector ? <ConnectorMark id={connector} size={16} /> : <IconInbox size={16} />}
               <span>{CHANNEL_LABEL[channel]}</span>
             </span>
+            {connector ? <SimulatedBadge tip={SIMULATED_TIP.delivery} /> : null}
             {delivery?.destination ? (
               <span className={cx('ds-muted', styles.destination)} title={delivery.destination}>
                 {delivery.destination}
@@ -469,86 +470,3 @@ export function DroppedCard({ items, onFocus }: { items: DroppedItem[]; onFocus:
   );
 }
 
-// ---------------------------------------------------------------- trace
-
-export function TraceCard({
-  runId,
-  steps,
-  modelLabel,
-  totalCost,
-  totalMs,
-}: {
-  runId: string;
-  steps: DisplayStep[];
-  modelLabel: (id: string | null | undefined) => string | null;
-  totalCost: number;
-  totalMs: number | null;
-}) {
-  const shown = steps.filter((s) => s.display !== 'pending' && s.display !== 'running');
-  const tokensIn = shown.reduce((a, s) => a + (s.tokensIn ?? 0), 0);
-  const tokensOut = shown.reduce((a, s) => a + (s.tokensOut ?? 0), 0);
-  return (
-    <Card
-      title="Trace"
-      description="Model, tokens, cost and time for each step."
-      flush
-      actions={
-        <ButtonLink to={`/ops/logs?agentId=${SIGNAL_LOOP_AGENT_ID}&runId=${runId}`} size="sm" variant="ghost" iconRight={<IconExternal size={13} />}>
-          Logs
-        </ButtonLink>
-      }
-      attrs={{ ...tourAnchor('run.trace'), 'aria-label': 'Trace' }}
-    >
-      <Table compact label="Trace by step" minWidth={440}>
-        <thead>
-          <tr>
-            <th scope="col">Step</th>
-            <th scope="col">Model</th>
-            <th scope="col" className="is-num" title="Tokens in / out">
-              Tokens
-            </th>
-            <th scope="col" className="is-num">
-              AI cost
-            </th>
-            <th scope="col" className="is-num">
-              Time
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {steps.map((s) => {
-            const done = s.display !== 'pending' && s.display !== 'running';
-            return (
-              <tr key={s.key}>
-                <td className="is-nowrap">
-                  <span className={s.display === 'failed' ? styles.traceFailed : undefined}>{STEP_NAME[s.key]}</span>
-                </td>
-                <td className="is-nowrap">{!done ? <span className="ds-subtle">—</span> : s.model ? (modelLabel(s.model) ?? 'Other model') : <span className="ds-subtle">No AI</span>}</td>
-                <td className="is-num" title={done && s.tokensIn != null ? `${s.tokensIn.toLocaleString()} in, ${(s.tokensOut ?? 0).toLocaleString()} out` : undefined}>
-                  {done && s.tokensIn != null ? `${s.tokensIn.toLocaleString()} / ${(s.tokensOut ?? 0).toLocaleString()}` : <span className="ds-subtle">—</span>}
-                </td>
-                <td className="is-num">{done && s.costUsd != null ? money(s.costUsd, { precise: true }) : <span className="ds-subtle">—</span>}</td>
-                <td className="is-num" title={done && s.durationMs != null && s.durationMs < 1 ? INSTANT_STEP_HELP : undefined}>
-                  {s.display === 'failed' ? (
-                    <span className={styles.traceFailed}>Failed</span>
-                  ) : done && s.display !== 'skipped' ? (
-                    ms(s.durationMs)
-                  ) : (
-                    <span className="ds-subtle">{s.display === 'skipped' ? 'Skipped' : s.display === 'running' ? 'Running' : '—'}</span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-          <tr>
-            <td className={styles.totalCell}>Total</td>
-            <td className={styles.totalCell} />
-            <td className={cx('is-num', styles.totalCell)}>{`${tokensIn.toLocaleString()} / ${tokensOut.toLocaleString()}`}</td>
-            <td className={cx('is-num', styles.totalCell)}>{money(totalCost, { precise: true })}</td>
-            <td className={cx('is-num', styles.totalCell)}>{ms(totalMs)}</td>
-          </tr>
-        </tbody>
-      </Table>
-    </Card>
-  );
-}

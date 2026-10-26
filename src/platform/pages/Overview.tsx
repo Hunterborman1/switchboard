@@ -13,7 +13,7 @@ import { putAssumptions, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { ChartLegend, ChartSummary, Lines, Spark, StackedBars } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentCell, LoadError, OpsSkeleton, SortHead, useOpsTitle, useSorted } from '../ui/kit';
+import { AgentCell, agentLabel, AgentSourceBadge, LoadError, OpsSkeleton, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 type Stage = 'invoked' | 'output' | 'reviewed' | 'automatic';
 const STAGES: { key: Stage; label: string; help: string }[] = [
@@ -169,7 +169,7 @@ function HoursChart({ d }: { d: OverviewX }) {
     for (const a of d.agentRows) row[a.agentId] = a.weeklyHours[i] ?? null;
     return row;
   });
-  const series = d.agentRows.map((a, i) => ({ key: a.agentId, label: a.name, color: f.seriesColor(a.color, i) }));
+  const series = d.agentRows.map((a, i) => ({ key: a.agentId, label: agentLabel(a.name, a.source), color: f.seriesColor(a.color, i) }));
   const ranked = [...d.agentRows].sort((a, b) => b.hoursReturned - a.hoursReturned);
   const top = ranked[0];
   const latest = d.weekly[d.weekly.length - 1];
@@ -206,7 +206,7 @@ function HoursChart({ d }: { d: OverviewX }) {
       />
       <ChartSummary>
         {f.int(d.totals.hoursReturned)} hours saved over {weeks.length} weeks
-        {top ? `; ${top.name} saved the most, ${f.hours(top.hoursReturned)}` : ''}. {latest ? `${f.num(latest.hoursReturned, 1)} h so far this week.` : ''}
+        {top ? `; ${agentLabel(top.name, top.source)} saved the most, ${f.hours(top.hoursReturned)}` : ''}. {latest ? `${f.num(latest.hoursReturned, 1)} h so far this week.` : ''}
       </ChartSummary>
     </Card>
   );
@@ -214,20 +214,22 @@ function HoursChart({ d }: { d: OverviewX }) {
 
 // ---------------------------------------------------------------- needs attention
 
-type AttItem = { key: string; tone: 'warning' | 'danger' | 'info'; icon: JSX.Element; title: string; detail: string; href: string };
+/** `simulated`: the item is about a simulated agent, so it says so. */
+type AttItem = { key: string; tone: 'warning' | 'danger' | 'info'; icon: JSX.Element; title: string; detail: string; href: string; simulated: boolean };
 
 function buildAttention(d: OverviewX): AttItem[] {
   const out: AttItem[] = [];
   const name = (id: string) => d.agentRows.find((a) => a.agentId === id)?.name ?? id;
+  const sim = (id: string) => d.agentRows.find((a) => a.agentId === id)?.source === 'simulated';
   for (const a of d.attention) {
     if (a.kind === 'standard_gap') {
       const [head, ...rest] = a.message.split('. ');
       const gap = head!.replace(/^.*standard gap: /, '');
-      out.push({ key: `std-${a.agentId}-${gap}`, tone: 'warning', icon: <IconShield size={15} />, title: `${name(a.agentId)}: ${gap.charAt(0).toLowerCase()}${gap.slice(1)}`, detail: rest.join('. '), href: `/ops/agents/${a.agentId}#standard` });
+      out.push({ key: `std-${a.agentId}-${gap}`, tone: 'warning', icon: <IconShield size={15} />, title: `${name(a.agentId)}: ${gap.charAt(0).toLowerCase()}${gap.slice(1)}`, detail: rest.join('. '), href: `/ops/agents/${a.agentId}#standard`, simulated: sim(a.agentId) });
     } else if (a.kind === 'slo_breached') {
-      out.push({ key: `slo-${a.message}`, tone: 'danger', icon: <IconActivity size={15} />, title: a.message.replace(/\.$/, ''), detail: 'The allowance for misses in its 28-day window is used up.', href: `/ops/reliability?agentId=${a.agentId}` });
+      out.push({ key: `slo-${a.message}`, tone: 'danger', icon: <IconActivity size={15} />, title: a.message.replace(/\.$/, ''), detail: 'The allowance for misses in its 28-day window is used up.', href: `/ops/reliability?agentId=${a.agentId}`, simulated: sim(a.agentId) });
     } else if (a.kind === 'review_overdue') {
-      out.push({ key: `rev-${a.agentId}`, tone: 'danger', icon: <IconCalendar size={15} />, title: `${name(a.agentId)}: review overdue`, detail: a.message, href: '/ops/standard/reviews' });
+      out.push({ key: `rev-${a.agentId}`, tone: 'danger', icon: <IconCalendar size={15} />, title: `${name(a.agentId)}: review overdue`, detail: a.message, href: '/ops/standard/reviews', simulated: sim(a.agentId) });
     } else {
       out.push({
         key: `${a.kind}-${a.agentId}`,
@@ -236,6 +238,7 @@ function buildAttention(d: OverviewX): AttItem[] {
         title: a.message,
         detail: a.kind === 'cost_spike' ? 'AI cost this week compared with last week.' : 'Weekly active users compared with the week before.',
         href: a.kind === 'cost_spike' ? '/ops/cost' : '/ops/usage',
+        simulated: sim(a.agentId),
       });
     }
   }
@@ -248,11 +251,12 @@ function buildAttention(d: OverviewX): AttItem[] {
       title: `${name(al.agentId)}: ${al.rule.toLowerCase().replace(/^./, (c) => c.toUpperCase())}`,
       detail: `Expected ${al.expected}, actual ${al.actual}. Owner: ${al.owner}${al.status === 'acknowledged' ? ' (acknowledged)' : ''}.`,
       href: `/ops/reliability?agentId=${al.agentId}#alerts`,
+      simulated: sim(al.agentId),
     });
   }
   for (const r of d.reviewsDue) {
     if (r.reviewStatus !== 'due_soon') continue;
-    out.push({ key: `due-${r.agentId}`, tone: 'info', icon: <IconCalendar size={15} />, title: `${r.name}: review due ${f.day(r.nextReview)}`, detail: `Owner: ${r.owner}. Scheduled within the next 14 days.`, href: '/ops/standard/reviews' });
+    out.push({ key: `due-${r.agentId}`, tone: 'info', icon: <IconCalendar size={15} />, title: `${r.name}: review due ${f.day(r.nextReview)}`, detail: `Owner: ${r.owner}. Scheduled within the next 14 days.`, href: '/ops/standard/reviews', simulated: sim(r.agentId) });
   }
   return out;
 }
@@ -270,7 +274,15 @@ function Attention({ d }: { d: OverviewX }) {
                   {a.icon}
                 </span>
                 <span className="ao-att__text">
-                  <span className="ao-att__title">{rewriteModelIds(a.title)}</span>
+                  <span className="ao-att__title">
+                    {rewriteModelIds(a.title)}
+                    {a.simulated ? (
+                      <>
+                        {' '}
+                        <AgentSourceBadge source="simulated" />
+                      </>
+                    ) : null}
+                  </span>
                   {a.detail ? <span className="ao-att__detail">{rewriteModelIds(a.detail)}</span> : null}
                 </span>
                 <IconChevronRight size={14} className="ao-att__go" />
@@ -422,7 +434,7 @@ function ImpactTable({ d, stage, onClear }: { d: OverviewX; stage: Stage | null;
             <tr key={r.agentId} className="is-clickable has-row-link" onClick={() => navigate(`/ops/agents/${r.agentId}`)}>
               <td className="ao-agent-col">
                 <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
-                  <AgentCell color={r.color} primary={r.name} secondary={`${r.department}, built with ${r.builtWith}`} />
+                  <AgentCell color={r.color} primary={r.name} secondary={`${r.department}, built with ${r.builtWith}`} source={r.source} />
                 </Link>
               </td>
               {stage ? <td className="is-num">{f.int(stageCount(r.outcomes, stage))}</td> : null}
@@ -433,7 +445,7 @@ function ImpactTable({ d, stage, onClear }: { d: OverviewX; stage: Stage | null;
               <td className="is-num ao-hide-md">{f.pct(r.acceptanceRate)}</td>
               <td className="is-num ao-hide-md">{f.int(r.activeUsers)}</td>
               <td className="ao-hide-md">
-                <Spark values={r.weeklyHours} color={r.color} label={`${r.name} hours saved per week`} />
+                <Spark values={r.weeklyHours} color={r.color} label={`${agentLabel(r.name, r.source)} hours saved per week`} />
               </td>
             </tr>
           ))}
@@ -545,7 +557,10 @@ function AssumptionsDrawer({ open, onClose, overview, onSaved }: { open: boolean
               {overview.baselines.map((r) => (
                 <tr key={r.agentId}>
                   <td>
-                    <span className="ds-table__primary">{r.name}</span>
+                    <span className="ao-agent__name">
+                      <span className="ds-table__primary">{r.name}</span>
+                      {overview.agentRows.find((a) => a.agentId === r.agentId)?.source === 'simulated' ? <AgentSourceBadge source="simulated" /> : null}
+                    </span>
                     <span className="ds-table__secondary">Per {r.unitLabel}</span>
                   </td>
                   <td className="is-num">{r.baselineMinutes} min</td>

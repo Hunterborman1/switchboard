@@ -11,7 +11,7 @@ import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { ChartLegend, ChartSummary, Lines } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentCell, LoadError, ModelName, OpsSkeleton, SortHead, SourceBadge, SpendMeter, useOpsTitle, useSorted } from '../ui/kit';
+import { AgentCell, agentLabel, LoadError, ModelName, OpsSkeleton, SortHead, SourceBadge, SpendMeter, useOpsTitle, useSorted } from '../ui/kit';
 
 export function Cost() {
   useOpsTitle('Cost');
@@ -26,11 +26,11 @@ export function Cost() {
     );
   if (!c.data) return <OpsSkeleton />;
   const d = c.data;
-  const agentNames = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.name]));
+  const agentNames = Object.fromEntries((reg.data ?? []).map((r) => [r.id, agentLabel(r.name, r.source)]));
   const colors = Object.fromEntries((reg.data ?? []).map((r, i) => [r.id, f.seriesColor(r.profile.color, i)]));
   const lb = d.liveBudget;
   const lr = lb.limitUsd > 0 ? lb.spentUsd / lb.limitUsd : 0;
-  const series = d.agents.map((a, i) => ({ key: a.agentId, label: a.name, color: colors[a.agentId] ?? f.seriesColor(null, i) }));
+  const series = d.agents.map((a, i) => ({ key: a.agentId, label: agentLabel(a.name, a.source), color: colors[a.agentId] ?? f.seriesColor(null, i) }));
   const trend = d.days.map((day, i) => {
     const row: Record<string, unknown> = { label: f.day(day), day };
     for (const a of d.agents) row[a.agentId] = a.daily[i] ?? null;
@@ -52,7 +52,7 @@ export function Cost() {
         }
       />
 
-      <Callout title="Estimates, not billing data.">Cost adds up the token usage each AI call reports. The simulated agent’s spend is simulated; Signal Loop’s is real.</Callout>
+      <Callout title="Estimates, not billing data.">Cost adds up the token usage each AI call reports. The RFP & Security Questionnaire Responder is a simulated agent, so its spend is simulated; Signal Loop’s is real.</Callout>
 
       <Stats
         items={[
@@ -111,7 +111,7 @@ export function Cost() {
             ariaLabel="Daily AI spend by agent"
           />
           <ChartSummary>
-            {f.money(d.totals.costUsd)} over {d.days.length} days{topSpender ? `; ${topSpender.name} spent the most, ${f.money(topSpender.costUsd)}` : ''}.
+            {f.money(d.totals.costUsd)} over {d.days.length} days{topSpender ? `; ${agentLabel(topSpender.name, topSpender.source)} spent the most, ${f.money(topSpender.costUsd)}` : ''}.
           </ChartSummary>
         </Card>
       </div>
@@ -144,7 +144,6 @@ function AgentCostTable({ d, colors }: { d: CostReport; colors: Record<string, s
             <SortHead active={state('name')} onSort={() => by('name')}>
               Agent
             </SortHead>
-            <th className="ao-hide-sm ao-hide-lg">Data</th>
             <SortHead num className="ao-hide-sm" active={state('units')} onSort={() => by('units', true)}>
               Tasks
             </SortHead>
@@ -172,11 +171,8 @@ function AgentCostTable({ d, colors }: { d: CostReport; colors: Record<string, s
               <tr key={r.agentId}>
                 <td className="ao-agent-col">
                   <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link">
-                    <AgentCell color={colors[r.agentId] ?? f.seriesColor(null, i)} primary={r.name} secondary={`${r.builtWith}, per ${r.unitLabel}`} />
+                    <AgentCell color={colors[r.agentId] ?? f.seriesColor(null, i)} primary={r.name} secondary={`${r.builtWith}, per ${r.unitLabel}`} source={r.source} />
                   </Link>
-                </td>
-                <td className="ao-hide-sm ao-hide-lg is-nowrap">
-                  <SourceBadge source={r.source === 'live' ? 'mixed' : 'simulated'} />
                 </td>
                 <td className="is-num ao-hide-sm">{f.int(r.workUnits)}</td>
                 <td className="is-num">{f.money(r.costUsd)}</td>

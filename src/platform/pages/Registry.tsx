@@ -97,7 +97,7 @@ export function Registry() {
               >
                 <td className="ao-agent-col">
                   <Link to={`/ops/agents/${r.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
-                    <AgentCell color={f.seriesColor(r.profile.color)} primary={r.name} secondary={`${r.department}, ${r.builtWith === 'Code' ? 'code' : r.builtWith}`} />
+                    <AgentCell color={f.seriesColor(r.profile.color)} primary={r.name} secondary={`${r.department}, ${r.builtWith === 'Code' ? 'code' : r.builtWith}`} source={r.source} />
                   </Link>
                 </td>
                 <td className="ao-hide-sm is-nowrap">

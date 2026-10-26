@@ -81,7 +81,7 @@ test.describe('Switchboard platform', () => {
   test('analyses catalog marks Signal Loop as running and the rest as not built', async ({ page }) => {
     await gotoApp(page, '/app/analyses');
     await expect(page.getByRole('heading', { name: 'Signal Loop' })).toBeVisible();
-    await expect(page.getByText('Running')).toBeVisible();
+    await expect(page.getByText('Built and running', { exact: true })).toBeVisible();
     await expect(page.getByText('Not built')).toHaveCount(5);
   });
 });

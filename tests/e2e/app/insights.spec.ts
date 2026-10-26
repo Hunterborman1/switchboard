@@ -57,7 +57,7 @@ test.describe('Insights', () => {
     await gotoApp(page, '/app/insights/ins_s05');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByText('Delivered')).toBeVisible();
+    await expect(dialog.getByText('Delivered (simulated)', { exact: true })).toBeVisible();
     await expect(dialog.getByText('Receipt')).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Open conversation' })).toBeVisible();
   });
