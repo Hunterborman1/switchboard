@@ -35,7 +35,8 @@ Claude.ai web connectors need OAuth, which this demo doesn't run.
 
 - **Instructions** on connect: what was built in 48 hours, what is real and simulated, where to start.
 - **Docs** as tools (`read_doc`) and resources (`switchboard://docs/<name>`): the walkthrough,
-  README, architecture, decision-model report, design system, runbook and speaker notes.
+  the write-up and Q&A, README, architecture, the reports (decision model, robustness, data
+  verification), design system, runbook and speaker notes.
 - **Tools**
 
 | Tool | Does |
@@ -73,6 +74,15 @@ Claude.ai web connectors need OAuth, which this demo doesn't run.
 
 - **Revoke one:** add its `jti` to `revoked_links` (same table as signed links).
 - **Revoke all:** rotate `LINK_SIGNING_SECRET` (this also revokes signed links and workspace cookies).
+
+## Docs without MCP
+
+One registry, `DOCS` in `src/worker/mcp/docs.ts`, feeds `read_doc`, the resources and the gated
+URLs for assistants that don't speak MCP: each doc as Markdown at its repo path
+(`/repo/invoca/docs/ARCHITECTURE.md`; the walkthrough also at `/repo/invoca/walkthrough.md`, the
+write-up at `/repo/invoca/write-up.md`), `/repo/invoca/switchboard-docs.zip` (every doc plus an
+`INDEX.md`) and `/repo/invoca/llms.txt`. Add a doc there and all of them pick it up. Tests:
+`tests/worker/ai-docs.test.ts`.
 
 ## Add a tool
 

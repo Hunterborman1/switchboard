@@ -84,7 +84,7 @@ export default defineConfig({
     {
       name: 'tour-mobile',
       testDir: 'tests/e2e/tour',
-      testMatch: /(scenes|state)\.spec\.ts/,
+      testMatch: /(scenes|state|writeup)\.spec\.ts/,
       timeout: 150_000,
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, baseURL: `http://localhost:${APP_PORT}` },
     },

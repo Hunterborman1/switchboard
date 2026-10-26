@@ -1,39 +1,386 @@
 /**
- * /write-up: the concise written version of the walkthrough. The problem, Switchboard and the
- * Signal Loop analysis built for the brief, the rollout, what's next, and how the work maps to the
- * AI Operations role. One readable page with sticky contents.
+ * /write-up: the written version of the walkthrough, followed by the Q&A, on one page. The
+ * problem, Switchboard and Signal Loop, the rollout, what's next and the role, then seven
+ * questions (#cost, #security, #failure, #build-vs-buy, #metrics, #agent-ops, #differently).
+ * /backup/:topic redirects here (src/web/router.tsx).
+ *
+ * The prose lives in src/shared/writeup/content.ts, which also renders /write-up.md for AI
+ * assistants, so the page and the Markdown say the same things. Everything is visible without
+ * a click: no tabs, no accordions, no entrance animation.
  */
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ButtonLink, Callout } from '../../ds';
-import { IconArrowRight } from '../../ds/icons';
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Badge, ButtonLink, Callout, Card, Meter, Skeleton, Stats } from '../../ds';
+import { IconArrowRight, IconDownload, IconFileText, IconPlug } from '../../ds/icons';
 import { SiteBar } from '../../narrative/components';
-import { BACKUPS } from '../../tour/script/chapters';
+import { tourApi } from '../../tour/api';
+import { BUDGET_LIMIT_USD } from '../../shared/contracts';
 import { REPO_URL } from '../../shared/platform';
+import { HERO, PARTS, QUESTIONS, QUESTIONS_INTRO, SECTIONS, parseInline, type Block, type CardItem, type CostBlock, type FlowStep, type Section, type TableRow } from '../../shared/writeup/content';
 import './writeup.css';
 
-const TOC = [
-  { id: 'problem', n: '1', t: 'The problem and the people' },
-  { id: 'platform', n: '2', t: 'Switchboard' },
-  { id: 'system', n: '3', t: 'Signal Loop' },
-  { id: 'rollout', n: '4', t: 'Rollout and adoption' },
-  { id: 'next', n: '5', t: 'What’s next' },
-  { id: 'role', n: '6', t: 'How this maps to the role' },
-];
+const BASE = import.meta.env.BASE_URL;
 
-const STACK: [string, string, string][] = [
-  ['Website and API', 'Cloudflare Worker and a React app', 'Vercel with Next.js'],
-  ['AI model calls', 'Vercel AI SDK through a shared router', 'Vercel AI SDK with our own provider keys'],
-  ['Deciding what to run', 'A fast decision model via OpenRouter', 'The same, on our own key'],
-  ['Long-running jobs', 'Cloudflare Workflows', 'Trigger.dev'],
-  ['Database', 'Cloudflare D1', 'Neon Postgres'],
-  ['Finding similar feedback', 'Cloudflare Vectorize', 'pgvector on Neon'],
-  ['Original files', 'Cloudflare R2', 'Object storage'],
-  ['Reporting at scale', 'Daily summaries in D1', 'ClickHouse with dbt models'],
-  ['Bringing in conversations', 'Any file, plus connectors (simulated here)', 'dlt from Gong, Zoom, Salesforce and Zendesk, plus direct connectors'],
-  ['Sending results', 'In-app previews with receipts (simulated)', 'The Slack, Jira and Salesforce APIs'],
-  ['Live transcription', 'Not needed yet', 'Render, streaming speech to text'],
-];
+// ---------------------------------------------------------------- inline text
+
+/** **bold** and [label](href): site routes use the router, anchors and URLs are plain links. */
+function Rich({ text }: { text: string }) {
+  return (
+    <>
+      {parseInline(text).map((p, i) => {
+        if (p.kind === 'bold') return <b key={i}>{p.text}</b>;
+        if (p.kind === 'text') return <Fragment key={i}>{p.text}</Fragment>;
+        if (p.href.startsWith('/'))
+          return (
+            <Link key={i} className="n-link" to={p.href}>
+              {p.text}
+            </Link>
+          );
+        const external = /^https?:/.test(p.href);
+        return (
+          <a key={i} className="n-link" href={p.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
+            {p.text}
+          </a>
+        );
+      })}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------- blocks
+
+type H = 'h3' | 'h4' | 'h5';
+
+function Cards({ items, cols = 2, h: Title }: { items: CardItem[]; cols?: number; h: H }) {
+  return (
+    <div className="wu-cards" data-cols={cols}>
+      {items.map((c) => (
+        <div key={c.title} className="wu-card" data-accent={c.accent ? 'true' : undefined}>
+          {c.kicker && <span className="wu-card__k">{c.kicker}</span>}
+          {c.figure && <span className="wu-card__fig">{c.figure}</span>}
+          <Title className="wu-card__t">{c.title}</Title>
+          {c.text && (
+            <p className="wu-card__d">
+              <Rich text={c.text} />
+            </p>
+          )}
+          {c.entries && (
+            <ul className="wu-reg">
+              {c.entries.map((e) => (
+                <li key={e.title}>
+                  <span className="wu-reg__top">
+                    <b>{e.title}</b>
+                    <Badge tone={e.status.tone} dot={e.status.tone === 'success'}>
+                      {e.status.label}
+                    </Badge>
+                  </span>
+                  <span className="wu-reg__meta">
+                    {e.meta.map((m) => (
+                      <span key={m}>{m}</span>
+                    ))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {c.bullets && (
+            <ul className="wu-bullets">
+              {c.bullets.map((b) => (
+                <li key={b}>
+                  <Rich text={b} />
+                </li>
+              ))}
+            </ul>
+          )}
+          {c.numbered && (
+            <ol className="wu-numbered">
+              {c.numbered.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ol>
+          )}
+          {c.note && (
+            <p className="wu-card__note">
+              <Rich text={c.note} />
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Table({ label, head, rows, accentCol, widths }: { label: string; head: string[]; rows: TableRow[]; accentCol?: number; widths?: number[] }) {
+  return (
+    <div className="wu-table-wrap">
+      <table className="wu-table" aria-label={label} data-fixed={widths ? 'true' : undefined}>
+        {widths && (
+          <colgroup>
+            {widths.map((w, i) => (
+              <col key={i} style={{ width: `${w}%` }} />
+            ))}
+          </colgroup>
+        )}
+        <thead>
+          <tr>
+            {head.map((h) => (
+              <th key={h} scope="col">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.head}>
+              <th scope="row">
+                <b>{r.head}</b>
+                {r.sub && <span>{r.sub}</span>}
+              </th>
+              {r.cells.map((c, i) => (
+                <td key={i} data-label={head[i + 1]} className={i === accentCol ? 'is-accent' : undefined}>
+                  <Rich text={c} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Flow({ title, summary, steps }: { title: string; summary: string; steps: FlowStep[] }) {
+  return (
+    <figure className="wu-flowfig">
+      <figcaption>{title}</figcaption>
+      <ol className="wu-flow" aria-label={summary}>
+        {steps.map((s) => (
+          <li key={s.title} data-last={s.last ? 'true' : undefined}>
+            <span className="wu-flow__when">{s.when ?? 'Always'}</span>
+            <b>{s.title}</b>
+            <span className="wu-flow__d">{s.text}</span>
+            {s.ok && <span className="wu-flow__ok">{s.ok}</span>}
+          </li>
+        ))}
+      </ol>
+      <p className="wu-panel__note">{summary}</p>
+    </figure>
+  );
+}
+
+// ---------------------------------------------------------------- cost (live)
+
+type CostData = { perCall: number | null; liveRuns: number; p50Ms: number | null; spent: number | null; limit: number; ok: boolean };
+
+function useCostData(): CostData | null {
+  const [d, setD] = useState<CostData | null>(null);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const out: CostData = { perCall: null, liveRuns: 0, p50Ms: null, spent: null, limit: BUDGET_LIMIT_USD, ok: false };
+      try {
+        const runs = await tourApi.runs(200);
+        const live = runs.filter((r) => r.mode === 'live' && r.costUsd > 0);
+        out.liveRuns = live.length;
+        if (live.length) out.perCall = live.reduce((a, r) => a + r.costUsd, 0) / live.length;
+        const durs = runs.map((r) => r.durationMs).filter((x): x is number => typeof x === 'number').sort((a, b) => a - b);
+        if (durs.length) out.p50Ms = durs[Math.floor(durs.length / 2)] ?? null;
+        out.ok = true;
+      } catch {
+        /* the recorded values stand in */
+      }
+      try {
+        const h = await tourApi.health();
+        out.spent = h.budget.spentUsd;
+        out.limit = h.budget.limitUsd;
+        out.ok = true;
+      } catch {
+        /* the recorded values stand in */
+      }
+      if (alive) setD(out);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return d;
+}
+
+const usd = (n: number, d: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })}`;
+
+function Cost({ block }: { block: CostBlock }) {
+  const d = useCostData();
+  const loading = d === null;
+  const rec = block.recorded;
+  const livePer = d?.perCall != null && d.perCall > 0 ? d.perCall : null;
+  const perCall = livePer ?? rec.perCallUsd;
+  const p50 = d?.p50Ms ?? rec.p50Ms;
+  const limit = d?.limit ?? BUDGET_LIMIT_USD;
+  const v = (node: ReactNode) => (loading ? <Skeleton width={88} height={24} radius={4} /> : node);
+  return (
+    <div className="wu-cost" data-testid="writeup-cost-live" data-state={loading ? 'loading' : d.ok ? 'live' : 'recorded'}>
+      <div className="wu-cost__status">
+        {loading ? (
+          <span className="wu-cost__line">Reading live numbers from this deployment</span>
+        ) : d.ok ? (
+          <>
+            <Badge tone="success" dot>
+              Live
+            </Badge>
+            <span className="wu-cost__line">Read from this deployment just now</span>
+          </>
+        ) : (
+          <>
+            <Badge>Recorded</Badge>
+            <span className="wu-cost__line">Live numbers couldn’t be loaded just now, so these are the recorded values</span>
+          </>
+        )}
+      </div>
+      <Stats
+        items={[
+          { label: 'Per call', value: v(usd(perCall, 4)), sub: livePer != null ? `Mean of ${d?.liveRuns ?? 0} live runs` : `Mean of the ${rec.runs} recorded runs` },
+          { label: 'Per 1,000 calls', value: v(usd(perCall * 1000, 2)), sub: 'Before volume discounts or caching' },
+          { label: 'Typical run time', value: v((p50 / 1000).toFixed(1)), unit: loading ? undefined : 'seconds', sub: 'All ten steps, end to end' },
+        ]}
+      />
+      <div className="wu-cards" data-cols={2}>
+        <div className="wu-card">
+          <h4 className="wu-card__t">Live AI spending limit</h4>
+          <div className="wu-spend" data-loading={loading ? 'true' : undefined}>
+            <span className="wu-spend__v">{loading ? <Skeleton width={64} height={20} radius={4} /> : d.spent != null ? usd(d.spent, 2) : 'Not available'}</span>
+            <span className="wu-spend__of">of the {usd(limit, 0)} shared limit</span>
+          </div>
+          <Meter value={d?.spent ?? 0} max={limit} tone={d?.spent != null && d.spent / limit > 0.8 ? 'warning' : 'accent'} label={`Live AI spent: ${usd(d?.spent ?? 0, 2)} of ${usd(limit, 0)}`} />
+          <p className="wu-card__d">
+            <Rich text={block.limitText} />
+          </p>
+          <p className="wu-card__d">
+            <b>{block.replay.title}</b> <Rich text={block.replay.text} />
+          </p>
+        </div>
+        <div className="wu-card">
+          <h4 className="wu-card__t">Where a call’s cost goes</h4>
+          <ul className="wu-split">
+            {block.split.map((s) => (
+              <li key={s.label}>
+                <span className="wu-split__row">
+                  <span>{s.label}</span>
+                  <span className="ds-num">{Math.round(s.share * 100)}%</span>
+                </span>
+                <Meter value={s.share} max={1} label={`${s.label}: ${Math.round(s.share * 100)}% of a call’s cost`} />
+                <span className="wu-split__note">{s.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p className="wu-cost__note">{block.splitNote}</p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------- sections
+
+function BlockView({ b, level }: { b: Block; level: 2 | 3 }) {
+  const card: H = level === 2 ? 'h3' : 'h4';
+  switch (b.kind) {
+    case 'p':
+      return (
+        <p className="wu-p">
+          <Rich text={b.text} />
+        </p>
+      );
+    case 'callout':
+      return (
+        <Callout tone={b.tone ?? 'neutral'} title={b.title}>
+          <Rich text={b.text} />
+        </Callout>
+      );
+    case 'cards':
+      return <Cards items={b.items} cols={b.cols} h={card} />;
+    case 'steps':
+      return (
+        <ol className="wu-steps">
+          {b.items.map((s) => (
+            <li key={s.title}>
+              <b>{s.title}</b>
+              <span>
+                <Rich text={s.text} />
+              </span>
+            </li>
+          ))}
+        </ol>
+      );
+    case 'list':
+      return (
+        <ul className="wu-list">
+          {b.items.map((s) => (
+            <li key={s}>
+              <Rich text={s} />
+            </li>
+          ))}
+        </ul>
+      );
+    case 'table':
+      return <Table label={b.label} head={b.head} rows={b.rows} accentCol={b.accentCol} widths={b.widths} />;
+    case 'h3': {
+      const Tag = card;
+      return <Tag className="wu-h3">{b.text}</Tag>;
+    }
+    case 'flow':
+      return <Flow title={b.title} summary={b.summary} steps={b.steps} />;
+    case 'related':
+      return (
+        <nav className="wu-links" aria-label={b.label}>
+          <span className="wu-links__k">{b.label}</span>
+          {b.links.map((l) =>
+            l.to.startsWith('#') ? (
+              <a key={l.to} className="n-link" href={l.to}>
+                {l.label}
+              </a>
+            ) : (
+              <Link key={l.to} className="n-link" to={l.to}>
+                {l.label}
+              </Link>
+            ),
+          )}
+        </nav>
+      );
+    case 'action':
+      return (
+        <div>
+          <ButtonLink variant="secondary" to={b.to} iconRight={<IconArrowRight size={16} />}>
+            {b.label}
+          </ButtonLink>
+        </div>
+      );
+    case 'cost':
+      return <Cost block={b} />;
+  }
+}
+
+function SectionView({ s, level }: { s: Section; level: 2 | 3 }) {
+  const Title = level === 2 ? 'h2' : 'h3';
+  return (
+    <section id={s.id} className="wu-sec" aria-labelledby={`${s.id}-h`} data-testid={`writeup-${s.id}`}>
+      <p className="wu-sec__k">{s.kicker}</p>
+      <Title id={`${s.id}-h`} className="wu-h2">
+        {s.title}
+      </Title>
+      {s.lede && (
+        <p className="wu-p wu-p--lede">
+          <Rich text={s.lede} />
+        </p>
+      )}
+      {s.blocks.map((b, i) => (
+        <BlockView key={i} b={b} level={level} />
+      ))}
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------- chrome
 
 function useActive(ids: string[]): string {
   const [active, setActive] = useState(ids[0] ?? '');
@@ -52,10 +399,126 @@ function useActive(ids: string[]): string {
   return active;
 }
 
-const IDS = TOC.map((t) => t.id);
+const READER_INPUT = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
+
+/**
+ * Land on the anchor in the URL (/write-up#cost, and every /backup/:topic redirect). Web fonts
+ * and the live cost figures can still move it after the first paint, so it follows the anchor
+ * for two seconds, until the reader scrolls, taps or types.
+ */
+function useHashLanding() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    const id = decodeURIComponent(hash.slice(1));
+    if (!id) return;
+    let following = true;
+    const land = () => {
+      if (following) document.getElementById(id)?.scrollIntoView({ block: 'start' });
+    };
+    const stop = () => {
+      following = false;
+    };
+    const raf = requestAnimationFrame(land);
+    const ro = new ResizeObserver(land);
+    ro.observe(document.body);
+    const timer = window.setTimeout(stop, 2000);
+    READER_INPUT.forEach((e) => window.addEventListener(e, stop, { passive: true }));
+    return () => {
+      stop();
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.clearTimeout(timer);
+      READER_INPUT.forEach((e) => window.removeEventListener(e, stop));
+    };
+  }, [hash]);
+}
+
+function Toc({ active }: { active: string }) {
+  const item = (s: Section) => (
+    <li key={s.id}>
+      <a href={`#${s.id}`} aria-current={active === s.id ? 'true' : undefined}>
+        {s.nav ?? s.title}
+      </a>
+    </li>
+  );
+  return (
+    <nav className="wu-toc" aria-label="Contents" data-testid="writeup-toc">
+      <div className="wu-toc__group">
+        <span className="wu-toc__h">On this page</span>
+        <ol>{PARTS.map(item)}</ol>
+      </div>
+      <div className="wu-toc__group">
+        <span className="wu-toc__h">Questions</span>
+        <ol>{QUESTIONS.map(item)}</ol>
+      </div>
+    </nav>
+  );
+}
+
+const AI_LINKS = [
+  { key: 'zip', icon: <IconDownload size={16} />, title: 'Download for AI', desc: 'Every doc as Markdown, in one .zip' },
+  { key: 'markdown', icon: <IconFileText size={16} />, title: 'Markdown of this page', desc: 'This write-up and the Q&A as one file' },
+  { key: 'claude', icon: <IconPlug size={16} />, title: 'Connect Claude (MCP)', desc: 'Ask questions of the live project and its data' },
+] as const;
+
+function ForAi() {
+  const inner = (l: (typeof AI_LINKS)[number]) => (
+    <>
+      <span className="wu-ai__icon" aria-hidden="true">
+        {l.icon}
+      </span>
+      <span className="wu-ai__text">
+        <span className="wu-ai__t">{l.title}</span>
+        <span className="wu-ai__d">{l.desc}</span>
+      </span>
+    </>
+  );
+  const [zip, md, claude] = AI_LINKS;
+  return (
+    <Card
+      className="wu-ai"
+      title="For AI assistants"
+      description="Give Claude or another assistant the whole project as text, or connect it to the live system."
+      flush
+      attrs={{ 'data-testid': 'writeup-ai' }}
+      footer={
+        <span className="wu-ai__foot">
+          <a className="n-link" href={`${BASE}llms.txt`} data-testid="writeup-llms">
+            llms.txt
+          </a>
+          <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer" data-testid="writeup-repo">
+            Source code on GitHub
+          </a>
+        </span>
+      }
+    >
+      <ul className="wu-ai__list">
+        <li>
+          <a className="wu-ai__row" href={`${BASE}switchboard-docs.zip`} download data-testid="writeup-zip">
+            {inner(zip)}
+          </a>
+        </li>
+        <li>
+          <a className="wu-ai__row" href={`${BASE}write-up.md`} data-testid="writeup-markdown">
+            {inner(md)}
+          </a>
+        </li>
+        <li>
+          <Link className="wu-ai__row" to="/app/claude" data-testid="writeup-claude">
+            {inner(claude)}
+          </Link>
+        </li>
+      </ul>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------- page
 
 export function WriteUp() {
-  const active = useActive(IDS);
+  const ids = useMemo(() => SECTIONS.map((s) => s.id), []);
+  const active = useActive(ids);
+  useHashLanding();
   useEffect(() => {
     document.title = 'Write-up · Switchboard';
   }, []);
@@ -70,307 +533,46 @@ export function WriteUp() {
         </ButtonLink>
       </SiteBar>
 
-      <section className="wu-hero">
-        <p className="wu-kicker">Option 3, the feedback loop</p>
-        <h1 className="n-display wu-title">Every call is a signal.</h1>
-        <p className="n-lede wu-lede">
-          Built from scratch in 48 hours by Hunter Borman. Switchboard reads any customer conversation, decides what it is, runs the analyses that apply and sends the result to the right people in their own tools. Signal Loop is the analysis built for this brief: what customers tell Invoca’s CSMs becomes product insight with the quote attached, sent to the person who can act on it.
-        </p>
-        <ul className="wu-facts">
-          <li>All of the AI is built and working, not a mock-up</li>
-          <li>Fictional data and simulated connections, labelled as such</li>
-          <li>Assumptions marked on the page</li>
-          <li>
-            Source code on{' '}
-            <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-          </li>
-        </ul>
-      </section>
-
-      <div className="wu-layout">
-        <aside className="wu-toc" aria-label="Contents">
-          <span className="wu-toc__h">On this page</span>
-          <ol>
-            {TOC.map((t) => (
-              <li key={t.id}>
-                <a href={`#${t.id}`} aria-current={active === t.id ? 'true' : undefined}>
-                  <span className="wu-toc__n">{t.n}</span>
-                  {t.t}
-                </a>
+      <header className="wu-hero">
+        <div className="wu-hero__main">
+          <p className="wu-kicker">{HERO.kicker}</p>
+          <h1 className="n-display wu-title">{HERO.title}</h1>
+          <p className="n-lede wu-lede">{HERO.lede}</p>
+          <ul className="wu-facts">
+            {HERO.facts.map((f) => (
+              <li key={f}>
+                <Rich text={f} />
               </li>
             ))}
-          </ol>
-          <div className="wu-toc__backups">
-            <span className="wu-toc__h">Questions</span>
-            {BACKUPS.map((b) => (
-              <Link key={b.topic} to={`/backup/${b.topic}`}>
-                {b.title}
-              </Link>
-            ))}
-          </div>
+          </ul>
+        </div>
+        <ForAi />
+      </header>
+
+      <div className="wu-layout">
+        <aside className="wu-aside">
+          <Toc active={active} />
         </aside>
 
         <article className="wu-article">
-          {/* ------------------------------------------------ 1 */}
-          <section id="problem" className="wu-sec">
-            <p className="wu-sec__k">Part 1</p>
-            <h2 className="wu-h2">The problem and the people</h2>
-            <p>
-              Customers tell CSMs exactly what to build: what’s broken, what’s missing, what a competitor just offered them. It comes up on every QBR, renewal and check-in. Most of it never reaches the person who could act on it. It lives in a notes field, a Slack thread that scrolls away, or a CSM’s memory.
-            </p>
-            <Callout tone="warning" title="Assumption">
-              Roughly 4 of 10 pieces of feedback reach an owner today. That’s illustrative, not measured. The first thing I’d do is a 2-week time study with two CSMs to replace it with a real number.
-            </Callout>
-            <p>Before any architecture, I asked who hires this system and for what:</p>
-            <div className="wu-jobs">
-              <div>
-                <b>CSM</b>
-                <span>When a customer tells me something the product team should hear, I want it captured, routed and tracked without retyping it, so I can stay present and show I advocated for them.</span>
-              </div>
-              <div>
-                <b>Product Manager</b>
-                <span>When I’m planning next quarter, I want real evidence grouped by theme with ARR attached, so I can prioritise on signal, not volume.</span>
-              </div>
-              <div>
-                <b>VP Product</b>
-                <span>When renewals or competitive pressure shift, I want an honest cross-account view, so I can make and defend portfolio calls.</span>
-              </div>
-              <div>
-                <b>Sales, competitive and support leads</b>
-                <span>When a competitor, pricing objection or repeat bug comes up, I want it in my channel the same day, so I can act before it costs a deal.</span>
-              </div>
-            </div>
-            <p>
-              The emotional job matters most: <b>be the advocate, not the stenographer.</b> CSMs keep the relationship and the judgement; the system takes the data entry and makes their advocacy visible. If it doesn’t do that, CSMs won’t feed it.
-            </p>
-            <p>
-              Why this option: Invoca already turns its customers’ calls into signals. This points the same discipline inward, at Invoca’s own CSM conversations. The data exists, the work is internal and additive, and it can show value in weeks.
-            </p>
-          </section>
+          {PARTS.map((s) => (
+            <SectionView key={s.id} s={s} level={2} />
+          ))}
 
-          {/* ------------------------------------------------ 2 */}
-          <section id="platform" className="wu-sec">
-            <p className="wu-sec__k">Part 2</p>
-            <h2 className="wu-h2">Switchboard: any conversation in, the right people out</h2>
-            <p>
-              Feedback doesn’t only arrive on calls. So Signal Loop runs inside a small platform, Switchboard, that does the parts every analysis needs: bring a conversation in, work out what it is, and get the result to the right person.
-            </p>
-            <div className="wu-flow">
-              <div>
-                <span className="wu-flow__k">In</span>
-                <b>Any conversation</b>
-                <span>Connectors for Gong, Zoom, Gmail, Slack and Google Drive, or any uploaded file: PDF, Word, slides, transcripts, email and chat exports. Binary formats are converted to text in the browser.</span>
-              </div>
-              <div>
-                <span className="wu-flow__k">Decide</span>
-                <b>A fast decision model reads it first</b>
-                <span>What kind of document it is, how messy it is, which analyses apply, and whether anyone is trying to trick the model.</span>
-              </div>
-              <div>
-                <span className="wu-flow__k">Analyse</span>
-                <b>Only what applies runs</b>
-                <span>Signal Loop is built. Follow-ups, renewal risk, escalations, compliance review and call coaching are listed in the catalog and marked “Not built”.</span>
-              </div>
-              <div>
-                <span className="wu-flow__k">Out</span>
-                <b>The right people, in their tools</b>
-                <span>Jira, Linear, Slack, Teams, Salesforce, email and Google Drive, tagging each owner by their own handle in that tool.</span>
-              </div>
-            </div>
-            <p>
-              <b>Why a decision model.</b> A small, fast model from a different family does the first read on every input: 0.9 seconds at the median in the speed test, run alongside extraction so it adds no time to a run, at about a quarter of the old screen’s cost, and it says more (what the input is, how noisy, which analyses apply). It earns its keep a second time at the review gate: its independent second opinion can send a borderline item straight to its owner when it agrees, or hold an item that would have gone automatically when it disagrees. That means fewer items waiting for review without lowering the bar. High-stakes items (churn risk, critical bugs, flagged files) are always reviewed by a person, and every insight still needs a quote that code finds in the transcript.
-            </p>
-            <p>
-              <b>Connectors and people.</b> The connectors are simulated: connecting one records a workspace connection, and deliveries render as in-app previews with receipts. Nothing leaves the system, and the product says so. A people directory holds each person’s handle in each tool, so a delivery mentions <i>@jordan.reyes</i> in Slack and assigns Nina Patel in Jira, and you can act as anyone in it to see their view.
-            </p>
+          <section id={QUESTIONS_INTRO.id} className="wu-sec wu-sec--group" aria-labelledby={`${QUESTIONS_INTRO.id}-h`} data-testid="writeup-questions">
+            <p className="wu-sec__k">{QUESTIONS_INTRO.kicker}</p>
+            <h2 id={`${QUESTIONS_INTRO.id}-h`} className="wu-h2">
+              {QUESTIONS_INTRO.title}
+            </h2>
+            {QUESTIONS_INTRO.lede && (
+              <p className="wu-p wu-p--lede">
+                <Rich text={QUESTIONS_INTRO.lede} />
+              </p>
+            )}
           </section>
-
-          {/* ------------------------------------------------ 3 */}
-          <section id="system" className="wu-sec">
-            <p className="wu-sec__k">Part 3</p>
-            <h2 className="wu-h2">Signal Loop, the analysis built for this brief</h2>
-            <p>Every conversation goes through ten steps. Each step records what it did, how long it took and what it cost, and the screen is drawn from those records, so what you watch is the real run.</p>
-            <ol className="wu-steps">
-              <li>
-                <b>Bring in</b>
-                <span>The file is fingerprinted, so uploading it twice does nothing new.</span>
-              </li>
-              <li>
-                <b>Read</b>
-                <span>Transcripts, notes, emails, chats and documents are split into who said what.</span>
-              </li>
-              <li>
-                <b>Redact</b>
-                <span>Personal and health details are replaced before any AI model sees the text.</span>
-              </li>
-              <li>
-                <b>Triage</b>
-                <span>The decision model says what it is, which analyses apply, and whether anyone is trying to trick the model.</span>
-              </li>
-              <li>
-                <b>Extract</b>
-                <span>Each piece of feedback comes back with its type, area, severity, the exact quote and how confident the model is. Long documents are split and read in parallel.</span>
-              </li>
-              <li>
-                <b>Check the quote</b>
-                <span>Code, not the model, looks for every quote in the transcript. A quote it can’t find is dropped and counted.</span>
-              </li>
-              <li>
-                <b>Gate</b>
-                <span>Confident items go straight to the owner, uncertain ones go to a person, the rest are held. The decision model’s second opinion can move a borderline item either way. Serious bugs and churn risk always go to a person.</span>
-              </li>
-              <li>
-                <b>Group</b>
-                <span>Similar feedback is grouped into themes by meaning; the model only names the theme.</span>
-              </li>
-              <li>
-                <b>Route</b>
-                <span>An editable table of rules decides who hears what, never the prompt. Anything without a match goes to triage.</span>
-              </li>
-              <li>
-                <b>Deliver</b>
-                <span>To the owner’s tool, tagged by their handle, with receipts and retries (simulated here). When a ticket ships, the CSM is told, with a drafted note for the customer.</span>
-              </li>
-            </ol>
-            <p>
-              <b>Proving it.</b> Quality tests measure how often it’s right and how much it finds, against 48 hand-checked sample files, from clean notes to raw speech-to-text and forwarded email threads, plus hard cases: a hidden instruction, a call full of health details, a call with nothing in it. A new prompt goes live only if it holds the bar on accuracy, coverage, the messiest files, quote checks and every safety check, and drops no score by more than 2 points. The latest candidate was blocked: accuracy fell from 88.7% to 59.7%, under the 85% bar. Its quotes were real; it labelled ordinary sentences as feedback. It was also slower and more expensive, which is reported but not yet a blocker.
-            </p>
-            <p>
-              <b>Cost and failure.</b> Viewers share a hard $15 limit on live AI, enforced by the provider and by the app. At the limit, or if a live call fails, runs replay a recorded real run, labelled on screen, so it never becomes an outage. If the model’s answer is malformed, it retries once, then switches to a backup model, then parks the conversation on the Health page for a person.
-            </p>
-            <nav className="wu-links" aria-label="Related questions">
-              <Link to="/backup/cost" className="n-link">
-                Cost model
-              </Link>
-              <Link to="/backup/security" className="n-link">
-                Security and PII
-              </Link>
-              <Link to="/backup/failure" className="n-link">
-                Failure handling
-              </Link>
-            </nav>
-          </section>
-
-          {/* ------------------------------------------------ 4 */}
-          <section id="rollout" className="wu-sec">
-            <p className="wu-sec__k">Part 4</p>
-            <h2 className="wu-h2">Rollout and adoption</h2>
-            <p>Trust is earned in phases, and adoption is measured, not surveyed.</p>
-            <div className="wu-phases">
-              <div>
-                <span className="wu-phase__wk">Week 0</span>
-                <b>Discovery</b>
-                <span>Shadow two CSMs. Run the time study. Co-design the taxonomy with CSMs and PMs.</span>
-              </div>
-              <div>
-                <span className="wu-phase__wk">Weeks 1–2</span>
-                <b>Shadow mode</b>
-                <span>Runs quietly; CSMs compare its output with their own notes. Nothing is sent.</span>
-              </div>
-              <div>
-                <span className="wu-phase__wk">Weeks 3–6</span>
-                <b>Champions</b>
-                <span>2–3 volunteer CSMs and one PM, with a weekly calibration on misses and noise.</span>
-              </div>
-              <div>
-                <span className="wu-phase__wk">Week 7+</span>
-                <b>Whole team</b>
-                <span>Confident items go straight to the owner; everything else goes to review.</span>
-              </div>
-            </div>
-            <p>
-              <b>Trust mechanics:</b> a quote on every insight, a one-click “this is wrong”, precision published weekly, high-stakes items always reviewed, and CSMs credited when their feedback ships.
-            </p>
-            <p>
-              <b>Additive, not replacement.</b> It takes over the data entry, not the judgement. CSMs keep the relationship and the final call.
-            </p>
-            <p>
-              <b>Operating it.</b> Signal Loop reports its logs, timings, usage and units of work into Agent Ops. That’s where I’d measure weekly active reviewers, capture rate and time to owner, and report hours returned to executives: the time each call used to take, minus the time people now spend reviewing, with the baselines labelled as assumptions until the time study. It has a named owner, a review cadence, and meets the same nine-check agent standard in the build that I’d hold every builder’s agent to; its security review and business-owner sign-off are illustrative until Invoca Security does the real one.
-            </p>
-            <nav className="wu-links" aria-label="Related questions">
-              <Link to="/backup/metrics" className="n-link">
-                Success metrics
-              </Link>
-              <Link to="/backup/agent-ops" className="n-link">
-                Agent Ops
-              </Link>
-              <Link to="/ops" className="n-link">
-                Open Agent Ops
-              </Link>
-            </nav>
-          </section>
-
-          {/* ------------------------------------------------ 5 */}
-          <section id="next" className="wu-sec">
-            <p className="wu-sec__k">Part 5</p>
-            <h2 className="wu-h2">What’s next</h2>
-            <p>Over the next 12–18 months, the same design gets cheaper, faster and closer to the conversation:</p>
-            <ul className="wu-list">
-              <li>Cheaper, faster models making it economical to read every call, straight from the recorder and CRM, not a sample.</li>
-              <li>Real-time, in-call capture instead of after-the-fact processing.</li>
-              <li>More analyses on the same platform: follow-ups, renewal risk and escalations first, then compliance review and call coaching, each with its own tests and owner.</li>
-              <li>Specialist agents (extractor, critic, router) checking each other, and drafted specs and customer replies from a theme, reviewed by the owner.</li>
-              <li>Plugging into Invoca’s own Signal AI and conversation data as the long-term home.</li>
-            </ul>
-            <p>What stays the same: quotes grounded in code, gates on high-stakes output, routing as data, and human judgement where it counts.</p>
-            <p>
-              <b>From proof of concept to production.</b> The proof of concept runs entirely on Cloudflare. The production design keeps the same boundaries on a stack built for scale, all strict TypeScript:
-            </p>
-            <div className="wu-table-wrap">
-              <table className="wu-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Job</th>
-                    <th scope="col">Today (deployed)</th>
-                    <th scope="col">In production</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {STACK.map(([c, p, r]) => (
-                    <tr key={c}>
-                      <th scope="row">{c}</th>
-                      <td>{p}</td>
-                      <td>{r}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <nav className="wu-links" aria-label="Related questions">
-              <Link to="/backup/build-vs-buy" className="n-link">
-                Build vs buy
-              </Link>
-              <Link to="/backup/differently" className="n-link">
-                What I’d do differently
-              </Link>
-            </nav>
-          </section>
-
-          {/* ------------------------------------------------ 6 */}
-          <section id="role" className="wu-sec">
-            <p className="wu-sec__k">The role</p>
-            <h2 className="wu-h2">How this maps to AI Operations</h2>
-            <div className="wu-role">
-              <div>
-                <b>Build agents</b>
-                <span>Signal Loop is a working agent: redaction, a decision model for triage and second opinions, structured extraction, quotes checked in code, review gates, routing and quality tests.</span>
-              </div>
-              <div>
-                <b>Own the platform</b>
-                <span>Switchboard for the work (intake, triage, delivery, people) and Agent Ops for operating it: a registry, review dates, usage, logs, reliability targets, alerts and cost for every agent, not just mine.</span>
-              </div>
-              <div>
-                <b>Raise the bar for builders</b>
-                <span>A nine-check agent standard, templates and office hours, so a Claude or Gumloop build gets to production safely.</span>
-              </div>
-              <div>
-                <b>Report impact</b>
-                <span>Adoption, hours returned, what it costs and what it’s worth, with the assumptions labelled.</span>
-              </div>
-            </div>
-          </section>
+          {QUESTIONS.map((s) => (
+            <SectionView key={s.id} s={s} level={3} />
+          ))}
 
           <footer className="wu-end">
             <ButtonLink variant="primary" to="/walkthrough" iconRight={<IconArrowRight size={16} />}>
@@ -382,15 +584,6 @@ export function WriteUp() {
             <ButtonLink variant="ghost" to="/ops">
               Agent Ops
             </ButtonLink>
-            <ButtonLink variant="ghost" to="/app/claude" data-testid="writeup-claude">
-              Ask Claude about it: connect over MCP
-            </ButtonLink>
-            <a href={`${import.meta.env.BASE_URL}walkthrough.md`} className="ds-btn ds-btn--ghost" data-testid="writeup-markdown">
-              Markdown version for AI assistants
-            </a>
-            <a href={REPO_URL} target="_blank" rel="noreferrer" className="ds-btn ds-btn--ghost" data-testid="writeup-repo">
-              Source code on GitHub
-            </a>
           </footer>
         </article>
       </div>

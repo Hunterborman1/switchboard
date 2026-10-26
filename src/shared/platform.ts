@@ -18,6 +18,8 @@ export const PLATFORM_NAME = 'Switchboard';
 export const ANALYSIS_NAME = 'Signal Loop';
 /** The public source repository. */
 export const REPO_URL = 'https://github.com/Hunterborman1/switchboard';
+/** The deployed site (gated). Markdown for AI assistants links here, never to a relative path. */
+export const SITE_URL = 'https://repos.hunterborman.com/repo/invoca';
 
 // ---------------------------------------------------------------- connectors
 

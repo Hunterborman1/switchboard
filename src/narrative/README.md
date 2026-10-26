@@ -58,4 +58,4 @@ between the bars at 1440×900 and 1024×768.
 | Production | today's stack → the production column fills in row by row |
 | Scorecard | real numbers from the viewer's workspace and Agent Ops |
 
-Q&A pages live in `backup/` and are deep-linkable at `/backup/:topic`.
+The Q&A is part of the write-up (`/write-up#cost`, `#security`, …; prose in `src/shared/writeup/content.ts`). `/backup/:topic` redirects to its section, so the presenter view and old links still work.
