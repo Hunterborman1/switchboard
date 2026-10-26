@@ -1,4 +1,4 @@
-/* /write-up: the write-up and the Q&A on one long page. ds tokens; wu-* classes. */
+/* The write-up: its index (/write-up) and one page per chapter (/write-up/:chapter). ds tokens; wu-* classes. */
 
 .wu-page {
   padding-bottom: var(--space-16);
@@ -8,9 +8,7 @@
 
 .wu-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  align-items: start;
-  gap: var(--space-8) var(--space-12);
+  gap: var(--space-4);
   max-width: calc(var(--n-column) + 2 * var(--page-gutter));
   margin: 0 auto;
   padding: var(--space-16) var(--page-gutter) var(--space-10);
@@ -18,14 +16,9 @@
 /* The rule under the hero spans the content column, not the gutters. */
 .wu-hero::after {
   content: '';
-  grid-column: 1 / -1;
   height: 1px;
+  margin-top: var(--space-8);
   background: var(--border);
-}
-.wu-hero__main {
-  display: grid;
-  gap: var(--space-4);
-  min-width: 0;
 }
 .wu-kicker {
   margin: 0;
@@ -36,6 +29,9 @@
 .wu-title {
   font-size: clamp(2.25rem, 1.25rem + 2.6vw, 3.5rem);
   line-height: 1.08;
+}
+.wu-hero--chapter .wu-title {
+  font-size: clamp(2rem, 1.25rem + 2vw, 3rem);
 }
 .wu-lede {
   max-width: 72ch;
@@ -66,12 +62,238 @@
   background: var(--accent);
 }
 
-/* For AI assistants: a ds Card whose rows are the three ways in. */
+/* A chapter's actions: open it in the presentation, its Markdown, the .zip. */
+.wu-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-6);
+  margin-top: var(--space-2);
+}
+.wu-actions__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+.wu-actions__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.wu-actions__link:hover {
+  color: var(--accent-text);
+  text-decoration: none;
+}
+.wu-actions__link svg {
+  flex: none;
+  color: var(--text-tertiary);
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.wu-actions__link:hover svg {
+  color: currentColor;
+}
+.wu-crumb {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.wu-crumb:hover {
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------- index */
+
+.wu-index {
+  display: grid;
+  gap: var(--space-16);
+  max-width: calc(var(--n-column) + 2 * var(--page-gutter));
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+}
+.wu-isec {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.wu-isec__head {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 760px;
+}
+.wu-isec__head .wu-h2 {
+  margin: 0;
+}
+/* The four short answers, near the top: two across, one on narrow screens. */
+.wu-answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-10) var(--space-12);
+}
+.wu-answer {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+}
+.wu-answer__t {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.wu-answer__d {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 27px;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+@media (max-width: 760px) {
+  .wu-answers {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+}
+.wu-row[data-plain='true'] {
+  grid-template-columns: minmax(0, 1fr) 16px;
+}
+/* A group: its label in the contents column, its rows in the article column, as on a chapter page. */
+.wu-group {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4) var(--space-16);
+}
+.wu-group + .wu-group {
+  margin-top: var(--space-2);
+}
+.wu-group__label {
+  display: grid;
+  gap: 2px;
+  padding-top: var(--space-4);
+}
+.wu-group__t {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 24px;
+  color: var(--text);
+}
+.wu-group__d {
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-tertiary);
+}
+.wu-rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.wu-rows > li + li {
+  border-top: 1px solid var(--border-row);
+}
+.wu-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 16px;
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-enter);
+}
+.wu-row:hover {
+  background: var(--bg-subtle);
+  text-decoration: none;
+}
+.wu-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.wu-row__n {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  line-height: 22px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.wu-row__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.wu-row__t {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 22px;
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.wu-row:hover .wu-row__t {
+  color: var(--accent-text);
+}
+.wu-row__d {
+  font-size: var(--text-md);
+  line-height: 21px;
+  color: var(--text-secondary);
+}
+.wu-row__go {
+  margin-top: 3px;
+  color: var(--text-tertiary);
+  transition:
+    color var(--dur-fast) var(--ease-enter),
+    transform var(--dur-fast) var(--ease-enter);
+}
+.wu-row:hover .wu-row__go {
+  color: var(--accent-text);
+  transform: translateX(2px);
+}
+@media (max-width: 960px) {
+  .wu-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .wu-group__label {
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-top: 0;
+  }
+}
+@media (max-width: 560px) {
+  .wu-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding: var(--space-4);
+  }
+  .wu-row__go {
+    display: none;
+  }
+  .wu-row[data-plain='true'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* For AI assistants: a ds Card whose rows are the three ways in, side by side when there's room. */
 .wu-ai {
   min-width: 0;
 }
 .wu-ai__list {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0;
   padding: var(--space-2) 0;
   list-style: none;
@@ -137,15 +359,6 @@
   font-size: var(--text-sm);
   line-height: 20px;
 }
-
-@media (max-width: 1100px) {
-  .wu-hero {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .wu-ai__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
 @media (max-width: 760px) {
   .wu-ai__list {
     grid-template-columns: minmax(0, 1fr);
@@ -169,6 +382,7 @@
   max-height: calc(100dvh - var(--topbar-h) - var(--space-12));
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .wu-toc {
   display: grid;
@@ -198,7 +412,9 @@
   list-style: none;
 }
 .wu-toc a {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
   padding: 6px var(--space-2);
   border-radius: var(--radius-sm);
   font-size: var(--text-md);
@@ -218,10 +434,28 @@
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
-.wu-toc a[aria-current='true'] {
+.wu-toc a[aria-current='true'],
+.wu-toc a[aria-current='page'] {
   background: var(--accent-subtle);
   font-weight: var(--weight-medium);
   color: var(--accent-text);
+}
+.wu-toc__group--chapters a {
+  padding: 4px var(--space-2);
+  font-size: var(--text-sm);
+}
+.wu-toc__n {
+  flex: none;
+  width: 16px;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.wu-toc a[aria-current] .wu-toc__n {
+  color: var(--accent-text);
+}
+.wu-toc__t {
+  min-width: 0;
 }
 @media (max-width: 960px) {
   .wu-layout {
@@ -234,28 +468,16 @@
     overflow: visible;
   }
   .wu-toc {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-6);
     padding: var(--space-4);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
   }
-  .wu-toc__group + .wu-toc__group {
-    padding-top: 0;
-    border-top: 0;
-  }
   .wu-toc a {
     padding: 4px var(--space-2);
   }
-}
-@media (max-width: 560px) {
-  .wu-toc {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
-  }
-  .wu-toc__group + .wu-toc__group {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
+  /* The pager and the write-up's index do this job on smaller screens. */
+  .wu-toc__group--chapters {
+    display: none;
   }
 }
 
@@ -264,7 +486,7 @@
 .wu-article {
   display: grid;
   gap: var(--space-16);
-  max-width: 760px;
+  max-width: 720px;
   min-width: 0;
   /* Blocks size to the column, not the viewport: it is narrower beside the contents. */
   container-type: inline-size;
@@ -274,16 +496,6 @@
   gap: var(--space-4);
   min-width: 0;
   scroll-margin-top: calc(var(--topbar-h) + var(--space-6));
-}
-.wu-sec--group {
-  padding-top: var(--space-12);
-  border-top: 1px solid var(--border);
-}
-.wu-sec > .wu-sec__k {
-  margin: 0;
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--accent-text);
 }
 .wu-h2 {
   margin: -6px 0 0;
@@ -312,6 +524,18 @@
 .wu-p b {
   font-weight: var(--weight-semibold);
   color: var(--text);
+}
+.wu-source {
+  margin: -4px 0 0;
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-tertiary);
+}
+.wu-source a {
+  overflow-wrap: anywhere;
+}
+.wu-sec .ds-quote {
+  margin: var(--space-1) 0;
 }
 
 /* ---------------------------------------------------------------- cards */
@@ -376,6 +600,8 @@
 }
 .wu-card__note {
   margin: var(--space-1) 0 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-row);
   font-size: var(--text-sm);
   line-height: 20px;
   color: var(--text-tertiary);
@@ -475,7 +701,7 @@
   color: var(--text-tertiary);
 }
 
-/* ---------------------------------------------------------------- steps and lists */
+/* ---------------------------------------------------------------- steps, lists, questions */
 
 .wu-steps {
   display: grid;
@@ -523,6 +749,7 @@
   font-size: var(--text-lg);
   line-height: 26px;
   color: var(--text-secondary);
+  text-wrap: pretty;
 }
 .wu-list li::before {
   content: '';
@@ -533,6 +760,31 @@
   height: 5px;
   border-radius: var(--radius-full);
   background: var(--border-strong);
+}
+/* Questions people ask: the question in the text colour, the answer under it. */
+.wu-qa {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+}
+.wu-qa > div {
+  display: grid;
+  gap: var(--space-1);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--border);
+}
+.wu-qa dt {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 26px;
+  color: var(--text);
+}
+.wu-qa dd {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 26px;
+  color: var(--text-secondary);
+  text-wrap: pretty;
 }
 .wu-links {
   display: flex;
@@ -589,8 +841,9 @@
   font-weight: var(--weight-medium);
   color: var(--text);
 }
-.wu-table[data-fixed='true'] tbody th b {
+.wu-table td b {
   font-weight: var(--weight-semibold);
+  color: var(--text);
 }
 .wu-table tbody th span {
   display: block;
@@ -598,6 +851,10 @@
   font-size: var(--text-xs);
   line-height: 16px;
   color: var(--text-tertiary);
+}
+/* Source file names are long words: let them break rather than push the table wide. */
+.wu-table td a {
+  overflow-wrap: anywhere;
 }
 .wu-table td.is-accent {
   font-weight: var(--weight-medium);
@@ -616,6 +873,9 @@
   .wu-table td {
     display: block;
     width: auto;
+  }
+  .wu-table colgroup {
+    display: none;
   }
   .wu-table thead {
     position: absolute;
@@ -641,7 +901,7 @@
   }
   .wu-table td {
     display: grid;
-    grid-template-columns: 120px minmax(0, 1fr);
+    grid-template-columns: 96px minmax(0, 1fr);
     gap: var(--space-3);
     padding: 0;
     border: 0;
@@ -655,201 +915,58 @@
   }
 }
 
-/* ---------------------------------------------------------------- failure flow */
+/* ---------------------------------------------------------------- pager */
 
-.wu-flowfig {
+.wu-pager {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
-  margin: 0;
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border);
 }
-.wu-flowfig > figcaption {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  line-height: 20px;
-  color: var(--text);
-}
-.wu-flow {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.wu-flow li {
-  position: relative;
-  display: grid;
-  align-content: start;
-  gap: 2px;
-  min-width: 0;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg);
-}
-.wu-flow li[data-last='true'] {
-  border-color: var(--warning-mark);
-  background: var(--warning-subtle);
-}
-/* The arrow between two steps, drawn in the gap. */
-.wu-flow li + li::before {
-  content: '';
-  position: absolute;
-  top: calc(50% - 4px);
-  left: -13px;
-  width: 7px;
-  height: 7px;
-  border-top: 1.5px solid var(--text-disabled);
-  border-right: 1.5px solid var(--text-disabled);
-  transform: rotate(45deg);
-}
-.wu-flow__when {
-  font-size: var(--text-xs);
-  line-height: 16px;
-  color: var(--text-tertiary);
-}
-.wu-flow b {
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  line-height: 20px;
-  color: var(--text);
-}
-.wu-flow__d {
-  font-size: var(--text-sm);
-  line-height: 18px;
-  color: var(--text-secondary);
-}
-.wu-flow__ok {
-  margin-top: 6px;
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  line-height: 16px;
-  color: var(--success);
-}
-.wu-panel__note {
-  margin: 0;
-  font-size: var(--text-sm);
-  line-height: 20px;
-  color: var(--text-secondary);
-}
-@container (max-width: 640px) {
-  .wu-flow {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
-  }
-  .wu-flow li + li::before {
-    top: -12px;
-    left: 22px;
-    transform: rotate(135deg);
-  }
-}
-
-/* ---------------------------------------------------------------- cost (live) */
-
-.wu-cost {
-  display: grid;
-  gap: var(--space-3);
-}
-.wu-cost__status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px var(--space-2);
-  min-height: 22px;
-}
-.wu-cost__line {
-  font-size: var(--text-sm);
-  line-height: 20px;
-  color: var(--text-tertiary);
-}
-/* Three figures stay on one row until the column is narrow (ds Stats wraps by viewport). */
-.wu-cost .ds-stats {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.wu-cost .ds-stats > .ds-stat {
-  border-top: 0;
-  border-left: 1px solid var(--border);
-}
-.wu-cost .ds-stats > .ds-stat:first-child {
-  border-left: 0;
-}
-.wu-cost .ds-stat__value .ds-skel {
-  margin: 3px 0;
-}
-.wu-spend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px var(--space-2);
-  min-height: 30px;
-  margin-bottom: 4px;
-}
-.wu-spend__v {
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-semibold);
-  line-height: 30px;
-  letter-spacing: -0.015em;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-.wu-spend__v .ds-skel {
-  margin: 5px 0;
-}
-/* A skeleton has no text baseline: centre it so the row keeps its loaded height. */
-.wu-spend[data-loading='true'] {
-  align-items: center;
-}
-.wu-spend__of {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-}
-.wu-cost .ds-meter + .wu-card__d {
-  margin-top: var(--space-2);
-}
-.wu-cost .wu-card__d b {
-  font-weight: var(--weight-semibold);
-  color: var(--text);
-}
-.wu-cost__note {
-  margin: 0;
-  font-size: var(--text-sm);
-  line-height: 20px;
-  color: var(--text-tertiary);
-}
-.wu-split {
-  display: grid;
-  gap: var(--space-3);
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.wu-split li {
+.wu-pager__link {
   display: grid;
   gap: 4px;
+  align-content: start;
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease-enter);
 }
-.wu-split__row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  font-size: var(--text-md);
+.wu-pager__link:hover {
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+.wu-pager__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.wu-pager__link--next {
+  text-align: right;
+}
+.wu-pager__k {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
   line-height: 20px;
-  color: var(--text);
-}
-.wu-split__note {
-  font-size: var(--text-xs);
-  line-height: 16px;
   color: var(--text-tertiary);
 }
-@container (max-width: 560px) {
-  .wu-cost .ds-stats {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .wu-cost .ds-stats > .ds-stat {
-    border-left: 0;
-  }
-  .wu-cost .ds-stats > .ds-stat + .ds-stat {
-    border-top: 1px solid var(--border);
-  }
+.wu-pager__link--next .wu-pager__k {
+  justify-content: flex-end;
+}
+.wu-pager__t {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 24px;
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-enter);
+}
+.wu-pager__link:hover .wu-pager__t {
+  color: var(--accent-text);
 }
 
 /* ---------------------------------------------------------------- narrow columns */
@@ -870,9 +987,18 @@
     grid-column: 2;
   }
 }
-@container (max-width: 400px) {
+@container (max-width: 480px) {
   .wu-cards[data-cols='4'] {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .wu-pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wu-pager__link--next {
+    text-align: left;
+  }
+  .wu-pager__link--next .wu-pager__k {
+    justify-content: flex-start;
   }
 }
 
@@ -889,11 +1015,16 @@
   .wu-top__walk {
     display: none;
   }
-  /* The page name would truncate beside the primary action; the brand still links home. */
-  .wu-page .n-sitebar__context {
+  /* Phones have room for one thing beside the brand. The index keeps its primary action (the
+     page name is in the hero); a chapter keeps the way back to the index. */
+  .wu-page--index .n-sitebar__context,
+  .wu-page--chapter .n-sitebar__end {
     display: none;
   }
   .wu-hero {
     padding-top: var(--space-10);
+  }
+  .wu-hero::after {
+    margin-top: var(--space-6);
   }
 }
