@@ -88,21 +88,31 @@ const usd = (n: number, d: number) => `$${n.toLocaleString('en-US', { minimumFra
 
 // ---------------------------------------------------------------- cost (live)
 
-type CostData = { perCall: number | null; liveRuns: number; p50Ms: number | null; spent: number | null; limit: number; ok: boolean };
+type CostData = { perCall: number | null; liveRuns: number; p50Ms: number | null; p50Runs: number; spent: number | null; limit: number; ok: boolean };
 
 function useCostData(): CostData | null {
   const [d, setD] = useState<CostData | null>(null);
   useEffect(() => {
     let alive = true;
     (async () => {
-      const out: CostData = { perCall: null, liveRuns: 0, p50Ms: null, spent: null, limit: BUDGET_LIMIT_USD, ok: false };
+      const out: CostData = { perCall: null, liveRuns: 0, p50Ms: null, p50Runs: 0, spent: null, limit: BUDGET_LIMIT_USD, ok: false };
       try {
         const runs = await tourApi.runs(200);
         const live = runs.filter((r) => r.mode === 'live' && r.costUsd > 0);
         out.liveRuns = live.length;
         if (live.length) out.perCall = live.reduce((a, r) => a + r.costUsd, 0) / live.length;
-        const durs = runs.map((r) => r.durationMs).filter((x): x is number => typeof x === 'number').sort((a, b) => a - b);
-        if (durs.length) out.p50Ms = durs[Math.floor(durs.length / 2)] ?? null;
+        // Run time: the median of live runs from the last day, which ran on today's pipeline. The seeded history
+        // ran on an older, faster one, so it is not mixed in; with too few recent runs the recorded value is shown.
+        const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
+        const recent = live
+          .filter((r) => Date.parse(r.createdAt) > dayAgo)
+          .map((r) => r.durationMs)
+          .filter((x): x is number => typeof x === 'number')
+          .sort((a, b) => a - b);
+        if (recent.length >= 3) {
+          out.p50Ms = recent[Math.floor(recent.length / 2)] ?? null;
+          out.p50Runs = recent.length;
+        }
         out.ok = true;
       } catch {
         /* the recorded values stand in */
@@ -204,7 +214,7 @@ function Cost({ block }: { block: CostBlock }) {
             </>,
           )}
           label="typical run time"
-          note="All ten steps, end to end"
+          note={d?.p50Runs ? `Median of ${d.p50Runs} live runs today, all ten steps` : `Median of the ${rec.runs} recorded runs, before the decision model`}
         />
       </div>
       <div className="bk-split">
