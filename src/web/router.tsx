@@ -2,9 +2,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import { RootLayout } from './RootLayout';
 import { Hub } from './pages/Hub';
 import { Walkthrough } from './pages/Walkthrough';
-import { Presenter } from './pages/Presenter';
-import { WriteUp } from './pages/WriteUp';
-import { BackupPage } from '../narrative/backup/BackupPage';
 import { AppMount, OpsMount } from './mounts';
 import { appRoutes, platformRoutes } from './bridge';
 import { ButtonLink } from '../ds';
@@ -27,7 +24,7 @@ function NotFound() {
               Back to the start
             </ButtonLink>
             <ButtonLink variant="secondary" to="/walkthrough">
-              Start the walkthrough
+              Start the presentation
             </ButtonLink>
             <ButtonLink variant="secondary" to="/write-up">
               Read the write-up
@@ -42,15 +39,16 @@ function NotFound() {
 export const router = createBrowserRouter(
   [
     // The presenter view lives outside the TourProvider: it drives the main window, it isn't one.
-    { path: '/presenter', element: <Presenter />, errorElement: <RouteError /> },
+    { path: '/presenter', lazy: async () => ({ Component: (await import('./pages/Presenter')).Presenter }), errorElement: <RouteError /> },
     {
       element: <RootLayout />,
       errorElement: <RouteError />,
       children: [
         { index: true, element: <Hub /> },
-        { path: 'write-up', element: <WriteUp /> },
+        // Off the first-load path: loaded when opened.
+        { path: 'write-up', lazy: async () => ({ Component: (await import('./pages/WriteUp')).WriteUp }) },
         { path: 'walkthrough/:part?', element: <Walkthrough /> },
-        { path: 'backup/:topic?', element: <BackupPage /> },
+        { path: 'backup/:topic?', lazy: async () => ({ Component: (await import('../narrative/backup/BackupPage')).BackupPage }) },
         { path: 'app', element: <AppMount />, errorElement: <RouteError />, children: appRoutes.length ? appRoutes : [{ path: '*', element: null }] },
         {
           path: 'ops',

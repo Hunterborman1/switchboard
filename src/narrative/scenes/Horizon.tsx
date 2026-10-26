@@ -1,5 +1,5 @@
 /**
- * Part 16 · The next 12–18 months. A flat timeline of six milestones, then what doesn't change.
+ * Chapter 17 · The next 12–18 months. A flat timeline of six milestones, then what doesn't change.
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';

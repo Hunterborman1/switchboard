@@ -1,9 +1,10 @@
 /**
  * A conversation: one file moving through the ten-step pipeline. Polls GET /runs/:id (~600ms
- * while running) and reveals steps with a human-followable dwell (useReveal), so a fast run
- * stays watchable. Top: the header and pipeline progress. Left: the transcript, with hidden
- * personal details and the quotes behind each insight. Right: triage, insights (score, gate,
- * second opinion, routing), any dropped quotes, and the per-step trace.
+ * while running) and reveals each step as soon as the server reports it (useReveal: no
+ * artificial dwell), with a live clock from the run's real start (RunClock). Top: the header and
+ * pipeline progress. Left: the transcript, with hidden personal details and the quotes behind
+ * each insight. Right: triage, insights (score, gate, second opinion, routing), any dropped
+ * quotes, and, once finished, the Timing card: the real step timestamps on one clock.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -21,10 +22,11 @@ import { docKindLabel, ErrorState, MODE_REASON, ModeBadge, RunStatusBadge, Sourc
 import { money, ms } from '../lib/labels';
 import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
-import { usePrefersReducedMotion, useTourState } from '../state';
+import { usePrefersReducedMotion } from '../state';
 import { track } from '../telemetry';
 import { PipelineProgress } from './run/PipelineGraph';
-import { DroppedCard, InsightRow, InsightSkeletons, TraceCard, TriageCard, type Diversion, type DroppedItem } from './run/RunParts';
+import { DroppedCard, InsightRow, InsightSkeletons, TriageCard, type Diversion, type DroppedItem } from './run/RunParts';
+import { RunClock, TimingCard, TimingPending, TookValue } from './run/Timing';
 import { STEP_NAME, stepStory, tidySummary } from './run/stepText';
 import { redactedPlain, Transcript, type Highlight } from './run/Transcript';
 import { useReveal } from './run/useReveal';
@@ -41,11 +43,10 @@ export default function RunViewPage() {
   const earlier = search.get('earlier') === '1';
   const toast = useToast();
   const [rerunning, setRerunning] = useState(false);
-  const { pace } = useTourState();
   const reduced = usePrefersReducedMotion();
   const world = useWorldIndex();
   const themes = useThemes();
-  const reveal = useReveal(data, pace, reduced);
+  const reveal = useReveal(data, reduced);
   const models = useModelLabels();
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -197,7 +198,9 @@ export default function RunViewPage() {
 
   // ------------------------------------------------ derived view state
   const screenStep = reveal.steps.find((s) => s.key === 'screen')!;
-  const extractDone = reveal.done('extract');
+  // Extracted insights are saved with the quote check, a few milliseconds after Extract finishes:
+  // a poll that lands in between must not read as "nothing found".
+  const extractDone = reveal.done('extract') && (groundDone || insights.length > 0 || data.steps.find((s) => s.key === 'extract')?.status === 'skipped');
   const scoreDone = reveal.done('score');
   const screenDone = reveal.done('screen');
   const redactDone = reveal.done('redact');
@@ -216,8 +219,11 @@ export default function RunViewPage() {
   const shownCost = stepsCostUsd(reveal.steps.filter((s) => s.display !== 'pending' && s.display !== 'running'));
   const failedStep = run.status === 'failed' ? data.steps.find((s) => s.status === 'failed') : undefined;
   const finished = reveal.finished;
+  /** The run itself is over (a replay of its reveal may be playing). */
+  const runOver = finished || reveal.replaying;
   const inProgress = !finished;
-  const shownStatus = finished ? run.status : run.status === 'queued' && reveal.revealed === 0 ? 'queued' : 'running';
+  // A replay of the reveal is not a new run: keep the run's real status on screen.
+  const shownStatus = finished || reveal.replaying ? run.status : run.status === 'queued' && reveal.revealed === 0 ? 'queued' : 'running';
   const rewrite = (text: string) => models.rewrite(text);
   // What it is comes from triage: shown once that step is revealed, never ahead of it.
   const docKind = screenDone
@@ -232,7 +238,7 @@ export default function RunViewPage() {
       : 'Starting'
     : failedStep
       ? `Stopped at ${STEP_NAME[failedStep.key]}`
-      : `Finished in ${ms(run.durationMs)}`;
+      : `All ${STEP_KEYS.length} steps finished`;
 
   const routeDecisions = (data.steps.find((s) => s.key === 'route')?.detail?.decisions ?? []) as Array<{ insightId?: string; diverted?: { why?: string; channel?: string } }>;
   const diversionFor = (insightId: string): Diversion => {
@@ -287,7 +293,7 @@ export default function RunViewPage() {
             </span>
             <span className={styles.metaItem}>
               <span className="ds-subtle">Took</span>
-              <span className="ds-num">{finished ? ms(run.durationMs) : '—'}</span>
+              <TookValue detail={data} reveal={reveal} />
             </span>
           </>
         }
@@ -296,12 +302,12 @@ export default function RunViewPage() {
             <ButtonLink to={`/ops/traces/${run.id}`} iconRight={<IconExternal size={14} />}>
               Open in Agent Ops
             </ButtonLink>
-            {finished && run.fileId && !earlier ? (
+            {runOver && run.fileId && !earlier ? (
               <Button icon={<IconRefresh size={14} />} loading={rerunning} onClick={() => void runAgain()}>
                 Run again
               </Button>
             ) : null}
-            {finished && run.reviewCount > 0 ? (
+            {runOver && run.reviewCount > 0 ? (
               <ButtonLink to="/app/review" variant="primary">
                 Review {plural(run.reviewCount, 'insight')}
               </ButtonLink>
@@ -356,20 +362,28 @@ export default function RunViewPage() {
         title="Progress"
         description={progressDescription}
         actions={
-          finished ? (
-            <Button
-              size="sm"
-              variant="ghost"
-              icon={<IconRefresh size={14} />}
-              onClick={() => {
-                setPickedStep(null);
-                reveal.replay();
-              }}
-            >
-              Replay steps
-            </Button>
-          ) : null
+          <span className={styles.progressActions}>
+            <RunClock detail={data} reveal={reveal} />
+            {/* Always laid out, so the clock never shifts when it appears; usable once the run has finished. */}
+            <span className={finished ? undefined : styles.reserved} aria-hidden={finished ? undefined : true}>
+              <Button
+                size="sm"
+                variant="ghost"
+                icon={<IconRefresh size={14} />}
+                tabIndex={finished ? undefined : -1}
+                disabled={!finished}
+                title={finished ? 'Show the steps again at the speed they ran' : undefined}
+                onClick={() => {
+                  setPickedStep(null);
+                  reveal.replay();
+                }}
+              >
+                Replay steps
+              </Button>
+            </span>
+          </span>
         }
+        className={styles.progressCard}
         attrs={{ 'aria-label': 'Pipeline progress' }}
       >
         <PipelineProgress
@@ -450,7 +464,7 @@ export default function RunViewPage() {
 
           {dropped.length > 0 ? <DroppedCard items={dropped} onFocus={focusInsight} /> : null}
 
-          <TraceCard runId={run.id} steps={reveal.steps} modelLabel={models.label} totalCost={shownCost} totalMs={finished ? run.durationMs : null} />
+          {runOver ? <TimingCard detail={data} modelLabel={models.label} /> : <TimingPending />}
         </div>
       </div>
     </Page>

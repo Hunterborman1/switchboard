@@ -154,11 +154,14 @@ export default function ReviewPage() {
       return {
         tone: 'success',
         title: `${action === 'edit' ? 'Edited and sent to' : 'Sent to'} ${who}`,
+        // Connectors are simulated: the delivery and its receipt are real output, nothing left the Worker.
         body: d.receipt ? (
           <>
-            Receipt <span className="ds-mono">{d.receipt}</span>
+            Simulated delivery. Receipt <span className="ds-mono">{d.receipt}</span>
           </>
-        ) : undefined,
+        ) : (
+          'Simulated delivery.'
+        ),
         action: view,
       };
     },

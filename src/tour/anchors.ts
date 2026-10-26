@@ -30,6 +30,8 @@ export const ANCHORS = {
   'run.ground': 'The Ground step in the pipeline stepper (ch2.ground on runs where every quote grounds)',
   'run.gate': 'Confidence gauge / gate result',
   'run.trace': 'Trace panel: model, tokens, cost, ms per step',
+  'run.clock': 'The live elapsed clock on the conversation page ("Running · 3.4 s", then the real total)',
+  'run.timing': 'Timing card: the waterfall of real step timestamps, wall time, tokens, AI cost, link to the trace',
   // ch3 · review
   'review.queue': 'Review queue list',
   'review.item': 'First item in the queue',

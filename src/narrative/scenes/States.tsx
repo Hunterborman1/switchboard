@@ -1,5 +1,5 @@
 /**
- * Part 5 · Today and tomorrow (current → future state). A flat swimlane. Beat 0: the relay of
+ * Chapter 6 · Today and tomorrow (current → future state). A flat swimlane. Beat 0: the relay of
  * handoffs. Beat 1: a leak marker appears at each handoff, one after another. Beat 2: Signal Loop
  * takes the middle lane and every leak becomes a check. Beat 3: the loop closes back to the CSM
  * and the customer, up the right-hand edge, so the drawing needs no empty row reserved for it.

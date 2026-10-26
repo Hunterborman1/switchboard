@@ -1,25 +1,29 @@
 # Signal Loop: speaker notes
 
-The talk track for the live walkthrough (about 25:00), what to click, and answers to likely questions.
-The presenter view (`/presenter`) shows the same notes per part, synced to the main window. The source of truth for the in-app notes is `src/tour/script/notes.ts`.
+The talk track for the live presentation (19 chapters, about 25:00), what to click, and answers to likely questions.
+The presenter view (`/presenter`) shows the same notes per chapter, synced to the main window. The source of truth for the in-app notes is `src/tour/script/notes.ts`; chapter targets are in `src/tour/script/chapters.ts`.
 
 ---
 
 ## Pre-flight (10 minutes before)
 
-1. Open the main window at `/repo/invoca/` on the shared screen, full screen, browser zoom 100%.
+1. Open the main window at `/repo/invoca/` on the shared screen, full screen, browser zoom 100%. At 1,200 px and wider the scenes show the chapter rail on the left.
 2. Open `/repo/invoca/presenter` on the laptop screen. Check it says **Connected** and the step titles update when you press → in the main window.
 3. Reset my workspace (Settings → *Reset workspace*, or `POST /api/workspace/reset`) so the scorecard numbers are only from this session.
-4. Check the budget gauge on Health: live AI should have headroom. If it's at the cap, runs replay and say so; that's fine, and I mention it in Ch7.
+4. Check the budget gauge on Usage and health: live AI should have headroom. If it's at the cap, runs replay and say so; that's fine, and I mention it in chapter 14.
 5. Run Brightline once in a private window to warm the pipeline. Close it.
 6. Have the backup list ready in the presenter view (cost, security, failure, build vs buy, metrics, Agent Ops, what I'd do differently).
-7. Close Slack and notifications. Keyboard: → next, ← back, Esc menu. A clicker sending PageDown/PageUp works too.
+7. Close Slack and notifications. Keyboard: → next, ← back. Esc opens the chapter menu on narrower screens. A clicker sending PageDown/PageUp works too.
 
-**Timing rule:** the presenter timer goes amber when a part runs past its target and red at 125%. If I'm more than a minute behind by Ch3, skip "Try another file" and go straight on.
+**Timing rule:** the presenter timer goes amber when a chapter runs past its target and red at 125%. If I'm more than a minute behind by chapter 10 (Human in the loop), skip "Try another file" on the Timing step and go straight on.
+
+## If they click through on their own
+
+Point them at **the box in the corner**: the Guide. In the product chapters it says what each step shows and why, and when it's their turn ("Your turn: press A, or click Approve and send", with "Show me"). **Explore on your own** leaves the presentation and remembers the step; on every screen the Guide then suggests one thing to try; **Resume presentation** goes back to exactly where they left. The chapter title in the Guide opens every chapter of the presentation, and on the scenes the rail (or the top bar's menu on a smaller screen) does the same. Nothing is ever covered: the Guide moves out of the way of whatever it points at.
 
 ---
 
-## Part 0 · Cold open (0:30)
+## Chapter 1 · Every call is a signal (0:30)
 
 **Click:** → once. The highlighted moment at 06:00 turns into what Signal Loop makes of it, under the headline.
 
@@ -27,7 +31,16 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 > This is a thirteen-minute QBR. Twenty seconds in the middle of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.
 > Invoca turns calls into signals for its customers. I built the same loop for Invoca's own customer calls, inside a platform that can run more analyses like it, and Agent Ops to operate it.
 
-## Part 1 · Where feedback gets lost (1:15)
+## Chapter 2 · What's real in this demo (1:15)
+
+**Click:** nothing; one beat. Read the two columns, then Next.
+
+**Say:**
+> Before anything else: I built this from scratch in 48 hours, and I want to be precise about what's real.
+> All of the AI is built and working: triage, extraction, the quote check, scoring and the second opinion, themes, the routing rules, the review queue, the evals and their gate, the spend cap and replay, and the telemetry in Agent Ops. What you upload really runs, and what comes out (the message, the people tagged, the receipt) is generated for real.
+> Simulated, and labelled wherever it shows: the connections to Slack, Jira, Salesforce and the rest, because I have no access to Invoca's systems and a demo must never message real people (routing and tagging still behave as they would); the data, because real customer calls can't leave Invoca, so every account, person and call is fictional; the RFP Responder and the six-week history in Agent Ops, to show the platform with more than one agent; and the other analyses, which are listed but not built. Forty-eight hours went into one analysis, done properly.
+
+## Chapter 3 · Where feedback gets lost (1:15)
 
 **Click:** → to step 2 (the three handoffs fill in, one after another), → to step 3 (the total and the assumption label).
 
@@ -36,139 +49,139 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 > Follow 100 pieces of it. 72 get written down, 55 get shared beyond the CSM, 40 reach someone who can act. The rest is in a notes field, a Slack thread or someone's memory.
 > "40 of 100" is an assumption, and it says so on screen. The first thing I'd do in the job is a 2-week time study with two CSMs to replace it with a real number.
 
-## Part 2 · Why this option (0:35)
+## Chapter 4 · Why this option, and not the others (1:30)
 
-**Click:** → twice: the mirrored row, then the reasons and the line on where it generalises.
+**Click:** → once: the three options become the three build choices.
 
 **Say:**
-> Invoca already does this for its customers' calls. Option 3 asks for the same discipline pointed inward.
-> I picked it because the data already exists, it's internal and additive, a person reviews anything high stakes, and it can show value in weeks.
-> And it generalises: any conversation in, the right people out. That's Switchboard, which I'll show in a minute.
+> Three options. I chose the feedback loop because it's the same work Invoca's product does, pointed at Invoca's own CSM calls, and it shows all four pillars: several people with different jobs, real engineering in extraction, grounding, scoring, routing and evals, an easy additive pitch (stop retyping it into Jira) and a clear future.
+> Not the RFP Responder: mature products already do it (Loopio, Responsive, Vanta, Conveyor), so the first question would be why not buy one, and a wrong answer on a security questionnaire is a compliance risk. Not the Churn Predictor: it needs believable data faked from three systems, and prediction claims are hard to defend without real outcomes to check against.
+> Switchboard is built so both can become analyses on the same platform later. Renewal risk is already on the roadmap, and the RFP Responder is simulated in Agent Ops.
+> How I built it: raw TypeScript, not n8n, Gumloop or Zapier, because the trust features need code: quotes checked against the transcript, schemas validated on every model output, deterministic routing, an eval suite with a promotion gate, budgets and replay, tests. Three model roles on OpenRouter, the decision model chosen by measurement. One Cloudflare Worker for the proof of concept; the production design comes at the end.
 
-## Part 3 · Jobs to be done (2:00)
+## Chapter 5 · Jobs to be done (1:45)
 
-**Click:** open all four cards (click, or Tab + Enter) to show what gets in the way. Then → for the emotional job, which replaces the headline.
+**Click:** open the cards (click, or Tab + Enter) to show what gets in the way. Then → for the emotional job, which replaces the headline.
 
 **Say:**
 > Before architecture: who hires this, and for what.
 > The CSM wants it captured without retyping, and to know when it ships. The PM wants evidence grouped by theme with ARR attached. The VP wants the cross-account view before the renewal, not after. Sales, competitive and support want it in their channel the same day.
 > The job that matters most is the emotional one: be the advocate, not the stenographer. If the system doesn't make CSMs look good, they stop feeding it, and then nothing else works.
 
-## Part 4 · Today and tomorrow (1:55)
+## Chapter 6 · Today and tomorrow (1:40)
 
 **Click:** → three times: the leaks appear one by one, Signal Loop takes the middle lane and each leak becomes a check, then the loop closes.
 
 **Say:**
 > Today it's a relay race with no baton. Five handoffs between the call and the VP, each one depending on someone remembering.
 > Nobody is careless. Every step is manual, optional and invisible.
-> The future state seals each leak with a system, not heroics: capture from the call, quote verbatim, ground in code, route by rule, theme by similarity. The CSM stays in the room.
+> The future state seals each leak with a system, not heroics: capture from the call, quote verbatim, check it in code, route by rule, theme by similarity. The CSM stays in the room.
 > And the loop closes. When it ships, the CSM hears first, with a drafted note for the customer.
 
-## Part 5 · The platform (1:00)
+## Chapter 7 · The platform (1:00)
 
 **Click:** → three times: Decide, Analyse, Out. The last beat's button says **Open the product**.
 
 **Say:**
 > One step back before the product. Signal Loop runs inside Switchboard.
-> In: any conversation, from where it already lives (Gong, Zoom, Gmail, Slack, Google Drive) or any file you upload: PDF, Word, slides, transcripts, email, chat exports.
+> In: any conversation, from where it already lives (Gong, Zoom, Gmail, Slack, Google Drive) or any file you upload.
 > Decide: a fast decision model reads it first, in about a second (0.9 s median in the speed test, `docs/reports/decision-models.md`). What is it, which analyses apply, is it safe to read. Later it gives a second opinion at the review gate.
 > Analyse: Signal Loop is the one I built for this brief. Follow-ups, renewal risk, escalations, compliance review and call coaching are on the roadmap, and the screen says "Not built".
 > Out: the right people in the tools they already use, each tagged by their own handle. The connectors are simulated here, and the product says so.
 
-**Transition:** "Let me show you the real thing."
+**Transition:** "Let me show you the real thing. The box in the corner walks you through it."
 
 ---
 
-## Ch1 · A call comes in (1:30)
+## Chapter 8 · A call comes in (1:00)
 
-**Click:** *Browse conversations* → pick the highlighted **Brightline QBR** (or let a panelist choose) → Open → **Process conversation**.
+**Click:** *Browse conversations* → pick the suggested **Brightline QBR** (or let a panelist choose) and **Open** → **Process conversation**.
 
 **Say:**
-> This is the only manual step, and in production it goes away: dlt pulls from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples).
-> The library looks like a recorder export. Mess levels aren't labelled on purpose. Brightline is the main path; any file works and each one goes somewhere different.
+> Now the real system, with the Guide in the corner. This is the only manual step, and in production it goes away: connectors pull calls from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples).
+> Mess levels aren't labelled on purpose. Brightline is the main path; any file works and each one tells a different story.
 
 If they pick something else, name the branch:
 - **Clean notes:** the easy baseline.
-- **Messy files:** raw speech-to-text ("in vocal", "call rail", crosstalk), a Slack export or a forwarded email thread. The callout names which. Watch it stay honest.
+- **Messy files:** raw speech-to-text ("in vocal", "call rail", crosstalk), a Slack export or a forwarded email thread. The Guide names which. Watch it stay honest.
 - **Injection attempt:** someone planted an instruction in the transcript.
 - **Friendly check-in:** the right output is nothing.
 - **PHI-heavy healthcare call:** watch what reaches the model.
 
-## Ch2 · Watch it think (2:15)
+## Chapter 9 · Watch it run (2:15)
 
-**Click:** → as each step completes. Stop on Ground. **See a rejected quote** appears only when some real run has a dropped quote; if it's there, click it, then **Back to my run**. If it isn't, don't promise one.
-
-**Say:**
-> Ten steps on a fast path, each saved as it runs. If a step fails or runs long, a durable Cloudflare Workflow resumes from the last completed step. What you're watching is the real execution, and the UI animates from those rows. (If the callout says it's a replay, say so: a recorded real execution at real speed.)
-> Redaction first. Only redacted text reaches a model; the original never leaves the Worker.
-> *(One beat on the main path)* A cheap screen checks it's worth reading, what language, and whether anyone is trying to steer the model. Then extraction returns a fixed schema. No quote, no insight.
-> *(On Ground)* This is the moment. Fourteen of fourteen, word for word (read the real count off the callout). If the model had stitched Dana's interrupted sentence into one tidy quote, code wouldn't find it and the insight would be dropped.
-> On the promoted prompt every quote grounded, 275 of 275. Grounding is the seatbelt: here's what it does when a quote isn't there.
-> *(Only if See a rejected quote is on screen)* Read the callout: it names the run and the quote code couldn't find, and the closest span's score, under 0.90. Describe it as what it is (for example, a CSM note rather than customer speech). The insight was dropped and counted, never shown as fact.
-> The gate decides who sees it next. 0.80 and up routes itself; anything high stakes goes to a person.
-> Every step logs model, tokens, cost and time. Nothing is a black box.
-
-Branch extras: **privacy** → have them toggle before/after; **security** → point at the injection flag and the audit row; **negative** → "zero insights, and that's correct"; **messy** → "the model quoted the garbled text verbatim, so it grounds exactly; noise shows up as lower confidence and more review."
-
-## Ch3 · Human in the loop (2:00)
-
-**Click:** press **A** on the first item. Press **E** on another; the callout follows the edit form. Change the type or severity (Save stays disabled until a field changes), then **Save and send**. Then *Continue* (or *Try another file* if I'm ahead of time).
+**Click:** Next as each step lands (5 steps on the main path). On the Timing card, read the two numbers out loud. Then Next, or *Try another file* if we're ahead. *See a rejected quote* appears only when some real run has a dropped quote; if it's there, click it, then **Back to my run**. If it isn't, don't promise one.
 
 **Say:**
-> The run is parked awaiting review. Nothing on it is routed until someone approves, edits or rejects it, and that action routes it with an audit row. Every item says why it's here: "confidence 0.71, below 0.80".
-> An edit is saved as labelled data with a before/after diff, which is how the next prompt gets better.
+> This is running live, right now. Watch the clock: a thirteen-minute call takes a few seconds. (If the Guide says replay, it's a recorded live run at its recorded speed, and the Timing card says so.)
+> Triage first, on the decision model: what it is, which analyses apply, whether anyone is steering the AI. Names and health details were removed before any model saw a word.
+> *(On the quotes)* This is the moment. Every insight carries a verbatim quote, and code checks it against the transcript. Read the count off the Guide: fourteen of fourteen, word for word, on the recorded Brightline run. If the model had stitched Dana's interrupted sentence into one tidy quote, code wouldn't find it and the insight would be dropped. On the promoted prompt every eval quote matched, 275 of 275. The quote check is the seatbelt.
+> *(Only if See a rejected quote is on screen)* Read the Guide: it names the run and the quote code couldn't find, and the closest span's score, under 0.90. The insight was dropped and counted, never shown as fact.
+> The gate decides who sees it next, and on a live run the decision model gives a second opinion. 0.80 and up routes itself; anything high stakes goes to a person.
+> *(On the Timing card)* And why it's this fast, from the real timestamps: triage ran alongside extraction, not before it, and the code steps (the quote check, scoring, routing, delivery) took milliseconds. The second opinion overlaps the theme lookups. Every call is in Agent Ops: that link opens this run's trace.
 
-## Ch4 · Right owner, right channel (1:20)
+On one live Brightline run (an example, not a benchmark): triage 1.55 s, extraction 4.94 s started with triage, score and second opinion 1.07 s, 6.09 s end to end, $0.0034 of AI. Read the viewer's own numbers off the card instead.
 
-**Click:** edit the **pricing objection** rule: owner VP Product, ARR band over $250k. Point at the Sankey.
+**Chapter 9 branch extras:** **privacy** → have them switch Before and After; tokens keep meaning, drop identity; **security** → point at the injection flag and the audit row; **negative** → "zero insights, and that's correct"; **messy** → "the model quoted the garbled text verbatim, so it grounds exactly; noise shows up as lower confidence and more review."
+
+## Chapter 10 · Human in the loop (1:30)
+
+**Click:** press **A** on the first item. Press **E** on another; the ring follows the edit form. Change the type or severity (Save stays disabled until a field changes), then **Save and send**.
+
+**Say:**
+> The run is parked awaiting review. Nothing on it is routed until someone approves, edits or rejects it, and that action routes it with an audit row. Every item says why it's here: "Score 0.71, below 0.80".
+> An edit is saved as labelled data with a before and after, which is how the next prompt gets better.
+
+## Chapter 11 · Right owner, right channel (1:30)
+
+**Click:** edit the **pricing objection** rule: owner VP Product, ARR band over $250k. Next to the Jira preview, then Connections.
 
 **Say:**
 > Routing is a table, not a prompt. Ops can read it, change it and audit it.
-> The VP wants pricing objections on big accounts. One rule change, the flows re-route. No prompt changed, no redeploy, and it only affects your workspace. (If they skipped the edit, the callout says "where today's rules send them"; say that instead.)
-> The PM gets a Jira ticket with the quote and the ARR. Urgent items land in Slack, with a receipt.
+> The VP wants pricing objections on big accounts. One rule change, no prompt changed, no redeploy, and it only affects your workspace. (The flow chart on the same page shows where today's rules send things.)
+> The PM gets a Jira ticket with the quote and the ARR, tagged by their own handle. The tool is simulated; the content, the tags and the receipt are real.
+> Connections are simulated too, but routing reads them: disconnect Jira and its rules go to triage. Nothing silently disappears.
 
-## Ch5 · Patterns, not anecdotes (1:15)
+## Chapter 12 · Patterns, not anecdotes (1:00)
 
-**Click:** open the highlighted theme.
+**Click:** open the highlighted theme. Next once: ARR, trend and quotes are one beat.
 
 **Say:**
-> One complaint is an anecdote. The same thing from seven accounts is a pattern. (Read the account count off the callout rather than from memory; it names the highlighted card, “Google Ads offline conversions arrive late”, with its live insight and account counts. If it says my call's insight just joined it, say that too.)
-> Membership is deterministic, embeddings and a similarity threshold. The model only names it.
-> ARR at stake, an eight-week trend, and quotes that click back to the exact turn.
+> One complaint is an anecdote. The same thing from seven accounts is a pattern. (Read the account count off the Guide rather than from memory; it names the highlighted card, "Google Ads offline conversions arrive late", with its live insight and account counts. If it says my call's insight just joined it, say that too.)
+> Membership is decided in code, embeddings and a similarity threshold. The model only names it.
+> ARR at stake, counted once per account, an eight-week trend, and quotes that click back to the exact turn.
 
-## Ch6 · Close the loop (0:50)
+## Chapter 13 · Close the loop (0:50)
 
-**Click:** move the ticket to **Shipped**.
+**Click:** move the ticket to **Shipped**, then Next to the CSM's view.
 
 **Say:**
 > Play the PM. Ship it.
 > The CSM hears back automatically, with the credit and a drafted note for the customer. Drafted, not sent. The relationship stays theirs.
 
-## Ch7 · Prove it (1:35)
+## Chapter 14 · Prove it (1:30)
 
-**Click:** **Promote** on the candidate prompt → read the gate → Health budget gauge.
+**Click:** Next through the accuracy, then **Promote** on the candidate prompt, then read the block.
 
 **Say:**
 > Precision and recall per insight type, against 48 hand-labelled golden files. The gate checks them pooled; per type they're reported against that line, and four types (pricing, churn, praise, feature requests) sit under it. Churn is always reviewed, and per-type thresholds are next.
 > Sliced by mess level, because the messiest files are where systems quietly break. The current prompt still holds 90% recall on level 5.
-> v5 is a rewritten extraction prompt, scored on the same files. Its recall looks fine. Try to promote it. Blocked on precision: 88.7% to 59.7%, under the 85% bar and a 29-point regression. It over-labelled real sentences as feedback: 38 extra praise items and 20 extra churn risks. Every quote was real, which is exactly why grounding alone isn't enough. It's also more expensive and slower at p95, which the screen shows; next I'd make cost and latency gate checks too. The callout reads all of these numbers from the eval runs, so they match the screen.
-> Cost: viewers share a hard $15 cap. Past it, runs replay recorded real executions. Never an outage.
+> v5 is a rewritten extraction prompt, scored on the same files. Its recall looks fine. Try to promote it. Blocked on precision: 88.7% to 59.7%, under the 85% bar and a 29-point regression. It over-labelled real sentences as feedback: 38 extra praise items and 20 extra churn risks. Every quote was real, which is exactly why grounding alone isn't enough. It's also more expensive and slower at p95, which the screen shows; next I'd make cost and latency gate checks too. The Guide reads all of these numbers from the eval runs, so they match the screen.
+> Cost: viewers share a hard $15 cap. Past it, runs replay recorded real executions. Never an outage. (It's under "How this works" on the block, and on Usage and health.)
 
-## Ch8 · Operate it (2:00)
+## Chapter 15 · Operate it (1:30)
 
-**Click:** the **Agent Ops** link → overview → registry → Signal Loop's page → usage → logs (filtered to my run) → trace → reliability. Seven beats; the needs-attention list and the standard checklist are on screen but not separate stops.
+**Click:** Next: the exec view, then my run's trace. The registry, the standard, usage, logs and SLOs are one click away if there's a question.
 
 **Say:**
 > Building the agent is half the job. Operating it is the other half. Signal Loop is one agent in Agent Ops.
-> This is the exec view: hours returned first, then the value of that time against metered AI spend (build time not included), and adoption. Two agents today; the registry is built for fifty.
-> Every agent has a named owner, a purpose and a review date, and is held to the same nine-check standard. Signal Loop meets all nine in the build; the security review and business-owner sign-off are illustrative records until Invoca's Security team does the real one. (The checks are under *How this works* on the agent page; the rollout scene covers the standard properly. The runbook is `docs/RUNBOOK.md`.)
-> That's you on the live panel. This session's telemetry is live; the six-week history replays 218 real pipeline runs over synthetic calls, with simulated users. Adoption is measured from usage events, not surveys.
-> These are the logs from the run you just did, one trace ID end to end. And the waterfall shows where the time went. (Red spans are failed delivery attempts; the callout says whether they were retried.)
-> SLOs with error budgets; alerts with an owner and a runbook. Acknowledged isn't resolved.
+> This is the exec view: hours returned first, then the value of that time against metered AI spend (build time not included), and adoption. Two agents today; the registry is built for fifty. The RFP Responder and the six-week history are simulated; this session is live.
+> And this is your run, every step and model call on one trace: the same timings the conversation page drew. (Red spans are failed delivery attempts; the Guide says whether they were retried.)
+> If asked: every agent has a named owner, a purpose and a review date, and is held to the same nine-check standard. Signal Loop meets all nine in the build; the security review and business-owner sign-off are illustrative records until Invoca's Security team does the real one. The runbook is `docs/RUNBOOK.md`.
 
 ---
 
-## Part 14 · Earning trust: rollout (2:15)
+## Chapter 16 · Earning trust: rollout (2:15)
 
 **Click:** → twice.
 
@@ -179,27 +192,29 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 > Hours returned go to execs monthly, with the assumptions labelled. It's additive. It takes the data entry, not the judgement.
 > After launch: a review cadence, the standard, and builder enablement, meaning templates and office hours, so other people's Claude and Gumloop builds get to production too.
 
-## Part 15 · The next 12–18 months (1:15)
+## Chapter 17 · The next 12–18 months (1:15)
 
 **Click:** → once.
 
 **Say:**
 > First the rollout you just saw: shadow, champions, the team. Then every call by default from month 3 (the card shows today's average AI cost per call, a fraction of a cent), capture during the call, more analyses on the same platform (follow-ups, renewal risk and escalations, then compliance review and coaching), specialist agents checking each other with drafted specs, and plugging into Invoca's own Signal AI.
-> What doesn't change: grounding in code, gates, routing as data, and human judgement where it counts.
+> What doesn't change: quotes checked in code, gates, routing as data, and human judgement where it counts.
 
-## Part 16 · From proof of concept to production (0:45)
+## Chapter 18 · From proof of concept to production (0:45)
 
 **Click:** → once. The production column fills in row by row.
 
 **Say:**
-> The POC runs entirely on Cloudflare. Production keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for long-running workers. Strict TypeScript throughout.
-> The decision model stays the same model, on our own key. Conversations come in through dlt and direct connectors instead of uploads, and results go out through the real Slack, Jira and Salesforce APIs instead of in-app previews.
+> The proof of concept runs on one Cloudflare Worker: fast to ship, one deploy, behind a gate. Production keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for streaming transcription. Strict TypeScript throughout.
+> The decision model stays the same model, on our own key. Conversations come in through connectors instead of uploads, and results go out through the real Slack, Jira and Salesforce APIs instead of in-app previews.
 
-## Part 17 · Scorecard (0:45)
+## Chapter 19 · Scorecard (0:45)
+
+**Click:** *Explore freely* (or *Ask Claude about it* if they want to question the build directly).
 
 **Say:**
 > Every number here is counted from your workspace and this session: what you did and what the system did. Where a counter would be zero, it shows a fact about your own run instead (quotes grounded, values redacted).
-> Everything's unlocked. Explore freely. I'm happy to go into cost, security, failure handling, build vs buy, or how I'd measure it.
+> Everything's unlocked. Explore freely: the Guide in the corner suggests something to try on every screen, and Resume presentation brings you back. You can also connect Claude over MCP and ask it how any of this was built. I'm happy to go into cost, security, failure handling, build vs buy, or how I'd measure it.
 
 ---
 
@@ -215,7 +230,7 @@ I don't trust the model to police itself. Every insight needs a verbatim quote, 
 Redaction runs before any model call, with reversible tokens. The original never leaves the Worker and the browser only sees masked previews. Calls only route to providers that don't collect or train on data (`data_collection: 'deny'`); that's a routing filter, not a contract. Contractual zero retention and a DPA are production items. In production I'd add a labelled PHI set and make redaction recall a release gate, plus a formal data review with Security.
 
 **4. Prompt injection?**
-Transcript text is wrapped as data, the model can only return a fixed schema and has no tools, so a planted instruction has nothing to act on. It's flagged by the screen step and audited. The injection file in the library shows it.
+Transcript text is wrapped as data, the model can only return a fixed schema and has no tools, so a planted instruction has nothing to act on. It's flagged at triage (the decision model's flag, OR-ed with a code check over the full text) and audited, and everything from that file goes to a person. The injection file in the library shows it.
 
 **5. Why build instead of buy Gong, Productboard or Enterpret?**
 Each is good at something. None owns Invoca's taxonomy, routing rules and loop-closing back to CSMs, and that's the hard part. I'd prove the workflow thin, not build a recorder, and expect the long-term home to be Signal AI and Invoca's existing conversation data. `/backup/build-vs-buy` has the fair comparison.
@@ -242,7 +257,7 @@ Same platform. The Gumloop-built RFP responder is registered next to Signal Loop
 Monthly: agents in production, active users and trend, hours returned and their value at a loaded rate, AI cost, ROI, what needs attention and who owns it, and what changed with the eval result that allowed it. All on one page in Agent Ops.
 
 **13. What if the model provider changes or degrades?**
-Two tiers with fallback, and the eval suite is the contract: a new model is promoted only if the gate holds (overall precision and recall, level-5 recall, grounding, safety checks, no regression over 2 points). I re-run the speed and quality test quarterly. Gap: the secondary tier hasn't been scored as primary yet, so degraded-mode precision is unknown.
+Three model roles with fallback: the main model falls back to the backup model, and the decision model falls back to the main model, so a decision-model outage never blocks a run. The eval suite is the contract: a new model is promoted only if the gate holds (overall precision and recall, level-5 recall, grounding, safety checks, no regression over 2 points), and the decision model was itself chosen by a measured speed test (`docs/reports/decision-models.md`). I re-run the speed and quality tests quarterly. Gap: the backup model hasn't been scored as primary yet, so degraded-mode precision is unknown.
 
 **14. Why not let the model decide routing?**
 Routing has to be predictable, auditable and changeable by ops without a deploy. A rules table does that. The model classifies; the table decides who gets it.
@@ -254,7 +269,7 @@ Routing has to be predictable, auditable and changeable by ops without a deploy.
 Shadow two CSMs, run the time study, co-design the taxonomy with CSMs and PMs, agree the success metrics with the business owner, and run Signal Loop in shadow mode on real calls. No routing until the champions trust it.
 
 **17. What happens when the budget runs out during a demo?**
-It switches to replay of recorded real runs and labels them. The walkthrough works for all 7 days. Custom uploads show "Live AI budget reached" so a disabled control always says why.
+It switches to replay of recorded real runs and labels them, on the clock and the Timing card. The presentation works for all 7 days. Custom uploads show "Live AI budget reached" so a disabled control always says why.
 
 **18. Why a separate decision model?**
 A small, fast model from a different family reads every input first: 0.9 s median, run alongside extraction so it adds no time, at about a quarter of the old screen's cost, and it returns more (what the input is, how noisy, which analyses apply). Honest caveat: the old screen was already fast, so the win is cost, richer triage and an independent check, not raw speed. At the gate its independent second opinion can send a borderline item straight to its owner when it agrees, or hold an item that would have gone automatically when it disagrees: fewer items wait for review, and nothing gets less honest. High-stakes items (churn risk, critical bugs, flagged files) are always reviewed by a person, and every insight still needs a quote code finds in the transcript. It runs through OpenRouter here; in production it's the same model on our own key.
@@ -264,3 +279,6 @@ No, and the product says so. Connecting one records a workspace connection with 
 
 **20. What would you do differently?**
 Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/backup/differently` has the full list.
+
+**21. It ran too fast. Is it real?**
+Yes, and the conversation page shows why. The clock runs from the run's real start; steps appear as the server reports them, with no slowed-down animation. The Timing card draws every step from its real start and finish: triage on the decision model and extraction on the main model start together on the same redacted text, and the quote check, scoring, routing and delivery are code that takes milliseconds. On one live Brightline run that was 1.55 s of triage alongside 4.94 s of extraction, 6.09 s end to end, $0.0034 of AI. "See every call in Agent Ops" opens the trace with every model call, its tokens and cost. A replay says it's a replay, and that the recording is re-timed to today's step order.

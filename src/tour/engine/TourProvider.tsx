@@ -17,11 +17,11 @@ import { isSpotlitTheme } from '../script/copy';
 import type { AnchorId } from '../anchors';
 import { TourPaceContext, type TourPace } from '../pace';
 import { freshPersisted, isPath, readStored, writeStored } from './storage';
-import { awaitingUser, type CheckpointData, type EvalsData, type OpsData, type Persisted, type PresenterMsg, type Step, type TourApi, type TourCtx, type TourPath, type TourStatus } from './types';
+import { awaitingUser, type EvalsData, type OpsData, type Persisted, type PresenterMsg, type Step, type TourApi, type TourCtx, type TourPath, type TourStatus } from './types';
 
 export const PRESENTER_CHANNEL = 'signal-loop-presenter';
-
-type CheckpointShow = { data: CheckpointData; key: number };
+/** Wide enough for the scene's persistent chapter rail (narrower: the top bar's chapter menu). */
+export const RAIL_QUERY = '(min-width: 1200px)';
 
 export type TourValue = {
   status: TourStatus;
@@ -34,16 +34,15 @@ export type TourValue = {
   finished: boolean;
   startedAt: number | null;
   chapterEnteredAt: number | null;
-  checkpoint: CheckpointShow | null;
-  menuOpen: boolean;
+  /** The chapter menu drawer on narrow scenes (the wide rail is always on screen). */
   railOpen: boolean;
   canGoBack: boolean;
   isReady: boolean;
-  setMenuOpen: (v: boolean) => void;
   setRailOpen: (v: boolean) => void;
-  dismissCheckpoint: () => void;
   start: (stepId?: string) => void;
+  /** "Explore on your own": leave presentation mode and remember the step. */
   exit: () => void;
+  /** Back into presentation mode at the remembered step (or where that step can be picked up). */
   resume: () => void;
   restart: () => void;
   finish: () => void;
@@ -129,8 +128,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const [peek, setPeek] = useState<RunDetail | null>(null);
   const [theme, setTheme] = useState<Theme | null>(null);
   const [lastEvent, setLastEvent] = useState<SignalEvent | null>(null);
-  const [checkpoint, setCheckpoint] = useState<CheckpointShow | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [railOpen, setRailOpen] = useState(false);
   const [stepEnteredAt, setStepEnteredAt] = useState(() => Date.now());
   const [graceTick, setGraceTick] = useState(0);
@@ -159,12 +156,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const goto = useCallback<TourApi['goto']>((stepId, opts) => {
     const target = STEP_BY_ID[stepId];
     if (!target) return;
-    const { state: s, step: cur, ctx: c } = ref.current;
-    if (cur.chapter !== target.chapter && cur.checkpoint && s.status === 'active') {
-      const data = cur.checkpoint(c);
-      if (data) setCheckpoint({ data, key: Date.now() });
-    }
-    setMenuOpen(false);
     setState((prev) => ({
       ...prev,
       status: 'active',
@@ -210,12 +201,19 @@ export function TourProvider({ children }: { children: ReactNode }) {
       return true;
     }
     if (awaitingUser(s, c)) return false;
-    const acts = typeof s.actions === 'function' ? s.actions(c) : s.actions;
-    if (acts?.length) return false; // a choice: pick one
     if (!isReadyFn(s, c)) return false;
+    // A choice: → takes the primary one (Next), so the keyboard path never dead-ends.
+    const acts = typeof s.actions === 'function' ? s.actions(c) : s.actions;
+    if (acts?.length) {
+      const primary = acts.find((a) => a.variant === 'primary');
+      if (!primary) return false;
+      if (primary.apply) setCtx(primary.apply(c));
+      goto(typeof primary.to === 'function' ? primary.to(c) : primary.to);
+      return true;
+    }
     skip();
     return true;
-  }, [skip]);
+  }, [skip, goto, setCtx]);
 
   const back = useCallback(() => {
     const { step: s, state: st } = ref.current;
@@ -226,8 +224,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
     setState((prev) => {
       const history = [...prev.history];
       let prevId = history.pop();
-      // skip transient steps that auto-advance
-      while (prevId === 'ch1.open') prevId = history.pop();
       // A deep link into a scene has no history: step back along the main path instead.
       if (!prevId) prevId = sceneFallbackBack(prev.stepId) ?? undefined;
       if (!prevId || !STEP_BY_ID[prevId]) return prev;
@@ -242,11 +238,18 @@ export function TourProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...freshPersisted(id), status: 'active', stepId: id, startedAt: Date.now(), chapterEnteredAt: Date.now(), ctx: { ...freshPersisted(id).ctx, explored: prev.ctx.explored } }));
   }, []);
   const exit = useCallback(() => {
-    setMenuOpen(false);
     setRailOpen(false);
     setState((prev) => ({ ...prev, status: 'explore' }));
   }, []);
-  const resume = useCallback(() => setState((prev) => ({ ...prev, status: 'active', chapterEnteredAt: Date.now() })), []);
+  const resume = useCallback(
+    () =>
+      setState((prev) => {
+        // A step that needs context the viewer may have closed (an open dialog) resumes where it can be picked up.
+        const at = STEP_BY_ID[prev.stepId]?.resumeAt;
+        return { ...prev, status: 'active', stepId: at && STEP_BY_ID[at] ? at : prev.stepId, chapterEnteredAt: Date.now() };
+      }),
+    [],
+  );
   const restart = useCallback(() => {
     setRun(null);
     setEvals(null);
@@ -553,15 +556,18 @@ export function TourProvider({ children }: { children: ReactNode }) {
       if (s.status !== 'active') return;
       if (isTyping(e.target)) return;
       const inNarrative = !!(e.target as HTMLElement | null)?.closest?.('.sl-n, .sl-n-portal');
-      const productDialogOpen = !!document.querySelector('[role="dialog"]:not([data-tour-ui])') && !inNarrative;
+      const isScene = cur.kind === 'scene';
+      // Esc on a narrow scene opens the chapter menu (the wide rail is always on screen). On
+      // product pages Esc belongs to the product (dialogs, drawers).
       if (e.key === 'Escape') {
-        if (productDialogOpen) return;
-        e.preventDefault();
-        setMenuOpen((v) => !v);
+        if (isScene && !window.matchMedia?.(RAIL_QUERY).matches) {
+          e.preventDefault();
+          setRailOpen((v) => !v);
+        }
         return;
       }
-      if (menuOpen) return;
-      const isScene = cur.kind === 'scene';
+      // Inside a menu or popover (the chapter picker), the arrow keys move through its items.
+      if ((e.target as HTMLElement | null)?.closest?.('.ds-popover, .ds-menu, [data-tour-rail-drawer]')) return;
       // Enter / Space on a focused control belong to that control (persona cards, buttons, links).
       const onControl = !!(e.target as HTMLElement | null)?.closest?.('button, a[href], [role="button"], summary');
       if ((e.key === 'Enter' || e.key === ' ') && onControl) return;
@@ -576,7 +582,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [next, back, menuOpen]);
+  }, [next, back]);
 
   useEffect(() => {
     if (!step.ready || state.status !== 'active') return;
@@ -589,10 +595,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const idx = MAIN_ORDER.indexOf(step.id);
   const progress = idx >= 0 ? (idx + (step.kind === 'scene' && (step.beats ?? 1) > 1 ? state.beat / (step.beats ?? 1) : 0)) / (MAIN_ORDER.length - 1) : 0;
 
-  const pace: TourPace = useMemo(
-    () => ({ active: state.status === 'active', slow: state.status === 'active' && step.pace === 'slow', stepRevealMs: state.status === 'active' && step.pace === 'slow' ? 900 : 0, stepId: state.status === 'active' ? step.id : null }),
-    [state.status, step.pace, step.id],
-  );
+  // The product reveals runs at their real speed now; the tour never slows it down.
+  const pace: TourPace = useMemo(() => ({ active: state.status === 'active', slow: false, stepRevealMs: 0, stepId: state.status === 'active' ? step.id : null }), [state.status, step.id]);
 
   const value: TourValue = {
     status: state.status,
@@ -604,14 +608,10 @@ export function TourProvider({ children }: { children: ReactNode }) {
     finished: state.finished,
     startedAt: state.startedAt,
     chapterEnteredAt: state.chapterEnteredAt,
-    checkpoint,
-    menuOpen,
     railOpen,
     canGoBack: state.history.length > 0 || state.beat > 0 || !!sceneFallbackBack(state.stepId),
     isReady: isReadyFn(step, ctx),
-    setMenuOpen,
     setRailOpen,
-    dismissCheckpoint: () => setCheckpoint(null),
     start,
     exit,
     resume,

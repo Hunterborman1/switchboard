@@ -1,23 +1,23 @@
 ---
 name: signal-loop-extend
-description: Extend the Signal Loop walkthrough or Agent Ops. Use when adding or changing a walkthrough chapter, step, narrative scene, branch or spotlight anchor (src/tour), or registering a new agent in Agent Ops (data/platform/agents.json), and when deciding which tests to run for such a change.
+description: Extend the Signal Loop walkthrough or Agent Ops. Use when adding or changing a walkthrough chapter, step, narrative scene, branch, Guide nudge or tour anchor (src/tour), or registering a new agent in Agent Ops (data/platform/agents.json), and when deciding which tests to run for such a change.
 ---
 
 # Extend the walkthrough or Agent Ops
 
-Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `types.ts`). Script: `src/tour/script/`. After any change, update `docs/WALKTHROUGH.md` and, if spoken lines change, `docs/speaker-notes.md`.
+Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `types.ts`). Script: `src/tour/script/`. The on-page Guide: `src/tour/guide/` (`Guide.tsx`, placement in `dock.ts`, per-page nudges in `nudges.ts`). After any change, update `docs/WALKTHROUGH.md` and, if spoken lines change, `docs/speaker-notes.md`.
 
 ## Design rules that apply to every change
 
 - One light theme, Inter only, flat fills: no gradients, glows, blurs or letter-spaced uppercase.
 - Sentence case. Plain English for a VP of Customer Success; keep jargon behind "How this works" (`more`).
-- Callout `body` is 20 words or fewer and says why; detail goes in `more`.
+- A step's `body` is 20 words or fewer and says why; detail goes in `more` ("How this works").
 - Motion only shows a change of state: 120–240 ms for UI, data reveals up to 600 ms once, no bounce or loops; reduced motion draws the final frame.
 - "Decision model", "Main model" and "Backup model" on screen; exact model ids only on `/app/settings`.
 - Product UI is built only from `src/ds` (tokens, components, Shell) and `src/app/components/domain.tsx`; see `docs/DESIGN.md`.
 - Every number on screen is either read from real data or labelled as an assumption or simulated.
 
-## Add a spotlight anchor
+## Add a tour anchor
 
 1. Add the id and a one-line description to `ANCHORS` in `src/tour/anchors.ts` first, so both sides agree.
 2. Place it in the product UI with `{...tourAnchor('your.id')}` (the helper in `anchors.ts`), which renders `data-tour="your.id"`.
@@ -25,12 +25,16 @@ Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `t
 
 ## Add or change a product step
 
-Edit `src/tour/script/steps.ts`. A step needs `id`, `chapter`, `kind`, `title`, `body`, `next`, and usually `route`, `target`, `placement`, `waitFor`.
+Edit `src/tour/script/steps.ts`. A step needs `id`, `chapter`, `kind`, `title`, `body`, `next`, and usually `route`, `target`, `waitFor` (`highlight` adds soft rings). The Guide places itself; there is no per-step placement.
 - `waitFor`: an event from `src/shared/events.ts` (`{ event, where?, hint }`), a `{ predicate }`, or `'next'` with a `ready` check (for example `stepDone(ctx.run, 'ground')`).
 - Data-driven copy goes in `src/tour/script/copy.ts` and must degrade to honest generic text when data is missing; never promise something the screen may not show.
 - Branch-only steps: route to them from `next: (ctx) => …` using `ctx.path`, and add their ids to the exclusion list in `MAIN_ORDER` at the bottom of `steps.ts`.
 - New routes go in `src/tour/script/routes.ts` (`R`) and must match `src/app/routes.tsx` / `src/platform`.
 - Presenter notes: `STEP_NOTES` in `src/tour/script/notes.ts`.
+
+## Add or change a Guide nudge
+
+Every Switchboard and Agent Ops page has one entry in `NUDGES` (`src/tour/guide/nudges.ts`): `match`, `page`, an imperative `title`, a one-line `body` that says what is simulated, and an optional `show` anchor for "Show me". A new page needs a nudge: `tests/unit/tour/nudges.test.ts` checks the list against the routes.
 
 ## Add a chapter or narrative scene
 

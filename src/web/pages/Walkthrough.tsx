@@ -1,5 +1,6 @@
 /**
- * /walkthrough/:part — narrative scenes. The engine owns which step is current; this page
+ * /walkthrough/:part — narrative scenes, with the persistent chapter rail on the left (wide
+ * screens) or the top bar's chapter menu (narrower). The engine owns which step is current; this page
  * renders the scene for it, and on a direct visit (deep link without ?tour) starts the
  * tour at that part.
  *
@@ -16,12 +17,14 @@ import { useCalm } from '../../narrative/hooks';
 import { chapterById, CHAPTERS, GROUPS } from '../../tour/script/chapters';
 import { firstStepOf, FIRST_STEP } from '../../tour/script/steps';
 import { useTour } from '../../tour/engine/TourProvider';
+import { ChapterRailNav } from '../../tour/hud/Hud';
 import type { ChapterId } from '../../tour/engine/types';
 
 /** Shown while the engine aligns with a deep link: the scene chrome and a placeholder the shape of a scene head. */
 function SceneSkeleton() {
   return (
-    <main className="ds-app sl-n n-page">
+    <main className="ds-app sl-n n-page n-deck">
+      <ChapterRailNav />
       <section className="n-scene" aria-busy="true" aria-label="Loading the walkthrough" data-testid="scene-skeleton">
         <SceneTopBar />
         <div className="n-scene__body">
@@ -68,11 +71,12 @@ export function Walkthrough() {
   const last = tour.beat >= beats - 1;
   const C = def.component;
   return (
-    <main className="ds-app sl-n n-page" data-scene={step.scene}>
+    <main className="ds-app sl-n n-page n-deck" data-scene={step.scene}>
+      <ChapterRailNav />
       <Scene
         label={ch.title}
         group={GROUPS.find((g) => g.ids.includes(ch.id))?.label}
-        index={CHAPTERS.findIndex((c) => c.id === ch.id) + 1}
+        index={ch.part}
         total={CHAPTERS.length}
         progress={tour.progress}
         beat={tour.beat}

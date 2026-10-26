@@ -1,10 +1,10 @@
 /**
- * The Switchboard shell: the shared design-system Shell configured for this product.
- * Signal Loop is one analysis inside it, so its pages sit in their own nav group.
+ * The Switchboard shell: the shared design-system Shell configured for this product. Signal Loop is
+ * one analysis inside it, so its pages sit in their own nav group.
  *
- * Owns the product root (`.sl-app`, kept as a stable hook for tests), the time-zone context, toasts, route telemetry and the
- * `route.changed` event. Mount it as the layout route for /app (it renders <Outlet/>).
- * Rendering it twice is safe: a nested AppShell renders only the outlet.
+ * Owns the product root (`.sl-app`, kept as a stable hook for tests), the time-zone context,
+ * toasts, route telemetry and the `route.changed` event. Mount it as the layout route for /app (it
+ * renders <Outlet/>). Rendering it twice is safe: a nested AppShell renders only the outlet.
  */
 import './shell.css';
 import { createContext, Suspense, useContext, useEffect, type ReactNode } from 'react';
@@ -13,7 +13,6 @@ import { emit } from '../shared/events';
 import { SIGNAL_LOOP_AGENT_ID } from '../shared/platform-contracts';
 import { ANALYSIS_NAME, PLATFORM_NAME } from '../shared/platform';
 import { tourAnchor } from '../tour/anchors';
-import { TourPillSlot } from '../tour/hud/pillSlot';
 import { TimezoneProvider } from '../ds/time/TimezoneContext';
 import {
   Avatar,
@@ -45,6 +44,7 @@ import {
   IconSettings,
   IconSparkle,
   IconCheckCircle,
+  IconCpu,
   IconUsers,
 } from '../ds/icons';
 import { api } from './api/client';
@@ -76,6 +76,7 @@ const SECTIONS: Section[] = [
   { group: 'Workspace', label: 'People', to: '/app/people', match: /^\/app\/people/ },
   { group: 'Workspace', label: 'Usage and health', to: '/app/health', match: /^\/app\/health/ },
   { group: 'Workspace', label: 'Settings', to: '/app/settings', match: /^\/app\/settings/ },
+  { group: 'Workspace', label: 'Connect Claude', to: '/app/claude', match: /^\/app\/claude/ },
 ];
 
 function sectionCrumb(pathname: string): Crumb[] {
@@ -122,6 +123,7 @@ function useNavGroups(): NavGroup[] {
         { to: '/app/people', label: 'People', icon: <IconUsers /> },
         { to: '/app/health', label: 'Usage and health', icon: <IconGauge /> },
         { to: '/app/settings', label: 'Settings', icon: <IconSettings /> },
+        { to: '/app/claude', label: 'Connect Claude', icon: <IconCpu /> },
       ],
     },
   ];
@@ -223,7 +225,6 @@ function LiveStatus() {
 function Footer() {
   return (
     <>
-      <TourPillSlot placement="rail" />
       <Link to={AGENT_OPS_HREF} className="ds-nav-item" {...tourAnchor('nav.agentops')}>
         <ProductMark product="agent-ops" size={16} />
         <span className="ds-nav-item__label">Agent Ops</span>
@@ -264,7 +265,6 @@ function ShellInner() {
             topbarEnd={
               <>
                 <LiveStatus />
-                <TourPillSlot placement="bar" />
               </>
             }
             mobileBrand={

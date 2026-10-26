@@ -10,7 +10,8 @@ export async function go(page: Page, path: string) {
   await page.goto(`${BASE}${path}${sep}notrack=1`);
 }
 
-export const callout = (page: Page) => page.getByTestId('tour-callout');
+/** The Guide: the one persistent box on product pages. */
+export const guide = (page: Page) => page.getByTestId('guide');
 
 export async function currentStep(page: Page): Promise<string | null> {
   const url = new URL(page.url());
@@ -19,6 +20,12 @@ export async function currentStep(page: Page): Promise<string | null> {
 
 export async function expectStep(page: Page, id: string | RegExp, timeout = 15_000) {
   await expect.poll(() => currentStep(page), { timeout }).toMatch(typeof id === 'string' ? new RegExp(`^${id.replace('.', '\\.')}$`) : id);
+}
+
+/** The Guide is in presentation mode on this step. */
+export async function expectGuideOn(page: Page, stepId: string) {
+  await expect(guide(page)).toHaveAttribute('data-mode', 'present', { timeout: 15_000 });
+  await expect(guide(page)).toHaveAttribute('data-step', stepId, { timeout: 15_000 });
 }
 
 /**
@@ -48,7 +55,7 @@ function loadBranchFiles(): Record<string, string[]> {
 }
 export const BRANCH_FILES = loadBranchFiles();
 
-/** Ch1: open the picker from the tour, choose a file for `branch`, open it, and press Run. */
+/** Ch1: open the picker from the presentation, choose a file for `branch`, open it, and process it. */
 export async function pickAndRun(page: Page, branch: string) {
   await expectStep(page, 'ch1.intro');
   await page.locator('[data-tour="new.upload"]').first().click();
@@ -79,8 +86,9 @@ export async function pickAndRun(page: Page, branch: string) {
 }
 
 /**
- * Drive the tour forward until `until` matches the current step: presses Next / Skip
- * in the callout, or performs the product action an event step is waiting on.
+ * Drive the presentation forward until `until` matches the current step: presses the Guide's
+ * Next (or its primary choice), or "Skip this step" when a step waits for an action this helper
+ * doesn't perform.
  */
 export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: string[]; max?: number } = {}) {
   const seen = opts.seen ?? [];
@@ -88,16 +96,14 @@ export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: str
     const step = (await currentStep(page)) ?? '';
     if (!seen.includes(step)) seen.push(step);
     if (until.test(step)) return seen;
-    const c = callout(page);
-    await c.waitFor({ state: 'visible', timeout: 15_000 });
-    const choice = c.getByRole('button', { name: /^Next/ });
-    const skip = c.getByRole('button', { name: /^Skip/ });
-    // dispatch directly: the callout may still be gliding after its target while the run view animates
-    // Bounded: a button re-rendered between the check and the click must not hang the test until
-    // its timeout; the loop re-reads the step and tries again.
-    const click = (b: typeof choice) => b.dispatchEvent('click', undefined, { timeout: 4_000 }).then(() => true, () => false);
-    if (await choice.isVisible().catch(() => false)) await click(choice);
-    else if (await skip.isVisible().catch(() => false)) await click(skip);
+    const g = guide(page);
+    await g.waitFor({ state: 'visible', timeout: 15_000 });
+    const next = g.getByRole('button', { name: /^Next/ });
+    const skip = g.getByRole('button', { name: /^Skip/ });
+    // Bounded: a button re-rendered between the check and the click must not hang the test; the loop re-reads the step.
+    const click = (b: typeof next) => b.first().dispatchEvent('click', undefined, { timeout: 4_000 }).then(() => true, () => false);
+    if (await next.first().isVisible().catch(() => false)) await click(next);
+    else if (await skip.first().isVisible().catch(() => false)) await click(skip);
     else await page.keyboard.press('ArrowRight');
     await expect.poll(() => currentStep(page), { timeout: 15_000 }).not.toBe(step).catch(() => {});
   }

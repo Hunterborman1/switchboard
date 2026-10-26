@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { captureEvents, gotoApp } from './helpers';
 
 async function startRun(page: Page, fileId: string) {
-  await gotoApp(page, '/app/new', { pace: 80 });
+  await gotoApp(page, '/app/new');
   await page.click('[data-tour="new.upload"]');
   await page.fill('input[type=search]', fileId.replace('file_', ''));
   await page.click(`[data-file="${fileId}"]`);
@@ -19,7 +19,15 @@ test.describe('Run view', () => {
     await expect(page.locator('[data-step="deliver"]')).toHaveAttribute('data-status', 'passed', { timeout: 20_000 });
     await expect(page.locator('[data-tour="run.dropped"]')).toContainText('not found in the conversation');
     await expect(page.locator('[data-tour="run.gate"]')).toBeVisible();
-    await expect(page.locator('[data-tour="run.trace"]')).toContainText('$0.00');
+    // the Timing card: real step timestamps on one clock, totals, and the way into Agent Ops
+    const timing = page.locator('[data-tour="run.timing"]');
+    await expect(timing).toContainText('$0.00');
+    await expect(timing).toContainText('Wall time');
+    await expect(timing.locator('[data-timing-step]')).toHaveCount(10);
+    await expect(timing.getByRole('link', { name: 'See every call in Agent Ops' })).toHaveAttribute('href', /\/ops\/traces\/run_/);
+    // fixtures run triage, then extraction: only a run that overlapped them says so
+    await expect(timing).not.toContainText('started with triage');
+    await expect(page.locator('[data-tour="run.clock"]')).toContainText('Finished in');
     // the ten steps read in plain words, and the quote check carries its own anchor
     await expect(page.locator('[data-tour="run.stepper"]')).toContainText('Triage');
     await expect(page.locator('[data-tour="run.ground"]')).toContainText('Check quotes');
@@ -28,6 +36,24 @@ test.describe('Run view', () => {
     expect(names).toContain('run.started');
     expect(names.filter((n) => n === 'run.step')).toHaveLength(10);
     expect(names.indexOf('run.finished')).toBeGreaterThan(names.lastIndexOf('run.step'));
+  });
+
+  test('the clock runs live from the real start, then shows the real total; replay plays back at recorded speed', async ({ page }) => {
+    await startRun(page, 'file_c1042');
+    const clock = page.locator('[data-tour="run.clock"]');
+    await expect(clock).toHaveAttribute('data-state', 'running');
+    await expect(clock).toContainText(/Running · \d+\.\d s/);
+    // no Timing breakdown until the run has finished
+    await expect(page.locator('[data-tour="run.timing"]')).toHaveCount(0);
+    await expect(clock).toHaveAttribute('data-state', 'finished', { timeout: 20_000 });
+    await expect(clock).toContainText(/Finished in [\d.]+ (ms|s)/);
+    await expect(clock).toContainText('Live run');
+    await expect(page.locator('[data-tour="run.timing"]')).toBeVisible();
+    await page.getByRole('button', { name: 'Replay steps' }).click();
+    await expect(clock).toHaveAttribute('data-state', 'replaying');
+    await expect(clock).toContainText('Replaying at recorded speed');
+    await expect(clock).toHaveAttribute('data-state', 'finished', { timeout: 15_000 });
+    await expect(page.locator('[data-step="deliver"]')).toHaveAttribute('data-status', 'passed');
   });
 
   test('evidence focus and redaction toggle emit events', async ({ page }) => {

@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import type { SceneId } from '../../tour/engine/types';
 import { ColdOpen } from './ColdOpen';
+import { Real } from './Real';
 import { BlackHole } from './BlackHole';
 import { Why } from './Why';
 import { Jtbd } from './Jtbd';
@@ -20,6 +21,7 @@ export type SceneDef = {
 
 export const SCENES: Record<SceneId, SceneDef> = {
   'cold-open': { component: ColdOpen },
+  real: { component: Real },
   'black-hole': { component: BlackHole },
   why: { component: Why },
   jtbd: { component: Jtbd },

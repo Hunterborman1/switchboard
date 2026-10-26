@@ -1,5 +1,5 @@
 /**
- * Part 17 · POC → production. A plain table: what each job runs on today, then (beat 1)
+ * Chapter 18 · From proof of concept to production. A plain table: what each job runs on today, then (beat 1)
  * what it runs on in production, filled in one row after another.
  */
 import { motion } from 'motion/react';

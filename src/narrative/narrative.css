@@ -121,12 +121,31 @@ a.n-brand:hover .n-brand__name {
 }
 
 /* ---------------------------------------------------------------- scene frame */
+/* The deck: the persistent chapter rail (wide screens) beside the scene. Scene layouts respond to
+   the scene's own width (container queries in scenes.css), so they read the same with or without
+   the rail. */
+.n-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 1200px) {
+  .n-deck {
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  }
+  .n-deck .n-topbar > .n-brand {
+    display: none;
+  }
+  .n-deck .n-topbar__crumb .n-topbar__slash:first-child {
+    display: none;
+  }
+}
 .n-scene {
   position: relative;
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: minmax(0, 1fr);
+  container: scene / inline-size;
 }
 
 /* Top bar: the product's 52px bar. Never moves between scenes. */

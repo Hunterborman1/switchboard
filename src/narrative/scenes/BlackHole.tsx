@@ -1,5 +1,5 @@
 /**
- * Part 2 · Where feedback gets lost. A flat flow: where customer feedback comes from, each
+ * Chapter 3 · Where feedback gets lost. A flat flow: where customer feedback comes from, each
  * handoff it has to survive, and how much is lost at each one. Beat 0 shows the sources and the
  * starting 100, beat 1 reveals the handoffs one after another, beat 2 adds the total and labels
  * the figures as an assumption.

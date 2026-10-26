@@ -3,10 +3,11 @@
  * data and degrades to honest generic copy when the data isn't there yet.
  */
 import type { RunDetail, StepKey, Evidence, Theme } from '../../shared/contracts';
-import { durationText, metricPct, pctText, rateOf, stepsCostUsd, usdPrecise } from '../../shared/format';
+import { durationText, metricPct, pctText, rateOf, usdPrecise } from '../../shared/format';
+import { runTiming } from '../../shared/runTiming';
 import type { TourCtx, TourPath } from '../engine/types';
 
-export const plural =(n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 export const usd = (n: number, digits?: number) => {
   const d = digits ?? (n < 0.1 ? 4 : n < 10 ? 2 : 0);
   return `$${n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })}`;
@@ -28,16 +29,16 @@ export function introFor(ctx: Pick<TourCtx, 'path' | 'fileFormat'>): { title: st
   const f = ctx.fileFormat ?? null;
   const noun = f === 'eml' ? 'email thread' : f === 'chat' ? 'Slack export' : f === 'md' ? 'set of notes' : 'transcript';
   const p: TourPath = ctx.path;
-  if (p === 'main') return { title: 'Run the pipeline', body: 'A real QBR: thirteen minutes of conversation with product signals buried in it. Press Process conversation.' };
-  if (p === 'clean') return { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones. Press Process conversation.' };
+  if (p === 'main') return { title: 'Run the pipeline', body: 'A real QBR: thirteen minutes of conversation with product signals buried in it.' };
+  if (p === 'clean') return { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones.' };
   if (p === 'messy') {
-    if (f === 'chat') return { title: 'A Slack export. Good test.', body: 'Handles instead of speakers, threads, shorthand and half-sentences. Let’s see if it stays honest. Press Process conversation.' };
-    if (f === 'eml') return { title: 'A forwarded email thread. Good test.', body: 'Quoted replies, signatures and three people talking past each other. Let’s see if it stays honest. Press Process conversation.' };
-    return { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest. Press Process conversation.' };
+    if (f === 'chat') return { title: 'A Slack export. Good test.', body: 'Handles instead of speakers, threads, shorthand and half-sentences. Let’s see if it stays honest.' };
+    if (f === 'eml') return { title: 'A forwarded email thread. Good test.', body: 'Quoted replies, signatures and three people talking past each other. Let’s see if it stays honest.' };
+    return { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest.' };
   }
-  if (p === 'security') return { title: 'This one is hostile', body: `Somebody planted an instruction in this ${noun}. Watch what the system does with it. Press Process conversation.` };
-  if (p === 'negative') return { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing. Press Process conversation.' };
-  return { title: f === 'eml' ? 'A healthcare email, full of PHI' : 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model. Press Process conversation.' };
+  if (p === 'security') return { title: 'This one is hostile', body: `Somebody planted an instruction in this ${noun}. Watch what the system does with it.` };
+  if (p === 'negative') return { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing.' };
+  return { title: f === 'eml' ? 'A healthcare email, full of PHI' : 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model.' };
 }
 
 export const runSettled = (run: RunDetail | null) => !!run && ['completed', 'failed', 'awaiting_review'].includes(run.run.status);
@@ -46,15 +47,27 @@ function allEvidence(run: RunDetail): Evidence[] {
   return run.insights.flatMap((i) => i.evidence);
 }
 
-/** ch2.intro: "real execution" is only true live; a replay says what it is. */
+/** ch2.intro title: the run's real state, never a promise. */
+export function introTitle(ctx: TourCtx): string {
+  const run = ctx.run;
+  if (ctx.runReused) return 'Your earlier run of this file';
+  if (!run) return 'Starting the run';
+  if (run.run.mode === 'replay') return runSettled(run) && run.run.durationMs ? `Replayed in ${durationText(run.run.durationMs)}` : 'A recorded run, replaying';
+  return runSettled(run) && run.run.durationMs ? `Done in ${durationText(run.run.durationMs)}, live` : 'Running live, right now';
+}
+
+/** ch2.intro: "real execution" is only true live; a replay says what it is. The latency beat starts here. */
 export function introCopy(ctx: TourCtx): string {
   if (ctx.runReused) {
-    return 'This file was already run, so this is that earlier run, revealed again from its saved steps. Nothing new is executing; New conversation, then Run again live, starts a fresh one.';
+    return 'This file was already run, so this is that earlier run, revealed from its saved steps. Nothing new is executing.';
   }
   if (ctx.run?.run.mode === 'replay') {
-    return 'This is a recorded real execution, replayed at real speed and labelled as a replay. Each step writes a row as it runs.';
+    return 'A recorded real execution, replayed at its recorded speed and labelled as a replay. The clock shows its timing.';
   }
-  return 'What you’re watching is the real execution, not an animation. Each step writes a row as it runs.';
+  if (ctx.run && runSettled(ctx.run)) {
+    return 'That clock is real: the real execution, not an animation. A whole call takes seconds; the last step shows why.';
+  }
+  return 'The real execution, not an animation. Watch the clock: a whole call takes seconds, not minutes.';
 }
 
 /** ch3.edit: once the edit form is open, say what saving needs. */
@@ -115,17 +128,18 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
   };
 }
 
+/** ch2.ground: what extraction found and what the quote check (code) did with it, in one beat. */
 export function groundCopy(ctx: TourCtx): { title: string; body: string; more: string } {
   const run = ctx.run;
-  const more =
-    'Grounding is code, not the model. Normalise both texts, try an exact substring, then slide a window scored with Levenshtein; 0.90 or better passes. A quote that doesn’t match is dropped with its insight and counted, never shown as fact.';
-  if (!run) return { title: 'Ground every quote', body: 'Each quote must exist in the transcript. If it doesn’t, the insight is dropped, never shown as fact.', more };
+  const chunks = Number(run?.steps.find((x) => x.key === 'extract')?.detail?.chunks ?? 1);
+  const more = `The main model returns typed insights (type, summary, product area, severity, confidence) in a fixed schema, each with a verbatim quote${chunks > 1 ? `; this long file was read in ${chunks} parts at once` : ''}. The check is code, not the model: normalise both texts, try an exact match, then slide a window scored by edit distance; 0.90 or better passes. A quote that doesn’t match is dropped with its insight and counted, never shown as fact.`;
+  if (!run) return { title: 'Every quote, checked in code', body: 'Each insight carries the customer’s exact words. Code checks they are in the transcript; if not, the insight is dropped.', more };
   const ev = allEvidence(run);
   const failed = ev.filter((e) => e.method === 'failed').length;
   const dropped = Math.max(run.run.droppedCount, run.insights.filter((i) => i.status === 'dropped_ungrounded').length, failed);
   const fuzzy = ev.filter((e) => e.method === 'fuzzy').length;
   const grounded = ev.length - failed;
-  if (ev.length === 0) return { title: 'Nothing to ground', body: 'No insights means no quotes to check. Grounding still ran, and passed trivially.', more };
+  if (ev.length === 0) return { title: 'Nothing to check', body: 'No insights means no quotes to check. The check still ran, and passed trivially.', more };
   if (dropped > 0) {
     return {
       title: dropped === 1 ? 'One quote didn’t survive' : `${dropped} quotes didn’t survive`,
@@ -133,9 +147,10 @@ export function groundCopy(ctx: TourCtx): { title: string; body: string; more: s
       more,
     };
   }
+  const kept = run.insights.filter((i) => i.gate !== 'dropped' && i.status !== 'dropped_ungrounded').length;
   return {
-    title: `${ev.length} of ${ev.length} quotes found in the transcript`,
-    body: `Every quote matched${fuzzy ? `, ${fuzzy === 1 ? 'one' : fuzzy} through fuzzy matching (0.90 or better)` : ' word for word'}. Grounding is the seatbelt: a quote that isn’t in the transcript has its insight dropped, never shown as fact.`,
+    title: `${plural(kept, 'insight')}, ${ev.length} of ${ev.length} quotes found`,
+    body: `Each insight carries the customer’s exact words. Code found every quote in the transcript${fuzzy ? `, ${fuzzy === 1 ? 'one' : fuzzy} as a close match` : ', word for word'}; a missing one drops its insight.`,
     more,
   };
 }
@@ -155,6 +170,11 @@ export function rejectedCopy(ctx: TourCtx): { title: string; body: string } {
   };
 }
 
+/** ch2.gate title: only mention a second opinion when this run had one (recordings predate it). */
+export function gateTitle(ctx: TourCtx): string {
+  return ctx.run?.insights.some((i) => i.secondOpinion) ? 'Scored, then a second opinion' : 'Scored: who sees it next';
+}
+
 export function gateCopy(ctx: TourCtx): string {
   const run = ctx.run;
   if (!run || run.insights.length === 0) return '0.80+ routes itself, 0.55–0.80 goes to a person, below that is held. High stakes always get reviewed.';
@@ -168,14 +188,37 @@ export function gateCopy(ctx: TourCtx): string {
   return `${auto} route${auto === 1 ? 's' : ''} automatically, ${review} go${review === 1 ? 'es' : ''} to a person${held ? `, ${held} held` : ''}.${opinion} High stakes are always reviewed.`;
 }
 
-export function traceCopy(ctx: TourCtx): string {
-  const run = ctx.run;
-  if (!run) return 'Every step records its model, tokens, cost and milliseconds. Nothing is a black box.';
-  const mode = run.run.mode === 'replay' ? ' (replay of a recorded live run)' : '';
-  // Same numbers as the Trace panel: wall time from run.durationMs, cost summed over the steps.
-  const secs = run.run.durationMs ? durationText(run.run.durationMs) : 'a few seconds';
-  const cost = stepsCostUsd(run.steps);
-  return `This call: ${secs}, ${usdPrecise(cost)} of AI${mode}. Every step logs model, tokens, cost and time.`;
+/**
+ * ch2.timing: why it's this fast, in plain words, with this run's real numbers (the same
+ * runTiming() the Timing card draws). Generic and honest when the data isn't there.
+ */
+export function timingCopy(ctx: Pick<TourCtx, 'run'>): { title: string; body: string; more: string } {
+  const t = runTiming(ctx.run);
+  const generic = {
+    title: 'Why it’s this fast',
+    body: 'Only the model calls take time, and the two big ones run side by side. Everything else is code.',
+    more: 'Triage runs on the decision model and extraction on the main model, started together on the same redacted text. The quote check, scoring rules, routing and delivery are code and take under a millisecond. Every call is in Agent Ops with its tokens and cost.',
+  };
+  if (!t || !t.complete || !ctx.run) return generic;
+  const d = (n: number | null) => (n == null ? null : durationText(n));
+  const tri = d(t.triageMs);
+  const ext = d(t.extractMs);
+  // Same sum as the Timing card: steps with no model call and no lookups.
+  const codeRows = t.rows.filter((r) => !r.ai && !r.lookups && r.status !== 'skipped' && r.status !== 'failed');
+  const codeMs = codeRows.reduce((a, r) => a + r.ms, 0);
+  const code = codeRows.length ? `The ${plural(codeRows.length, 'code step')} took ${codeMs < 1 ? 'under a millisecond' : durationText(codeMs)} in all.` : 'The rest is code.';
+  const body =
+    tri && ext
+      ? t.parallel
+        ? `Triage (${tri}) ran alongside extraction (${ext}), not before it. ${code}`
+        : `Triage took ${tri}, extraction ${ext}. ${code}`
+      : tri
+        ? `Triage took ${tri} and found nothing to extract, so the run stopped early. ${code}`
+        : generic.body;
+  const so = t.secondOpinionMs != null ? ` The second opinion (${d(t.secondOpinionMs)}) overlaps the theme lookups${t.themeMs != null ? `, so the theme step took ${d(t.themeMs)}` : ''}.` : '';
+  const replay = t.replay ? ' This is a replay of a recorded live run, at its recorded speed, re-timed to today’s order of steps.' : '';
+  const more = `Only model calls take real time: triage on the decision model, extraction on the main model${t.parallel ? ', started together on the same redacted text' : ''}.${so} ${t.tokensIn.toLocaleString('en-US')} tokens in, ${t.tokensOut.toLocaleString('en-US')} out, ${usdPrecise(t.costUsd)} of AI. Every call is in Agent Ops under this run’s trace.${replay}`;
+  return { title: `Why it took ${durationText(t.wallMs)}`, body, more };
 }
 
 export function messyCopy(ctx: TourCtx): string {
@@ -220,14 +263,15 @@ export function candidateCopy(ctx: TourCtx): string {
   return `${c.promptVersion} is the candidate, scored on the same golden files${vs}. It’s ${t.cost} and ${t.speed}. Should it ship?`;
 }
 
-export function promoteCopy(ctx: TourCtx): { title: string; body: string } {
+export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?: string } {
   const cand = ctx.evals?.candidate;
   const latest = ctx.evals?.latest;
   const promoted = ctx.counters.promoted ?? cand?.promoted ?? false;
   if (promoted) {
     return {
       title: 'Promoted',
-      body: `Every gate check passed (overall precision and recall, level-5 recall, grounding, the safety checks, no regression over 2 points), so ${cand?.promptVersion ?? 'the candidate'} ships.`,
+      body: `Every gate check passed, so ${cand?.promptVersion ?? 'the candidate'} ships.`,
+      more: 'The checks: overall precision and recall, level-5 recall, grounding, the safety checks, and no regression over 2 points.',
     };
   }
   const failed = cand?.metrics.filter((m) => m.passed === false) ?? [];
@@ -255,7 +299,8 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string } {
         : 'A gate check failed.';
     return {
       title: 'Promotion blocked',
-      body: `Blocked on ${label.toLowerCase()}: ${metricPct(before)} → ${metricPct(now)}${reasons ? `, ${reasons}` : ''}. ${why}${also}`,
+      body: `Blocked on ${label.toLowerCase()}: from ${metricPct(before)} to ${metricPct(now)}${reasons ? `, ${reasons}` : ''}.`,
+      more: `${why}${also}`.trim(),
     };
   }
   const reason = cand?.blockedReasons[0];
@@ -272,11 +317,11 @@ export function isSpotlitTheme(t: Pick<Theme, 'id' | 'name'>): boolean {
 
 export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
   const t = ctx.theme;
-  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the highlighted theme.', arr: 'Summed across distinct accounts. That’s the number that moves a roadmap.' };
+  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the highlighted theme.', arr: 'ARR summed across distinct accounts, an eight-week trend, and quotes that link back to each call.' };
   const yours = ctx.run?.insights.some((i) => i.themeId === t.id) ? ' Your call’s insight just joined it.' : '';
   return {
     intro: `“${t.name}”: ${plural(t.insightCount, 'insight')} from ${plural(t.accountCount, 'account')}.${yours} Open it.`,
-    arr: `${compactUsd(t.arrUsd)} of ARR across ${plural(t.accountCount, 'account')}, counted once each. That’s what moves a roadmap.`,
+    arr: `${compactUsd(t.arrUsd)} of ARR across ${plural(t.accountCount, 'account')}, counted once each. The trend and every quote link back to the calls.`,
   };
 }
 
@@ -320,7 +365,7 @@ export function sankeyCopy(ctx: TourCtx): { title: string; body: string } {
   if (ctx.counters.rulesChanged > 0) {
     return { title: 'The flows re-route', body: 'Same insights, new owner. No prompt changed, no redeploy. The edit is in your workspace only.' };
   }
-  return { title: 'Where today’s rules send them', body: 'Type → product area → owner, under the current rules. Change a rule and the flows move: no prompt, no redeploy.' };
+  return { title: 'Where today’s rules send them', body: 'From type to product area to owner, under the current rules. Change a rule and the flows move.' };
 }
 
 /** ch8.trace: name any red spans instead of leaving them unexplained. */

@@ -1,5 +1,5 @@
 /**
- * Part 15 · Earning trust: rollout. "Build it, then operate it."
+ * Chapter 16 · Earning trust: rollout. "Build it, then operate it."
  * Beat 0: phased timeline. Beat 1: adoption measured and hours returned.
  * Beat 2: operating it: review cadence, the agent standard, builder enablement.
  * All three beats share one grid cell, so the scene keeps its size and nothing jumps.

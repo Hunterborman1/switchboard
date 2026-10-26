@@ -1,22 +1,24 @@
 /**
- * Root of every route except the presenter view: the TourProvider plus the walkthrough
- * chrome (HUD, spotlight, rail, pause menu, checkpoint, resume pill) layered on top.
+ * Root of every route except the presenter view: the TourProvider plus the presentation chrome.
+ * Product pages (/app, /ops) get the Guide, one persistent box for presenting and exploring;
+ * scenes get their chapter rail (rendered by the Walkthrough page), the top bar's tools and the
+ * narrow chapter menu.
  */
 import { useEffect } from 'react';
 import { Outlet, useLocation, ScrollRestoration } from 'react-router-dom';
 import { TourProvider, useTour } from '../tour/engine/TourProvider';
-import { TourOverlay } from '../tour/engine/TourOverlay';
-import { ChapterRail, Checkpoint, Hud, PauseMenu, ResumePill } from '../tour/hud/Hud';
+import { Guide } from '../tour/guide/Guide';
+import { ChapterDrawer, SceneTools } from '../tour/hud/Hud';
 import { refreshProductTourState, setProductTourState, trackUsage } from './bridge';
 
 function ProductSync() {
   const tour = useTour();
   const location = useLocation();
   const active = tour.status === 'active';
-  const slow = active && tour.step.pace === 'slow';
   useEffect(() => {
-    setProductTourState({ tourActive: active, pace: slow ? 900 : undefined });
-  }, [active, slow]);
+    // The product reveals runs at their real speed: the presentation never asks it to slow down.
+    setProductTourState({ tourActive: active, pace: undefined });
+  }, [active]);
   useEffect(() => {
     refreshProductTourState();
   }, [location.pathname, location.search]);
@@ -30,19 +32,14 @@ function ProductSync() {
 }
 
 function Chrome() {
-  const tour = useTour();
   const location = useLocation();
-  const inProduct = /^\/(app|ops)(\/|$)/.test(location.pathname);
   const onScene = location.pathname.startsWith('/walkthrough');
   return (
     <>
       <ProductSync />
-      {tour.status === 'active' && (onScene || inProduct) && <Hud />}
-      <TourOverlay />
-      <ChapterRail />
-      <PauseMenu />
-      <Checkpoint />
-      {inProduct && <ResumePill />}
+      {onScene && <SceneTools />}
+      {onScene && <ChapterDrawer />}
+      <Guide />
     </>
   );
 }

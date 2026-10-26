@@ -1,5 +1,5 @@
 /**
- * Part 6 · The platform. "Signal Loop runs inside Switchboard." One diagram, built over four
+ * Chapter 7 · The platform. "Signal Loop runs inside Switchboard." One diagram, built over four
  * beats: In (any conversation, from anywhere), Decide (the decision model reads it first),
  * Analyse (Signal Loop, built, beside the roadmap analyses, not built) and Out (the right people,
  * in their own tools, tagged by their own handle). Names come from the platform catalog and the

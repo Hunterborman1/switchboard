@@ -1,5 +1,5 @@
 /**
- * Part 18 · Scorecard. What you did and what the system did, with real numbers from the
+ * Chapter 19 · Scorecard. What you did and what the system did, with real numbers from the
  * viewer's own workspace and from Agent Ops. Then "Explore freely" unlocks everything.
  */
 import { useEffect, useRef, useState } from 'react';
@@ -137,10 +137,12 @@ export function ScorecardScene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const explore = () => {
+  /** Leaving the scorecard finishes the presentation: the Guide then offers a nudge per screen. */
+  const leave = (to: string) => {
     tour.finish();
-    navigate('/app/new');
+    navigate(to);
   };
+  const explore = () => leave('/app/new');
 
   // Tiles say what is true for this session. A zero the viewer didn't cause reads as a
   // failure, so a zero system counter is swapped for a fact about their own run, or left out.
@@ -172,12 +174,12 @@ export function ScorecardScene() {
     ...(sb && sb.routed > 0 ? [{ v: sb.routed, l: sb.routed === 1 ? 'insight routed' : 'insights routed' }] : []),
   ];
   const sys = sysAll.filter((t): t is Tile => t != null);
-  // Nothing of the viewer's own to count yet: say so and point at chapter 1, rather than a
+  // Nothing of the viewer's own to count yet: say so and point at chapter 8, rather than a
   // wall of zeros that reads like something broke.
   const empty = sb != null && runs === 0 && !tour.ctx.runId;
   const startChapter1 = () => tour.goto(firstStepOf('ch1'));
   const startRef = useRef<HTMLButtonElement>(null);
-  // Keyboard focus follows the primary action: "Start chapter 1" once we know it's empty.
+  // Keyboard focus follows the primary action: "Start chapter 8" once we know it's empty.
   useEffect(() => {
     if (empty) startRef.current?.focus({ preventScroll: true });
   }, [empty]);
@@ -206,12 +208,12 @@ export function ScorecardScene() {
           >
             <h2 className="sc-score__h">You haven’t run a call yet</h2>
             <p className="n-body">
-              Chapter 1 brings in a recorded customer call and runs it through Signal Loop. It takes about a minute and a half. Come back here afterwards to see the insights it found, what it held back,
+              Chapter 8, A call comes in, brings in a recorded customer call and runs it through Signal Loop. It takes about a minute. Come back here afterwards to see the insights it found, what it held back,
               what the AI cost and the trail it left in Agent Ops.
             </p>
             <div className="sc-score__actions">
               <Button ref={startRef} variant="primary" size="lg" iconRight={<IconArrowRight />} onClick={startChapter1} data-testid="scorecard-start-ch1">
-                Start chapter 1
+                Start chapter 8
               </Button>
             </div>
           </motion.section>
@@ -272,15 +274,18 @@ export function ScorecardScene() {
           <Button variant={empty ? 'secondary' : 'primary'} size="lg" iconRight={empty ? undefined : <IconArrowRight />} onClick={explore} data-testid="explore-freely" autoFocus={!empty}>
             Explore freely
           </Button>
-          <Button variant="secondary" size="lg" onClick={() => navigate('/ops')}>
+          <Button variant="secondary" size="lg" onClick={() => leave('/ops')}>
             Open Agent Ops
           </Button>
-          <Button variant="ghost" size="lg" onClick={() => navigate('/write-up')}>
+          <Button variant="ghost" size="lg" onClick={() => leave('/write-up')}>
             Read the write-up
+          </Button>
+          <Button variant="ghost" size="lg" onClick={() => leave('/app/claude')} data-testid="scorecard-claude">
+            Ask Claude about it
           </Button>
           {empty ? null : (
             <Button variant="ghost" size="lg" onClick={tour.restart}>
-              Replay the walkthrough
+              Replay the presentation
             </Button>
           )}
         </div>

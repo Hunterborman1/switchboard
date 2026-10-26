@@ -26,11 +26,11 @@ export function findFirstAnchor(ids: readonly AnchorId[]): HTMLElement | null {
 }
 
 /**
- * Waits for `[data-tour="id"]` (the first of `ids` that is visible) to mount (MutationObserver + a light poll for elements that
- * become visible without a DOM mutation). After `timeoutMs` the status becomes 'missing' so
- * the callout can fall back to the centre with a Continue button. Keeps tracking: if the
- * element appears later, it switches back to 'found'. A higher-priority id that appears
- * later takes over (e.g. the edit form replacing the Edit button).
+ * Waits for `[data-tour="id"]` (the first of `ids` that is visible) to mount (MutationObserver + a
+ * light poll for elements that become visible without a DOM mutation). After `timeoutMs` the status
+ * becomes 'missing' so the callout can fall back to the centre with a Continue button. Keeps
+ * tracking: if the element appears later, it switches back to 'found'. A higher-priority id that
+ * appears later takes over (e.g. the edit form replacing the Edit button).
  */
 export function useAnchor(ids: readonly AnchorId[], timeoutMs = 5000, key = ''): AnchorState {
   const idKey = ids.join('|');
