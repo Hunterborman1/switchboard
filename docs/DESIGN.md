@@ -106,11 +106,12 @@ quote in body text, a quiet citation). Every place evidence appears uses it.
   reveal. Bottom bar: Back / Next and a thin progress bar; only those (and ← →) move on, never a
   click on the page. The top bar, bottom bar and rail stay put between scenes and never
   re-animate. From 1200px a left chapter rail the width of the product sidebar.
-- On product pages the walkthrough is the Guide: one white panel with `--shadow-2`, 8px radius,
-  380px wide (340px when narrowing clears something), in a corner of the content area. Header:
-  the chapter picker and minimize. Body: "Step 1 of 2", a 16/600 title, a 14px why of 20 words or
-  fewer, the "Your turn" line on `--accent-subtle`, "How this works". Footer, one row: "Explore on
-  your own" left, Back and one action right. Phones: a bottom sheet.
-- No scrim and no blur. The target gets a 2px accent ring. The Guide never covers its target, an
-  open dialog or drawer, or a sticky action bar; it moves corner, narrows, then folds to a compact
-  card, a bar or a pill (`src/tour/guide/dock.ts`).
+- On product pages the walkthrough is the Guide: a bar docked along the bottom of the content
+  column, white with a 1px top border and the presentation's progress on that edge, like the
+  scenes' bottom bar. Top row: the chapter picker, "Step 1 of 2", "Explore on your own", minimize.
+  Below: a 16/600 title and a 14px why of 20 words or fewer with "How this works" inline, the
+  "Your turn" box on `--accent-subtle`, then Back / Next as on the scenes. It folds to a one-line
+  strip when minimized or while a dialog is open. Phones: a bottom sheet.
+- No scrim and no blur. The target gets a 2px accent ring. The Guide covers nothing: the page
+  reserves its height (`--sl-guide-h`), and dialogs, drawers, toasts and sticky action bars sit
+  above it.

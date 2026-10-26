@@ -89,7 +89,7 @@ export function Hub() {
                 primary
                 icon={<IconPlay size={18} />}
                 title="Start the presentation"
-                body={`${CHAPTERS.length} chapters: three to set up the problem, five in the real product with a guide in the corner you can leave and resume, and two to close.`}
+                body={`${CHAPTERS.length} chapters: three to set up the problem, five in the real product with a guide along the bottom you can leave and resume, and two to close.`}
                 meta={`About ${Math.round(TOTAL_TARGET_SEC / 60)} minutes`}
                 cta="Start"
               />
@@ -102,7 +102,7 @@ export function Hub() {
           </motion.div>
           <motion.div {...enter(4)} className="hub__doorwrap">
             <Link className="hub-door" to="/write-up" data-testid="door-writeup">
-              <DoorInner icon={<IconBook size={18} />} title="Read the write-up" body="The problem, the platform, the rollout and what comes next, on one page." meta="About 8 minutes to read" cta="Read" />
+              <DoorInner icon={<IconBook size={18} />} title="Read the write-up" body="The problem, the platform, the rollout and what comes next, then the questions and answers." meta="About 15 minutes to read" cta="Read" />
             </Link>
           </motion.div>
         </section>

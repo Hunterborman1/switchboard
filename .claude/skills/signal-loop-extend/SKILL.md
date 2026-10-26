@@ -55,7 +55,7 @@ Branches are `TOUR_PATHS` in `src/tour/engine/types.ts` with labels in `PATH_LAB
 2. Give it all nine `standard` checks from `STANDARD_CHECKS` (`src/shared/platform-contracts.ts`) with honest `passed` and `evidence`. A failed check is fine and informative.
 3. Label it: a simulated agent says so in the `note` and its evidence; a baseline is an assumption until measured.
 4. A real agent reports through `src/worker/platform/sdk.ts` (logs, spans, usage events, work units), with one trace per run.
-5. Seed locally: `npm run db:seed:platform:local`, then check `/ops`, the registry and the agent page.
+5. Seed locally: `npm run db:seed:platform:local`, then check `/ops` and the registry (a simulated agent is listed for comparison and does not open; only live agents have an agent page).
 6. If you change Signal Loop's baseline, `MINUTES_SAVED_PER_CALL` in `src/shared/scoring.ts` must equal `baselineMinutesPerUnit` (`tests/unit/shared/baseline.test.ts`).
 
 ## Tests to run
@@ -63,7 +63,7 @@ Branches are `TOUR_PATHS` in `src/tour/engine/types.ts` with labels in `PATH_LAB
 | Change | Command |
 |---|---|
 | Any | `npm run typecheck` and `npm test` (unit + worker) |
-| Tour copy, steps, placement | `npx vitest run --project unit tests/unit/tour` |
+| Tour copy, steps, the Guide | `npx vitest run --project unit tests/unit/tour` |
 | Walkthrough flow or branches | `npx playwright test --project=tour-desktop` (and `--project=tour-mobile` for layout) |
 | Product UI | `npx playwright test --project=app` |
 | Agent Ops | `npx vitest run --project unit tests/unit/platform` and `npx playwright test --project=platform-desktop` |

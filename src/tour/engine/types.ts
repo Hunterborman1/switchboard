@@ -143,7 +143,7 @@ export type Step = {
   next: string | ((ctx: TourCtx) => string);
   actions?: StepAction[] | ((ctx: TourCtx) => StepAction[] | undefined);
   onEnter?: (ctx: TourCtx, api: TourApi) => void;
-  /** What changed in this chapter: one quiet line in the Guide on the chapter's last step. */
+  /** What this step changed ("2 decisions made by a person"): one quiet line in the Guide. */
   checkpoint?: (ctx: TourCtx) => CheckpointData | null;
   /** Where "Resume presentation" lands if the viewer left on this step (e.g. a step that needs an open dialog). */
   resumeAt?: string;

@@ -45,7 +45,7 @@ export function Real() {
   return (
     <div className="sc sc-real">
       <SceneHead
-        title="Built from scratch in 48 hours. Here’s what’s real."
+        title={'Built from scratch in 48 hours. Here’s what’s real.'}
         meta={
           <>
             <span className="sc-real__by">By Hunter Borman</span>

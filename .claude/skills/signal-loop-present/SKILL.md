@@ -21,9 +21,9 @@ Read first, only as needed:
 ## How the viewer moves around
 
 - **Scenes:** everything is on screen at once (one short entrance animation, nothing to click open). Only Back / Next, ← → or a clicker move on; a click on the page does not. A chapter rail on the left at 1,200 px and wider; narrower, the menu button in the scene's top bar (or Esc) opens the same list.
-- **Product pages:** the Guide, the box in the corner (bottom-right on desktop, a bottom sheet on phones). In presentation mode it shows the step, why it matters, "Your turn" when the viewer has to act (with "Show me"), Back / Next or "Skip this step", and "Explore on your own". Its chapter title opens every chapter.
+- **Product pages:** the Guide, a bar docked along the bottom of the page (a bottom sheet on phones). In presentation mode it shows the step, why it matters, "Your turn" when the viewer has to act (with "Show me"), Back / Next or "Skip this step", and "Explore on your own". Its chapter title opens every chapter.
 - **Explore on your own** leaves the presentation and remembers the step; the Guide then suggests one thing to try on each screen; **Resume presentation** returns to the same step. If the viewer never started, it reads "Start the presentation".
-- No scrim: the target gets a calm ring and the Guide moves (or folds) so it never covers it.
+- No scrim: the target gets a calm ring and is scrolled into view above the Guide, which covers nothing (the page, dialogs and drawers keep clear of it).
 
 ## Prep checklist (T-15 minutes)
 
@@ -69,9 +69,9 @@ If a panelist picks another file in chapter 4, name the branch before pressing P
 ## Fallbacks
 
 - **Replay mode:** automatic when live AI is off, over budget, or a featured run is not finished within 25 s (`src/shared/scoring.ts` → `LIVE_FALLBACK_AFTER_MS`). The clock and the Timing card say "Replay"; say so too.
-- **Backup scenes:** `/repo/invoca/backup/<topic>` for `cost`, `security`, `failure`, `build-vs-buy`, `metrics`, `agent-ops`, `differently`.
+- **Q&A:** sections of the write-up, `/repo/invoca/write-up#<topic>` for `cost`, `security`, `failure`, `build-vs-buy`, `metrics`, `agent-ops`, `differently` (the presenter view's Q&A buttons jump there).
 - **Jump anywhere:** the chapter rail on scenes (or the top bar's menu, or Esc, on narrower screens); the Guide's chapter title on product pages; or deep-link `?tour=<stepId>` (step ids in `src/tour/script/steps.ts`).
-- **Write-up:** `/repo/invoca/write-up` covers the four pillars on one page, including the jobs to be done.
+- **Write-up:** `/repo/invoca/write-up` covers the four pillars and the Q&A on one page, including the jobs to be done. For AI assistants it offers its Markdown, a .zip of every doc and the MCP connection.
 - **Demo video:** the plan calls for a backup recording (`docs/PLAN.md` → Handoff package). It is not in the repo; confirm Hunter has it locally before relying on it.
 
 ## Recovery if something breaks live
@@ -82,9 +82,9 @@ If a panelist picks another file in chapter 4, name the branch before pressing P
 | The Guide says "That part of the page isn't on screen right now" | The target did not appear in time; the step still works. Press Next or →. |
 | A step's data never arrives ("Starting the run…", "Finishing the run…") | After 9 seconds Next works anyway; or "Skip this step". |
 | The viewer wandered off | "Resume presentation" in the Guide goes back to the same step; "Explore on your own" is safe to press any time. |
-| The Guide is in the way | Minimize it (the dash in its header); it stays a small "Guide" pill until opened. On phones, fold the sheet with its chevron. |
+| The Guide takes too much room | Minimize it (the dash in its top row); it folds to a one-line strip that still shows the next action. On phones, fold the sheet with its chevron. |
 | "Live AI budget reached" | Expected at the cap. Say "past the cap it replays, never an outage" and continue. |
-| Agent Ops panel empty | Go to `/backup/agent-ops` and describe the registry and standard. |
+| Agent Ops panel empty | Go to `/write-up#agent-ops` and describe the registry and standard. |
 | Presenter view says "Waiting…" | Reopen `/presenter` in the same profile as the main window; present from `notes.ts` lines if needed. |
 | Signed out or link expired | Hunter signs in with the password himself, off the shared screen. |
 | Site down | Use the write-up page or `docs/WALKTHROUGH.md` locally, and the demo video if it exists. Do not redeploy during the session. |

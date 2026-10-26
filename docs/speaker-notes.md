@@ -21,7 +21,7 @@ The chapters come in three groups: **Introduction** (1–3), **The platform** (4
 
 ## If they click through on their own
 
-Point them at **the box in the corner**: the Guide. In chapters 4–8 it says what each step shows and why, and when it's their turn ("Your turn: press A, or click Approve and send", with "Show me"). **Explore on your own** leaves the presentation and remembers the step; on every screen the Guide then suggests one thing to try; **Resume presentation** goes back to exactly where they left. The chapter title in the Guide opens every chapter of the presentation, and on the scenes the rail (or the top bar's menu on a smaller screen) does the same. On a scene everything is on screen at once; Next (or →) moves on. Nothing is ever covered: the Guide moves out of the way of whatever it points at.
+Point them at **the bar along the bottom**: the Guide. In chapters 4–8 it says what each step shows and why, and when it's their turn ("Your turn: press A, or click Approve and send", with "Show me"). **Explore on your own** leaves the presentation and remembers the step; on every screen the Guide then suggests one thing to try; **Resume presentation** goes back to exactly where they left. The chapter title in the Guide opens every chapter of the presentation, and on the scenes the rail (or the top bar's menu on a smaller screen) does the same. On a scene everything is on screen at once; Next (or →) moves on. Nothing is ever covered: the Guide moves out of the way of whatever it points at.
 
 ---
 
@@ -60,7 +60,7 @@ Point them at **the box in the corner**: the Guide. In chapters 4–8 it says wh
 
 ## Chapter 4 · A call comes in (4:30)
 
-Three parts: the platform scene, bringing the call in, and watching it run. The Guide appears in the corner with the first product step.
+Three parts: the platform scene, bringing the call in, and watching it run. The Guide appears along the bottom with the first product step.
 
 ### The platform scene
 
@@ -73,14 +73,14 @@ Three parts: the platform scene, bringing the call in, and watching it run. The 
 > Analyse: Signal Loop is the one I built for this brief. Follow-ups, renewal risk, escalations, compliance review and call coaching are on the roadmap, and the screen says "Not built".
 > Out: the right people in the tools they already use, each tagged by their own handle. The connectors are simulated here, and the product says so.
 
-**Transition:** "Let me show you the real thing. The box in the corner walks you through it."
+**Transition:** "Let me show you the real thing. The bar along the bottom walks you through it."
 
 ### Bring in the call
 
 **Click:** *Browse conversations* → pick the suggested **Brightline QBR** (or let a panelist choose) and **Open** → **Process conversation**.
 
 **Say:**
-> Now the real system, with the Guide in the corner. Bringing the call in is the only manual step, and in production it goes away: connectors pull calls from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples).
+> Now the real system, with the Guide along the bottom. Bringing the call in is the only manual step, and in production it goes away: connectors pull calls from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples).
 > Mess levels aren't labelled on purpose. Brightline is the main path; any file works and each one tells a different story.
 
 If they pick something else, name the branch:
@@ -171,14 +171,14 @@ On one live Brightline run (an example, not a benchmark): triage 1.55 s, extract
 
 **Say:**
 > Every number here is counted from your workspace and this session: what you did and what the system did. Nothing on this page is scripted. Where a counter would be zero, it shows a fact about your own run instead (quotes grounded, values redacted).
-> Everything's unlocked. Explore freely: the Guide in the corner suggests something to try on every screen, and Resume presentation brings you back. You can also connect Claude over MCP and ask it how any of this was built. I'm happy to go into cost, security, failure handling, build vs buy, or how I'd measure it.
+> Everything's unlocked. Explore freely: the Guide along the bottom suggests something to try on every screen, and Resume presentation brings you back. You can also connect Claude over MCP and ask it how any of this was built. I'm happy to go into cost, security, failure handling, build vs buy, or how I'd measure it.
 
 ---
 
 ## Likely questions
 
 **1. What does it cost per call, and at Invoca's volume?**
-The cost backup (`/backup/cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00141 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
+The cost answer in the write-up's Q&A (`/write-up#cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00141 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
 
 **2. How do you stop it hallucinating?**
 I don't trust the model to police itself. Every insight needs a verbatim quote, and grounding is code: exact, normalised, then a fuzzy window at 0.90. If a quote isn't in the transcript, the insight is dropped and counted. On the promoted prompt every eval quote grounded, 275 of 275, so grounding is the seatbelt. The bigger lesson is v5: 99.4% of its quotes grounded and its precision still fell to 59.7%. Grounding proves the words were said, not that they're feedback.
@@ -190,7 +190,7 @@ Redaction runs before any model call, with reversible tokens. The original never
 Transcript text is wrapped as data, the model can only return a fixed schema and has no tools, so a planted instruction has nothing to act on. It's flagged at triage (the decision model's flag, OR-ed with a code check over the full text) and audited, and everything from that file goes to a person. The injection file in the library shows it.
 
 **5. Why build instead of buy Gong, Productboard or Enterpret?**
-Each is good at something. None owns Invoca's taxonomy, routing rules and loop-closing back to CSMs, and that's the hard part. I'd prove the workflow thin, not build a recorder, and expect the long-term home to be Signal AI and Invoca's existing conversation data. `/backup/build-vs-buy` has the fair comparison.
+Each is good at something. None owns Invoca's taxonomy, routing rules and loop-closing back to CSMs, and that's the hard part. I'd prove the workflow thin, not build a recorder, and expect the long-term home to be Signal AI and Invoca's existing conversation data. `/write-up#build-vs-buy` has the fair comparison.
 
 **6. How would you get CSMs to adopt it?**
 Make it make them look good. Shadow mode first so there's no risk, champions who calibrate it weekly, a one-click "this is wrong", precision published weekly, and credit when their feedback ships. Then measure weekly active reviewers from usage events, not a survey.
@@ -235,7 +235,7 @@ A small, fast model from a different family reads every input first: 0.9 s media
 No, and the product says so. Connecting one records a workspace connection with a simulated account; deliveries render as in-app previews with receipts, tagged with each person's handle from the people directory. In production they'd be the real APIs, switched on one destination at a time.
 
 **20. What would you do differently?**
-Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/backup/differently` has the full list.
+Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/write-up#differently` has the full list.
 
 **21. It ran too fast. Is it real?**
 Yes, and the conversation page shows why. The clock runs from the run's real start; steps appear as the server reports them, with no slowed-down animation. The Timing card draws every step from its real start and finish: triage on the decision model and extraction on the main model start together on the same redacted text, and the quote check, scoring, routing and delivery are code that takes milliseconds. On one live Brightline run that was 1.55 s of triage alongside 4.94 s of extraction, 6.09 s end to end, $0.0034 of AI. "See every call in Agent Ops" opens the trace with every model call, its tokens and cost. A replay says it's a replay, and that the recording is re-timed to today's step order.

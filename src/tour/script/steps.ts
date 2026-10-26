@@ -53,7 +53,7 @@ export const STEPS: Step[] = [
   // ------------------------------------------------------------ call · where Signal Loop runs
   {
     id: 'call.platform', chapter: 'call', kind: 'scene', scene: 'platform', route: R.scene('call'),
-    title: 'Signal Loop runs inside Switchboard.', body: 'Any conversation in, the right people out. Then the real product, with the Guide in the corner.', next: 'call.intro',
+    title: 'Signal Loop runs inside Switchboard.', body: 'Any conversation in, the right people out. Then the real product, with the Guide along the bottom.', next: 'call.intro',
   },
 
   // ------------------------------------------------------------ call · bring in a call

@@ -106,12 +106,17 @@ function scrollEndIntoBand(el: HTMLElement, band: { top: number; bottom: number 
   el.style.scrollMarginBottom = prev;
 }
 
-/** "Step 2 of 3" within the chapter, counted along the main path (a branch step counts as its neighbour). */
+const isProduct = (id: string) => STEPS.find((s) => s.id === id)?.kind === 'product';
+
+/**
+ * "Step 2 of 3" within the chapter: product steps on the main path only (a chapter's opening scene
+ * isn't counted; a branch step counts as its neighbour).
+ */
 function stepOfChapter(step: Step): { n: number; of: number } {
-  const main = chapterSteps(step.chapter);
+  const main = chapterSteps(step.chapter).filter(isProduct);
   let i = main.indexOf(step.id);
   if (i < 0) {
-    const order = STEPS.filter((s) => s.chapter === step.chapter).map((s) => s.id);
+    const order = STEPS.filter((s) => s.chapter === step.chapter && s.kind === 'product').map((s) => s.id);
     i = Math.max(0, order.slice(0, Math.max(0, order.indexOf(step.id))).filter((id) => main.includes(id)).length - 1);
   }
   return { n: i + 1, of: Math.max(1, main.length) };
@@ -589,7 +594,7 @@ function PresentBody({
   const moreText = step.more ? resolveCopy(step.more, ctx) : null;
   const actions = typeof step.actions === 'function' ? step.actions(ctx) : step.actions;
   const readyLabel = step.readyLabel ? resolveCopy(step.readyLabel, ctx) : 'Working…';
-  const cp = pos.n === pos.of && step.checkpoint ? step.checkpoint(ctx) : null;
+  const cp = step.checkpoint ? step.checkpoint(ctx) : null;
   // The dock's Back / Next match the scenes' bottom bar; the phone sheet uses small buttons.
   const size = sheet ? 'sm' : 'md';
   const explore = (

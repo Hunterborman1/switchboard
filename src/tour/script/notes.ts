@@ -41,7 +41,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '4:30',
     say: [
       'One step back before the product. Signal Loop runs inside Switchboard. In: any conversation, from where it already lives or any file you upload. Decide: a fast decision model reads it first, in about a second. Analyse: Signal Loop is the one I built; the others say “Not built”. Out: the right people in the tools they already use, tagged by their own handle. The connectors are simulated, and the product says so.',
-      'Now the real system, with the Guide in the corner. Bringing the call in is the only manual step, and in production it goes away: connectors pull calls from whichever recorder and CRM the CS team uses. Mess levels aren’t labelled on purpose. Brightline is the main path; any file works and each one tells a different story.',
+      'Now the real system, with the Guide along the bottom. Bringing the call in is the only manual step, and in production it goes away: connectors pull calls from whichever recorder and CRM the CS team uses. Mess levels aren’t labelled on purpose. Brightline is the main path; any file works and each one tells a different story.',
       'This is running live, right now. Watch the clock: a thirteen-minute call takes a few seconds. If the Guide says replay, it’s a recorded live run at its recorded speed.',
       'Triage first, on the decision model: what it is, which analyses apply, whether anyone is steering the AI. Names and health details were removed before any model saw a word.',
       'Then the moment: every insight carries a verbatim quote, and code checks it against the transcript. Read the count off the Guide; on the promoted prompt every eval quote matched, 275 of 275. A quote that isn’t there drops its insight.',
@@ -104,7 +104,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '1:15',
     say: [
       'Every number here is counted from your workspace and this session: what you did and what the system did. Nothing on this page is scripted.',
-      'Everything is unlocked now. Explore freely; the Guide in the corner suggests something to try on every screen, and Resume presentation brings you back. You can also connect Claude over MCP and ask it how any of this was built.',
+      'Everything is unlocked now. Explore freely; the Guide along the bottom suggests something to try on every screen, and Resume presentation brings you back. You can also connect Claude over MCP and ask it how any of this was built.',
     ],
     click: ['Explore freely; then the write-up and Q&A.'],
   },
