@@ -193,7 +193,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 ## Likely questions
 
 **1. What does it cost per call, and at Invoca's volume?**
-The cost backup (`/backup/cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00136 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4, or $60 at the $0.02 worst-case reservation. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
+The cost backup (`/backup/cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00141 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
 
 **2. How do you stop it hallucinating?**
 I don't trust the model to police itself. Every insight needs a verbatim quote, and grounding is code: exact, normalised, then a fuzzy window at 0.90. If a quote isn't in the transcript, the insight is dropped and counted. On the promoted prompt every eval quote grounded, 275 of 275, so grounding is the seatbelt. The bigger lesson is v5: 99.4% of its quotes grounded and its precision still fell to 59.7%. Grounding proves the words were said, not that they're feedback.

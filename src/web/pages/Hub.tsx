@@ -129,6 +129,9 @@ export function Hub() {
               </Link>
             ))}
           </nav>
+          <a className="n-link" href={`${import.meta.env.BASE_URL}walkthrough.md`} style={{ justifySelf: 'start', fontSize: 'var(--n-text-sm)' }} data-testid="hub-markdown">
+            Markdown version for AI assistants
+          </a>
         </footer>
       </div>
     </main>

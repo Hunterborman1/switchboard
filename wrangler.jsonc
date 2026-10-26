@@ -15,6 +15,10 @@
     { "pattern": "repos.hunterborman.com/repo/invoca/*", "zone_name": "hunterborman.com" }
   ],
 
+  // docs/WALKTHROUGH.md is bundled into the Worker as a string at build time (served at
+  // /repo/invoca/walkthrough.md behind the gate), never read from disk at runtime.
+  "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": true }],
+
   // run_worker_first: the Worker authorises and strips /repo/invoca before any asset is
   // served. Assets served ahead of the Worker would bypass the gate.
   "assets": {

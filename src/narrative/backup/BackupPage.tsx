@@ -117,12 +117,13 @@ function Gauge({ spent, limit }: { spent: number; limit: number }) {
   );
 }
 
+// Measured shares of AI spend across the 48 recorded runs (data/replays/*.json).
 const STEP_COST = [
-  { k: 'Quick screen', share: 0.12, note: 'a short, cheap check' },
-  { k: 'Finding the feedback', share: 0.71, note: 'the whole redacted transcript in, structured results out' },
-  { k: 'Naming themes', share: 0.07, note: 'only when a new theme forms' },
-  { k: 'Similarity matching', share: 0.02, note: 'close to nothing' },
-  { k: 'Retries and backup model', share: 0.08, note: 'budgeted, not hoped away' },
+  { k: 'Quick screen', share: 0.23, note: 'a short check on every file' },
+  { k: 'Finding the feedback', share: 0.68, note: 'the whole redacted transcript in, structured results out' },
+  { k: 'Naming themes', share: 0.09, note: 'only when a new theme forms' },
+  { k: 'Similarity matching', share: 0, note: 'runs on the hosting platform, not billed per call' },
+  { k: 'Retries and backup model', share: 0, note: 'none needed in the 48 recorded runs; budgeted anyway' },
 ];
 
 function Cost() {
@@ -132,10 +133,10 @@ function Cost() {
     <>
       <div className="bk-stats">
         <Card>
-          {perCall != null && perCall > 0 ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.004} prefix="~$" decimals={3} label="per call (estimate)" tone="accent" note="live figures unavailable right now" />}
+          {perCall != null && perCall > 0 ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.0014} prefix="~$" decimals={4} label="per call (recorded runs)" tone="accent" note="live figures unavailable right now" />}
         </Card>
         <Card>
-          <Stat value={(perCall ?? 0.004) * 1000} prefix="$" decimals={2} label="per 1,000 calls" note="before volume discounts or caching" />
+          <Stat value={(perCall ?? 0.0014) * 1000} prefix="$" decimals={2} label="per 1,000 calls" note="before volume discounts or caching" />
         </Card>
         <Card>
           {d?.p50Ms != null ? <Stat value={d.p50Ms / 1000} decimals={1} suffix=" seconds" label="typical run time" note="all ten steps, end to end" /> : <Stat value={0} label="typical run time" note="not measured yet" />}

@@ -229,6 +229,9 @@ export function WriteUp() {
             </Link>
             <Link to="/app/new" className="n-btn n-btn--ghost">Open the product</Link>
             <Link to="/ops" className="n-btn n-btn--quiet">Agent Ops</Link>
+            <a href={`${import.meta.env.BASE_URL}walkthrough.md`} className="n-link" style={{ alignSelf: 'center', fontSize: 'var(--n-text-sm)' }} data-testid="writeup-markdown">
+              Markdown version for AI assistants
+            </a>
           </footer>
         </article>
       </div>
