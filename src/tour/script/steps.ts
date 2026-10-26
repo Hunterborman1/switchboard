@@ -253,7 +253,7 @@ export const STEPS: Step[] = [
     id: 'patterns.loop', chapter: 'patterns', kind: 'product', route: R.loop, target: ['loop.note', 'loop.shipped', 'loop.inbox'],
     title: 'The CSM hears back, with a note drafted',
     body: 'The moment it ships, the CSM gets the credit and a note for the customer. Drafted, not sent.',
-    more: 'The relationship stays the CSM’s: they edit the note and send it themselves. This is the emotional job from the start: be the advocate, not the stenographer.',
+    more: 'The relationship stays the CSM’s: they edit the note and send it themselves. It serves the emotional job: be the advocate, not the stenographer.',
     waitFor: 'next', next: 'operate.metrics',
     checkpoint: () => ({ value: 1, label: 'loop closed back to the CSM', sub: '0 status-chasing emails' }),
   },

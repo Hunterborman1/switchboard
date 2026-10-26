@@ -73,7 +73,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
   patterns: {
     time: '2:00',
     say: [
-      'One complaint is an anecdote. Read the theme off the Guide: it names the highlighted card with its insight and account counts and ARR. That is a pattern.',
+      'One complaint is an anecdote. Read the theme off the Guide: it names the highlighted card with its insight and account counts. That is a pattern; the next step adds its ARR.',
       'Membership is decided in code, embeddings and a similarity threshold. The model only names it. ARR is counted once per account; the trend and every quote link back to the calls.',
       'Now play the PM: move the ticket to Shipped. The CSM hears back automatically, with credit and a drafted note for the customer. Drafted, not sent. The relationship stays theirs.',
     ],
