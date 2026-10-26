@@ -9,7 +9,9 @@ The full chapter-by-chapter account, with sources, is [docs/WALKTHROUGH.md](../.
 ## Folders
 
 - `script/`: what the presentation says and does.
-  - `chapters.ts`: the 10 chapters in three groups. Their target times add up to 25:00.
+  - `chapters.ts`: the 10 chapters in three groups (`signal`, `jobs`, `built`; `call`, `review`,
+    `routing`, `patterns`, `operate`; `trust`, `future`), and `JUMPS`, the four plain jumps to
+    chapters 2, 3, 9 and 10. Their target times add up to 25:00.
   - `steps.ts`: every step, in order. Branch-only steps are listed in `BRANCH_STEPS`.
   - `copy.ts`: narration built from the viewer's real data, with honest fallbacks.
   - `notes.ts`: speaker notes for the presenter view.
@@ -27,7 +29,7 @@ The full chapter-by-chapter account, with sources, is [docs/WALKTHROUGH.md](../.
   - `nudges.ts`: one "Try it" nudge per product page.
 - `hud/`: the chrome around the scenes. `Hud.tsx` has the chapter rail (1,200 px and wider), the
   chapter menu for narrower screens and the presenter timer. `ChapterList.tsx` is the one chapter
-  list that the rail, the menu and the Guide's picker all render.
+  list that the rail, the menu and the Guide's picker all render; it starts with the four jumps.
 - `anchors.ts`: every element the walkthrough can point at.
 - `api.ts`: a read-only API client. The product owns all writes.
 - `dev/DevHarness.tsx`: a dev-only stand-in product, opened with `?dev=1`.

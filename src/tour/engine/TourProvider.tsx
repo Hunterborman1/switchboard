@@ -562,7 +562,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
       // Scenes move only on explicit presenter controls: → / ← and a clicker's PageDown / PageUp.
       // Space and Enter keep their normal meaning there (scroll, activate the focused control).
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || (!isScene && e.key === 'Enter' && inNarrative && (e.target as HTMLElement).tagName !== 'BUTTON')) {
-        if (cur.kind === 'scene' && cur.id === 'scorecard') return;
+        if (cur.kind === 'scene' && cur.id === 'future.scorecard') return;
         if (next()) e.preventDefault();
         else if (!isScene) document.dispatchEvent(new CustomEvent('sl-tour-nudge'));
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
