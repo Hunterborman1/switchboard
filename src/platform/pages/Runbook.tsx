@@ -1,15 +1,15 @@
 /**
- * /ops/runbook: Signal Loop's runbook (docs/RUNBOOK.md), rendered in Agent Ops so the
- * agent page and every alert link to something real. /ops/runbook/rfp-responder renders the
- * simulated RFP agent's runbook (docs/runbooks/rfp-responder.md) the same way. A deliberately small Markdown subset:
+ * /ops/runbook: Signal Loop's runbook (docs/RUNBOOK.md), rendered in Agent Ops so the agent
+ * page and every alert link to something real. Only the real agent's runbook renders here; the
+ * simulated agent's (docs/runbooks/) stays a repo file. A deliberately small Markdown subset:
  * headings, paragraphs, bullet and numbered lists, tables, **bold**, `code` and links.
  */
 import { useEffect, type ReactNode } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import runbook from '../../../docs/RUNBOOK.md?raw';
-import rfpRunbook from '../../../docs/runbooks/rfp-responder.md?raw';
 import { Card, Page, PageHeader, Table, useCrumbs } from '../../ds';
-import { AgentSourceBadge, useOpsTitle } from '../ui/kit';
+import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
+import { useOpsTitle } from '../ui/kit';
 
 /** "Model fallback" → "model-fallback" (the anchors alerts link to). */
 export const slug = (s: string) =>
@@ -18,24 +18,18 @@ export const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-type RunbookDoc = { md: string; path: string; agentId: string; agentName: string; simulated?: boolean };
-/** Every runbook the app can render, by slug. No runbook link leaves the app. */
-export const RUNBOOKS: Record<string, RunbookDoc> = {
-  'signal-loop': { md: runbook, path: 'docs/RUNBOOK.md', agentId: 'agt_signal_loop', agentName: 'Signal Loop' },
-  'rfp-responder': { md: rfpRunbook, path: 'docs/runbooks/rfp-responder.md', agentId: 'agt_rfp_responder', agentName: 'RFP & Security Questionnaire Responder', simulated: true },
-};
+const PATH = 'docs/RUNBOOK.md';
 
 /**
- * Runbook links in the registry are repo paths; inside the app they open this page.
- * `docs/RUNBOOK.md#x` → /ops/runbook#x; `docs/runbooks/<slug>.md#x` (or an older seeded
- * `…/runbooks/<slug>#x` wiki URL) → /ops/runbook/<slug>#x when that runbook exists.
+ * Runbook links in the registry are repo paths. Signal Loop's (`docs/RUNBOOK.md#x`) opens this
+ * page at /ops/runbook#x; a full web address opens in a new tab. Any other repo path (the
+ * simulated agent's runbook) has nothing to open in the app, so it gets no link at all.
  */
-export function runbookTarget(url: string): { internal: true; to: string } | { internal: false; href: string } {
+export function runbookTarget(url: string): { internal: true; to: string } | { internal: false; href: string } | null {
   const m = /^(?:\.?\/)?docs\/RUNBOOK\.md(#.*)?$/.exec(url) ?? /\/docs\/RUNBOOK\.md(#.*)?$/.exec(url);
   if (m) return { internal: true, to: `/ops/runbook${m[1] ?? ''}` };
-  const r = /(?:^|\/)runbooks\/([a-z0-9-]+)(?:\.md)?\/?(#.*)?$/.exec(url);
-  if (r && RUNBOOKS[r[1]!]) return { internal: true, to: `/ops/runbook/${r[1]}${r[2] ?? ''}` };
-  return { internal: false, href: url };
+  if (/^https?:\/\//.test(url)) return { internal: false, href: url };
+  return null;
 }
 
 function inline(text: string): ReactNode[] {
@@ -148,13 +142,13 @@ function BlockView({ b }: { b: Block }) {
   return <p>{inline(b.lines.join(' '))}</p>;
 }
 
+const DOC = blocks(runbook);
+
 export function Runbook() {
-  const { doc: slugParam } = useParams();
-  const source = RUNBOOKS[slugParam ?? 'signal-loop'] ?? RUNBOOKS['signal-loop']!;
-  const doc = blocks(source.md);
+  const doc = DOC;
   const { hash } = useLocation();
-  useOpsTitle(`${source.agentName} runbook`);
-  useCrumbs([{ label: source.agentName, to: `/ops/agents/${source.agentId}` }, { label: 'Runbook' }], [source.agentId]);
+  useOpsTitle('Signal Loop runbook');
+  useCrumbs([{ label: 'Signal Loop', to: `/ops/agents/${SIGNAL_LOOP_AGENT_ID}` }, { label: 'Runbook' }]);
   useEffect(() => {
     if (!hash) return;
     // After the shell's own scroll reset on navigation.
@@ -163,13 +157,7 @@ export function Runbook() {
   }, [hash]);
   return (
     <Page width="narrow" attrs={{ 'data-testid': 'runbook' }}>
-      <PageHeader title={doc.title} description={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined} meta={
-          <>
-            <span className="ao-mono">{source.path}</span>
-            {source.simulated ? <AgentSourceBadge source="simulated" /> : null}
-          </>
-        }
-      />
+      <PageHeader title={doc.title} description={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined} meta={<span className="ao-mono">{PATH}</span>} />
       {doc.sections.map((s) => (
         <Card key={s.title} id={slug(s.title)} title={s.title}>
           <div className="ao-prose">

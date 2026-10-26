@@ -12,7 +12,7 @@ import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { BarList, ChartLegend, ChartSummary, Heatmap, Lines } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { agentLabel, agentSource, LoadError, OpsSkeleton, RankPerson, SourceBadge, useOpsTitle } from '../ui/kit';
+import { agentOptions, LoadError, OpsSkeleton, RankPerson, SourceBadge, useOpsTitle } from '../ui/kit';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -182,7 +182,7 @@ export function Usage() {
           aria-label="Agent"
           value={agentId}
           onChange={(e) => set('agentId', e.target.value)}
-          options={[{ value: '', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source) }))]}
+          options={agentOptions(reg.data)}
           style={{ width: 260, maxWidth: '100%' }}
         />
       }
@@ -210,8 +210,7 @@ export function Usage() {
     );
   if (!usage.data) return <OpsSkeleton />;
   const d = usage.data;
-  // A simulated agent has no live data, whatever the source filter says.
-  const src = (agentId && agentSource(agentId, reg.data) === 'simulated') || source === 'simulated' ? 'simulated' : source === 'live' ? 'live' : 'mixed';
+  const src = source === 'simulated' ? 'simulated' : source === 'live' ? 'live' : 'mixed';
   const tzName = timezone === 'UTC' ? 'UTC' : 'Pacific time';
   const featureRows = d.features
     .filter((x) => x.kind !== 'session_start')

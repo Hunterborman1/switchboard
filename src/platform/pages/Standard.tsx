@@ -9,7 +9,7 @@ import { IconCheck, IconCheckCircle, IconChevronRight, IconX } from '../../ds/ic
 import type { RegistryRow, ReviewRow, StandardReport } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { agentSource, AgentSourceBadge, AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
+import { agentSource, AgentSourceBadge, AgentStatus, canOpenAgent, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 const TAB_LABEL = { matrix: 'Standard matrix', reviews: 'Review calendar', checklist: 'New agent checklist' } as const;
 
@@ -85,7 +85,7 @@ function Matrix() {
     <>
       <Card
         title="Every agent against every check"
-        description="Select a cell to see its evidence. A gap is a reason to act, not to hide the agent."
+        description="Select a cell to see its evidence; the simulated agent’s row is for comparison. A gap is a reason to act, not to hide the agent."
         flush
         footer={
           <div className="ao-evidence" aria-live="polite">
@@ -102,7 +102,7 @@ function Matrix() {
                 </span>
               </>
             ) : (
-              <span>Select any cell to see its evidence.</span>
+              <span>Select a cell to see its evidence.</span>
             )}
           </div>
         }
@@ -128,13 +128,19 @@ function Matrix() {
             <tbody>
               {matrix.map((m) => {
                 const passed = m.checks.filter((c) => c.passed).length;
+                // The simulated agent is plain text with static cells: nothing in its row opens.
+                const opens = canOpenAgent(m.agentId, reg.data);
                 return (
-                  <tr key={m.agentId} data-agent={m.agentId}>
+                  <tr key={m.agentId} data-agent={m.agentId} data-opens={opens}>
                     <th scope="row" className="ao-matrix__agent">
                       <span className="ao-agent__name">
-                        <Link to={`/ops/agents/${m.agentId}#standard`} className="ds-table__primary">
-                          {m.name}
-                        </Link>
+                        {opens ? (
+                          <Link to={`/ops/agents/${m.agentId}#standard`} className="ds-table__primary">
+                            {m.name}
+                          </Link>
+                        ) : (
+                          <span className="ds-table__primary">{m.name}</span>
+                        )}
                         <AgentSourceBadge source={agentSource(m.agentId, reg.data)} />
                       </span>
                       <span className="ds-table__secondary">{m.owner}</span>
@@ -142,13 +148,22 @@ function Matrix() {
                     {checks.map((c) => {
                       const r = m.checks.find((x) => x.key === c.key);
                       const pressed = sel?.agentId === m.agentId && sel.key === c.key;
+                      const verdict = `${m.name}: ${c.label}: ${r?.passed ? 'passes' : 'gap'}`;
+                      if (!opens)
+                        return (
+                          <td key={c.key} className="ao-matrix__cell">
+                            <span className={`ao-mcell ao-mcell--static${r?.passed ? '' : ' ao-mcell--fail'}`} role="img" aria-label={verdict}>
+                              {r?.passed ? <IconCheck size={14} /> : <IconX size={14} />}
+                            </span>
+                          </td>
+                        );
                       return (
                         <td key={c.key} className="ao-matrix__cell">
                           <button
                             type="button"
                             className={`ao-mcell${r?.passed ? '' : ' ao-mcell--fail'}`}
                             aria-pressed={pressed}
-                            aria-label={`${m.name}: ${c.label}: ${r?.passed ? 'passes' : 'gap'}. Show evidence`}
+                            aria-label={`${verdict}. Show evidence`}
                             onClick={() => setSel(pressed ? null : { agentId: m.agentId, key: c.key })}
                           >
                             {r?.passed ? <IconCheck size={14} /> : <IconX size={14} />}
@@ -170,28 +185,42 @@ function Matrix() {
       <Card title="Open gaps" description="What it would take to close each one." flush>
         {gaps.length ? (
           <ul className="ds-list">
-            {gaps.map((g) => (
-              <li key={`${g.agentId}-${g.key}`}>
-                <Link to={`/ops/agents/${g.agentId}#standard`} className="ds-list__item ao-att">
+            {gaps.map((g) => {
+              const opens = canOpenAgent(g.agentId, reg.data);
+              const body = (
+                <>
                   <span className="ao-att-icon ao-att-icon--warning" aria-hidden="true">
                     <IconX size={14} />
                   </span>
                   <span className="ao-att__text">
                     <span className="ao-att__title">
                       {g.agent}: {g.label.charAt(0).toLowerCase() + g.label.slice(1)}
-                      {agentSource(g.agentId, reg.data) === 'simulated' ? (
+                      {opens ? null : (
                         <>
                           {' '}
                           <AgentSourceBadge source="simulated" />
                         </>
-                      ) : null}
+                      )}
                     </span>
                     <span className="ao-att__detail">{g.evidence}</span>
                   </span>
-                  <IconChevronRight size={14} className="ao-att__go" />
-                </Link>
-              </li>
-            ))}
+                </>
+              );
+              return (
+                <li key={`${g.agentId}-${g.key}`}>
+                  {opens ? (
+                    <Link to={`/ops/agents/${g.agentId}#standard`} className="ds-list__item ao-att">
+                      {body}
+                      <IconChevronRight size={14} className="ao-att__go" />
+                    </Link>
+                  ) : (
+                    <div className="ds-list__item ao-att" data-simulated="true">
+                      {body}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <EmptyState compact icon={<IconCheckCircle />} title="No open gaps" description="Every agent passes every check." />
@@ -242,9 +271,13 @@ function Reviews() {
                 <div className="ao-cal__row" key={row.agentId}>
                   <span className="ds-stack">
                     <span className="ao-agent__name">
-                      <Link to={`/ops/agents/${row.agentId}`} className="ao-cal__name">
-                        {row.name}
-                      </Link>
+                      {canOpenAgent(row.agentId, reg.data) ? (
+                        <Link to={`/ops/agents/${row.agentId}`} className="ao-cal__name">
+                          {row.name}
+                        </Link>
+                      ) : (
+                        <span className="ao-cal__name">{row.name}</span>
+                      )}
                       <AgentSourceBadge source={agentSource(row.agentId, reg.data)} />
                     </span>
                     <span className="ds-table__secondary">
@@ -295,9 +328,13 @@ function Reviews() {
               <tr key={x.agentId}>
                 <td className="ao-agent-col">
                   <span className="ao-agent__name">
-                    <Link to={`/ops/agents/${x.agentId}`} className="ds-table__primary">
-                      {x.name}
-                    </Link>
+                    {canOpenAgent(x.agentId, reg.data) ? (
+                      <Link to={`/ops/agents/${x.agentId}`} className="ds-table__primary">
+                        {x.name}
+                      </Link>
+                    ) : (
+                      <span className="ds-table__primary">{x.name}</span>
+                    )}
                     <AgentSourceBadge source={agentSource(x.agentId, reg.data)} />
                   </span>
                 </td>

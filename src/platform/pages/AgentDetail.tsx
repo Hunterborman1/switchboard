@@ -1,20 +1,21 @@
 /**
  * One agent: what it returns, who owns it and when it is reviewed, what it can touch, how it
- * scores against the standard, its service targets, alerts and change history.
+ * scores against the standard, its service targets, alerts and change history. Only a real
+ * agent has this page; a simulated agent's URL goes back to the registry (see canOpenAgent).
  */
 import { useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Badge, ButtonLink, Callout, Card, CopyText, EmptyState, KeyValue, Page, PageHeader, PersonChip, Section, Stats, useCrumbs } from '../../ds';
 import { IconActivity, IconCalendar, IconCheck, IconExternal, IconFileText, IconLock, IconX } from '../../ds/icons';
 import { rewriteModelIds } from '../../shared/modelLabels';
 import { tourAnchor } from '../../tour/anchors';
 import { useTimezone } from '../../ds/time/TimezoneContext';
-import type { AgentDetail as Detail } from '../../worker/platform/types';
+import type { AgentDetail as Detail, RegistryRow } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { BarList, Bars, ChartSummary } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentSourceBadge, AgentStatus, CLASSIFICATION, LoadError, OpsSkeleton, RankPerson, ReviewBadge, Score, SECURITY_REVIEW, SourceBadge, useOpsTitle, VocabBadge } from '../ui/kit';
+import { AgentSourceBadge, AgentStatus, CLASSIFICATION, isOpenable, LoadError, OpsSkeleton, RankPerson, ReviewBadge, Score, SECURITY_REVIEW, SourceBadge, useOpsTitle, VocabBadge } from '../ui/kit';
 import { AlertList, SloCards } from './Reliability';
 import { RunbookLink } from './RunbookLink';
 
@@ -26,10 +27,15 @@ const KIND_TONE: Record<string, 'neutral' | 'danger' | 'success' | 'info'> = { i
 
 export function AgentDetail() {
   const { id = '' } = useParams();
-  const det = useApi<Detail>(`/agents/${encodeURIComponent(id)}`, { pollMs: 30_000 });
+  const reg = useApi<RegistryRow[]>('/agents');
+  // Known simulated from the registry: redirect without loading its detail. The detail's own
+  // source is the backstop when the registry is not loaded yet.
+  const knownLocked = reg.data?.find((r) => r.id === id)?.source === 'simulated';
+  const det = useApi<Detail>(knownLocked ? null : `/agents/${encodeURIComponent(id)}`, { pollMs: 30_000 });
+  const locked = knownLocked || (!!det.data && !isOpenable(det.data.agent.source));
   const { hash } = useLocation();
   const { timezone } = useTimezone();
-  const name = det.data?.agent.name ?? null;
+  const name = locked ? null : (det.data?.agent.name ?? null);
   useOpsTitle(name ?? 'Agent');
   useCrumbs(name ? [{ label: name }] : null, [name]);
   useEffect(() => {
@@ -37,6 +43,7 @@ export function AgentDetail() {
     document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
   }, [hash, det.data]);
 
+  if (locked) return <Navigate to="/ops/agents" replace />;
   if (det.error && !det.data) {
     return (
       <Page>
@@ -61,7 +68,6 @@ export function AgentDetail() {
   if (!det.data) return <OpsSkeleton />;
   const { agent: a, profile: p, impact: im, slos, alerts, changelog, usage, outcomes, topUsers, reviewStatus } = det.data;
   const passed = a.standard.filter((c) => c.passed).length;
-  const live = a.source === 'live';
   const last = Date.parse(a.lastReview);
   const next = Date.parse(a.nextReview);
   const span = Math.max(1, next - last);
@@ -128,7 +134,7 @@ export function AgentDetail() {
             sub: 'Kept or sent automatically',
             info: <InfoTip label="Accepted">Share of tasks whose output was accepted by a reviewer or delivered automatically.</InfoTip>,
           },
-          { label: 'People', value: f.int(im.activeUsers), sub: live ? 'Simulated users and live viewers' : 'Simulated users' },
+          { label: 'People', value: f.int(im.activeUsers), sub: 'Simulated users and live viewers' },
         ]}
       />
 
@@ -236,7 +242,7 @@ export function AgentDetail() {
       </Card>
 
       <div className="ao-split ao-split--stretch">
-        <Card className="ao-fill" title="Tasks per day" description={`One task is one ${a.unitLabel}.`} actions={<SourceBadge source={live ? 'mixed' : 'simulated'} />}>
+        <Card className="ao-fill" title="Tasks per day" description={`One task is one ${a.unitLabel}.`} actions={<SourceBadge source="mixed" />}>
           <Bars
             data={usage.map((u) => ({ ...u, label: f.day(u.day) }))}
             x="label"
@@ -256,7 +262,7 @@ export function AgentDetail() {
             {f.int(totalTasks)} tasks over {usage.length} days{busiest && busiest.workUnits ? `; the busiest day was ${f.day(busiest.day)} with ${f.int(busiest.workUnits)}` : ''}.
           </ChartSummary>
         </Card>
-        <Card className="ao-fill" title="Outcomes and top users" actions={<SourceBadge source={live ? 'mixed' : 'simulated'} />}>
+        <Card className="ao-fill" title="Outcomes and top users" actions={<SourceBadge source="mixed" />}>
           <h3 className="ao-subhead">What happened to each task</h3>
           <BarList rows={outcomeRows} format={(v) => f.int(v)} label="Task outcomes" />
           <h3 className="ao-subhead" style={{ marginTop: 20 }}>
@@ -296,7 +302,7 @@ export function AgentDetail() {
         <AlertList alerts={alerts} />
       </Card>
 
-      <Card title="Change history" description="Releases, prompt and model changes with their test results, rules, reviews, access changes and incidents." actions={<SourceBadge source={live ? 'mixed' : 'simulated'} />} flush>
+      <Card title="Change history" description="Releases, prompt and model changes with their test results, rules, reviews, access changes and incidents." actions={<SourceBadge source="mixed" />} flush>
         {changelog.length ? (
           <ol className="ao-history">
             {changelog.map((c) => (
@@ -321,13 +327,9 @@ export function AgentDetail() {
         )}
       </Card>
 
-      {live ? (
-        <Callout tone="success" title="This is the real agent.">
-          Signal Loop (in Switchboard) runs in this demo. Its runs, AI calls and deliveries report here live; the six weeks before today are simulated history.
-        </Callout>
-      ) : (
-        <Callout title="Simulated agent.">This agent, its users and its activity are simulated, to show how an agent built in another tool sits in the same registry under the same standard.</Callout>
-      )}
+      <Callout tone="success" title="This is the real agent.">
+        Signal Loop (in Switchboard) runs in this demo. Its runs, AI calls and deliveries report here live; the six weeks before today are simulated history.
+      </Callout>
     </Page>
   );
 }

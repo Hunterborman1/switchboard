@@ -2,9 +2,10 @@ import { ButtonLink } from '../../ds';
 import { IconBook, IconExternal } from '../../ds/icons';
 import { runbookTarget } from './Runbook';
 
-/** Runbook button: repo runbooks open the in-app /ops/runbook page; anything else opens in a new tab. */
+/** Runbook button: the repo runbook opens the in-app /ops/runbook page; a web address opens in a new tab; anything else has no button. */
 export function RunbookLink({ url }: { url: string }) {
   const t = runbookTarget(url);
+  if (!t) return null;
   return t.internal ? (
     <ButtonLink size="sm" to={t.to} icon={<IconBook size={14} />}>
       Runbook

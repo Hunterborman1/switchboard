@@ -11,7 +11,7 @@ import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { ChartLegend, ChartSummary, Lines } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentCell, agentLabel, LoadError, ModelName, OpsSkeleton, SortHead, SourceBadge, SpendMeter, useOpsTitle, useSorted } from '../ui/kit';
+import { AgentCell, agentLabel, isOpenable, LoadError, ModelName, OpsSkeleton, SortHead, SourceBadge, SpendMeter, useOpsTitle, useSorted } from '../ui/kit';
 
 export function Cost() {
   useOpsTitle('Cost');
@@ -167,12 +167,18 @@ function AgentCostTable({ d, colors }: { d: CostReport; colors: Record<string, s
         <tbody>
           {sorted.map((r, i) => {
             const over = r.costPerUnitUsd != null && r.costPerUnitUsd > r.targetPerUnitUsd;
+            const cell = <AgentCell color={colors[r.agentId] ?? f.seriesColor(null, i)} primary={r.name} secondary={`${r.builtWith}, per ${r.unitLabel}`} source={r.source} />;
             return (
-              <tr key={r.agentId}>
+              <tr key={r.agentId} data-agent={r.agentId}>
                 <td className="ao-agent-col">
-                  <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link">
-                    <AgentCell color={colors[r.agentId] ?? f.seriesColor(null, i)} primary={r.name} secondary={`${r.builtWith}, per ${r.unitLabel}`} source={r.source} />
-                  </Link>
+                  {/* A simulated agent has nothing to open: its name is plain text (see canOpenAgent). */}
+                  {isOpenable(r.source) ? (
+                    <Link to={`/ops/agents/${r.agentId}`} className="ds-table__link">
+                      {cell}
+                    </Link>
+                  ) : (
+                    cell
+                  )}
                 </td>
                 <td className="is-num ao-hide-sm">{f.int(r.workUnits)}</td>
                 <td className="is-num">{f.money(r.costUsd)}</td>
