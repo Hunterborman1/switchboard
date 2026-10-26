@@ -1,12 +1,13 @@
 /**
  * The one chapter list: the scene rail, the narrow chapter menu and the Guide's chapter picker
- * all render this, so the order, numbering and labels can never drift apart. Every chapter is
- * numbered in one sequence; the current one is marked, earlier ones are ticked, and each is a
- * button that jumps there.
+ * all render this, so the order, numbering and labels can never drift apart. It opens with four
+ * plain jumps, one per part of the brief, then every chapter in one sequence; the current one is
+ * marked, earlier ones are ticked, and each is a button that jumps there.
  */
 import { IconCheck } from '../../ds/icons';
-import { CHAPTERS, GROUPS, chapterById, fmtTarget } from '../script/chapters';
+import { CHAPTERS, GROUPS, JUMPS, chapterById, fmtTarget } from '../script/chapters';
 import type { ChapterId } from '../engine/types';
+import './hud.css';
 
 export function ChapterList({
   current,
@@ -25,6 +26,21 @@ export function ChapterList({
   const cur = current ? CHAPTERS.findIndex((c) => c.id === current) : -1;
   return (
     <nav className={`t-chapters${dense ? ' t-chapters--dense' : ''}`} aria-label={label}>
+      <ul className="t-jumps" data-testid="chapter-jumps">
+        {JUMPS.map((j) => {
+          const c = chapterById(j.chapter);
+          return (
+            <li key={j.chapter}>
+              <button type="button" className="t-jumps__item" data-chapter={j.chapter} onClick={() => onPick(j.chapter)} aria-label={`${j.label}: chapter ${c.part}`}>
+                <span className="t-jumps__label">{j.label}</span>
+                <span className="t-jumps__to" aria-hidden="true">
+                  {c.part}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
       {GROUPS.map((g) => (
         <div key={g.label} className="t-chapters__group">
           <span className="t-chapters__glabel">{g.label}</span>

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Badge, Button, ButtonLink, Kbd } from '../../ds';
 import { IconArrowLeft, IconArrowRight, IconExternal } from '../../ds/icons';
 import { SiteBar } from '../../narrative/components';
-import { BACKUPS, CHAPTERS, GROUPS, TOTAL_TARGET_SEC, chapterById, chapterLabel, targetOffsetSec } from '../../tour/script/chapters';
+import { BACKUPS, CHAPTERS, GROUPS, JUMPS, TOTAL_TARGET_SEC, chapterById, chapterLabel, targetOffsetSec } from '../../tour/script/chapters';
 import { STEP_BY_ID, firstStepOf } from '../../tour/script/steps';
 import { NOTES, STEP_NOTES } from '../../tour/script/notes';
 import { PRESENTER_CHANNEL, resolveCopy } from '../../tour/engine/TourProvider';
@@ -207,6 +207,22 @@ export function Presenter() {
 
         <aside className="pv__side" aria-label="Jump to">
           <nav className="pv__jump" aria-label="Jump list">
+            <div className="pv__group" data-testid="pv-jumps">
+              <ol>
+                {JUMPS.map((j) => {
+                  const c = chapterById(j.chapter);
+                  return (
+                    <li key={j.chapter}>
+                      <button type="button" onClick={() => send({ type: 'goto', stepId: firstStepOf(j.chapter) })}>
+                        <span className="pv__num">{c.part}</span>
+                        <span className="pv__jtitle">{j.label}</span>
+                        <span />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
             {GROUPS.map((g) => (
               <div key={g.label} className="pv__group">
                 <span className="pv__glabel">{g.label}</span>
