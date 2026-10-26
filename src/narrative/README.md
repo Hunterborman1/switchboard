@@ -55,4 +55,14 @@ bars at 1440×900.
 | Production | 9 · Making it real | three sections side by side: roll it out (phases, the hours assumption, operating it), grow it (six milestones, what doesn't change), run it (the production stack, today's piece under each) |
 | Scorecard | 10 · Scorecard | real numbers from the viewer's workspace and Agent Ops |
 
-The Q&A is part of the write-up (`/write-up#cost`, `#security`, …; prose in `src/shared/writeup/content.ts`). `/backup/:topic` redirects to its section, so the presenter view and old links still work.
+The write-up and the Q&A are read-through pages in `src/web/pages/writeup/`, with all prose as data in
+`src/shared/writeup/` (which also renders each page's Markdown):
+
+- `/write-up`: short answers on process design, the build, rollout and trust and the next 12–18
+  months, the "For AI assistants" block, then the ten chapters and the Q&A topics.
+- `/write-up/:chapter`: one page per chapter (`chapters.ts`), with a contents column, previous and
+  next, "Open in the presentation" (`/walkthrough/<chapter>`) and links to its Markdown and the .zip.
+- `/backup` and `/backup/:topic`: one page per Q&A topic (`questions.ts`, topics as `BACKUPS` in
+  `src/tour/script/chapters.ts`): a tab strip of topic links, then the cards. The cost page reads
+  its figures live. Nothing needs a click to be read. The presenter view's Q&A buttons open these
+  pages, and old `/write-up#<topic>` links land on them.

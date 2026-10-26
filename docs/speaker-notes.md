@@ -178,7 +178,7 @@ On one live Brightline run (an example, not a benchmark): triage 1.55 s, extract
 ## Likely questions
 
 **1. What does it cost per call, and at Invoca's volume?**
-The cost answer in the write-up's Q&A (`/write-up#cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00141 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
+The cost answer in the write-up's Q&A (`/backup/cost`) shows the measured per-call cost from the ledger: about a seventh of a cent per call (mean $0.00141 over the 48 recorded runs; extraction about 68%, screening 23%, theme naming 9%). At 3,000 calls a month that's around $4. That's noise next to the CSM time it returns. The real costs are review time, hosting and seats, which is why the gate exists.
 
 **2. How do you stop it hallucinating?**
 I don't trust the model to police itself. Every insight needs a verbatim quote, and grounding is code: exact, normalised, then a fuzzy window at 0.90. If a quote isn't in the transcript, the insight is dropped and counted. On the promoted prompt every eval quote grounded, 275 of 275, so grounding is the seatbelt. The bigger lesson is v5: 99.4% of its quotes grounded and its precision still fell to 59.7%. Grounding proves the words were said, not that they're feedback.
@@ -190,7 +190,7 @@ Redaction runs before any model call, with reversible tokens. The original never
 Transcript text is wrapped as data, the model can only return a fixed schema and has no tools, so a planted instruction has nothing to act on. It's flagged at triage (the decision model's flag, OR-ed with a code check over the full text) and audited, and everything from that file goes to a person. The injection file in the library shows it.
 
 **5. Why build instead of buy Gong, Productboard or Enterpret?**
-Each is good at something. None owns Invoca's taxonomy, routing rules and loop-closing back to CSMs, and that's the hard part. I'd prove the workflow thin, not build a recorder, and expect the long-term home to be Signal AI and Invoca's existing conversation data. `/write-up#build-vs-buy` has the fair comparison.
+Each is good at something. None owns Invoca's taxonomy, routing rules and loop-closing back to CSMs, and that's the hard part. I'd prove the workflow thin, not build a recorder, and expect the long-term home to be Signal AI and Invoca's existing conversation data. `/backup/build-vs-buy` has the fair comparison.
 
 **6. How would you get CSMs to adopt it?**
 Make it make them look good. Shadow mode first so there's no risk, champions who calibrate it weekly, a one-click "this is wrong", precision published weekly, and credit when their feedback ships. Then measure weekly active reviewers from usage events, not a survey.
@@ -235,7 +235,7 @@ A small, fast model from a different family reads every input first: 0.9 s media
 No, and the product says so. Connecting one records a workspace connection with a simulated account; deliveries render as in-app previews with receipts, tagged with each person's handle from the people directory. In production they'd be the real APIs, switched on one destination at a time.
 
 **20. What would you do differently?**
-Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/write-up#differently` has the full list.
+Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/backup/differently` has the full list.
 
 **21. It ran too fast. Is it real?**
 Yes, and the conversation page shows why. The clock runs from the run's real start; steps appear as the server reports them, with no slowed-down animation. The Timing card draws every step from its real start and finish: triage on the decision model and extraction on the main model start together on the same redacted text, and the quote check, scoring, routing and delivery are code that takes milliseconds. On one live Brightline run that was 1.55 s of triage alongside 4.94 s of extraction, 6.09 s end to end, $0.0034 of AI. "See every call in Agent Ops" opens the trace with every model call, its tokens and cost. A replay says it's a replay, and that the recording is re-timed to today's step order.

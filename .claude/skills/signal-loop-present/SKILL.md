@@ -69,9 +69,9 @@ If a panelist picks another file in chapter 4, name the branch before pressing P
 ## Fallbacks
 
 - **Replay mode:** automatic when live AI is off, over budget, or a featured run is not finished within 25 s (`src/shared/scoring.ts` → `LIVE_FALLBACK_AFTER_MS`). The clock and the Timing card say "Replay"; say so too.
-- **Q&A:** sections of the write-up, `/repo/invoca/write-up#<topic>` for `cost`, `security`, `failure`, `build-vs-buy`, `metrics`, `agent-ops`, `differently` (the presenter view's Q&A buttons jump there).
+- **Q&A:** one page per topic, `/repo/invoca/backup/<topic>` for `cost`, `security`, `failure`, `build-vs-buy`, `metrics`, `agent-ops`, `differently` (the presenter view's Q&A buttons open them).
 - **Jump anywhere:** the chapter rail on scenes (or the top bar's menu, or Esc, on narrower screens); the Guide's chapter title on product pages; or deep-link `?tour=<stepId>` (step ids in `src/tour/script/steps.ts`).
-- **Write-up:** `/repo/invoca/write-up` covers the four pillars and the Q&A on one page, including the jobs to be done. For AI assistants it offers its Markdown, a .zip of every doc and the MCP connection.
+- **Write-up:** `/repo/invoca/write-up` opens with short answers on process design, the build, rollout and trust and the next 12–18 months, then links one page per chapter (`/write-up/<chapter>`) and the Q&A. Every page has its Markdown at its URL plus `.md`; the index also offers a .zip of every page and doc, and the MCP connection.
 - **Demo video:** the plan calls for a backup recording (`docs/PLAN.md` → Handoff package). It is not in the repo; confirm Hunter has it locally before relying on it.
 
 ## Recovery if something breaks live
@@ -84,7 +84,7 @@ If a panelist picks another file in chapter 4, name the branch before pressing P
 | The viewer wandered off | "Resume presentation" in the Guide goes back to the same step; "Explore on your own" is safe to press any time. |
 | The Guide takes too much room | Minimize it (the dash in its top row); it folds to a one-line strip that still shows the next action. On phones, fold the sheet with its chevron. |
 | "Live AI budget reached" | Expected at the cap. Say "past the cap it replays, never an outage" and continue. |
-| Agent Ops panel empty | Go to `/write-up#agent-ops` and describe the registry and standard. |
+| Agent Ops panel empty | Go to `/backup/agent-ops` and describe the registry and standard. |
 | Presenter view says "Waiting…" | Reopen `/presenter` in the same profile as the main window; present from `notes.ts` lines if needed. |
 | Signed out or link expired | Hunter signs in with the password himself, off the shared screen. |
 | Site down | Use the write-up page or `docs/WALKTHROUGH.md` locally, and the demo video if it exists. Do not redeploy during the session. |
