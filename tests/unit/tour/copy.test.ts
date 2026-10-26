@@ -71,15 +71,15 @@ describe('narration matches what is shown', () => {
 
   it('call.watch says replay when the run is a replay', () => {
     const run = { run: { mode: 'replay', status: 'running' } } as unknown as RunDetail;
-    expect(introCopy(base({ run }))).toMatch(/recorded real execution, replayed at its recorded speed/);
-    expect(introCopy(base())).toMatch(/real execution, not an animation/);
+    expect(introCopy(base({ run }))).toMatch(/recording of a real run, played back at its recorded speed/);
+    expect(introCopy(base())).toMatch(/real run, not an animation/);
   });
 
-  it('call.watch says earlier run, never "real execution", when an earlier run was reopened', () => {
+  it('call.watch says earlier run, never "real run", when an earlier run was reopened', () => {
     const run = { run: { mode: 'live', status: 'completed' } } as unknown as RunDetail;
     const copy = introCopy(base({ run, runReused: true }));
     expect(copy).toMatch(/earlier run/);
-    expect(copy).not.toMatch(/real execution/);
+    expect(copy).not.toMatch(/real run/);
   });
 
   it('call.watch title states the run as it is: live and running, or done with its real time', () => {

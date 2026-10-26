@@ -15,10 +15,10 @@ import { usdPrecise } from '../../shared/format';
 import { Check, Enter, SceneHead, Stat } from '../components';
 
 const PHASES = [
-  { wk: 'Week 0', name: 'Discovery', line: 'Shadow two CSMs; a two-week time study.' },
-  { wk: 'Weeks 1–2', name: 'Shadow mode', line: 'Runs on real calls; nothing is sent.' },
+  { wk: 'Week 0', name: 'Discovery', line: 'A two-week time study with two CSMs.' },
+  { wk: 'Weeks 1–2', name: 'Shadow mode', line: 'Runs on real calls. Nothing is sent.' },
   { wk: 'Weeks 3–6', name: 'Champions', line: 'Two or three CSMs and a PM tune it.' },
-  { wk: 'Week 7+', name: 'Whole team', line: 'High stakes stay reviewed; the rest routes.' },
+  { wk: 'Week 7+', name: 'Whole team', line: 'High stakes stay reviewed. The rest routes.' },
 ];
 
 // Months 0–3 are the rollout's own phases, so nothing promises "every call" before shadow mode
@@ -41,7 +41,7 @@ const STACK = [
   { job: 'Long-running jobs', prod: 'Trigger.dev', poc: 'Cloudflare Workflows' },
   { job: 'Data and search', prod: 'Neon Postgres, pgvector', poc: 'Cloudflare D1 and Vectorize' },
   { job: 'Reporting at scale', prod: 'ClickHouse with dbt', poc: 'daily summaries in D1' },
-  { job: 'Conversations in', prod: 'dlt from Gong, Zoom, CRMs', poc: 'any file; connectors simulated' },
+  { job: 'Conversations in', prod: 'dlt from Gong, Zoom, CRMs', poc: 'any file, connectors simulated' },
   { job: 'Results out', prod: 'Slack, Jira, Salesforce APIs', poc: 'in-app previews (simulated)' },
   { job: 'Live transcription', prod: 'Streaming on Render', poc: 'not needed yet' },
 ];
@@ -111,7 +111,7 @@ export function Production() {
             </Callout>
           </div>
           <p className="sc-prod__operate">
-            <b>Then operate it.</b> Adoption from usage events, not surveys. Every agent gets an owner, a review date and the nine-check standard.
+            <b>Then operate it.</b> Adoption from usage, not surveys. Every agent gets an owner, a review date and the nine-check standard.
           </p>
         </Section>
 
@@ -148,7 +148,7 @@ export function Production() {
             </li>
             <li>
               <Check />
-              <span>Providers bill directly; keys stay on the server</span>
+              <span>Providers bill directly. Keys stay on the server.</span>
             </li>
           </ul>
         </Section>

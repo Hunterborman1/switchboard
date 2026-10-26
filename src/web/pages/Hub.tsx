@@ -67,7 +67,7 @@ export function Hub() {
           <p className="hub__kicker">Built from scratch in 48 hours by Hunter Borman</p>
           <h1 className="n-display hub__title">Every call is a signal.</h1>
           <p className="n-lede hub__lede">
-            Switchboard reads any customer conversation, from a recorded call to an email thread or a PDF, works out what it is, and sends what matters to the right people in the tools they already use. Signal Loop is the analysis built for option 3 of the AI Operations Lead brief, the feedback loop: product feedback, proved with the customer’s own words, sent to its owner.
+            Switchboard reads any customer conversation, from a call to an email or a PDF. It works out what it is and sends what matters to the right people, in the tools they already use. Signal Loop is what I built for option 3 of the AI Operations Lead brief, the feedback loop. It finds product feedback, backs it with the customer’s words and sends it to its owner.
           </p>
         </motion.section>
 
@@ -89,7 +89,7 @@ export function Hub() {
                 primary
                 icon={<IconPlay size={18} />}
                 title="Start the presentation"
-                body={`${CHAPTERS.length} chapters: three to set up the problem, five in the real product with a guide along the bottom you can leave and resume, and two to close.`}
+                body={`${CHAPTERS.length} chapters: three on the problem, five in the real product and two to close. Leave the guide and come back any time.`}
                 meta={`About ${Math.round(TOTAL_TARGET_SEC / 60)} minutes`}
                 cta="Start"
               />

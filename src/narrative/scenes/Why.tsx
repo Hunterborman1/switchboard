@@ -15,14 +15,14 @@ const OPTIONS: Option[] = [
     n: 1,
     name: 'RFP Responder',
     what: 'An agent drafts answers to a PDF security questionnaire from internal docs.',
-    verdict: 'Mature products already do this (Loopio, Responsive, Vanta, Conveyor), so the first question is why not buy one. And a wrong answer on a security questionnaire is a compliance risk.',
+    verdict: 'Mature products like Loopio, Responsive, Vanta and Conveyor already do this. So the first question is why not buy one. And a wrong answer on a security questionnaire is a compliance risk.',
     later: 'Simulated in Agent Ops as a second agent.',
   },
   {
     n: 2,
     name: 'Churn Predictor',
     what: 'A weekly watchdog over Zendesk, Salesforce and usage data that warns leadership before a cancellation.',
-    verdict: 'It needs believable data faked from three systems, and a prediction is hard to defend without real outcomes to check it against.',
+    verdict: 'It needs believable fake data from three systems. And a prediction is hard to defend without real outcomes to check it against.',
     later: 'On the roadmap as the Renewal risk analysis.',
   },
   {
@@ -30,7 +30,7 @@ const OPTIONS: Option[] = [
     name: 'Feedback Loop',
     what: 'Read call transcripts and notes, extract structured insights, and route each to the right person.',
     chosen: true,
-    verdict: 'It’s the work Invoca’s own product does, pointed at Invoca’s own CSM calls. And it shows all four pillars: several people with different jobs, real engineering, an easy additive pitch (stop retyping it into Jira) and a clear future.',
+    verdict: 'It’s the work Invoca’s own product does, pointed at Invoca’s own CSM calls. And it shows all four pillars: several people with different jobs, real engineering, an easy pitch (stop retyping calls into Jira) and a clear future.',
     later: 'Built: Signal Loop, inside Switchboard.',
   },
 ];
@@ -38,15 +38,15 @@ const OPTIONS: Option[] = [
 const BUILD = [
   {
     k: 'Raw TypeScript, not n8n, Gumloop or Zapier',
-    v: 'The trust features need code: quotes checked against the transcript, a typed schema validated on every model output, deterministic routing rules, an eval suite with a promotion gate, budgets and replay, and tests.',
+    v: 'The trust features need code: quotes checked against the transcript, every model answer checked against a fixed format, fixed routing rules, evals with a promotion gate, budgets and replay, and tests.',
   },
   {
     k: 'Three model roles, chosen by measurement',
-    v: 'A decision model triages every input and gives a second opinion, a main model extracts, and a backup model takes over if it fails. All on OpenRouter; the decision model was the fastest of 12 candidates with every answer valid and every verdict right.',
+    v: 'A decision model reads every input first and gives a second opinion. A main model extracts, and a backup takes over if it fails. All run on OpenRouter. The decision model was the fastest of 12 tested with every answer valid and every verdict right.',
   },
   {
     k: 'One Cloudflare Worker for the proof of concept',
-    v: 'Fast to ship, one deploy, behind a gate. The production design keeps the same boundaries on Neon, Vercel and Trigger.dev, in chapter 9.',
+    v: 'Fast to ship, one deploy, behind a password. The production design keeps the same parts on Neon, Vercel and Trigger.dev. More in chapter 9.',
   },
 ];
 

@@ -207,7 +207,7 @@ export function ScorecardScene() {
           >
             <h2 className="sc-score__h">You haven’t run a call yet</h2>
             <p className="n-body">
-              Chapter 4, A call comes in, brings in a recorded customer call and runs it through Signal Loop. It takes about a minute. Come back here afterwards to see the insights it found, what it held back,
+              Chapter 4, A call comes in, runs a recorded customer call through Signal Loop. It takes about a minute. Then come back to see what it found, what it held back,
               what the AI cost and the trail it left in Agent Ops.
             </p>
             <div className="sc-score__actions">
