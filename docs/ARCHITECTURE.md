@@ -92,6 +92,10 @@ Signal Loop is one analysis inside Switchboard (`src/shared/platform.ts`). Conne
   - Agent Ops telemetry flushes in the background.
 - **Replays** reveal recorded runs at the same pace (`fastPathTiming` in `src/pipeline/replay.ts`). The Run view still reveals one step at a time with a minimum dwell (`useReveal`), so a fast run stays watchable.
 
+## MCP
+
+`/repo/invoca/mcp` is a remote MCP server (`src/worker/mcp/`), routed before the cookie gate because it has its own auth: a bearer token from `POST /api/mcp/token`, HMAC-signed, scoped to one workspace, 7 days at most and never past the viewer's own access, revocable by `jti`. Streamable HTTP, stateless JSON replies. Tools call the JSON API in-process as that workspace, so validation, budgets, rate limits, audit rows and telemetry (`via: mcp`) are unchanged. Docs ship inside the Worker as text modules. See [MCP.md](MCP.md).
+
 ## Observability
 
 Signal Loop reports into Agent Ops only through `src/worker/platform/sdk.ts`. Each run gets one trace (`traceId = runId`) with a span per step, AI call and delivery. It also emits these logs:

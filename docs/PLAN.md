@@ -1,3 +1,7 @@
+> **Historical.** The plan written before the build (v2, with the v3 Agent Ops addendum). The code and
+> [README](../README.md) are the source of truth where they differ; this file is kept because the
+> walkthrough cites its reasoning.
+
 # Signal Loop: build plan (v2)
 
 Invoca take-home, final round for AI Operations Lead. **Option 3: the "Feedback Loop" Architect.**

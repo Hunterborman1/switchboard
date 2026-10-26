@@ -1,7 +1,7 @@
 {
-  "name": "invoca-signal-loop",
+  "name": "switchboard",
   "version": "1.0.0",
-  "description": "Signal Loop: CSM conversations to routed, evidence-backed product insight. Invoca take-home.",
+  "description": "Switchboard: any conversation in, the right people out. Signal Loop (product feedback) and Agent Ops. Invoca AI Operations Lead take-home.",
   "directories": {
     "doc": "docs"
   },
@@ -61,5 +61,8 @@
     "vitest": "^5.0.5",
     "wrangler": "^4.152.0"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  }
 }

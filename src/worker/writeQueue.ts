@@ -1,19 +1,18 @@
 /**
- * An ordered, coalescing D1 write queue for one run. Pipeline steps push statements and keep
- * going; the queue sends whatever has accumulated as one `db.batch()` (one round trip, one
- * transaction) while the next step computes. Order is preserved: statements go out in push
- * order, one batch at a time. That removes the per-statement round trips that used to sit
- * between steps.
+ * An ordered, coalescing D1 write queue for one run. Pipeline steps push statements and keep going;
+ * the queue sends whatever has accumulated as one `db.batch()` (one round trip, one transaction)
+ * while the next step computes. Order is preserved: statements go out in push order, one batch at a
+ * time. That removes per-statement round trips between steps.
  *
- * Liveness (guardLive): every batch starts with a guard statement that fails unless the run
- * is still live, inside the same transaction as the writes. A batch for a run a replay has
- * taken over therefore commits nothing (no check-then-write race, no extra round trip). On a
- * failed batch the queue reads the run's mode once: not live → pending writes are dropped and
- * `superseded` flips, which the pipeline's step wrapper turns into RunSuperseded at the next
- * step boundary. The spend ledger (ai_calls) never goes through this queue: see deps.ts Ledger.
+ * Liveness (guardLive): every batch starts with a guard statement that fails unless the run is
+ * still live, inside the same transaction as the writes. A batch for a run a replay has taken over
+ * therefore commits nothing (no check-then-write race, no extra round trip). On a failed batch the
+ * queue reads the run's mode once: not live → pending writes are dropped and `superseded` flips,
+ * which the pipeline's step wrapper turns into RunSuperseded at the next step boundary. The spend
+ * ledger (ai_calls) never goes through this queue: see deps.ts Ledger.
  *
- * Durability: callers `drain()` where a write must be committed before moving on (end of a
- * Workflow step, before the final run patch).
+ * Durability: callers `drain()` where a write must be committed before moving on (end of a Workflow
+ * step, before the final run patch).
  */
 /**
  * A statement that errors (aborting its batch transaction) unless the run is live: json() of a
