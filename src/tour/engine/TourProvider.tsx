@@ -90,7 +90,9 @@ function initial(): Persisted {
     };
   }
   if (!STEP_BY_ID[base.stepId]) return freshPersisted(FIRST_STEP);
-  return base;
+  // Loading the hub, the write-up or a Q&A page leaves the presentation, instead of pulling the viewer back into it.
+  const inTour = /^\/(walkthrough|app|ops)(\/|$)/.test(stripBase(window.location.pathname));
+  return base.status === 'active' && !inTour ? { ...base, status: 'explore' } : base;
 }
 
 /** The previous main-path step for a scene with no history (deep link), or null. */

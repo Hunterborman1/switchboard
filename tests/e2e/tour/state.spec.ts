@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { currentStep, expectGuideOn, expectStep, go, guide } from './helpers';
+import { BASE, currentStep, expectGuideOn, expectStep, go, guide } from './helpers';
 
 const wide = (page: import('@playwright/test').Page) => (page.viewportSize()?.width ?? 0) >= 1200;
 const phone = (page: import('@playwright/test').Page) => (page.viewportSize()?.width ?? 0) <= 900;
@@ -162,6 +162,18 @@ test.describe('presentation state, exits and the Guide', () => {
     await go(page, '/app/review?tour=review.approve');
     await expectGuideOn(page, 'review.approve');
     expect(await guide(page).evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  });
+
+  test('opening the write-up mid-presentation leaves the presentation, and Resume is still there', async ({ page }) => {
+    await go(page, '/walkthrough/jobs');
+    await expectStep(page, 'jobs');
+    await page.goto(`${BASE}/write-up`);
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+    await page.waitForTimeout(800);
+    expect(new URL(page.url()).pathname).toBe(`${BASE}/write-up`);
+    await page.goto(`${BASE}/backup/cost`);
+    await page.waitForTimeout(800);
+    expect(new URL(page.url()).pathname).toBe(`${BASE}/backup/cost`);
   });
 
   test('a deep-linked scene can still go back', async ({ page }) => {
