@@ -38,15 +38,15 @@ export const STEPS: Step[] = [
   // ============================================================ introduction
   {
     id: 'signal', chapter: 'signal', kind: 'scene', scene: 'signal', route: R.scene('signal'),
-    title: 'Every call is a signal.', body: 'One sentence in a 13-minute QBR belongs on the roadmap. Most feedback like it never reaches an owner.', next: 'real',
+    title: 'Every call is a signal.', body: 'One sentence in a 13-minute QBR belongs on the roadmap. Most feedback like it never reaches an owner.', next: 'jobs',
   },
   {
-    id: 'real', chapter: 'real', kind: 'scene', scene: 'real', route: R.scene('real'),
-    title: 'Built from scratch in 48 hours. Here’s what’s real.', body: 'All of the AI is built and works. The connections and the data are simulated, and labelled that way.', next: 'why',
+    id: 'jobs', chapter: 'jobs', kind: 'scene', scene: 'jobs', route: R.scene('jobs'),
+    title: 'Four people, four jobs.', body: 'Who needs this, and what for. Then how the work goes today, and how it goes with Signal Loop.', next: 'built',
   },
   {
-    id: 'why', chapter: 'why', kind: 'scene', scene: 'why', route: R.scene('why'),
-    title: 'Three options. I chose the feedback loop.', body: 'Option 3 points Invoca’s product at its own calls. Built in code, with three tested models on one Cloudflare Worker.', next: 'call.platform',
+    id: 'built', chapter: 'built', kind: 'scene', scene: 'built', route: R.scene('built'),
+    title: 'What I built, and why.', body: 'Built in 48 hours: what’s real and what’s simulated, why I chose the feedback loop, and how it’s built.', next: 'call.platform',
   },
 
   // ============================================================ the platform
@@ -254,11 +254,17 @@ export const STEPS: Step[] = [
     title: 'The CSM hears back, with a note drafted',
     body: 'The moment it ships, the CSM gets the credit and a note for the customer. Drafted, not sent.',
     more: 'The relationship stays with the CSM. They edit the note and send it themselves. It lets them be the customer’s advocate, not the note-taker.',
-    waitFor: 'next', next: 'operate.metrics',
+    waitFor: 'next', next: 'operate.hood',
     checkpoint: () => ({ value: 1, label: 'loop closed back to the CSM', sub: '0 status-chasing emails' }),
   },
 
-  // ============================================================ operate · prove it
+  // ============================================================ operate · under the hood
+  {
+    id: 'operate.hood', chapter: 'operate', kind: 'scene', scene: 'hood', route: R.scene('operate'),
+    title: 'Under the hood.', body: 'How the prompts work, what happens when something fails, and how the data is shaped.', next: 'operate.metrics',
+  },
+
+  // ------------------------------------------------------------ operate · prove it
   {
     id: 'operate.metrics', chapter: 'operate', kind: 'product', route: R.evals, target: 'evals.metrics',
     title: 'Measured, not vibes',
@@ -295,7 +301,7 @@ export const STEPS: Step[] = [
     target: 'ops.trace.waterfall', anchorTimeoutMs: 4000,
     title: 'Your run, every call', body: opsTraceCopy,
     more: 'Each run gets one trace, with a timed bar for every step, model call and delivery. They’re the same timings the conversation page showed. Logs, usage, cost, service targets and the nine-check agent standard are one click away.',
-    waitFor: 'next', next: 'production',
+    waitFor: 'next', next: 'trust',
     checkpoint: (ctx) => {
       const sl = ctx.ops?.overview?.agents.find((a) => a.agentId === SIGNAL_LOOP_AGENT_ID);
       return sl ? { value: Math.round(sl.hoursReturned), label: 'hours returned by Signal Loop', sub: 'baselines are labelled assumptions' } : null;
@@ -304,12 +310,16 @@ export const STEPS: Step[] = [
 
   // ============================================================ closing
   {
-    id: 'production', chapter: 'production', kind: 'scene', scene: 'production', route: R.scene('production'),
-    title: 'Making it real', body: 'Earn trust one phase at a time. Grow on the same platform. Run the same design on production tools.', next: 'scorecard',
+    id: 'trust', chapter: 'trust', kind: 'scene', scene: 'trust', route: R.scene('trust'),
+    title: 'Earning trust.', body: 'Roll it out in steps, stay helpful to the CSM, and give people reasons to trust it.', next: 'future',
   },
   {
-    id: 'scorecard', chapter: 'scorecard', kind: 'scene', scene: 'scorecard', route: R.scene('scorecard'),
-    title: 'Scorecard', body: 'What you did, what the system did.', next: 'scorecard',
+    id: 'future', chapter: 'future', kind: 'scene', scene: 'future', route: R.scene('future'),
+    title: 'The next 12 to 18 months.', body: 'What comes next, what more agents and cheaper models change, and the path to production.', next: 'future.scorecard',
+  },
+  {
+    id: 'future.scorecard', chapter: 'future', kind: 'scene', scene: 'scorecard', route: R.scene('future'),
+    title: 'Your scorecard', body: 'What you did, and what the system did.', next: 'future.scorecard',
   },
 ];
 
