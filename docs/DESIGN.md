@@ -100,9 +100,12 @@ quote in body text, a quiet citation). Every place evidence appears uses it.
 ## Walkthrough and narrative
 
 - Scenes are presentation pages in the same system: white page, the same top bar style
-  (product mark, chapter, "4 of 19"), content in a 1120px column, headline 40–48px/600, one
-  supporting line, then one diagram or set of cards. Bottom bar: Back / Next and a thin progress
-  bar. From 1200px a left chapter rail the width of the product sidebar.
+  (product mark, chapter, "4 of 10"), content in a 1120px column, headline 40–48px/600, one
+  supporting line, then one diagram or set of cards. A scene shows everything at once: one short
+  staggered entrance on arrival (opacity and a 6px rise, each part 120–600 ms), never a click to
+  reveal. Bottom bar: Back / Next and a thin progress bar; only those (and ← →) move on, never a
+  click on the page. The top bar, bottom bar and rail stay put between scenes and never
+  re-animate. From 1200px a left chapter rail the width of the product sidebar.
 - On product pages the walkthrough is the Guide: one white panel with `--shadow-2`, 8px radius,
   380px wide (340px when narrowing clears something), in a corner of the content area. Header:
   the chapter picker and minimize. Body: "Step 1 of 2", a 16/600 title, a 14px why of 20 words or

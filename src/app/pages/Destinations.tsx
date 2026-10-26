@@ -49,7 +49,7 @@ const KINDS: { value: Kind; label: string; noun: string; channels: Channel[]; pr
 const kindOf = (c: Channel): Kind | null => KINDS.find((k) => k.channels.includes(c))?.value ?? null;
 
 /** Walkthrough steps that spotlight something on this page, and the tab that shows it. */
-const TOUR_KIND: Record<string, Kind> = { 'ch4.jira': 'issues', 'ch4.slack': 'chat', 'ch6.ship': 'issues' };
+const TOUR_KIND: Record<string, Kind> = { 'routing.delivery': 'issues', 'patterns.ship': 'issues' };
 
 const TOOL_NOUN: Record<Channel, string> = {
   jira: 'Jira issue',

@@ -13,6 +13,7 @@ Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `t
 - Sentence case. Plain English for a VP of Customer Success; keep jargon behind "How this works" (`more`).
 - A step's `body` is 20 words or fewer and says why; detail goes in `more` ("How this works").
 - Motion only shows a change of state: 120–240 ms for UI, data reveals up to 600 ms once, no bounce or loops; reduced motion draws the final frame.
+- A scene shows all of its content at once, with one staggered entrance on arrival (`Enter` in `src/narrative/components.tsx`). No beats, no click-to-reveal, no flip cards; only Back / Next and ← → move on, never a click on the page.
 - "Decision model", "Main model" and "Backup model" on screen; exact model ids only on `/app/settings`.
 - Product UI is built only from `src/ds` (tokens, components, Shell) and `src/app/components/domain.tsx`; see `docs/DESIGN.md`.
 - Every number on screen is either read from real data or labelled as an assumption or simulated.
@@ -39,8 +40,8 @@ Every Switchboard and Agent Ops page has one entry in `NUDGES` (`src/tour/guide/
 ## Add a chapter or narrative scene
 
 1. Add the id to `ChapterId` (and `SceneId` for a scene) in `src/tour/engine/types.ts`.
-2. Add the chapter to `CHAPTERS` in `src/tour/script/chapters.ts` with `part`, `title`, `layer`, `objective`, `targetSec`, and to the right `GROUPS` entry. Keep the sum of `targetSec` at 1,500 (25:00) by trimming another part; the hub shows `TOTAL_TARGET_SEC`.
-3. For a scene: create `src/narrative/scenes/<Name>.tsx` (beats via the `beat` prop, `SceneHead` for the headline, `useCalm()` for reduced motion), register it in `SCENES` in `src/narrative/scenes/index.ts`, and add a `kind: 'scene'` step with `beats` and `route: R.scene('<id>')`.
+2. Add the chapter to `CHAPTERS` in `src/tour/script/chapters.ts` with `part`, `title`, `layer`, `objective`, `targetSec`, and to the right `GROUPS` entry (Introduction, The platform, Closing). Keep the sum of `targetSec` at 1,500 (25:00) by trimming another part; the hub shows `TOTAL_TARGET_SEC`. The talk is ten chapters (three, five, two); adding one is a deliberate change to that shape.
+3. For a scene: create `src/narrative/scenes/<Name>.tsx` (a component with no props: `SceneHead` for the headline, `Enter` with staggered `delay`s for the parts, `useCalm()` for reduced motion; everything fits between the bars at 1440×900), register it in `SCENES` in `src/narrative/scenes/index.ts`, and add a `kind: 'scene'` step with `scene` and `route: R.scene('<chapter id>')`. Step ids are `<chapter>.<what>`; a scene that is a whole chapter uses the chapter id.
 4. Add `NOTES['<id>']` in `notes.ts` with `time` matching `targetSec`, `say` and `click`.
 5. Renumber `part` for every later chapter and update the parts table in `docs/WALKTHROUGH.md`.
 

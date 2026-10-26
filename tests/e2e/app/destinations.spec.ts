@@ -30,8 +30,9 @@ test.describe('Deliveries', () => {
   });
 
   test('the walkthrough step in the URL opens the tab it spotlights', async ({ page }) => {
-    await gotoApp(page, '/app/destinations?tour=ch4.slack');
-    await expect(page.locator('[data-tour="dest.slack"]')).toBeVisible();
-    await expect(page.getByRole('tab', { name: /Chat/ })).toHaveAttribute('aria-selected', 'true');
+    // Start on the Chat tab: the Jira step switches it to Issues, where its Jira preview is.
+    await gotoApp(page, '/app/destinations?kind=chat&tour=routing.delivery');
+    await expect(page.locator('[data-tour="dest.jira"]')).toBeVisible();
+    await expect(page.getByRole('tab', { name: /Issues/ })).toHaveAttribute('aria-selected', 'true');
   });
 });

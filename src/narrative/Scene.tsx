@@ -1,12 +1,12 @@
 /**
  * Scene: a presentation page of the product. The same 52px top bar as Switchboard (the mark
- * and name, the chapter, "4 of 19", the chapter menu on narrow screens), the 1120px content
+ * and name, the chapter, "4 of 10", the chapter menu on narrow screens), the 1120px content
  * column, and a bottom bar with one muted keyboard hint, Back / Next, and one thin progress line
  * along its top edge. On wide screens the chapter rail (src/tour/hud/Hud.tsx) sits to its left.
- * Only the content between the bars changes from scene to scene. Clicking empty stage advances
- * (anything interactive opts out via data-no-advance).
+ * Only the content between the bars changes from scene to scene, and only Back / Next (or the
+ * arrow keys) move on: a click on the page itself never does.
  */
-import type { MouseEvent, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Button, Kbd } from '../ds';
 import { IconArrowLeft, IconArrowRight } from '../ds/icons';
 import { SceneToolsSlot } from '../tour/hud/sceneSlot';
@@ -20,8 +20,6 @@ export type SceneProps = {
   /** 1-based position of this chapter and the chapter count. */
   index: number;
   total: number;
-  beat: number;
-  beats: number;
   /** Overall walkthrough progress, 0..1. */
   progress?: number;
   onNext?: () => void;
@@ -67,19 +65,12 @@ export function SceneTopBar({ label, group, index, total }: { label?: string; gr
   );
 }
 
-export function Scene({ label, group, index, total, beat, progress = 0, onNext, onBack, nextLabel = 'Next', children, bare, className, testId }: SceneProps) {
-  const onStageClick = (e: MouseEvent<HTMLElement>) => {
-    if (!onNext) return;
-    const t = e.target as HTMLElement;
-    if (t.closest('button, a, input, select, textarea, [data-no-advance], [role="button"]')) return;
-    if (window.getSelection()?.toString()) return;
-    onNext();
-  };
+export function Scene({ label, group, index, total, progress = 0, onNext, onBack, nextLabel = 'Next', children, bare, className, testId }: SceneProps) {
   const pct = Math.round(Math.max(0, Math.min(1, progress)) * 1000) / 10;
   return (
-    <section className={`n-scene ${className ?? ''}`} aria-roledescription="scene" aria-label={label} data-testid={testId ?? 'scene'} data-beat={beat}>
+    <section className={`n-scene ${className ?? ''}`} aria-roledescription="scene" aria-label={label} data-testid={testId ?? 'scene'}>
       <SceneTopBar label={label} group={group} index={index} total={total} />
-      <div className="n-scene__body" onClick={onStageClick}>
+      <div className="n-scene__body">
         {children}
       </div>
       {!bare && (

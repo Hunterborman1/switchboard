@@ -109,7 +109,7 @@ export const LibraryFile = z.object({
   messLevel: MessLevel.nullable(), // null for edge files
   edgeKind: EdgeKind.nullable(),
   featured: z.boolean(), // shown in the picker (48); backfill files are false
-  /** Walkthrough branch this file leads to when picked in Chapter 1. */
+  /** Walkthrough branch this file leads to when picked in chapter 4 (A call comes in). */
   tourPath: z.enum(['main', 'clean', 'messy', 'security', 'negative', 'privacy']).nullable(),
   recommended: z.boolean(), // the one highlighted file (C-1042)
   callId: z.string(), // C-1042 (human-facing reference)

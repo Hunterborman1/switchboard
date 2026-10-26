@@ -27,7 +27,7 @@ const base = (patch: Partial<TourCtx> = {}): TourCtx => ({
 const evals = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data/evals/latest.json'), 'utf8')) as { promoted: EvalRun; candidate: EvalRun; history: EvalRun[] };
 const ctxEvals = base({ evals: { latest: evals.promoted, candidate: evals.candidate, history: evals.history ?? [] } });
 
-describe('ch7 copy agrees with the eval data on screen', () => {
+describe('operate (prove it) copy agrees with the eval data on screen', () => {
   it('never calls the candidate cheaper or faster unless the numbers say so', () => {
     const c = evals.candidate;
     const l = evals.promoted;
@@ -62,27 +62,27 @@ describe('ch7 copy agrees with the eval data on screen', () => {
 });
 
 describe('narration matches what is shown', () => {
-  it('ch5 names the theme it was given, with plural-correct counts', () => {
+  it('patterns names the theme it was given, with plural-correct counts', () => {
     const theme = { id: 'thm_offline_conv', name: 'Google Ads offline conversions arrive late', insightCount: 36, accountCount: 1, arrUsd: 4_200_000 } as Theme;
     const t = themeCopy(base({ theme }));
     expect(t.intro).toContain('Google Ads offline conversions arrive late');
     expect(t.intro).toContain('36 insights from 1 account.');
   });
 
-  it('ch2.intro says replay when the run is a replay', () => {
+  it('call.watch says replay when the run is a replay', () => {
     const run = { run: { mode: 'replay', status: 'running' } } as unknown as RunDetail;
     expect(introCopy(base({ run }))).toMatch(/recorded real execution, replayed at its recorded speed/);
     expect(introCopy(base())).toMatch(/real execution, not an animation/);
   });
 
-  it('ch2.intro says earlier run, never "real execution", when an earlier run was reopened', () => {
+  it('call.watch says earlier run, never "real execution", when an earlier run was reopened', () => {
     const run = { run: { mode: 'live', status: 'completed' } } as unknown as RunDetail;
     const copy = introCopy(base({ run, runReused: true }));
     expect(copy).toMatch(/earlier run/);
     expect(copy).not.toMatch(/real execution/);
   });
 
-  it('ch2.intro title states the run as it is: live and running, or done with its real time', () => {
+  it('call.watch title states the run as it is: live and running, or done with its real time', () => {
     const running = { run: { mode: 'live', status: 'running', durationMs: null } } as unknown as RunDetail;
     const done = { run: { mode: 'live', status: 'awaiting_review', durationMs: 6090 } } as unknown as RunDetail;
     expect(introTitle(base({ run: running }))).toBe('Running live, right now');
@@ -90,7 +90,7 @@ describe('narration matches what is shown', () => {
   });
 });
 
-describe('ch2.timing: why it is fast, from the run’s own timestamps', () => {
+describe('call.timing: why it is fast, from the run’s own timestamps', () => {
   const t0 = Date.parse('2026-10-25T10:00:00.000Z');
   const at = (ms: number) => new Date(t0 + ms).toISOString();
   const step = (key: string, start: number, end: number, extra: Record<string, unknown> = {}) => ({

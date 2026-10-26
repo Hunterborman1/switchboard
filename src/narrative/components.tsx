@@ -2,12 +2,12 @@
  * Narrative layer · components. The presentation pages (scenes, hub, write-up, Q&A, presenter)
  * are pages of the same product: they use the Switchboard design system (src/ds) for buttons,
  * badges, cards, quotes and marks, and add only what a presentation needs: the scene headline,
- * reveal-on-beat, a count-up stat and the persona card. See ./README.md.
+ * one calm entrance per part of a scene, and a count-up stat. See ./README.md.
  */
 import type { CSSProperties, ElementType, ReactNode } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { ProductMark } from '../ds';
-import { IconArrowRight, IconCheck, IconChevronRight } from '../ds/icons';
+import { IconArrowRight, IconCheck } from '../ds/icons';
 import { useCalm, useCountUp } from './hooks';
 import { DUR, EASE } from './motion';
 
@@ -71,30 +71,25 @@ export function Lede({ children, className }: { children: ReactNode; className?:
 }
 
 /**
- * Scene head: one headline and one supporting line per beat. Every beat's head is laid out in
- * the same grid cell, so the head is always as tall as its longest version and nothing below it
- * moves when the beat changes. Only the active one is visible (and in the accessibility tree).
+ * Scene head: the headline, an optional line of metadata under it (a byline, a link), and one
+ * supporting line. A scene has one head; it never changes while the scene is on screen.
  */
-export function SceneHead({ heads, active = 0 }: { heads: { title: ReactNode; line?: ReactNode }[]; active?: number }) {
-  const cur = Math.max(0, Math.min(active, heads.length - 1));
+export function SceneHead({ title, meta, line }: { title: ReactNode; meta?: ReactNode; line?: ReactNode }) {
   return (
     <div className="n-head">
-      {heads.map((h, i) => (
-        <div key={i} className="n-head__v" data-active={i === cur ? 'true' : 'false'} aria-hidden={i === cur ? undefined : true}>
-          <h1 className="n-display">{h.title}</h1>
-          {h.line ? <p className="n-lede">{h.line}</p> : null}
-        </div>
-      ))}
+      <h1 className="n-display">{title}</h1>
+      {meta ? <div className="n-head__meta">{meta}</div> : null}
+      {line ? <p className="n-lede">{line}</p> : null}
     </div>
   );
 }
 
 /**
- * A part of a scene that arrives on a beat. It always takes its space (so nothing moves when it
- * appears) and is invisible, and out of the accessibility tree, until `show`.
+ * One part of a scene, arriving once when the scene does: a fade and a short rise, `delay`
+ * seconds in. Scenes stagger their parts so the whole entrance settles within about 600 ms.
+ * Nothing waits for a click, and reduced motion draws the final frame at once.
  */
-export function Appear({
-  show,
+export function Enter({
   delay = 0,
   y = 6,
   as = 'div',
@@ -103,7 +98,6 @@ export function Appear({
   children,
   attrs,
 }: {
-  show: boolean;
   delay?: number;
   y?: number;
   as?: 'div' | 'li' | 'section' | 'span';
@@ -117,11 +111,10 @@ export function Appear({
   return (
     <M
       className={className}
-      initial={false}
-      animate={{ opacity: show ? 1 : 0, y: show || calm ? 0 : y }}
-      transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: show && !calm ? delay : 0 }}
-      style={{ ...style, visibility: show ? 'visible' : 'hidden' }}
-      aria-hidden={show ? undefined : true}
+      style={style}
+      initial={calm ? false : { opacity: 0, y }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : delay }}
       {...attrs}
     >
       {children}
@@ -168,71 +161,4 @@ export function Label({ children, as: Tag = 'span', className }: { children: Rea
   return <Tag className={cx('n-label', className)}>{children}</Tag>;
 }
 
-// ---------------------------------------------------------------- persona card
-
-export type Persona = {
-  id: string;
-  role: string;
-  who: string;
-  glyph: ReactNode;
-  job: { when: string; want: string; so: string };
-  struggles: string[];
-  success: string;
-  emotional?: string;
-};
-
-/** The job on the front; click (or Enter) to reveal struggles and success. 180 ms crossfade, no flip. */
-export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; flipped: boolean; onFlip: () => void }) {
-  const calm = useCalm();
-  const fade = { duration: calm ? 0 : DUR.ui, ease: EASE };
-  return (
-    <button
-      type="button"
-      className="n-persona"
-      onClick={onFlip}
-      aria-pressed={flipped}
-      aria-label={`${persona.role}: ${flipped ? 'showing struggles and success. Select to go back to the job' : 'showing the job. Select to see what gets in the way'}`}
-      data-no-advance
-    >
-      <div className="n-persona__head">
-        <div className="n-persona__glyph">{persona.glyph}</div>
-        <div className="n-persona__id">
-          <p className="n-persona__role">{persona.role}</p>
-          <p className="n-persona__who">{persona.who}</p>
-        </div>
-      </div>
-      <div className="n-persona__panes">
-        <AnimatePresence initial={false}>
-          {!flipped ? (
-            <motion.div key="front" className="n-persona__pane" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-              <p className="n-persona__job">
-                When {persona.job.when}, I want <b>{persona.job.want}</b>, so I can {persona.job.so}.
-              </p>
-            </motion.div>
-          ) : (
-            <motion.div key="back" className="n-persona__pane" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-              <div className="n-persona__section">
-                <span className="n-persona__k">What gets in the way today</span>
-                <ul>
-                  {persona.struggles.map((x) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="n-persona__section">
-                <span className="n-persona__k">Success looks like</span>
-                <p className="n-persona__success">{persona.success}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      <div className="n-persona__foot">
-        <span className="n-persona__flip">{flipped ? 'Back to the job' : 'What gets in the way'}</span>
-        <IconChevronRight size={16} className="n-persona__chev" />
-      </div>
-    </button>
-  );
-}
-
-export { AnimatePresence, cx };
+export { cx };

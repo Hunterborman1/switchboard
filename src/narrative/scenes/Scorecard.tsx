@@ -1,5 +1,5 @@
 /**
- * Chapter 19 · Scorecard. What you did and what the system did, with real numbers from the
+ * Chapter 10 · Scorecard. What you did and what the system did, with real numbers from the
  * viewer's own workspace and from Agent Ops. Then "Explore freely" unlocks everything.
  */
 import { useEffect, useRef, useState } from 'react';
@@ -13,7 +13,6 @@ import { DUR, EASE } from '../motion';
 import { loadScoreboard, tourApi, type Scoreboard } from '../../tour/api';
 import type { RunDetail } from '../../shared/contracts';
 import { useTour } from '../../tour/engine/TourProvider';
-import { firstStepOf } from '../../tour/script/steps';
 import { usdTotal } from '../../shared/format';
 import { PLATFORM_API_BASE, SIGNAL_LOOP_AGENT_ID, type AgentImpact, type LogEntry, type Span } from '../../shared/platform-contracts';
 
@@ -43,7 +42,7 @@ async function loadOps(runIds: string[]): Promise<OpsFacts> {
   } catch {
     /* platform not reachable */
   }
-  // One trace per run: the trace its run-scoped log lines carry (the same one ch8 opens).
+  // One trace per run: the trace its run-scoped log lines carry (the same one operate.trace opens).
   const traces = new Set<string>();
   await Promise.all(
     runIds.slice(0, 8).map(async (id) => {
@@ -174,12 +173,12 @@ export function ScorecardScene() {
     ...(sb && sb.routed > 0 ? [{ v: sb.routed, l: sb.routed === 1 ? 'insight routed' : 'insights routed' }] : []),
   ];
   const sys = sysAll.filter((t): t is Tile => t != null);
-  // Nothing of the viewer's own to count yet: say so and point at chapter 8, rather than a
+  // Nothing of the viewer's own to count yet: say so and point at chapter 4, rather than a
   // wall of zeros that reads like something broke.
   const empty = sb != null && runs === 0 && !tour.ctx.runId;
-  const startChapter1 = () => tour.goto(firstStepOf('ch1'));
+  const startCall = () => tour.goto('call.intro');
   const startRef = useRef<HTMLButtonElement>(null);
-  // Keyboard focus follows the primary action: "Start chapter 8" once we know it's empty.
+  // Keyboard focus follows the primary action: "Bring in a call" once we know it's empty.
   useEffect(() => {
     if (empty) startRef.current?.focus({ preventScroll: true });
   }, [empty]);
@@ -195,7 +194,7 @@ export function ScorecardScene() {
 
   return (
     <div className="sc sc-score" data-testid="scorecard" data-empty={empty ? 'true' : undefined}>
-      <SceneHead heads={[{ title: empty ? 'Your scorecard is empty so far.' : 'Here’s what you just did.', line: lede }]} />
+      <SceneHead title={empty ? 'Your scorecard is empty so far.' : 'Here’s what you just did.'} line={lede} />
       <div className="sc-score__visual">
         {empty ? (
           <motion.section
@@ -208,12 +207,12 @@ export function ScorecardScene() {
           >
             <h2 className="sc-score__h">You haven’t run a call yet</h2>
             <p className="n-body">
-              Chapter 8, A call comes in, brings in a recorded customer call and runs it through Signal Loop. It takes about a minute. Come back here afterwards to see the insights it found, what it held back,
+              Chapter 4, A call comes in, brings in a recorded customer call and runs it through Signal Loop. It takes about a minute. Come back here afterwards to see the insights it found, what it held back,
               what the AI cost and the trail it left in Agent Ops.
             </p>
             <div className="sc-score__actions">
-              <Button ref={startRef} variant="primary" size="lg" iconRight={<IconArrowRight />} onClick={startChapter1} data-testid="scorecard-start-ch1">
-                Start chapter 8
+              <Button ref={startRef} variant="primary" size="lg" iconRight={<IconArrowRight />} onClick={startCall} data-testid="scorecard-start-call">
+                Bring in a call
               </Button>
             </div>
           </motion.section>

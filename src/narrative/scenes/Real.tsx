@@ -1,12 +1,16 @@
 /**
- * Chapter 2 · What's real in this demo. The trust slide, right after the cold open: what is
- * built and working (all of the AI, the inputs and the outputs), and what is simulated, each with
- * the reason. Names and counts come from src/shared/platform.ts (connectors, analyses),
+ * Chapter 2 · Built in 48 hours: what's real. The trust slide: who built it, with the source code
+ * right under the headline, what is built and working (all of the AI, the inputs and the
+ * outputs), and what is simulated, each with the reason. Both columns are on screen at once.
+ * Names and counts come from src/shared/platform.ts (connectors, analyses, REPO_URL),
  * data/library.json (266 files), data/world (14 accounts, 21 people) and data/backfill (218 runs).
  */
-import { Badge, ConnectorMark } from '../../ds';
+import { Badge, ButtonLink, ConnectorMark } from '../../ds';
+import { IconBranch, IconExternal } from '../../ds/icons';
 import { ANALYSES, CONNECTORS, REPO_URL } from '../../shared/platform';
-import { Appear, Check, SceneHead } from '../components';
+import { Check, Enter, SceneHead } from '../components';
+
+const REPO_LABEL = REPO_URL.replace('https://', '');
 
 const AI = [
   'Triage by the decision model',
@@ -37,19 +41,34 @@ const SIMULATED: { what: string; why: string; marks?: readonly string[] }[] = [
   { what: `The other ${NOT_BUILT} analyses`, why: 'Listed and marked Not built. Forty-eight hours went into one analysis, done properly.' },
 ];
 
-const HEADS = [
-  {
-    title: 'Built from scratch in 48 hours. Here’s what’s real.',
-    line: 'By Hunter Borman. All of the AI is built and working: what goes in and what comes out really runs. The connections and the data are simulated, and every screen says so.',
-  },
-];
-
 export function Real() {
   return (
     <div className="sc sc-real">
-      <SceneHead heads={HEADS} />
+      <SceneHead
+        title="Built from scratch in 48 hours. Here’s what’s real."
+        meta={
+          <>
+            <span className="sc-real__by">By Hunter Borman</span>
+            <ButtonLink
+              variant="secondary"
+              size="sm"
+              to={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              icon={<IconBranch size={14} />}
+              iconRight={<IconExternal size={14} />}
+              className="sc-real__repo"
+              data-testid="real-repo"
+              aria-label={`Source code on GitHub, ${REPO_LABEL} (opens in a new tab)`}
+            >
+              <span className="sc-real__repolabel">{REPO_LABEL}</span>
+            </ButtonLink>
+          </>
+        }
+        line="All of the AI is built and working: what goes in and what comes out really runs. The connections and the data are simulated, and every screen says so."
+      />
       <div className="sc-real__visual">
-        <Appear show className="sc-real__card" attrs={{ 'data-testid': 'real-built' }}>
+        <Enter delay={0.06} className="sc-real__card" attrs={{ 'data-testid': 'real-built' }}>
           <div className="sc-real__cardhead">
             <h2 className="sc-real__h">Built and working</h2>
             <Badge tone="success" dot>
@@ -75,17 +94,8 @@ export function Real() {
             <h3 className="sc-real__k">Outputs</h3>
             <p className="sc-real__p">Each delivery’s content, the people tagged and the receipt are generated for real.</p>
           </section>
-          <section className="sc-real__group" aria-label="Code">
-            <h3 className="sc-real__k">Code</h3>
-            <p className="sc-real__p">
-              All of it, with tests, docs and Claude skills:{' '}
-              <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer" data-testid="real-repo">
-                {REPO_URL.replace('https://', '')}
-              </a>
-            </p>
-          </section>
-        </Appear>
-        <Appear show delay={0.08} className="sc-real__card sc-real__card--sim" attrs={{ 'data-testid': 'real-simulated' }}>
+        </Enter>
+        <Enter delay={0.14} className="sc-real__card sc-real__card--sim" attrs={{ 'data-testid': 'real-simulated' }}>
           <div className="sc-real__cardhead">
             <h2 className="sc-real__h">Simulated, and why</h2>
             <Badge tone="neutral" outline>
@@ -107,7 +117,7 @@ export function Real() {
               </li>
             ))}
           </ul>
-        </Appear>
+        </Enter>
       </div>
     </div>
   );

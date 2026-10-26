@@ -55,11 +55,11 @@ function loadBranchFiles(): Record<string, string[]> {
 }
 export const BRANCH_FILES = loadBranchFiles();
 
-/** Ch1: open the picker from the presentation, choose a file for `branch`, open it, and process it. */
+/** Chapter 4: open the picker from the presentation, choose a file for `branch`, open it, and process it. */
 export async function pickAndRun(page: Page, branch: string) {
-  await expectStep(page, 'ch1.intro');
+  await expectStep(page, 'call.intro');
   await page.locator('[data-tour="new.upload"]').first().click();
-  await expectStep(page, 'ch1.pick');
+  await expectStep(page, 'call.pick');
   const dialog = page.locator('[data-tour="picker.dialog"]');
   await expect(dialog).toBeVisible();
   if (branch === 'main') {
@@ -80,9 +80,9 @@ export async function pickAndRun(page: Page, branch: string) {
     expect(picked, `a file for branch ${branch}`).toBe(true);
   }
   await page.locator('[data-tour="picker.open"]').click();
-  await expectStep(page, 'ch1.run');
+  await expectStep(page, 'call.process');
   await page.locator('[data-tour="new.run"]').first().click();
-  await expectStep(page, /^ch2\./);
+  await expectStep(page, /^call\.(watch|privacy|screen|ground|rejected|messy|gate|timing|clean)$/);
 }
 
 /**
