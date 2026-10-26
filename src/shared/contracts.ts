@@ -503,29 +503,13 @@ export type RunDetail = {
 };
 
 /**
- * API surface (all under `/repo/invoca/api`, all gated, JSON):
- *   GET  /session                         Session
- *   GET  /world                           { accounts: Account[]; people: Person[] }
- *   GET  /library                         LibraryFile[] (featured only)
- *   GET  /library/:id                     { file: LibraryFile; content: string }
- *   POST /runs            CreateRun       { runId: string; mode: 'live'|'replay' }
- *   GET  /runs?limit&cursor               Run[]
- *   GET  /runs/:id                        RunDetail
- *   GET  /insights?type&area&status&account&q   Insight[]
- *   GET  /insights/:id                    { insight; run; deliveries; reviews: ReviewRecord[]; theme: Theme|null }
- *   GET  /review                          Insight[] (status pending_review)
- *   POST /review/:insightId  ReviewAction { insight: Insight; delivery: Delivery|null }
- *   GET  /themes                          Theme[]
- *   GET  /themes/:id                      { theme; insights: Insight[]; accounts: Account[] }
- *   GET  /routing/rules                   RoutingRule[] (effective: workspace overrides applied)
- *   PUT  /routing/rules/:id  RoutingRule  RoutingRule (writes an override in the viewer workspace)
- *   POST /routing/preview    RoutingRule[] { flows: {type; area; ownerId; count}[] } (Sankey)
- *   GET  /deliveries?channel              Delivery[]
- *   POST /deliveries/:id/ticket { state } { delivery; notification: Notification|null }
- *   GET  /notifications?csmId             Notification[]
- *   GET  /evals                           { latest: EvalRun; history: EvalRun[]; candidate: EvalRun|null }
- *   GET  /health                          { budget; ledger: {day; calls; costUsd; p50Ms; p95Ms; failures}[]; dlq: {...}[]; recent: {...}[] }
- *   POST /workspace/reset                 {} (clears the viewer's own workspace)
+ * API surface, all under `/repo/invoca/api`, gated, JSON. Signal Loop (src/worker/api/index.ts):
+ *   /session /world /library[/:id] /runs[/:id] /insights[/:id] /review[/:insightId] /themes[/:id]
+ *   /routing/rules[/:id] /routing/preview /deliveries[/:id/ticket] /notifications /evals /health
+ *   /settings /workspace/reset /telemetry /mcp/token
+ * Switchboard (src/worker/api/switchboard.ts): /connections[/:id[/test]] /people[/:id] /me
+ *   /analyses /overview. Agent Ops: /platform/* (src/worker/platform/api.ts).
+ * Writes only touch the viewer's own workspace; GET /routing/rules returns the effective rules.
  */
 export const API_BASE = '/repo/invoca/api';
 
