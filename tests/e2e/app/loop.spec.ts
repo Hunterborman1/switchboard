@@ -23,9 +23,11 @@ test.describe('Close the loop', () => {
     const box = page.locator('[data-tour="loop.note"]').getByRole('textbox');
     await box.fill('Hi Tasha, it shipped. Marcus');
     await expect(page.getByRole('button', { name: 'Undo my edits' })).toBeVisible();
+    // The simulation is visible before the click, not only in a tooltip.
+    await expect(page.locator('[data-tour="loop.note"]').getByText('Simulated', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Send from Gmail' }).click();
-    await expect(page.getByText('Draft saved to Gmail')).toBeVisible();
-    await expect(page.getByText(/Simulated/).first()).toBeVisible();
+    await expect(page.getByText('Gmail draft (simulated)')).toBeVisible();
+    await expect(page.getByText(/Nothing was sent/)).toBeVisible();
     await page.getByRole('button', { name: 'Undo my edits' }).click();
     await expect(box).not.toHaveValue('Hi Tasha, it shipped. Marcus');
   });

@@ -1,4 +1,4 @@
-/* Conversation page parts: triage, insights, dropped quotes, trace. Tokens only. */
+/* Conversation page parts: triage, insights, dropped quotes. Tokens only. */
 
 .cardMeta {
   display: inline-flex;
@@ -325,13 +325,3 @@
   width: 120px;
 }
 
-/* ---------------------------------------------------------------- trace */
-
-.traceFailed {
-  color: var(--danger);
-}
-
-.totalCell {
-  border-top: 1px solid var(--border);
-  font-weight: var(--weight-semibold);
-}

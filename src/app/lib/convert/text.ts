@@ -250,12 +250,16 @@ function stamp(ms: number): string {
 }
 
 type When = { kind: 'offset' | 'abs'; value: string };
-function timeValue(v: unknown): When | null {
+/**
+ * A time from one record. Numeric offsets are seconds unless `ms` says the whole file counts in
+ * milliseconds (decided once per file by `offsetsInMs`, so the first seconds of a call read the
+ * same way as the rest).
+ */
+function timeValue(v: unknown, ms = false): When | null {
   if (typeof v === 'number' && Number.isFinite(v)) {
     if (v > 1e12) return { kind: 'abs', value: stamp(v) };
     if (v > 1e9) return { kind: 'abs', value: stamp(v * 1000) };
-    // offsets: milliseconds when implausibly many seconds for a call
-    return { kind: 'offset', value: hms(Number.isInteger(v) && v > 36_000 ? v / 1000 : v) };
+    return { kind: 'offset', value: hms(ms ? v / 1000 : v) };
   }
   if (typeof v === 'string' && v.trim()) {
     const t = v.trim();
@@ -267,13 +271,59 @@ function timeValue(v: unknown): When | null {
   return null;
 }
 
-function timeOf(o: Obj): When | null {
+function timeOf(o: Obj, ms = false): When | null {
   for (const k of TIME_KEYS) {
-    const w = timeValue(o[k]);
+    const w = timeValue(o[k], ms);
     if (w) return w;
   }
   const first = Array.isArray(o.sentences) && isObj(o.sentences[0]) ? o.sentences[0] : null;
-  return first ? timeValue(first.start) : null;
+  return first ? timeValue(first.start, ms) : null;
+}
+
+/** The raw numeric offset of a record, if it has one (not an absolute timestamp). */
+function rawOffset(o: Obj): number | null {
+  for (const k of TIME_KEYS) {
+    const v = o[k];
+    if (typeof v === 'number' && Number.isFinite(v)) return v <= 1e9 ? v : null;
+  }
+  const first = Array.isArray(o.sentences) && isObj(o.sentences[0]) ? o.sentences[0] : null;
+  return first && typeof first.start === 'number' ? first.start : null;
+}
+
+/**
+ * Whether a file's numeric offsets are milliseconds: Gong monologues always are, and so is any
+ * file with an offset no call could reach in seconds (over 10 hours). Decided per file, so a
+ * Gong sentence at 3,000 ms reads 00:00:03, not 00:50:00.
+ */
+function offsetsInMs(msgs: Obj[]): boolean {
+  if (msgs.some((m) => Array.isArray(m.sentences))) return true;
+  return msgs.some((m) => {
+    const v = rawOffset(m);
+    return v != null && Number.isInteger(v) && v > 36_000;
+  });
+}
+
+const TITLE_KEYS = ['topic', 'title', 'subject', 'meeting_topic', 'meetingTitle'];
+/** A transcript export's own title ("Prairie Link x Invoca check-in"), at the top or one level down. */
+function jsonTitle(root: unknown): string | null {
+  if (!isObj(root)) return null;
+  const pick = (o: Obj) => {
+    for (const k of TITLE_KEYS) {
+      const v = o[k];
+      if (typeof v === 'string' && v.trim() && v.trim().length <= 200) return oneLine(v);
+    }
+    return null;
+  };
+  const top = pick(root);
+  if (top) return top;
+  for (const k of ['metaData', 'metadata', 'meeting', 'call']) {
+    const v = root[k];
+    if (isObj(v)) {
+      const t = pick(v);
+      if (t) return t;
+    }
+  }
+  return null;
 }
 
 function findMessages(v: unknown, depth = 0): Obj[] | null {
@@ -376,16 +426,19 @@ export function jsonToText(raw: string): Converted | null {
         'messageType' in m ||
         (!('speaker' in m) && !('start' in m) && ('user' in m || 'from' in m || timeValue(m.ts)?.kind === 'abs')),
     );
+    const ms = offsetsInMs(msgs);
     const lines = msgs.flatMap((m) => {
       const t = textOf(m);
       if (!t) return [];
       const text = oneLine(chat ? slackText(t) : t);
       if (!text) return [];
       const who = speakerOf(m, names) ?? 'Unknown';
-      const when = timeOf(m);
+      const when = timeOf(m, ms);
       return [`${when ? `[${when.value}] ` : ''}${who}: ${text}`];
     });
-    if (lines.length) return { text: lines.join('\n'), formatHint: chat ? 'chat' : 'txt', label: jsonLabel(data, msgs, chat) };
+    // A transcript keeps its title as the first line: it names the meeting and usually the account.
+    const title = chat ? null : jsonTitle(data);
+    if (lines.length) return { text: [...(title ? [title] : []), ...lines].join('\n'), formatHint: chat ? 'chat' : 'txt', label: jsonLabel(data, msgs, chat) };
   }
   const out: string[] = [];
   jsonLines(data, [], out, 0);

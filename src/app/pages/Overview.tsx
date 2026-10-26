@@ -9,7 +9,7 @@ import { Badge, ButtonLink, Card, CellText, ConnectorMark, EmptyState, Grid, Met
 import { IconArrowRight, IconCheckCircle, IconPlug, IconPlus } from '../../ds/icons';
 import { useConnections, useOverview, useReviewQueue, useRules, useRuns } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { ErrorState, RunStatusBadge, sourceLabel, TypeLabel, When } from '../components/domain';
+import { ErrorState, RunStatusBadge, SIMULATED_TIP, SimulatedBadge, sourceLabel, TypeLabel, When } from '../components/domain';
 import { useWorldIndex } from '../lib/world';
 import styles from './overview/overview.module.css';
 
@@ -128,7 +128,7 @@ export default function OverviewPage() {
             <Skeleton height={120} />
           )}
         </Card>
-        <Card title="Where it came from" actions={<ButtonLink to="/app/connections" size="sm" variant="ghost" iconRight={<IconArrowRight size={14} />}>Connections</ButtonLink>}>
+        <Card title="Where it came from" description={<SimulatedBadge tip={SIMULATED_TIP.overviewSources} />} actions={<ButtonLink to="/app/connections" size="sm" variant="ghost" iconRight={<IconArrowRight size={14} />}>Connections</ButtonLink>}>
           {o ? (
             <BarList
               label="Conversations by source"
@@ -147,7 +147,7 @@ export default function OverviewPage() {
             <Skeleton height={120} />
           )}
         </Card>
-        <Card title="Where results went" actions={<ButtonLink to="/app/destinations" size="sm" variant="ghost" iconRight={<IconArrowRight size={14} />}>Deliveries</ButtonLink>}>
+        <Card title="Where results went" description={<SimulatedBadge tip={SIMULATED_TIP.overviewResults} />} actions={<ButtonLink to="/app/destinations" size="sm" variant="ghost" iconRight={<IconArrowRight size={14} />}>Deliveries</ButtonLink>}>
           {o ? (
             <BarList
               label="Deliveries by tool"

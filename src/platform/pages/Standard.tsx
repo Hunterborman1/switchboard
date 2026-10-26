@@ -6,10 +6,10 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Callout, Card, EmptyState, Page, PageHeader, TabLinks, Table, useCrumbs } from '../../ds';
 import { IconCheck, IconCheckCircle, IconChevronRight, IconX } from '../../ds/icons';
-import type { ReviewRow, StandardReport } from '../../worker/platform/types';
+import type { RegistryRow, ReviewRow, StandardReport } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
+import { agentSource, AgentSourceBadge, AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 const TAB_LABEL = { matrix: 'Standard matrix', reviews: 'Review calendar', checklist: 'New agent checklist' } as const;
 
@@ -73,6 +73,7 @@ const SHORT: Record<string, string> = {
 
 function Matrix() {
   const s = useApi<StandardReport>('/standard');
+  const reg = useApi<RegistryRow[]>('/agents');
   const [sel, setSel] = useState<{ agentId: string; key: string } | null>(null);
   if (s.error && !s.data) return <LoadError error={s.error} onRetry={s.reload} what="the standard" />;
   if (!s.data) return <OpsSkeleton stats={false} />;
@@ -130,9 +131,12 @@ function Matrix() {
                 return (
                   <tr key={m.agentId} data-agent={m.agentId}>
                     <th scope="row" className="ao-matrix__agent">
-                      <Link to={`/ops/agents/${m.agentId}#standard`} className="ds-table__primary">
-                        {m.name}
-                      </Link>
+                      <span className="ao-agent__name">
+                        <Link to={`/ops/agents/${m.agentId}#standard`} className="ds-table__primary">
+                          {m.name}
+                        </Link>
+                        <AgentSourceBadge source={agentSource(m.agentId, reg.data)} />
+                      </span>
                       <span className="ds-table__secondary">{m.owner}</span>
                     </th>
                     {checks.map((c) => {
@@ -175,6 +179,12 @@ function Matrix() {
                   <span className="ao-att__text">
                     <span className="ao-att__title">
                       {g.agent}: {g.label.charAt(0).toLowerCase() + g.label.slice(1)}
+                      {agentSource(g.agentId, reg.data) === 'simulated' ? (
+                        <>
+                          {' '}
+                          <AgentSourceBadge source="simulated" />
+                        </>
+                      ) : null}
                     </span>
                     <span className="ao-att__detail">{g.evidence}</span>
                   </span>
@@ -193,6 +203,7 @@ function Matrix() {
 
 function Reviews() {
   const r = useApi<ReviewRow[]>('/reviews');
+  const reg = useApi<RegistryRow[]>('/agents');
   const { sorted, state, by } = useSorted<ReviewRow>(
     r.data ?? [],
     { name: (x) => x.name, owner: (x) => x.owner, last: (x) => x.lastReview, cad: (x) => x.cadenceDays, next: (x) => x.nextReview, rs: (x) => x.daysUntil },
@@ -230,9 +241,12 @@ function Reviews() {
               return (
                 <div className="ao-cal__row" key={row.agentId}>
                   <span className="ds-stack">
-                    <Link to={`/ops/agents/${row.agentId}`} className="ao-cal__name">
-                      {row.name}
-                    </Link>
+                    <span className="ao-agent__name">
+                      <Link to={`/ops/agents/${row.agentId}`} className="ao-cal__name">
+                        {row.name}
+                      </Link>
+                      <AgentSourceBadge source={agentSource(row.agentId, reg.data)} />
+                    </span>
                     <span className="ds-table__secondary">
                       {row.owner}, every {row.cadenceDays} days
                     </span>
@@ -280,9 +294,12 @@ function Reviews() {
             {sorted.map((x) => (
               <tr key={x.agentId}>
                 <td className="ao-agent-col">
-                  <Link to={`/ops/agents/${x.agentId}`} className="ds-table__primary">
-                    {x.name}
-                  </Link>
+                  <span className="ao-agent__name">
+                    <Link to={`/ops/agents/${x.agentId}`} className="ds-table__primary">
+                      {x.name}
+                    </Link>
+                    <AgentSourceBadge source={agentSource(x.agentId, reg.data)} />
+                  </span>
                 </td>
                 <td className="ao-hide-sm is-nowrap">{x.owner}</td>
                 <td className="ao-hide-sm ao-hide-md is-nowrap">

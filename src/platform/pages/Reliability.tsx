@@ -15,7 +15,7 @@ import * as f from '../lib/format';
 import { Bars, ChartLegend, ChartSummary, Lines } from '../ui/charts';
 import { IconTrace } from '../ui/icons';
 import { InfoTip } from '../ui/InfoTip';
-import { AlertBadge, BudgetBar, LoadError, ModelName, OpsSkeleton, SEVERITY, SloBadge, SortHead, SourceBadge, useOpsTitle, useSorted, VocabBadge } from '../ui/kit';
+import { agentLabel, AlertBadge, BudgetBar, LoadError, ModelName, OpsSkeleton, SEVERITY, SloBadge, SortHead, SourceBadge, useOpsTitle, useSorted, VocabBadge } from '../ui/kit';
 import { AREA_LABEL } from './Logs';
 import { RunbookLink } from './RunbookLink';
 
@@ -185,7 +185,7 @@ export function Reliability() {
           aria-label="Agent"
           value={agentId || 'all'}
           onChange={(e) => set('agentId', e.target.value === SIGNAL_LOOP_AGENT_ID ? '' : e.target.value)}
-          options={[{ value: 'all', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: r.name }))]}
+          options={[{ value: 'all', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source) }))]}
           style={{ width: 260, maxWidth: '100%' }}
         />
       }
@@ -224,8 +224,8 @@ export function Reliability() {
     );
   if (!obs.data) return <OpsSkeleton />;
   const d = obs.data;
-  const names = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.name]));
-  const shortNames = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.profile.shortName || r.name]));
+  const names = Object.fromEntries((reg.data ?? []).map((r) => [r.id, agentLabel(r.name, r.source)]));
+  const shortNames = Object.fromEntries((reg.data ?? []).map((r) => [r.id, agentLabel(r.profile.shortName || r.name, r.source)]));
   const hourly = d.hourly.map((h) => ({
     ...h,
     label: range === '6w' ? f.day(h.hour) : f.time(h.hour, timezone).replace(/ (UTC|PT)$/, ''),

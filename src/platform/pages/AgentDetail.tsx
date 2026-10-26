@@ -14,7 +14,7 @@ import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { BarList, Bars, ChartSummary } from '../ui/charts';
 import { InfoTip } from '../ui/InfoTip';
-import { AgentStatus, CLASSIFICATION, LoadError, OpsSkeleton, RankPerson, ReviewBadge, Score, SECURITY_REVIEW, SourceBadge, useOpsTitle, VocabBadge } from '../ui/kit';
+import { AgentSourceBadge, AgentStatus, CLASSIFICATION, LoadError, OpsSkeleton, RankPerson, ReviewBadge, Score, SECURITY_REVIEW, SourceBadge, useOpsTitle, VocabBadge } from '../ui/kit';
 import { AlertList, SloCards } from './Reliability';
 import { RunbookLink } from './RunbookLink';
 
@@ -77,14 +77,18 @@ export function AgentDetail() {
     <Page>
       <PageHeader
         title={a.name}
-        badge={<AgentStatus value={a.status} />}
+        badge={
+          <>
+            <AgentStatus value={a.status} />
+            <AgentSourceBadge source={a.source} />
+          </>
+        }
         description={a.purpose}
         meta={
           <>
             <span>
               {a.department}, built with {a.builtWith === 'Code' ? 'code' : a.builtWith}
             </span>
-            <SourceBadge source={live ? 'live' : 'simulated'} label={live ? 'Real agent, live data' : 'Simulated agent'} />
             <span>{a.version}</span>
             <CopyText value={a.id} label="Copy agent id" />
           </>

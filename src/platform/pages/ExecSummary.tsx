@@ -9,7 +9,7 @@ import type { OverviewX } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { IconPrint } from '../ui/icons';
-import { AgentStatus, LoadError, OpsSkeleton, useOpsTitle } from '../ui/kit';
+import { agentLabel, AgentSourceBadge, AgentStatus, LoadError, OpsSkeleton, useOpsTitle } from '../ui/kit';
 
 export function ExecSummary() {
   useOpsTitle('Executive summary');
@@ -42,7 +42,7 @@ export function ExecSummary() {
     activeUsers: t.activeUsers,
     wau: d.wau.current,
     priorWau: d.wau.prior,
-    topAgent: top ? { name: top.name, hours: top.hoursReturned, share: t.hoursReturned ? top.hoursReturned / t.hoursReturned : 0 } : null,
+    topAgent: top ? { name: agentLabel(top.name, top.source), hours: top.hoursReturned, share: t.hoursReturned ? top.hoursReturned / t.hoursReturned : 0 } : null,
     attention: attention.map((a) => ({ kind: a.kind === 'alert' ? 'standard_gap' : a.kind, message: a.message })),
     acceptanceRate: acc,
   });
@@ -108,7 +108,10 @@ export function ExecSummary() {
               {d.agentRows.map((a) => (
                 <tr key={a.agentId}>
                   <td>
-                    <span className="ds-table__primary">{a.name}</span>
+                    <span className="ao-agent__name">
+                      <span className="ds-table__primary">{a.name}</span>
+                      <AgentSourceBadge source={a.source} />
+                    </span>
                   </td>
                   <td className="is-nowrap">
                     <AgentStatus value={a.status} />

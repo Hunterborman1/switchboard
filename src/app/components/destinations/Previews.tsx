@@ -5,6 +5,7 @@
  * per-channel shape plus flat preview fields), its mentions (the owner, the account's CSM and any
  * watchers, by their handle in that tool) and the connected account it went through. Older
  * deliveries lack some fields; anything missing is left out rather than printed as a dash.
+ * Every frame says Simulated: the content is real output, but no connector sends it anywhere.
  */
 import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,7 +14,7 @@ import { CHANNEL_CONNECTOR, connectorById, personHandle, type ConnectorId } from
 import { tourAnchor } from '../../../tour/anchors';
 import { Avatar, Badge, ConnectorMark, ProductMark, Quote, Segmented } from '../../../ds';
 import { IconArrowDown, IconArrowUp, IconCheck, IconMinus } from '../../../ds/icons';
-import { When } from '../domain';
+import { SIMULATED_TIP, SimulatedBadge, When } from '../domain';
 import { AREA_LABEL, SEVERITY_LABEL, TYPE_LABEL, dateShort, money } from '../../lib/labels';
 import styles from './previews.module.css';
 
@@ -137,7 +138,10 @@ function ToolFrame({
         <ConnectorMark id={connector} size={18} />
         <span className={styles.chromeName}>{name}</span>
         {title ? <span className={styles.chromeTitle}>{title}</span> : null}
-        <span className={styles.chromeEnd}>{end ?? (account ? <span className={styles.via}>via {account}</span> : null)}</span>
+        <span className={styles.chromeEnd}>
+          {end ?? (account ? <span className={styles.via}>via {account}</span> : null)}
+          <SimulatedBadge tip={SIMULATED_TIP.delivery} />
+        </span>
       </header>
       {children}
     </article>

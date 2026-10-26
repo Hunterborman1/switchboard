@@ -36,7 +36,7 @@ import { IconMore, IconUserPlus, IconUsers } from '../../ds/icons';
 import { api } from '../api/client';
 import { invalidate, useMe, usePeople, useRules } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { ErrorState } from '../components/domain';
+import { ErrorState, SIMULATED_TIP, SimulatedBadge } from '../components/domain';
 import { AREA_LABEL } from '../lib/labels';
 import styles from './people/people.module.css';
 
@@ -130,7 +130,8 @@ export default function PeoplePage() {
     <Page>
       <PageHeader
         title="People"
-        description="Who Switchboard can tag, and how to reach each person in the tools you’ve connected."
+        badge={<SimulatedBadge tip={SIMULATED_TIP.people} />}
+        description="A sample directory of fictional people. Their handles are how Switchboard tags them in the simulated tools."
         actions={
           <Button variant="primary" icon={<IconUserPlus />} onClick={() => setEditing('new')}>
             Add person

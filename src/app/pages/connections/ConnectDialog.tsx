@@ -9,6 +9,7 @@ import { Button, Callout, ConnectorMark, Field, Input, Modal, useToast } from '.
 import { IconCheck } from '../../../ds/icons';
 import { api } from '../../api/client';
 import { invalidate } from '../../api/hooks';
+import { SIMULATED_TIP, SimulatedBadge } from '../../components/domain';
 import styles from './connections.module.css';
 
 export function ConnectDialog({ def, open, onClose, onConnected }: { def: ConnectorDef; open: boolean; onClose: () => void; onConnected?: (c: Connection) => void }) {
@@ -33,7 +34,7 @@ export function ConnectDialog({ def, open, onClose, onConnected }: { def: Connec
       const filled = Object.fromEntries(Object.entries(config).filter(([, v]) => v.trim()));
       const { data: c } = await api.updateConnection(def.id, { action: 'connect', account: account.trim() || def.defaultAccount, config: filled });
       invalidate('connections', 'routing', 'overview', 'session');
-      toast({ tone: 'success', title: `${def.name} connected`, body: `Signed in as ${c.account ?? def.defaultAccount}.` });
+      toast({ tone: 'success', title: `${def.name} connected`, body: `Simulated account ${c.account ?? def.defaultAccount}. Routing uses it from now on.` });
       onConnected?.(c);
       onClose();
     } catch (err) {
@@ -54,7 +55,7 @@ export function ConnectDialog({ def, open, onClose, onConnected }: { def: Connec
           Connect {def.name}
         </span>
       }
-      footerStart="Simulated in this demo"
+      footerStart={<SimulatedBadge tip={SIMULATED_TIP.connections} />}
       footer={
         <>
           <Button variant="ghost" onClick={onClose}>

@@ -16,7 +16,7 @@ import type { LogsPage, RegistryRow, YourLastRun } from '../../worker/platform/t
 import { ApiError, useApi } from '../lib/api';
 import * as f from '../lib/format';
 import { IconTrace } from '../ui/icons';
-import { LoadError, SourceBadge, useOpsTitle } from '../ui/kit';
+import { agentLabel, LoadError, SourceBadge, useOpsTitle } from '../ui/kit';
 
 const LEVELS = ['debug', 'info', 'warn', 'error'] as const;
 const LEVEL_LABEL: Record<string, string> = { debug: 'Debug', info: 'Info', warn: 'Warning', error: 'Error' };
@@ -104,6 +104,7 @@ export function Logs() {
   const total = pages[0]?.total ?? null;
   const next = pages[pages.length - 1]?.nextCursor ?? null;
   const names = Object.fromEntries((reg.data ?? []).map((r) => [r.id, r.profile.shortName]));
+  const labels = Object.fromEntries((reg.data ?? []).map((r) => [r.id, agentLabel(r.profile.shortName, r.source)]));
   const active = FILTER_KEYS.filter((k) => params.get(k) && k !== 'web');
   // Routine web requests (successful page and API calls) are hidden unless asked for; a trace,
   // run or API-area filter always shows them (the same rule as the API: includesWebRequests).
@@ -130,7 +131,7 @@ export function Logs() {
 
   const chipValue = (k: string) => {
     const v = params.get(k)!;
-    if (k === 'agentId') return names[v] ?? v;
+    if (k === 'agentId') return labels[v] ?? v;
     if (k === 'component') return AREA_LABEL[v] ?? v;
     if (k === 'level') return v.split(',').map(levelLabel).join(', ');
     if (k === 'source') return v === 'live' ? 'Live' : v === 'simulated' ? 'Simulated' : v;
@@ -195,7 +196,7 @@ export function Logs() {
               aria-label="Agent"
               value={params.get('agentId') ?? ''}
               onChange={(e) => set('agentId', e.target.value || null)}
-              options={[{ value: '', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: r.name }))]}
+              options={[{ value: '', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: agentLabel(r.profile.shortName || r.name, r.source) }))]}
               style={{ width: 200 }}
             />
             <Select
@@ -340,7 +341,7 @@ export function Logs() {
                         <span className="ds-table__primary">{names[l.agentId] ?? l.agentId}</span>
                         <span className="ds-table__secondary">
                           {AREA_LABEL[l.component] ?? l.component}
-                          {l.source === 'live' ? ', live' : ''}
+                          {l.source === 'live' ? ', live' : ', simulated'}
                         </span>
                       </td>
                       <td className="ao-hide-sm ao-hide-md is-nowrap">
@@ -370,7 +371,7 @@ export function Logs() {
         open={!!open}
         onClose={() => setOpen(null)}
         title={open ? <span className="ao-mono" style={{ fontSize: 15 }}>{open.event}</span> : ''}
-        description={open ? `${names[open.agentId] ?? open.agentId}, ${f.time(open.at, timezone, true)}` : undefined}
+        description={open ? `${labels[open.agentId] ?? open.agentId}, ${f.time(open.at, timezone, true)}` : undefined}
         footer={
           open ? (
             <>

@@ -6,11 +6,11 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CONNECTORS, type Connection, type ConnectorCategory, type ConnectorDef } from '../../shared/platform';
-import { Badge, Button, ButtonLink, Card, ConnectorMark, EmptyState, Page, PageHeader, SearchInput, Section, Segmented, Skeleton, Toolbar, Tooltip } from '../../ds';
+import { Button, ButtonLink, Card, ConnectorMark, EmptyState, Page, PageHeader, SearchInput, Section, Segmented, Skeleton, Toolbar } from '../../ds';
 import { IconPlug } from '../../ds/icons';
 import { useConnections } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { ErrorState } from '../components/domain';
+import { ErrorState, SIMULATED_TIP, SimulatedBadge } from '../components/domain';
 import { tourAnchor } from '../../tour/anchors';
 import { ConnectDialog } from './connections/ConnectDialog';
 import styles from './connections/connections.module.css';
@@ -30,8 +30,6 @@ export const CATEGORY_LABEL: Record<ConnectorCategory, string> = {
 export function directionLabel(def: ConnectorDef): string {
   return def.direction === 'source' ? 'Brings in conversations' : def.direction === 'destination' ? 'Receives results' : 'Brings in and receives';
 }
-
-const SIMULATED = 'Connecting records the connection in your workspace and changes routing for real. Deliveries are shown as in-app previews; nothing is sent to the actual tool.';
 
 export default function ConnectionsPage() {
   useDocumentTitle('Connections');
@@ -61,13 +59,7 @@ export default function ConnectionsPage() {
     <Page>
       <PageHeader
         title="Connections"
-        badge={
-          <Tooltip label={SIMULATED}>
-            <span tabIndex={0} style={{ display: 'inline-flex' }}>
-              <Badge tone="info">Simulated</Badge>
-            </span>
-          </Tooltip>
-        }
+        badge={<SimulatedBadge tip={SIMULATED_TIP.connections} />}
         description="Where conversations come from, and the tools results are sent to. People are tagged with their own handle in each tool."
       />
 

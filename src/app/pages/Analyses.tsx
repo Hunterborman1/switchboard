@@ -65,7 +65,7 @@ export default function AnalysesPage() {
                   <div className={styles.featuredTitle}>
                     <h2>{ANALYSIS_NAME}</h2>
                     <Badge tone="success" dot>
-                      Running
+                      Built and running
                     </Badge>
                   </div>
                   <p>{signal.description}</p>

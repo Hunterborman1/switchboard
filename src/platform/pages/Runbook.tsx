@@ -9,7 +9,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import runbook from '../../../docs/RUNBOOK.md?raw';
 import rfpRunbook from '../../../docs/runbooks/rfp-responder.md?raw';
 import { Card, Page, PageHeader, Table, useCrumbs } from '../../ds';
-import { SourceBadge, useOpsTitle } from '../ui/kit';
+import { AgentSourceBadge, useOpsTitle } from '../ui/kit';
 
 /** "Model fallback" → "model-fallback" (the anchors alerts link to). */
 export const slug = (s: string) =>
@@ -166,7 +166,7 @@ export function Runbook() {
       <PageHeader title={doc.title} description={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined} meta={
           <>
             <span className="ao-mono">{source.path}</span>
-            {source.simulated ? <SourceBadge source="simulated" label="Simulated agent" /> : null}
+            {source.simulated ? <AgentSourceBadge source="simulated" /> : null}
           </>
         }
       />

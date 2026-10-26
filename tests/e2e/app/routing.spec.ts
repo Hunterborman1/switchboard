@@ -26,7 +26,7 @@ test.describe('Routing', () => {
     await gotoApp(page, '/app/routing');
     const row = page.locator('[data-tour="routing.rule.pricing"]');
     await row.getByLabel(/^Channel for/).selectOption('salesforce');
-    const warning = page.getByText('Salesforce isn’t connected. Matches go to triage.');
+    const warning = page.getByText('Salesforce isn’t connected (simulated), so matches go to triage.');
     await expect(warning).toBeVisible();
     await expect(page.getByRole('link', { name: 'Connect Salesforce' })).toHaveAttribute('href', /connections\/salesforce/);
     await row.getByRole('button', { name: 'Reset' }).click();

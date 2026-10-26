@@ -151,3 +151,37 @@ export function ErrorState({ error, onRetry, what = 'this page' }: { error: Erro
 export function Muted({ children }: { children: ReactNode }) {
   return <span className="ds-subtle">{children}</span>;
 }
+
+/**
+ * What this demo simulates, one line each, for the Simulated badge's hover: what is simulated
+ * and why. Inputs, the AI, the pipeline and the content of every delivery are real; the
+ * connections to outside tools, the source library and the people are not.
+ */
+export const SIMULATED_TIP = {
+  connections: 'No real accounts in this demo: connecting records the connection and changes routing for real, but nothing is sent to or read from the tool.',
+  connection: 'No real account in this demo: this connection changes routing for real, but nothing is sent to or read from the tool.',
+  deliveries: 'No real accounts in this demo: each preview is the real delivery, its tags and its receipt, shown here instead of sent to the tool.',
+  delivery: 'No real account in this demo: the content, the people tagged and the receipt are real output, shown here instead of sent.',
+  routing: 'No real accounts in this demo: rules route for real, and deliveries are shown as in-app previews instead of sent to the tool.',
+  sources: 'No real Gong, Zoom or Gmail in this demo: these are sample conversations with fictional accounts and people.',
+  overviewSources: 'Uploads and pasted text are real. The other sources are a sample library standing in for connected tools.',
+  overviewResults: 'No real accounts in this demo: every delivery is real output, shown as an in-app preview instead of sent to the tool.',
+  gmail: 'No real Gmail in this demo: this would save a draft for you to send. Nothing is sent.',
+  people: 'Fictional people, so this demo uses no real names or accounts. Your edits stay in your workspace.',
+} as const;
+
+/**
+ * The one mark for anything this demo simulates: a quiet outline badge that says "Simulated",
+ * with what is simulated and why one hover away. One per context (a page header, a card, a
+ * preview frame), never one per row. Agent Ops uses the same look (SourceBadge in
+ * src/platform/ui/kit.tsx).
+ */
+export function SimulatedBadge({ tip }: { tip: string }) {
+  return (
+    <Tooltip label={tip}>
+      <span tabIndex={0} data-simulated="" style={{ display: 'inline-flex', flex: 'none', borderRadius: 4 }}>
+        <Badge outline>Simulated</Badge>
+      </span>
+    </Tooltip>
+  );
+}

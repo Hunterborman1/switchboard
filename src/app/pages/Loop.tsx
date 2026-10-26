@@ -33,7 +33,7 @@ import {
 import { IconCopy, IconInbox, IconInfo, IconMail } from '../../ds/icons';
 import { useInsightDetail, useMe, useNotifications, usePeople, useSession } from '../api/hooks';
 import { useDocumentTitle } from '../AppShell';
-import { ErrorState, SeverityBadge, TypeLabel, When } from '../components/domain';
+import { ErrorState, SeverityBadge, SIMULATED_TIP, SimulatedBadge, TypeLabel, When } from '../components/domain';
 import { dateShort } from '../lib/labels';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
@@ -331,7 +331,7 @@ function NotificationDetail({ n, showCsm }: { n: Notification; showCsm: boolean 
     }
   };
   const saveToGmail = () => {
-    toast({ tone: 'success', title: 'Draft saved to Gmail', body: `Simulated: in production this opens a Gmail draft to ${contact}. Nothing was sent.` });
+    toast({ tone: 'success', title: 'Gmail draft (simulated)', body: `In production this saves a draft to ${contact} for you to send. Nothing was sent.` });
   };
 
   const facts: { label: string; value: ReactNode }[] = [
@@ -412,11 +412,10 @@ function NotificationDetail({ n, showCsm }: { n: Notification; showCsm: boolean 
                 <Button icon={<IconCopy size={14} />} onClick={() => void copy()}>
                   Copy
                 </Button>
-                <Tooltip label="Simulated: saves a draft in Gmail for you to send. Nothing is sent from here.">
-                  <Button variant="primary" icon={<IconMail size={14} />} onClick={saveToGmail} disabled={!note.trim()}>
-                    Send from Gmail
-                  </Button>
-                </Tooltip>
+                <SimulatedBadge tip={SIMULATED_TIP.gmail} />
+                <Button variant="primary" icon={<IconMail size={14} />} onClick={saveToGmail} disabled={!note.trim()}>
+                  Send from Gmail
+                </Button>
               </div>
             </>
           ) : (

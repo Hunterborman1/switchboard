@@ -8,6 +8,19 @@ import { CellText, ConnectorMark } from '../../../ds';
 
 export const CHANNELS: Channel[] = ['slack', 'teams', 'jira', 'linear', 'salesforce', 'email', 'email_digest', 'google_drive', 'triage'];
 
+/** Where a rule sends in a channel until someone names it: picking a new channel resets the destination to this. */
+export const DEFAULT_DESTINATION: Record<Channel, string> = {
+  slack: '#product-feedback',
+  teams: 'Product feedback',
+  jira: 'PROD',
+  linear: 'Core Product',
+  salesforce: 'Account record',
+  email: 'Owner’s inbox',
+  email_digest: 'Weekly digest',
+  google_drive: 'Customer feedback',
+  triage: 'Product Ops triage',
+};
+
 export function channelLabel(channel: Channel): string {
   return CHANNEL_LABEL[channel] ?? channel;
 }

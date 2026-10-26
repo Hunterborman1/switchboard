@@ -232,7 +232,7 @@ export default function SettingsPage() {
 
       <Card title="Data handling" flush>
         <ul className={styles.rows}>
-          <SettingRow label="Redaction" description="Names, emails, phone numbers and health information are replaced with placeholders before any model call.">
+          <SettingRow label="Redaction" description="Names, emails, phone numbers, addresses, card and Social Security numbers, and health identifiers (dates of birth, record numbers) are replaced with placeholders before any model call.">
             <Badge tone="success" dot>
               On
             </Badge>

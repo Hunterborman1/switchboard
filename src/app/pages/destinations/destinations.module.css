@@ -1,10 +1,5 @@
 /* Deliveries page: list of deliveries beside a preview of the selected one. Tokens only. */
 
-.badgeWrap {
-  display: inline-flex;
-  border-radius: var(--radius-xs);
-}
-
 .layoutWrap {
   container-type: inline-size;
   min-width: 0;

@@ -40,6 +40,33 @@ describe('JSON exports', () => {
     expect(r.text).toBe('[00:07:40] Dana Whitfield: The export times out. Every time.');
   });
 
+  it('reads every Gong offset as milliseconds, including the first seconds of the call', () => {
+    // Regression: offsets under 36,000 were read as seconds, so a sentence at 3,000 ms became 00:50:00.
+    const r = jsonToText(JSON.stringify({
+      parties: [{ speakerId: '1', name: 'Diego Alvarez' }, { speakerId: '2', name: 'Priyanka Shah' }],
+      callTranscripts: [{ callId: 'c2', transcript: [
+        { speakerId: '1', sentences: [{ start: 3000, end: 7000, text: 'Thanks for making time.' }] },
+        { speakerId: '2', sentences: [{ start: 9000, end: 14000, text: 'The Salesforce sync duplicates contacts.' }] },
+        { speakerId: '2', sentences: [{ start: 66000, end: 70000, text: 'My CFO will ask about it at renewal.' }] },
+      ] }],
+    }))!;
+    expect(r.text).toBe(
+      ['[00:00:03] Diego Alvarez: Thanks for making time.', '[00:00:09] Priyanka Shah: The Salesforce sync duplicates contacts.', '[00:01:06] Priyanka Shah: My CFO will ask about it at renewal.'].join('\n'),
+    );
+  });
+
+  it('keeps small numeric offsets as seconds when nothing says milliseconds', () => {
+    const r = jsonToText(JSON.stringify([{ speaker: 'Dana', text: 'Hello there.', start: 3000 }, { speaker: 'Marcus', text: 'Hi.', start: 3004 }]))!;
+    expect(r.text.split('\n')[0]).toBe('[00:50:00] Dana: Hello there.');
+  });
+
+  it('keeps a transcript export’s title as the first line (it usually names the account)', () => {
+    const r = jsonToText(JSON.stringify({ meeting_id: 1, topic: 'Prairie Link Broadband x Invoca check-in', timeline: [{ username: 'Ruth Calder', text: 'Our new numbers show as spam.', ts: '00:00:11.000' }] }))!;
+    expect(r.text).toBe(['Prairie Link Broadband x Invoca check-in', '[00:00:11] Ruth Calder: Our new numbers show as spam.'].join('\n'));
+    const gong = jsonToText(JSON.stringify({ metaData: { title: 'Atlas renewal' }, callTranscripts: [{ transcript: [{ speakerId: '1', sentences: [{ start: 1000, text: 'Hi.' }] }] }] }))!;
+    expect(gong.text.split('\n')[0]).toBe('Atlas renewal');
+  });
+
   it('reads a Slack export as chat lines', () => {
     const r = jsonToText(JSON.stringify([
       { type: 'message', user: 'U1', user_profile: { real_name: 'Dana W' }, text: 'presence data vanishes on transfer <@U2|marcus>', ts: '1791900000.000100' },
