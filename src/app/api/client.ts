@@ -21,6 +21,9 @@ import type {
   Theme,
 } from '../../shared/contracts';
 import type { TelemetryBatch } from '../../shared/platform-contracts';
+import type { Person } from '../../shared/contracts';
+import type { Actor, Connection, ConnectionTestResult, PersonInput, PlatformOverview, UpdateConnection } from '../../shared/platform';
+import type { AnalysisSummary, ConnectionDetail } from './types';
 import type {
   CreateRunResult,
   EvalsData,
@@ -55,7 +58,7 @@ export class ApiError extends Error {
 
 export const FIXTURES_ENABLED: boolean = import.meta.env.DEV && import.meta.env.VITE_FIXTURES === '1';
 
-type Method = 'GET' | 'POST' | 'PUT';
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 async function viaFixtures<T>(method: Method, path: string, body: unknown): Promise<Fetched<T>> {
   const { fixtureRequest } = await import('./fixtures');
@@ -145,6 +148,19 @@ export const api = {
   evals: () => request<EvalsData>('GET', '/evals'),
   health: () => request<HealthData>('GET', '/health'),
   resetWorkspace: () => request<Record<string, never>>('POST', '/workspace/reset', {}),
+  // ---- Switchboard platform (src/shared/platform.ts)
+  connections: () => request<Connection[]>('GET', '/connections'),
+  connection: (id: string) => request<ConnectionDetail>('GET', `/connections/${encodeURIComponent(id)}`),
+  updateConnection: (id: string, body: UpdateConnection) => request<Connection>('PUT', `/connections/${encodeURIComponent(id)}`, body),
+  testConnection: (id: string) => request<ConnectionTestResult>('POST', `/connections/${encodeURIComponent(id)}/test`, {}),
+  people: () => request<Person[]>('GET', '/people'),
+  createPerson: (body: PersonInput) => request<Person>('POST', '/people', body),
+  updatePerson: (id: string, body: Partial<PersonInput> & { active?: boolean }) => request<Person>('PUT', `/people/${encodeURIComponent(id)}`, body),
+  deactivatePerson: (id: string) => request<{ person: Person; reassignedRules: string[] }>('DELETE', `/people/${encodeURIComponent(id)}`, {}),
+  me: () => request<Actor>('GET', '/me'),
+  setMe: (personId: string) => request<Actor>('PUT', '/me', { personId }),
+  analyses: () => request<AnalysisSummary[]>('GET', '/analyses'),
+  overview: (days = 30) => request<PlatformOverview>('GET', `/overview${qs({ days })}`),
 };
 
 /** Fire-and-forget telemetry; never throws (see ../telemetry.ts). */

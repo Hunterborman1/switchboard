@@ -1,43 +1,61 @@
+/**
+ * The agent standard: every agent against the nine checks (with evidence), the review
+ * calendar, and the checklist a new agent follows before production.
+ */
 import { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Callout, Card, EmptyState, Page, PageHeader, TabLinks, Table, useCrumbs } from '../../ds';
+import { IconCheck, IconCheckCircle, IconChevronRight, IconX } from '../../ds/icons';
 import type { ReviewRow, StandardReport } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { IconCheck, IconX } from '../ui/icons';
-import { AgentStatus, Callout, ErrorState, PageHead, PageSkeleton, Panel, ReviewPill, Score, Table } from '../ui/kit';
+import { AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
-function Tabs() {
-  return (
-    <nav className="ao-tabs" aria-label="Standard and reviews sections">
-      {/* Phones get short labels so all three tabs fit without clipping. */}
-      <NavLink to="/ops/standard" end>
-        <span className="ao-tab-long">Standard matrix</span>
-        <span className="ao-tab-short">Matrix</span>
-      </NavLink>
-      <NavLink to="/ops/standard/reviews">
-        <span className="ao-tab-long">Review calendar</span>
-        <span className="ao-tab-short">Reviews</span>
-      </NavLink>
-      <NavLink to="/ops/standard/checklist">
-        <span className="ao-tab-long">New agent checklist</span>
-        <span className="ao-tab-short">New agent</span>
-      </NavLink>
-    </nav>
-  );
-}
+const TAB_LABEL = { matrix: 'Standard matrix', reviews: 'Review calendar', checklist: 'New agent checklist' } as const;
 
 export function Standard() {
   const { pathname } = useLocation();
   const tab = pathname.endsWith('/reviews') ? 'reviews' : pathname.endsWith('/checklist') ? 'checklist' : 'matrix';
+  useOpsTitle(TAB_LABEL[tab]);
+  useCrumbs(tab === 'matrix' ? null : [{ label: TAB_LABEL[tab] }], [tab]);
   return (
-    <div className="ao-page">
-      <PageHead
-        title="Agent standard and reviews"
-        sub="One standard every agent is reviewed against, whoever built it and in whatever tool. Nine checks, each with evidence. Two of them, the review schedule and live logging, are measured from data rather than self-reported."
+    <Page>
+      <PageHeader title="Agent standard and reviews" description="Nine checks every agent is held to, whoever built it, each with evidence." />
+      <TabLinks
+        label="Standard and reviews sections"
+        items={[
+          {
+            to: '/ops/standard',
+            end: true,
+            label: (
+              <>
+                <span className="ao-tab-long">Standard matrix</span>
+                <span className="ao-tab-short">Matrix</span>
+              </>
+            ),
+          },
+          {
+            to: '/ops/standard/reviews',
+            label: (
+              <>
+                <span className="ao-tab-long">Review calendar</span>
+                <span className="ao-tab-short">Reviews</span>
+              </>
+            ),
+          },
+          {
+            to: '/ops/standard/checklist',
+            label: (
+              <>
+                <span className="ao-tab-long">New agent checklist</span>
+                <span className="ao-tab-short">New agent</span>
+              </>
+            ),
+          },
+        ]}
       />
-      <Tabs />
       {tab === 'matrix' ? <Matrix /> : tab === 'reviews' ? <Reviews /> : <Checklist />}
-    </div>
+    </Page>
   );
 }
 
@@ -56,28 +74,52 @@ const SHORT: Record<string, string> = {
 function Matrix() {
   const s = useApi<StandardReport>('/standard');
   const [sel, setSel] = useState<{ agentId: string; key: string } | null>(null);
-  if (s.error && !s.data) return <ErrorState message={s.error.message} onRetry={s.reload} />;
-  if (!s.data) return <PageSkeleton kpis={false} />;
+  if (s.error && !s.data) return <LoadError error={s.error} onRetry={s.reload} what="the standard" />;
+  if (!s.data) return <OpsSkeleton stats={false} />;
   const { checks, matrix } = s.data;
   const selRow = sel ? matrix.find((m) => m.agentId === sel.agentId) : null;
   const selCheck = selRow?.checks.find((c) => c.key === sel?.key);
   const gaps = matrix.flatMap((m) => m.checks.filter((c) => !c.passed).map((c) => ({ agent: m.name, agentId: m.agentId, ...c })));
   return (
     <>
-      <Panel title="Every agent against every check" sub="Select a cell to see its evidence. A gap is a reason to act, not a reason to hide the agent." flush>
-        <div className="ao-table-wrap">
-          <table className="ao-table ao-matrix">
-            <caption className="ao-sr">Agent standard matrix</caption>
+      <Card
+        title="Every agent against every check"
+        description="Select a cell to see its evidence. A gap is a reason to act, not to hide the agent."
+        flush
+        footer={
+          <div className="ao-evidence" aria-live="polite">
+            {selRow && selCheck ? (
+              <>
+                <span className={`ao-check__icon${selCheck.passed ? '' : ' ao-check__icon--fail'}`} aria-hidden="true">
+                  {selCheck.passed ? <IconCheck size={12} /> : <IconX size={12} />}
+                </span>
+                <span>
+                  <strong>
+                    {selRow.name}, {selCheck.label.charAt(0).toLowerCase() + selCheck.label.slice(1)}:
+                  </strong>{' '}
+                  {selCheck.evidence}
+                </span>
+              </>
+            ) : (
+              <span>Select any cell to see its evidence.</span>
+            )}
+          </div>
+        }
+      >
+        <div className="ao-matrix-wrap">
+          <table className="ao-matrix" aria-label="Agent standard matrix">
             <thead>
               <tr>
-                <th scope="col">Agent</th>
+                <th scope="col" className="ao-matrix__head ao-matrix__head--agent">
+                  Agent
+                </th>
                 {checks.map((c) => (
-                  <th key={c.key} scope="col" className="chk" title={c.label}>
+                  <th key={c.key} scope="col" className="ao-matrix__head" title={c.label}>
                     <span aria-hidden="true">{SHORT[c.key] ?? c.label}</span>
-                    <span className="ao-sr">{c.label}</span>
+                    <span className="ds-sr-only">{c.label}</span>
                   </th>
                 ))}
-                <th scope="col" className="num">
+                <th scope="col" className="ao-matrix__head ao-matrix__head--score">
                   Score
                 </th>
               </tr>
@@ -87,24 +129,20 @@ function Matrix() {
                 const passed = m.checks.filter((c) => c.passed).length;
                 return (
                   <tr key={m.agentId} data-agent={m.agentId}>
-                    <th scope="row" style={{ fontWeight: 400, fontSize: 14, color: 'var(--ao-text)', background: 'transparent', position: 'static', paddingTop: 10, paddingBottom: 10 }}>
-                      <div className="cell-title" style={{ minWidth: 180, maxWidth: 240, whiteSpace: 'normal' }}>
-                        <Link className="row-link" to={`/ops/agents/${m.agentId}#standard`}>
-                          {m.name}
-                        </Link>
-                        <small style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-                          <AgentStatus value={m.status} /> {m.owner}
-                        </small>
-                      </div>
+                    <th scope="row" className="ao-matrix__agent">
+                      <Link to={`/ops/agents/${m.agentId}#standard`} className="ds-table__primary">
+                        {m.name}
+                      </Link>
+                      <span className="ds-table__secondary">{m.owner}</span>
                     </th>
                     {checks.map((c) => {
                       const r = m.checks.find((x) => x.key === c.key);
                       const pressed = sel?.agentId === m.agentId && sel.key === c.key;
                       return (
-                        <td key={c.key} className="chk">
+                        <td key={c.key} className="ao-matrix__cell">
                           <button
                             type="button"
-                            className={`ao-mcell ${r?.passed ? 'pass' : 'fail'}`}
+                            className={`ao-mcell${r?.passed ? '' : ' ao-mcell--fail'}`}
                             aria-pressed={pressed}
                             aria-label={`${m.name}: ${c.label}: ${r?.passed ? 'passes' : 'gap'}. Show evidence`}
                             onClick={() => setSel(pressed ? null : { agentId: m.agentId, key: c.key })}
@@ -114,7 +152,7 @@ function Matrix() {
                         </td>
                       );
                     })}
-                    <td className="num">
+                    <td className="ao-matrix__score">
                       <Score passed={passed} total={m.checks.length} />
                     </td>
                   </tr>
@@ -123,128 +161,150 @@ function Matrix() {
             </tbody>
           </table>
         </div>
-        {selRow && selCheck ? (
-          <div className="ao-panel-foot" style={{ justifyContent: 'flex-start', color: 'var(--ao-text)', flexWrap: 'nowrap', alignItems: 'flex-start' }} aria-live="polite">
-            <span className={`ao-mcell ${selCheck.passed ? 'pass' : 'fail'}`} style={{ width: 22, height: 22, flex: 'none', cursor: 'default', boxShadow: 'none' }} aria-hidden="true">
-              {selCheck.passed ? <IconCheck size={12} /> : <IconX size={12} />}
-            </span>
-            <span>
-              <b style={{ fontWeight: 500 }}>
-                {selRow.name} · {selCheck.label}:
-              </b>{' '}
-              {selCheck.evidence}
-            </span>
-          </div>
-        ) : (
-          <div className="ao-panel-foot">
-            <span>Select any cell to see its evidence.</span>
-          </div>
-        )}
-      </Panel>
-      <Panel title="Open gaps" sub="What it would take to close each one." flush>
+      </Card>
+
+      <Card title="Open gaps" description="What it would take to close each one." flush>
         {gaps.length ? (
-          <ul className="ao-att">
+          <ul className="ds-list">
             {gaps.map((g) => (
               <li key={`${g.agentId}-${g.key}`}>
-                <Link to={`/ops/agents/${g.agentId}#standard`}>
-                  <span className="ao-att-icon warning" aria-hidden="true">
+                <Link to={`/ops/agents/${g.agentId}#standard`} className="ds-list__item ao-att">
+                  <span className="ao-att-icon ao-att-icon--warning" aria-hidden="true">
                     <IconX size={14} />
                   </span>
-                  <span>
-                    <b>
-                      {g.agent}: {g.label}
-                    </b>
-                    <small>{g.evidence}</small>
+                  <span className="ao-att__text">
+                    <span className="ao-att__title">
+                      {g.agent}: {g.label.charAt(0).toLowerCase() + g.label.slice(1)}
+                    </span>
+                    <span className="ao-att__detail">{g.evidence}</span>
                   </span>
-                  <span className="go" aria-hidden="true">→</span>
+                  <IconChevronRight size={14} className="ao-att__go" />
                 </Link>
               </li>
             ))}
           </ul>
         ) : (
-          <div style={{ padding: 20 }}>
-            <Callout tone="live">Every agent passes every check.</Callout>
-          </div>
+          <EmptyState compact icon={<IconCheckCircle />} title="No open gaps" description="Every agent passes every check." />
         )}
-      </Panel>
+      </Card>
     </>
   );
 }
 
 function Reviews() {
   const r = useApi<ReviewRow[]>('/reviews');
-  if (r.error && !r.data) return <ErrorState message={r.error.message} onRetry={r.reload} />;
-  if (!r.data) return <PageSkeleton kpis={false} />;
+  const { sorted, state, by } = useSorted<ReviewRow>(
+    r.data ?? [],
+    { name: (x) => x.name, owner: (x) => x.owner, last: (x) => x.lastReview, cad: (x) => x.cadenceDays, next: (x) => x.nextReview, rs: (x) => x.daysUntil },
+    { key: 'next', dir: 'asc' },
+  );
+  if (r.error && !r.data) return <LoadError error={r.error} onRetry={r.reload} what="reviews" />;
+  if (!r.data) return <OpsSkeleton stats={false} />;
   const rows = r.data;
   const today = Date.now();
   const from = today - 60 * 86_400_000;
   const to = today + 60 * 86_400_000;
-  const x = (t: number) => `${Math.max(0, Math.min(100, ((t - from) / (to - from)) * 100))}%`;
+  const pct = (t: number) => Math.max(0, Math.min(100, ((t - from) / (to - from)) * 100));
   const months: { label: string; at: number }[] = [];
   const d0 = new Date(from);
   for (let m = new Date(Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() + 1, 1)); m.getTime() < to; m = new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth() + 1, 1))) months.push({ label: f.day(m.toISOString()).replace(/ 1$/, ''), at: m.getTime() });
-  const color = (s: ReviewRow['reviewStatus']) => (s === 'overdue' ? 'var(--ao-danger)' : s === 'due_soon' ? 'var(--ao-warning-mark)' : 'var(--ao-success)');
+  const due = rows.filter((x) => x.reviewStatus !== 'current').length;
   return (
     <>
-      <Panel title="Review calendar" sub="Sixty days either side of today. Filled dot: the last review. Ring: the next one, coloured by status. The bar spans the time between them.">
-        <div className="ao-cal">
-          <div className="ao-cal-row">
-            <span />
-            <div className="ao-cal-months" aria-hidden="true">
-              {months.map((m) => (
-                <span key={m.at} style={{ left: x(m.at) }}>
-                  {m.label}
-                </span>
-              ))}
-              <span style={{ left: x(today), color: 'var(--ao-text)', fontWeight: 500, transform: 'translateX(-50%)' }}>Today</span>
-            </div>
-          </div>
-          {rows.map((row) => {
-            const last = Date.parse(row.lastReview);
-            const next = Date.parse(row.nextReview);
-            return (
-              <div className="ao-cal-row" key={row.agentId}>
-                <div className="cell-title" style={{ display: 'grid', gap: 2 }}>
-                  <Link className="row-link ao-link" style={{ color: 'var(--ao-text)', fontWeight: 500 }} to={`/ops/agents/${row.agentId}`}>
-                    {row.name}
-                  </Link>
-                  <small className="ao-muted" style={{ fontSize: 13 }}>
-                    {row.owner} · every {row.cadenceDays} days
-                  </small>
-                </div>
-                <div className="ao-cal-lane" role="img" aria-label={`${row.name}: last review ${row.lastReview}, next review ${row.nextReview}, ${row.reviewStatus.replace('_', ' ')}`}>
-                  <span className="win" style={{ left: x(last), width: `calc(${x(next)} - ${x(last)})`, background: 'var(--ao-accent-subtle)' }} />
-                  <span className="today" style={{ left: x(today) }} />
-                  <span className="pt" style={{ left: x(last), background: 'var(--ao-success)' }} title={`Last review ${f.dayYear(row.lastReview)}`}>
-                    <IconCheck size={11} color="#fff" />
+      <Card title="Review calendar" description="Sixty days either side of today, marked by the line. Dot: the last review. Ring: the next one, coloured by status.">
+        <div className="ao-cal-scroll">
+          <div className="ao-cal">
+            <div className="ao-cal__row ao-cal__head">
+              <span className="ao-cal__spacer" />
+              <div className="ao-cal__months" aria-hidden="true">
+                {months.map((m) => (
+                  <span key={m.at} className="ao-cal__month" style={{ left: `${pct(m.at)}%` }}>
+                    {m.label}
                   </span>
-                  <span className="pt" style={{ left: x(next), background: '#fff', borderColor: color(row.reviewStatus), borderWidth: 3 }} title={`Next review ${f.dayYear(row.nextReview)}`} />
-                </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+            {rows.map((row) => {
+              const last = Date.parse(row.lastReview);
+              const next = Date.parse(row.nextReview);
+              return (
+                <div className="ao-cal__row" key={row.agentId}>
+                  <span className="ds-stack">
+                    <Link to={`/ops/agents/${row.agentId}`} className="ao-cal__name">
+                      {row.name}
+                    </Link>
+                    <span className="ds-table__secondary">
+                      {row.owner}, every {row.cadenceDays} days
+                    </span>
+                  </span>
+                  <div className="ao-cal__lane" role="img" aria-label={`${row.name}: last review ${f.dayYear(row.lastReview)}, next review ${f.dayYear(row.nextReview)}, ${row.reviewStatus.replace('_', ' ')}`}>
+                    <span className="ao-cal__window" style={{ left: `${pct(last)}%`, width: `${pct(next) - pct(last)}%` }} />
+                    <span className="ao-cal__today" style={{ left: `${pct(today)}%` }} />
+                    <span className="ao-cal__point ao-cal__point--last" style={{ left: `${pct(last)}%` }} title={`Last review ${f.dayYear(row.lastReview)}`} />
+                    <span className={`ao-cal__point ao-cal__point--${row.reviewStatus}`} style={{ left: `${pct(next)}%` }} title={`Next review ${f.dayYear(row.nextReview)}`} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </Panel>
-      <Panel title="Scheduled reviews" flush>
-        <Table
-          className="ao-cards"
-          caption="Scheduled reviews"
-          rows={rows}
-          rowKey={(x) => x.agentId}
-          defaultSort={{ key: 'next', dir: 'asc' }}
-          cols={[
-            { key: 'name', header: 'Agent', sort: (x) => x.name, render: (x) => <Link className="row-link" to={`/ops/agents/${x.agentId}`}>{x.name}</Link> },
-            { key: 'owner', mobileHide: true, header: 'Owner', sort: (x) => x.owner, render: (x) => x.owner },
-            { key: 'status', mobileHide: true, header: 'Agent status', render: (x) => <AgentStatus value={x.status} /> },
-            { key: 'last', mobileHide: true, header: 'Last review', sort: (x) => x.lastReview, render: (x) => f.dayYear(x.lastReview) },
-            { key: 'cad', mobileHide: true, header: 'Every', num: true, sort: (x) => x.cadenceDays, render: (x) => `${x.cadenceDays} days` },
-            { key: 'next', header: 'Next review', sort: (x) => x.nextReview, render: (x) => <span>{f.dayYear(x.nextReview)} <span className="ao-muted">({x.daysUntil >= 0 ? `in ${x.daysUntil} day${x.daysUntil === 1 ? '' : 's'}` : `${-x.daysUntil} days ago`})</span></span> },
-            { key: 'rs', header: 'Status', sort: (x) => x.daysUntil, render: (x) => <ReviewPill value={x.reviewStatus} /> },
-          ]}
-        />
-      </Panel>
+        <p className="ao-chart-summary">{due ? `${due} of ${rows.length} agents have a review due within 14 days or overdue.` : `Every agent’s next review is more than 14 days away.`}</p>
+      </Card>
+
+      <Card title="Scheduled reviews" flush>
+        <Table label="Scheduled reviews">
+          <thead>
+            <tr>
+              <SortHead active={state('name')} onSort={() => by('name')}>
+                Agent
+              </SortHead>
+              <SortHead className="ao-hide-sm" active={state('owner')} onSort={() => by('owner')}>
+                Owner
+              </SortHead>
+              <th className="ao-hide-sm ao-hide-md">Agent status</th>
+              <SortHead className="ao-hide-sm ao-hide-md" active={state('last')} onSort={() => by('last')}>
+                Last review
+              </SortHead>
+              <SortHead num className="ao-hide-sm" active={state('cad')} onSort={() => by('cad', true)}>
+                Every
+              </SortHead>
+              <SortHead className="ao-hide-sm" active={state('next')} onSort={() => by('next')}>
+                Next review
+              </SortHead>
+              <SortHead active={state('rs')} onSort={() => by('rs', true)}>
+                Status
+              </SortHead>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((x) => (
+              <tr key={x.agentId}>
+                <td className="ao-agent-col">
+                  <Link to={`/ops/agents/${x.agentId}`} className="ds-table__primary">
+                    {x.name}
+                  </Link>
+                </td>
+                <td className="ao-hide-sm is-nowrap">{x.owner}</td>
+                <td className="ao-hide-sm ao-hide-md is-nowrap">
+                  <AgentStatus value={x.status} />
+                </td>
+                <td className="ao-hide-sm ao-hide-md is-nowrap">{f.dayYear(x.lastReview)}</td>
+                <td className="is-num ao-hide-sm">{x.cadenceDays} days</td>
+                <td className="is-nowrap ao-hide-sm">
+                  <span className="ds-table__primary">{f.dayYear(x.nextReview)}</span>
+                  <span className="ds-table__secondary">{x.daysUntil >= 0 ? `In ${x.daysUntil} day${x.daysUntil === 1 ? '' : 's'}` : `${-x.daysUntil} days ago`}</span>
+                </td>
+                <td className="is-nowrap">
+                  <ReviewBadge value={x.reviewStatus} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
+
       <Callout title="What a review covers.">
-        The owner and business owner walk through the agent’s numbers here (use, hours saved, cost, service targets and alerts since the last review), re-check the nine standard items, and record a decision in the change history: keep, change, expand or retire.
+        The owners walk through the agent’s numbers since the last review, re-check the nine standard items, and record a decision in the change history: keep, change, expand or retire.
       </Callout>
     </>
   );
@@ -252,8 +312,8 @@ function Reviews() {
 
 const STEPS: { title: string; body: string; who: string }[] = [
   { title: 'Name an owner and a business owner', body: 'The owner builds and runs it; the business owner is accountable for whether it is worth running. No owner, no production.', who: 'Requester and AI Operations' },
-  { title: 'Write the purpose, the unit of work and the success metric', body: 'One paragraph. What is a “unit” (a questionnaire drafted, a call processed)? How long does it take the manual way today? That baseline is an assumption until a 2-week time study replaces it.', who: 'Business owner' },
-  { title: 'Pass the security and data review', body: 'List every data source and destination, the classification, the provider’s retention terms, and what never goes to a model. Restricted data needs approval before any pilot user touches it.', who: 'Security & GRC' },
+  { title: 'Write the purpose, the unit of work and the success metric', body: 'One paragraph. What is one unit of work, and how long does it take by hand today? That baseline is an assumption until a 2-week time study replaces it.', who: 'Business owner' },
+  { title: 'Pass the security and data review', body: 'List every data source and destination, the classification, the provider’s retention terms, and what never goes to a model. Restricted data needs approval before any pilot user touches it.', who: 'Security and GRC' },
   { title: 'Build a test set and a release check', body: 'Twenty to fifty real examples with expected outputs, scored on every prompt, model or flow change. A change that lowers quality does not ship.', who: 'Owner' },
   { title: 'Report to Agent Ops', body: 'Logs and timed steps for every run, usage, and a record per task (minutes saved, review minutes, cost, outcome). Gumloop and Databricks agents send theirs by webhook.', who: 'Owner and AI Operations' },
   { title: 'Set a spend cap and a per-run budget', body: 'A monthly cap at the provider or workspace, and a per-run ceiling in code, so one runaway input cannot spend the month.', who: 'Owner' },
@@ -262,39 +322,44 @@ const STEPS: { title: string; body: string; who: string }[] = [
   { title: 'Book the first review and a schedule', body: 'A readiness review after the pilot, then every 30 to 90 days depending on risk. An overdue review fails the standard automatically.', who: 'AI Operations' },
 ];
 
+const ROLLOUT: { title: string; body: string }[] = [
+  { title: 'Shadow, 1 to 2 weeks', body: 'Runs on real work but delivers nothing; compare with what people did by hand.' },
+  { title: 'Champions, 3 to 6 weeks', body: 'Two or three volunteers, a weekly look at misses and noise, accuracy shared openly.' },
+  { title: 'Team', body: 'Confident outputs go out automatically, the rest go to a review queue; use and hours saved are tracked here.' },
+  { title: 'Improve or retire', body: 'Every review decides to keep, change, expand or retire the agent, recorded in its change history.' },
+];
+
 function Checklist() {
   return (
     <>
-      <Callout title="Before an agent goes to production.">
+      <Callout tone="info" title="Before an agent goes to production.">
         Each step maps to one of the nine standard checks, so passing the checklist is passing the review. A pilot can start once steps 1 to 3 are done.
       </Callout>
-      <ol className="ao-steps">
-        {STEPS.map((s) => (
-          <li key={s.title}>
-            <div>
-              <b>{s.title}</b>
-              <p>{s.body}</p>
-              <div className="who">Who: {s.who}</div>
-            </div>
-          </li>
-        ))}
-      </ol>
-      <Panel title="Rollout after launch" sub="How a new agent earns trust and adoption.">
-        <ol style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 8, fontSize: 14, color: 'var(--ao-text-2)', lineHeight: 1.55 }}>
-          <li>
-            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Shadow (1 to 2 weeks):</b> runs on real work but delivers nothing; compare with what people did by hand.
-          </li>
-          <li>
-            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Champions (3 to 6 weeks):</b> two or three volunteers, a weekly look at misses and noise, accuracy shared openly.
-          </li>
-          <li>
-            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Team:</b> confident outputs go out automatically, the rest go to a review queue; use and hours saved are tracked here.
-          </li>
-          <li>
-            <b style={{ fontWeight: 600, color: 'var(--ao-text)' }}>Improve or retire:</b> every review decides to keep, change, expand or retire the agent, recorded in its change history.
-          </li>
+      <Card title="New agent checklist" flush>
+        <ol className="ao-steps">
+          {STEPS.map((s) => (
+            <li key={s.title} className="ao-step">
+              <div className="ao-step__body">
+                <span className="ao-step__title">{s.title}</span>
+                <p className="ao-step__text">{s.body}</p>
+                <span className="ao-step__who">Who: {s.who}</span>
+              </div>
+            </li>
+          ))}
         </ol>
-      </Panel>
+      </Card>
+      <Card title="Rollout after launch" description="How a new agent earns trust and adoption." flush>
+        <ol className="ao-rollout">
+          {ROLLOUT.map((s) => (
+            <li key={s.title} className="ao-step">
+              <div className="ao-step__body">
+                <span className="ao-step__title">{s.title}</span>
+                <p className="ao-step__text">{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Card>
     </>
   );
 }

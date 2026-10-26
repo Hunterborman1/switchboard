@@ -1,97 +1,89 @@
 /* =========================================================================
-   Signal Loop Narrative · tokens
-   One light, flat theme (docs/DESIGN.md). Every custom property is prefixed
-   --n-* and declared on .sl-n (pages) and .sl-n-portal (walkthrough UI over
-   the product), so it can never collide with the product's own tokens.
+   Narrative layer · tokens
+   The presentation layer (scenes, hub, write-up, Q&A, presenter, walkthrough
+   overlay) draws on the Switchboard design system: every value below is an
+   alias of a token in src/ds/tokens.css, so a colour, size or duration
+   changes there and nowhere else. New CSS should read the ds tokens
+   directly; these names stay for anything that still reads --n-*.
+
+   The only values defined here are the ones the system has no token for:
+   the presentation column and gutter, headline sizes, the data-reveal
+   duration and the overlay layers.
    ========================================================================= */
 
 .sl-n,
 .sl-n-portal {
-  /* colour: DESIGN.md light tokens */
-  --n-bg: #ffffff;
-  --n-bg-subtle: #f7f8f7;
-  --n-bg-muted: #eff1ef;
-  --n-border: #e3e6e3;
-  --n-border-strong: #cdd2cd;
-  --n-text: #111614;
-  --n-text-2: #525c57;
-  --n-text-3: #6b756f;
-  --n-accent: #008463;
-  --n-accent-hover: #00785a;
-  --n-accent-text: #006b51;
-  --n-accent-subtle: #e8f4ef;
-  --n-success: #0f7b48;
-  --n-success-subtle: #e7f4ec;
-  --n-warning: #9a5b00;
-  --n-warning-subtle: #fbf1de;
-  --n-danger: #b42318;
-  --n-danger-subtle: #fdecea;
-  --n-info: #2f5db8;
-  --n-info-subtle: #eaf0fb;
-  --n-scrim: rgb(17 22 20 / 0.45);
+  /* colour */
+  --n-bg: var(--bg);
+  --n-bg-subtle: var(--bg-subtle);
+  --n-bg-muted: var(--bg-muted);
+  --n-border: var(--border);
+  --n-border-strong: var(--border-strong);
+  --n-text: var(--text);
+  --n-text-2: var(--text-secondary);
+  --n-text-3: var(--text-tertiary);
+  --n-text-4: var(--text-disabled);
+  --n-accent: var(--accent);
+  --n-accent-hover: var(--accent-hover);
+  --n-accent-text: var(--accent-text);
+  --n-accent-subtle: var(--accent-subtle);
+  --n-accent-line: var(--accent-line);
+  --n-success: var(--success);
+  --n-success-subtle: var(--success-subtle);
+  --n-warning: var(--warning);
+  --n-warning-subtle: var(--warning-subtle);
+  --n-danger: var(--danger);
+  --n-danger-subtle: var(--danger-subtle);
+  --n-info: var(--info);
+  --n-info-subtle: var(--info-subtle);
+  --n-scrim: var(--scrim);
 
-  /* legacy aliases (older class names still read these) */
-  --n-bg-2: var(--n-bg-subtle);
-  --n-raised: var(--n-bg);
-  --n-ink: var(--n-text);
-  --n-ink-2: var(--n-text-2);
-  --n-ink-3: var(--n-text-3);
-  --n-ink-4: #9aa39e;
-  --n-line: var(--n-border);
-  --n-line-2: var(--n-border-strong);
-  --n-mint: var(--n-accent-text);
-  --n-amber: var(--n-warning);
-  --n-indigo: var(--n-info);
-  --n-accent-wash: var(--n-accent-subtle);
+  /* type */
+  --n-font-body: var(--font-sans);
+  --n-font-display: var(--font-sans);
+  --n-font-mono: var(--font-mono);
+  --n-text-xs: var(--text-xs);
+  --n-text-sm: var(--text-sm);
+  --n-text-md: var(--text-md);
+  --n-text-lg: var(--text-lg);
+  --n-text-xl: var(--text-xl);
+  --n-text-2xl: var(--text-2xl);
+  --n-text-3xl: var(--text-3xl);
+  /* Presentation headlines: 32 on phones, 40 on laptops, 48 on a large screen. */
+  --n-display: clamp(2rem, 1.25rem + 1.6vw, 3rem);
+  --n-display-sm: var(--text-3xl);
 
-  /* type: Inter only; mono is for things a person would copy */
-  --n-font-body: 'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --n-font-display: var(--n-font-body);
-  --n-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-
-  --n-text-xs: 0.75rem; /* 12 */
-  --n-text-sm: 0.8125rem; /* 13 */
-  --n-text-md: 0.875rem; /* 14 body */
-  --n-text-lg: 1rem; /* 16 */
-  --n-text-xl: 1.25rem; /* 20 */
-  --n-text-2xl: 1.5rem; /* 24 */
-  --n-text-3xl: 2rem; /* 32 */
-  --n-display-sm: clamp(1.5rem, 1.2rem + 1vw, 2rem); /* 24 → 32 */
-  --n-display-md: clamp(2rem, 1.4rem + 2vw, 2.75rem); /* 32 → 44 */
-  --n-display-lg: clamp(2.25rem, 1.4rem + 2.8vw, 3.5rem); /* 36 → 56 */
-
-  /* spacing (4px grid) */
-  --n-s-1: 4px;
-  --n-s-2: 8px;
-  --n-s-3: 12px;
-  --n-s-4: 16px;
-  --n-s-5: 24px;
-  --n-s-6: 32px;
-  --n-s-7: 48px;
-  --n-s-8: 64px;
-  --n-s-9: 96px;
-  --n-gutter: clamp(16px, 4vw, 40px);
+  /* space (4px grid) */
+  --n-s-1: var(--space-1);
+  --n-s-2: var(--space-2);
+  --n-s-3: var(--space-3);
+  --n-s-4: var(--space-4);
+  --n-s-5: var(--space-6);
+  --n-s-6: var(--space-8);
+  --n-s-7: var(--space-12);
+  --n-s-8: var(--space-16);
+  --n-gutter: var(--page-gutter);
   --n-column: 1120px;
 
   /* radius */
-  --n-r-xs: 4px;
-  --n-r-sm: 6px;
-  --n-r-md: 8px;
-  --n-r-lg: 8px;
+  --n-r-xs: var(--radius-xs);
+  --n-r-sm: var(--radius-sm);
+  --n-r-md: var(--radius-md);
+  --n-r-lg: var(--radius-lg);
 
-  /* elevation: the only shadows allowed */
-  --n-shadow-1: 0 1px 2px rgb(16 24 20 / 0.06);
-  --n-shadow-2: 0 4px 12px rgb(16 24 20 / 0.08), 0 1px 3px rgb(16 24 20 / 0.06);
+  /* elevation */
+  --n-shadow-1: var(--shadow-1);
+  --n-shadow-2: var(--shadow-2);
 
-  /* motion */
-  --n-ease: cubic-bezier(0.2, 0, 0, 1);
-  --n-ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --n-d-press: 120ms;
-  --n-d-ui: 180ms;
-  --n-d-layout: 240ms;
+  /* motion: data reveals (bars filling, a line drawing) may take up to 600ms, once */
+  --n-ease: var(--ease-enter);
+  --n-ease-exit: var(--ease-exit);
+  --n-d-press: var(--dur-fast);
+  --n-d-ui: var(--dur-base);
+  --n-d-layout: var(--dur-slow);
   --n-d-data: 600ms;
 
-  /* layers */
+  /* layers: the walkthrough sits above the product's own overlays */
   --n-z-overlay: 9000;
   --n-z-callout: 9010;
   --n-z-hud: 9020;
@@ -101,9 +93,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-n,
   .sl-n-portal {
-    --n-d-press: 0ms;
-    --n-d-ui: 0ms;
-    --n-d-layout: 0ms;
     --n-d-data: 0ms;
   }
 }

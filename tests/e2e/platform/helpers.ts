@@ -34,7 +34,7 @@ export async function signIn(ctx: BrowserContext, ws = WS, domain = 'localhost')
 
 export async function open(page: Page, path: string) {
   await page.goto(`${BASE}${path}`);
-  await expect(page.locator('.ao-page h1').first()).toBeVisible();
+  await expect(page.locator('#main-content h1').first()).toBeVisible();
 }
 
 export const anchor = (page: Page, id: string) => page.locator(`[data-tour="${id}"]`);

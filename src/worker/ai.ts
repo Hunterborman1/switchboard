@@ -7,10 +7,18 @@
  *        ▼                                      ▼
  *   secondary (independent family) ──────── fail ──▶ LlmFailure (caller writes the DLQ row)
  *
- * Every HTTP call writes one ledger row through `onCall` (model, tokens, usage.cost, ms, ok).
- * Provider routing on every call: data_collection deny, require_parameters, sort by throughput,
- * usage accounting on, reasoning off. Anthropic models reject `temperature` under
- * require_parameters, so it is omitted for them.
+ * Decision-tier calls (tier: 'decision': triage, the second opinion) use a small fast model with
+ * a short timeout and fall back to the primary, never the secondary, so a decision-model outage
+ * costs one primary call and never blocks a run:
+ *
+ *   decision (timeout ~4s, sorted by latency) ── invalid / error / timeout ──▶ primary ──▶ LlmFailure
+ *
+ * Every HTTP call writes one ledger row through `onCall` (the model actually called, tokens,
+ * usage.cost, ms, ok). Provider routing on every call: data_collection deny, require_parameters,
+ * usage accounting on, reasoning off; sorted by throughput, except decision-model calls, which
+ * sort by latency (short outputs: time to first token dominates). Models that reject
+ * `temperature` under require_parameters (Anthropic, OpenAI's GPT-5/6 reasoning families) get
+ * none.
  *
  * No `cloudflare:*` imports: Node scripts use this same client with the build key.
  */
@@ -23,9 +31,12 @@ export type LlmConfig = {
   apiKey: string;
   primary: string;
   secondary: string;
+  /** Small fast model for decision-tier calls. Unset: those calls use the primary chain. */
+  decision?: string;
   baseURL?: string;
   primaryTimeoutMs?: number;
   secondaryTimeoutMs?: number;
+  decisionTimeoutMs?: number;
   onCall?: (row: LlmCallRow) => void | Promise<void>;
   /** Extra headers (OpenRouter app attribution). */
   appName?: string;
@@ -45,6 +56,25 @@ export function zodIssues(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
 
+/** Families that reject `temperature` (so require_parameters would find no provider). */
+export function acceptsTemperature(modelId: string): boolean {
+  return !/^(anthropic\/|openai\/(gpt-[5-9]|o\d))/.test(modelId);
+}
+
+/**
+ * Reasoning off, except for families where it is mandatory: there, the lowest effort, with the
+ * reasoning text left out of the response (its tokens are still billed and ledgered). Models
+ * with no reasoning parameter at all get none (require_parameters would find no provider).
+ */
+export function reasoningFor(modelId: string): Record<string, unknown> | null {
+  if (/^inference-net\//.test(modelId)) return null;
+  if (/^(openai\/gpt-oss|z-ai\/glm)/.test(modelId)) return { effort: 'low', exclude: true };
+  if (/^openai\/(gpt-[5-9]|o\d)/.test(modelId)) return { effort: 'minimal', exclude: true };
+  return { enabled: false };
+}
+
+export const DECISION_TIMEOUT_MS = 4_000;
+
 export function createLlm(cfg: LlmConfig): LlmClient {
   const openrouter = createOpenRouter({
     apiKey: cfg.apiKey,
@@ -53,14 +83,13 @@ export function createLlm(cfg: LlmConfig): LlmClient {
     ...(cfg.fetch ? { fetch: cfg.fetch } : {}),
   });
 
-  async function call(modelId: string, system: string, messages: ModelMessage[], req: LlmRequest<unknown>, timeoutMs: number): Promise<CallResult> {
+  async function call(modelId: string, system: string, messages: ModelMessage[], req: LlmRequest<unknown>, timeoutMs: number, sort: 'throughput' | 'latency' = 'throughput'): Promise<CallResult> {
     const t0 = Date.now();
     const model = openrouter.chat(modelId, {
       usage: { include: true },
-      provider: { data_collection: 'deny', require_parameters: true, sort: 'throughput' },
-      extraBody: { reasoning: { enabled: false } },
+      provider: { data_collection: 'deny', require_parameters: true, sort },
+      ...(reasoningFor(modelId) ? { extraBody: { reasoning: reasoningFor(modelId) } } : {}),
     });
-    const anthropic = modelId.startsWith('anthropic/');
     try {
       const res = await generateText({
         model,
@@ -68,7 +97,7 @@ export function createLlm(cfg: LlmConfig): LlmClient {
         messages,
         output: Output.object({ schema: jsonSchema<unknown>(req.jsonSchema as Parameters<typeof jsonSchema>[0]), name: req.schemaName }),
         maxOutputTokens: req.maxTokens,
-        ...(anthropic ? {} : { temperature: 0 }),
+        ...(acceptsTemperature(modelId) ? { temperature: 0 } : {}),
         maxRetries: 0,
         abortSignal: cfg.signal ? AbortSignal.any([cfg.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs),
       });
@@ -127,6 +156,35 @@ export function createLlm(cfg: LlmConfig): LlmClient {
       const stopIfAborted = () => {
         if (cfg.signal?.aborted) throw new LlmFailure(`${req.purpose} aborted: the run was handed off`, { ...meta, errors: [...meta.errors, 'aborted'] });
       };
+
+      if (req.tier === 'decision' && cfg.decision && cfg.decision !== cfg.primary) {
+        // 1. decision model: short timeout, sorted by latency
+        stopIfAborted();
+        const d = await call(cfg.decision, req.system, base, req as LlmRequest<unknown>, cfg.decisionTimeoutMs ?? DECISION_TIMEOUT_MS, 'latency');
+        if (d.ok) {
+          const v = validate(d.raw);
+          await ledger(cfg.decision, d, 1, v.ok ? null : `schema: ${v.error}`);
+          if (v.ok) return { data: v.data, meta: { ...meta, model: cfg.decision } };
+          meta.errors.push(`decision schema: ${v.error}`);
+        } else {
+          await ledger(cfg.decision, d, 1, d.error);
+          meta.errors.push(`decision ${d.kind}: ${d.error}`);
+        }
+        // 2. the primary (never the secondary): one call, its usual routing and timeout
+        stopIfAborted();
+        meta.fellBack = true;
+        const p = await call(cfg.primary, req.system, base, req as LlmRequest<unknown>, cfg.primaryTimeoutMs ?? 12_000);
+        if (p.ok) {
+          const v = validate(p.raw);
+          await ledger(cfg.primary, p, 3, v.ok ? null : `schema: ${v.error}`);
+          if (v.ok) return { data: v.data, meta: { ...meta, model: cfg.primary } };
+          meta.errors.push(`primary schema: ${v.error}`);
+        } else {
+          await ledger(cfg.primary, p, 3, p.error);
+          meta.errors.push(`primary ${p.kind}: ${p.error}`);
+        }
+        throw new LlmFailure(`${req.purpose} failed on the decision and main models: ${meta.errors[meta.errors.length - 1] ?? 'unknown error'}`, { ...meta, model: cfg.primary });
+      }
 
       // 1. primary
       stopIfAborted();

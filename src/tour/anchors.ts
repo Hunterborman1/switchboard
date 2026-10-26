@@ -5,7 +5,7 @@
  */
 export const ANCHORS = {
   // app shell
-  'nav.new': 'Sidebar item: New call',
+  'nav.new': 'Sidebar action: New conversation',
   'nav.review': 'Sidebar item: Review queue (with count badge)',
   'nav.routing': 'Sidebar item: Routing',
   'nav.themes': 'Sidebar item: Themes',
@@ -13,13 +13,13 @@ export const ANCHORS = {
   'nav.evals': 'Sidebar item: Evals',
   'budget.pill': 'Live-AI budget pill in the header',
   // ch1 · new call + file picker
-  'new.upload': 'The Upload / choose file button on New call',
+  'new.upload': 'The Browse conversations button (opens the library picker) on New conversation',
   'picker.dialog': 'The file picker dialog',
   'picker.folder': 'The folder tree in the picker',
   'picker.recommended': 'The highlighted recommended file row (C-1042)',
   'picker.preview': 'The file preview pane',
   'picker.open': 'The picker Open button',
-  'new.run': 'The Run pipeline button',
+  'new.run': 'The Process conversation button',
   // ch2 · run view
   'run.stepper': 'The 10-step pipeline graph / stepper',
   'run.transcript': 'The transcript pane',
@@ -45,6 +45,7 @@ export const ANCHORS = {
   'routing.deliveries': 'Delivery log',
   'dest.jira': 'Jira ticket preview',
   'dest.slack': 'Slack message preview',
+  'connections.grid': 'The connected tools on the Connections page',
   // ch5 · themes
   'themes.list': 'Theme list',
   'theme.c1042': 'The theme the C-1042 insight joined',

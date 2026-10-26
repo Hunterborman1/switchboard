@@ -68,7 +68,7 @@ const NAME_PARTICLE = new Set(['de', 'del', 'della', 'da', 'di', 'van', 'von', '
 const HANDLE = /^@?[A-Za-z][A-Za-z0-9]*(?:[._][A-Za-z0-9]+)+$/;
 
 const COMMON_CAPS = new Set(['I', 'The', 'And', 'But', 'So', 'Yes', 'No', 'Ok', 'Okay', 'Thanks', 'Thank', 'Hi', 'Hey', 'Hello', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Team', 'From', 'To', 'Re', 'We', 'You', 'He', 'She', 'They', 'It', 'This', 'That', 'Our', 'If', 'When', 'Then', 'Also', 'Just', 'Can', 'Will', 'Said', 'Says', 'Asked', 'Mentioned', 'Called', 'Is', 'Was', 'On', 'In', 'At', 'For', 'With', 'Not', 'Customer', 'Support', 'Sales', 'Notes', 'Action', 'Next', 'Signal', 'Call', 'Calls', 'Google', 'Invoca']);
-const GENERIC_LABEL = /^(speaker|spk|spkr|customer|client|csm|agent|rep|host|guest|unknown|participant|caller|interviewer|moderator|notes?|csm notes|me|us|them|team|everyone|all|support|sales|bot|system|operator|ivr)\b/i;
+const GENERIC_LABEL = /^(speaker|spk|spkr|customer|client|csm|agent|rep|host|guest|unknown|participant|caller|interviewer|moderator|notes?|csm notes|me|us|them|team|everyone|all|support|sales|bot|system|operator|ivr|document|section|slide|page)\b/i;
 const NOT_A_NAME = new Set([
   'portal', 'intake', 'data', 'records', 'record', 'experience', 'calls', 'call', 'line', 'lines', 'info', 'information', 'volume', 'privacy', 'safety', 'care', 'satisfaction',
   'scheduling', 'appointments', 'appointment', 'flow', 'journey', 'access', 'outcomes', 'portal.', 'reminders', 'reminder', 'charts', 'chart', 'notes', 'side', 'facing', 'level',

@@ -139,3 +139,131 @@ describe('assignRoles', () => {
     expect(r.map((x) => x.role)).toEqual(['invoca', 'customer', 'unknown']);
   });
 });
+
+describe('srt', () => {
+  it('parses numbered cues with comma timings, "Speaker:" prefixes and formatting tags', () => {
+    const raw = '1\n00:00:01,000 --> 00:00:04,000\nDana: the exports <i>keep</i> failing\n\n2\n00:00:05,500 --> 00:00:07,000\n{\\an8}and they are slow\n\n3\n00:01:02,000 --> 00:01:05,000\nMarcus: noted, I will log it\n';
+    expect(detectFormat('call.srt', raw)).toBe('srt');
+    expect(detectFormat('call', raw)).toBe('srt');
+    const d = parseDocument('call.srt', raw, { invocaNames: ['Marcus Bell'] });
+    expect(d.format).toBe('srt');
+    expect(d.turns.map((t) => [t.speaker, t.ts, t.text])).toEqual([
+      ['Dana', '00:00:01', 'the exports keep failing'],
+      ['Dana', '00:00:05', 'and they are slow'],
+      ['Marcus', '00:01:02', 'noted, I will log it'],
+    ]);
+    expect(d.turns[2]!.role).toBe('invoca');
+  });
+});
+
+describe('doc (prose converted from PDF, DOCX, slides, HTML)', () => {
+  const raw = [
+    'Quarterly Business Review',
+    '',
+    'Brightline Home Services met with Invoca on October 21 to review call volume and',
+    'attribution. The team raised concerns about how long offline conversions take.',
+    '',
+    'Pricing and Packaging',
+    '',
+    'Finance asked why PreSense is sold as an add-on.',
+    '• They feel they are paying twice',
+    '• They want one bundle at renewal',
+    '',
+    'Slide 4: Next steps',
+    'Region\tOwner\tDue',
+    'East\tMarcus\tNov 3',
+  ].join('\n');
+  it('splits prose into paragraphs, bullets and rows, labelled by the nearest heading', () => {
+    const d = parseDocument('qbr.pdf', raw, { formatHint: 'doc' });
+    expect(d.format).toBe('doc');
+    const texts = d.turns.map((t) => t.text);
+    expect(texts).toContain('Brightline Home Services met with Invoca on October 21 to review call volume and attribution. The team raised concerns about how long offline conversions take.');
+    expect(d.turns.find((t) => t.text.startsWith('Finance asked'))!.speaker).toBe('Section · Pricing and Packaging');
+    expect(d.turns.find((t) => t.text === 'They feel they are paying twice')!.speaker).toBe('Section · Pricing and Packaging');
+    expect(d.turns.find((t) => t.text === 'Slide 4: Next steps')!.speaker).toBe('Document');
+    expect(texts).toContain('East · Marcus · Nov 3');
+    // Prose sections are not people: no roles, no "no speaker" warning.
+    expect(d.turns.every((t) => t.role === 'unknown')).toBe(true);
+    expect(d.warnings).toEqual([]);
+    expect(detectFormat('deck.pptx', 'Title\n\nSome text')).toBe('doc');
+  });
+  it('a converted file that is really a transcript is read by speaker', () => {
+    const d = parseDocument('call.pdf', 'Dana Whitfield: the exports fail\nMarcus Bell: noted\nDana Whitfield: also spam tagging\nMarcus Bell: ok', { formatHint: 'doc', invocaNames: ['Marcus Bell'] });
+    expect(d.turns.map((t) => t.speaker)).toEqual(['Dana Whitfield', 'Marcus Bell', 'Dana Whitfield', 'Marcus Bell']);
+    expect(d.turns[1]!.role).toBe('invoca');
+  });
+  it('a document with no paragraph breaks is cut into pieces, never one giant turn', () => {
+    const blob = Array.from({ length: 400 }, (_, i) => `Sentence ${i} is about the reporting dashboard.`).join(' ');
+    const d = parseDocument('wall.txt', blob);
+    expect(d.turns.length).toBeGreaterThan(5);
+    expect(d.turns.every((t) => t.text.length <= 1600)).toBe(true);
+    expect(d.turns.map((t) => t.text).join(' ')).toBe(blob);
+  });
+});
+
+describe('json exports', () => {
+  it('Zoom / Gong / Teams-style transcripts [{speaker, text, start}]', () => {
+    const raw = JSON.stringify([
+      { speaker: 'Dana Whitfield', text: 'The offline conversions are late.', start: 4.2 },
+      { speaker: 'Marcus Bell', text: 'How late?', start: 9 },
+      { speaker: 'Dana Whitfield', text: 'Two to three days.', start: 72 },
+    ]);
+    expect(detectFormat('call.json', raw)).toBe('txt');
+    const d = parseDocument('call.json', raw, { invocaNames: ['Marcus Bell'] });
+    expect(d.turns.map((t) => [t.speaker, t.ts, t.text])).toEqual([
+      ['Dana Whitfield', '00:00:04', 'The offline conversions are late.'],
+      ['Marcus Bell', '00:00:09', 'How late?'],
+      ['Dana Whitfield', '00:01:12', 'Two to three days.'],
+    ]);
+    expect(d.turns.map((t) => t.role)).toEqual(['customer', 'invoca', 'customer']);
+    expect(d.warnings).toContain('read as a JSON transcript');
+  });
+  it('nested exports: Gong monologues with sentences, and wrapper objects', () => {
+    const gong = JSON.stringify({ callTranscripts: [{ callId: '1', transcript: [{ speakerId: 'Dana', topic: 'x', sentences: [{ start: 1000, end: 2000, text: 'Spam tagging is wrong.' }, { start: 2000, end: 3000, text: 'Real callers.' }] }, { speakerId: 'Marcus', sentences: [{ start: 3000, text: 'Got it.' }] }] }] });
+    const d = parseDocument('gong.json', gong);
+    expect(d.turns.map((t) => [t.speaker, t.text])).toEqual([['Dana', 'Spam tagging is wrong. Real callers.'], ['Marcus', 'Got it.']]);
+    const wrapped = parseDocument('x.json', JSON.stringify({ meta: { id: 1 }, segments: [{ participant: 'Ana', content: 'Hello there' }] }));
+    expect(wrapped.turns[0]).toMatchObject({ speaker: 'Ana', text: 'Hello there' });
+  });
+  it('Slack exports [{user, text, ts}] read as chat, with markup cleaned', () => {
+    const raw = JSON.stringify([
+      { type: 'message', user: 'U02ABC', user_profile: { real_name: 'Dana Whitfield' }, text: 'exports fail again <@U03XYZ|marcus>', ts: '1729512345.004200' },
+      { type: 'message', user: 'U03XYZ', text: 'see <https://status.example.com|status page>', ts: '1729512400.000100' },
+    ]);
+    expect(detectFormat('channel.json', raw)).toBe('chat');
+    const d = parseDocument('channel.json', raw);
+    expect(d.format).toBe('chat');
+    expect(d.turns.map((t) => [t.speaker, t.text])).toEqual([['Dana Whitfield', 'exports fail again @marcus'], ['U03XYZ', 'see status page']]);
+    expect(d.turns[0]!.ts).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+    // A converter that passes the raw export through with a hint still gets JSON parsing.
+    expect(parseDocument('channel.txt', raw, { formatHint: 'chat' }).turns).toHaveLength(2);
+  });
+  it('JSON with no message shape becomes document prose; invalid JSON is plain text', () => {
+    const d = parseDocument('survey.json', JSON.stringify({ id: 9, answers: { q1: 'The reporting dashboard is too slow for our managers', q2: 'yes' } }));
+    expect(d.format).toBe('doc');
+    expect(d.turns.map((t) => t.text)).toEqual(['The reporting dashboard is too slow for our managers']);
+    expect(parseDocument('broken.json', '{"speaker": "Dana", "text": oops').turns.length).toBeGreaterThan(0);
+  });
+});
+
+describe('anything else', () => {
+  it('garbage and binary residue never throw and still produce turns', () => {
+    const noise = String.fromCharCode(...Array.from({ length: 200 }, (_, i) => (i * 37) % 256));
+    const binary = `%PDF-1.7\n\u0000\u0001\u0002stream\u0007\u001b[0m xÿþ ${'�'.repeat(50)} endobj ${noise}`;
+    const cases: [string, string, 'doc' | 'srt' | null][] = [['x.pdf', binary, 'doc'], ['x.bin', binary, null], ['x.json', '[[[[', null], ['x.srt', '1\n99:99', 'srt'], ['x.vtt', 'WEBVTT', null], ['x.eml', 'From:', null]];
+    for (const [name, text, hint] of cases) {
+      const d = parseDocument(name, text, { formatHint: hint });
+      expect(Array.isArray(d.turns)).toBe(true);
+      expect(d.turns.every((t) => !/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(t.text))).toBe(true);
+    }
+    expect(parseDocument('x.pdf', binary, { formatHint: 'doc' }).turns.length).toBeGreaterThan(0);
+  });
+  it('a 200k-character input parses quickly', () => {
+    const big = Array.from({ length: 4000 }, (_, i) => `[00:${String(Math.floor(i / 60) % 60).padStart(2, '0')}:${String(i % 60).padStart(2, '0')}] ${i % 2 ? 'Marcus' : 'Dana'}: line ${i} about exports and spam tagging`).join('\n');
+    expect(big.length).toBeGreaterThan(150_000);
+    const t0 = performance.now();
+    const d = parseDocument('big.txt', big);
+    expect(performance.now() - t0).toBeLessThan(3000);
+    expect(d.turns).toHaveLength(4000);
+  });
+});

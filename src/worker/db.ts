@@ -3,6 +3,7 @@
  */
 import type { Account, Delivery, Insight, LibraryFile, Notification, Person, Redaction, ReviewRecord, RoutingRule, Run, RunStep, ScreenOutput, StepKey, Turn } from '../shared/contracts.ts';
 import { STEP_KEYS } from '../shared/contracts.ts';
+import { inferDocKind, sourceForLibraryFile } from '../shared/platform.ts';
 import type { StoredStep } from '../pipeline/replay.ts';
 
 export const SEED = 'seed';
@@ -31,10 +32,13 @@ export function nowIso(): string {
 export type RunRow = Run & { replayOf: string | null; workflowId: string | null; error: string | null; format: string | null; screen: ScreenOutput | null; keyScope: string };
 
 export function rowToRun(r: Row): RunRow {
+  const format = str(r.format);
+  const screen = j<ScreenOutput | null>(r.screen, null);
+  const fileId = str(r.file_id);
   return {
     id: String(r.id),
     workspaceId: String(r.workspace_id),
-    fileId: str(r.file_id),
+    fileId,
     filename: String(r.filename),
     accountId: str(r.account_id),
     callId: str(r.call_id),
@@ -52,11 +56,15 @@ export function rowToRun(r: Row): RunRow {
     reviewCount: Number(r.review_count ?? 0),
     injectionFlagged: Number(r.injection_flagged ?? 0) === 1,
     actionable: bool(r.actionable),
+    // Seeded history and older runs have no source column value: derive it from the file.
+    source: str(r.source) ?? (fileId ? sourceForLibraryFile(String(r.filename), format) : 'paste'),
+    docKind: screen?.doc_kind ?? (screen ? inferDocKind(format, screen.call_kind) : null),
+    sourceFormat: str(r.source_format),
     replayOf: str(r.replay_of),
     workflowId: str(r.workflow_id),
     error: str(r.error),
-    format: str(r.format),
-    screen: j<ScreenOutput | null>(r.screen, null),
+    format,
+    screen,
     keyScope: String(r.key_scope ?? 'runtime'),
   };
 }
@@ -74,20 +82,20 @@ export function insertRunStatement(db: D1Database, r: RunRow): D1PreparedStateme
   return db
     .prepare(
       `INSERT INTO runs (id, workspace_id, file_id, filename, account_id, call_id, status, mode, mode_reason, sha256, created_at, finished_at, duration_ms, cost_usd, prompt_version,
-        insight_count, dropped_count, review_count, injection_flagged, actionable, error, workflow_id, replay_of, format, screen, key_scope)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        insight_count, dropped_count, review_count, injection_flagged, actionable, error, workflow_id, replay_of, format, screen, key_scope, source, source_format)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     )
     .bind(
       r.id, r.workspaceId, r.fileId, r.filename, r.accountId, r.callId, r.status, r.mode, r.modeReason, r.sha256, r.createdAt, r.finishedAt, r.durationMs, r.costUsd, r.promptVersion,
       r.insightCount, r.droppedCount, r.reviewCount, r.injectionFlagged ? 1 : 0, r.actionable === null ? null : r.actionable ? 1 : 0, r.error, r.workflowId, r.replayOf, r.format,
-      r.screen ? JSON.stringify(r.screen) : null, r.keyScope,
+      r.screen ? JSON.stringify(r.screen) : null, r.keyScope, r.source ?? null, r.sourceFormat ?? null,
     );
 }
 
 const RUN_COLUMNS: Record<string, string> = {
   status: 'status', mode: 'mode', modeReason: 'mode_reason', sha256: 'sha256', finishedAt: 'finished_at', durationMs: 'duration_ms', costUsd: 'cost_usd', insightCount: 'insight_count',
   droppedCount: 'dropped_count', reviewCount: 'review_count', injectionFlagged: 'injection_flagged', actionable: 'actionable', error: 'error', workflowId: 'workflow_id', format: 'format',
-  screen: 'screen', createdAt: 'created_at', replayOf: 'replay_of', promptVersion: 'prompt_version',
+  screen: 'screen', createdAt: 'created_at', replayOf: 'replay_of', promptVersion: 'prompt_version', source: 'source', sourceFormat: 'source_format',
 };
 
 /** The UPDATE for a run-row patch (null when the patch names no known column). */
@@ -268,6 +276,7 @@ export async function getAccounts(db: D1Database): Promise<Account[]> {
   return results.map((r) => j<Account>(r.data, null as unknown as Account));
 }
 
+/** The seed directory. Routing, delivery and the API use the workspace's (src/worker/directory.ts). */
 export async function getPeople(db: D1Database): Promise<Person[]> {
   const { results } = await db.prepare('SELECT data FROM people ORDER BY id').all<Row>();
   return results.map((r) => j<Person>(r.data, null as unknown as Person));

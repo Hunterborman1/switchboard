@@ -1,192 +1,242 @@
+/**
+ * Conversations: everything brought into the workspace, whatever it is and wherever it came
+ * from, with what Signal Loop made of it. Filters live in the URL.
+ */
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import type { Run } from '../../shared/contracts';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { DataTable, type DataTableColumn } from '../../uis/DataTable';
-import { EmptyState } from '../../uis/EmptyState';
-import { MonoId } from '../../uis/MonoId';
-import { RelativeTime } from '../../uis/RelativeTime';
-import { SegmentedControl } from '../../uis/SegmentedControl';
-import { PageHeaderSkeleton, SkeletonSurface, TableSkeleton } from '../../uis/Skeleton';
-import { StatusChip } from '../../uis/StatusChip';
+import { Button, ButtonLink, Card, CellText, EmptyState, Page, PageHeader, SearchInput, Segmented, Select, SortTh, Table, TableSkeleton, Toolbar, type SortDir } from '../../ds';
+import { IconInbox, IconPlus } from '../../ds/icons';
 import { useRuns } from '../api/hooks';
-import { AppPageHeader, ErrorState, Panel } from '../components/ui';
+import { useDocumentTitle } from '../AppShell';
+import { docKindLabel, ErrorState, ModeBadge, RUN_STATUS_LABEL, RunStatusBadge, SourceLabel, sourceLabel, When } from '../components/domain';
 import { money, ms } from '../lib/labels';
 import { useWorldIndex } from '../lib/world';
-import { ModeChip, RUN_STATUS_LABEL, RUN_STATUS_TONE } from './runs/runChips';
 
-type Filter = 'all' | Run['status'];
-const FILTERS: { value: Filter; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'running', label: 'Running' },
-  { value: 'awaiting_review', label: 'Awaiting review' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'failed', label: 'Failed' },
-];
+type Filter = 'all' | 'running' | 'awaiting_review' | 'completed' | 'failed';
+const FILTERS: Filter[] = ['all', 'running', 'awaiting_review', 'completed', 'failed'];
+type SortKey = 'name' | 'account' | 'cost' | 'duration' | 'created';
+const PAGE = 25;
+
+const inProgress = (r: Run) => r.status === 'queued' || r.status === 'running';
+
+function Result({ run }: { run: Run }) {
+  if (inProgress(run)) return <span className="ds-subtle">In progress</span>;
+  if (run.status === 'failed') return <span className="ds-subtle">No result</span>;
+  if (run.actionable === false) return <span className="ds-subtle">Nothing actionable</span>;
+  if (run.insightCount === 0) return <span className="ds-subtle">No insights</span>;
+  return (
+    <CellText
+      primary={`${run.insightCount} insight${run.insightCount === 1 ? '' : 's'}`}
+      secondary={run.reviewCount ? `${run.reviewCount} to review` : run.droppedCount ? `${run.droppedCount} unproven quote${run.droppedCount === 1 ? '' : 's'} dropped` : 'All sent'}
+    />
+  );
+}
 
 export default function RunsPage() {
+  useDocumentTitle('Conversations');
   const runs = useRuns();
   const world = useWorldIndex();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const raw = params.get('status');
-  const filter: Filter = FILTERS.some((f) => f.value === raw) ? (raw as Filter) : 'all';
+  const [limit, setLimit] = useState(PAGE);
 
-  if (runs.loading) {
-    return (
-      <SkeletonSurface label="Loading runs">
-        <PageHeaderSkeleton />
-        <TableSkeleton rows={8} columns={7} />
-      </SkeletonSurface>
-    );
-  }
+  const raw = params.get('status');
+  const filter: Filter = FILTERS.includes(raw as Filter) ? (raw as Filter) : 'all';
+  const q = params.get('q') ?? '';
+  const source = params.get('source') ?? '';
+  const sortKey = (params.get('sort') as SortKey | null) ?? 'created';
+  const sortDir: SortDir = params.get('dir') === 'asc' ? 'asc' : 'desc';
+
+  const setParam = (k: string, v: string | null) => {
+    const next = new URLSearchParams(params);
+    if (v) next.set(k, v);
+    else next.delete(k);
+    setParams(next, { replace: true });
+    setLimit(PAGE);
+  };
+  const sortBy = (k: SortKey) => {
+    const next = new URLSearchParams(params);
+    const dir = sortKey === k && sortDir === 'desc' ? 'asc' : 'desc';
+    next.set('sort', k);
+    next.set('dir', dir);
+    setParams(next, { replace: true });
+  };
 
   const all = runs.data ?? [];
-  const rows = filter === 'all' ? all : all.filter((r) => r.status === filter);
-  const count = (f: Filter) => (f === 'all' ? all.length : all.filter((r) => r.status === f).length);
-
-  const columns: DataTableColumn<Run>[] = [
-    {
-      key: 'file',
-      header: 'File',
-      sortable: true,
-      sortValue: (r) => r.filename.toLowerCase(),
-      render: (r) => (
-        <div style={{ minWidth: 160, maxWidth: 230 }}>
-          <Link to={`/app/runs/${r.id}`} className="sl-quietlink sl-cell-title sl-ellipsis sl-mono" style={{ display: 'block', fontSize: 13 }} title={r.filename}>
-            {r.filename}
-          </Link>
-          <div className="sl-cell-sub sl-xl-only">
-            <MonoId value={r.id} keep={6} />
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'account',
-      header: 'Account',
-      sortable: true,
-      sortValue: (r) => world.accountName(r.accountId),
-      render: (r) => (
-        <div style={{ whiteSpace: 'nowrap' }}>
-          <div className="sl-cell-title">{r.accountId ? world.accountName(r.accountId) : 'Pasted text'}</div>
-          {r.callId ? <div className="sl-cell-sub sl-xl-only">{r.callId}</div> : null}
-        </div>
-      ),
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      sortable: true,
-      sortValue: (r) => r.status,
-      render: (r) => (
-        <StatusChip tone={RUN_STATUS_TONE[r.status]} size="sm">
-          {RUN_STATUS_LABEL[r.status]}
-        </StatusChip>
-      ),
-    },
-    { key: 'mode', header: 'Mode', render: (r) => <ModeChip run={r} /> },
-    {
-      key: 'insights',
-      header: 'Insights',
-      sortable: true,
-      sortValue: (r) => r.insightCount,
-      render: (r) =>
-        r.status === 'queued' || r.status === 'running' ? (
-          <span className="sl-meta" style={{ whiteSpace: 'nowrap' }}>In progress</span>
-        ) : r.actionable === false ? (
-          <span className="sl-meta" style={{ whiteSpace: 'nowrap' }}>Nothing actionable</span>
-        ) : (
-          <div style={{ whiteSpace: 'nowrap' }} title={`${r.insightCount} kept · ${r.droppedCount} dropped (quote not found) · ${r.reviewCount} sent to review`}>
-            <div className="sl-num">{r.insightCount} kept</div>
-            <div className="sl-cell-sub">
-              {r.droppedCount} dropped · {r.reviewCount} to review
-            </div>
-          </div>
-        ),
-    },
-    {
-      key: 'cost',
-      header: 'Cost',
-      sortable: true,
-      sortValue: (r) => r.costUsd,
-      render: (r) => <span className="sl-num">{money(r.costUsd, { precise: true })}</span>,
-    },
-    {
-      key: 'duration',
-      header: 'Duration',
-      sortable: true,
-      sortValue: (r) => r.durationMs ?? 0,
-      render: (r) => <span className="sl-num">{ms(r.durationMs)}</span>,
-    },
-    {
-      key: 'created',
-      header: 'Started',
-      sortable: true,
-      sortValue: (r) => r.createdAt,
-      render: (r) => <RelativeTime value={r.createdAt} />,
-    },
-  ];
+  const sources = useMemo(() => [...new Set(all.map((r) => r.source ?? 'upload'))].sort(), [all]);
+  const matchesStatus = (r: Run, f: Filter) => (f === 'all' ? true : f === 'running' ? inProgress(r) : r.status === f);
+  const searched = all.filter((r) => {
+    if (source && (r.source ?? 'upload') !== source) return false;
+    if (!q) return true;
+    const hay = `${r.filename} ${world.accountName(r.accountId)} ${r.callId ?? ''}`.toLowerCase();
+    return hay.includes(q.toLowerCase());
+  });
+  const rows = searched
+    .filter((r) => matchesStatus(r, filter))
+    .sort((a, b) => {
+      const s = sortDir === 'asc' ? 1 : -1;
+      switch (sortKey) {
+        case 'name':
+          return s * a.filename.localeCompare(b.filename);
+        case 'account':
+          return s * world.accountName(a.accountId).localeCompare(world.accountName(b.accountId));
+        case 'cost':
+          return s * (a.costUsd - b.costUsd);
+        case 'duration':
+          return s * ((a.durationMs ?? 0) - (b.durationMs ?? 0));
+        default:
+          return s * a.createdAt.localeCompare(b.createdAt);
+      }
+    });
+  const visible = rows.slice(0, limit);
+  const count = (f: Filter) => searched.filter((r) => matchesStatus(r, f)).length;
+  const sortState = (k: SortKey) => (sortKey === k ? sortDir : null);
 
   return (
-    <div className="sl-page">
-      <AppPageHeader
-        title="Runs"
-        subtitle="Every conversation processed in this workspace"
-        dataAsOf={runs.dataAsOf}
+    <Page>
+      <PageHeader
+        title="Conversations"
+        description="Calls, meeting notes, email threads, chats and documents brought into this workspace, and what Signal Loop found in each."
         actions={
-          <Button size="sm" iconLeft="plus" onClick={() => navigate('/app/new')}>
-            New call
-          </Button>
+          <ButtonLink to="/app/new" variant="primary" icon={<IconPlus />}>
+            New conversation
+          </ButtonLink>
         }
       />
-      {runs.error && !runs.data ? (
-        <ErrorState error={runs.error} onRetry={() => void runs.refresh()} what="runs" />
-      ) : (
-        <Panel
-          title="All runs"
-          sub="Your runs plus sample history. Open one to see its steps, quotes and cost."
-          actions={
-            <SegmentedControl<Filter>
-              ariaLabel="Filter runs by status"
-              size="sm"
-              value={filter}
-              options={FILTERS.map((f) => ({ value: f.value, label: `${f.label} · ${count(f.value)}` }))}
-              onChange={(v) => {
-                const next = new URLSearchParams(params);
-                if (v === 'all') next.delete('status');
-                else next.set('status', v);
-                setParams(next, { replace: true });
-              }}
+
+      <Toolbar
+        start={
+          <>
+            <SearchInput placeholder="Search by file or account" value={q} onChange={(e) => setParam('q', e.target.value || null)} aria-label="Search conversations" width={280} />
+            <Select
+              aria-label="Filter by source"
+              value={source}
+              onChange={(e) => setParam('source', e.target.value || null)}
+              options={[{ value: '', label: 'All sources' }, ...sources.map((s) => ({ value: s, label: sourceLabel(s) }))]}
+              style={{ width: 160 }}
             />
-          }
-          flush
-        >
-          <DataTable<Run>
-            columns={columns}
-            rows={rows}
-            getRowKey={(r) => r.id}
-            pagination="when-needed"
-            initialSort={{ key: 'created', direction: 'desc' }}
-            rowTone={(r) => (r.status === 'failed' ? 'red' : null)}
-            empty={
-              all.length === 0 ? (
-                <EmptyState
-                  variant="no-data"
-                  title="No runs yet"
-                  description="Bring in a call from the library, paste notes or upload a file to get started."
-                  action={
-                    <Button size="sm" onClick={() => navigate('/app/new')}>
-                      New call
-                    </Button>
-                  }
-                />
-              ) : (
-                <EmptyState variant="no-data" title="No runs with this status" description="Try another status filter." />
-              )
-            }
+          </>
+        }
+        end={
+          <Segmented<Filter>
+            label="Filter by status"
+            value={filter}
+            onChange={(v) => setParam('status', v === 'all' ? null : v)}
+            options={FILTERS.map((f) => ({ value: f, label: f === 'all' ? 'All' : RUN_STATUS_LABEL[f], count: runs.data ? count(f) : null }))}
           />
-        </Panel>
+        }
+      />
+
+      {runs.loading ? (
+        <TableSkeleton rows={8} cols={6} />
+      ) : runs.error && !runs.data ? (
+        <Card>
+          <ErrorState error={runs.error} onRetry={() => void runs.refresh()} what="conversations" />
+        </Card>
+      ) : (
+        <Card flush footer={rows.length > PAGE ? <PagerFooter shown={visible.length} total={rows.length} onMore={() => setLimit((l) => l + PAGE)} /> : undefined}>
+          {rows.length === 0 ? (
+            all.length === 0 ? (
+              <EmptyState
+                icon={<IconInbox />}
+                title="No conversations yet"
+                description="Bring in a call, paste meeting notes or upload any document. Signal Loop reads it and sends what matters to the right people."
+                actions={
+                  <ButtonLink to="/app/new" variant="primary" size="sm" icon={<IconPlus size={14} />}>
+                    New conversation
+                  </ButtonLink>
+                }
+              />
+            ) : (
+              <EmptyState
+                icon={<IconInbox />}
+                title="Nothing matches these filters"
+                actions={
+                  <Button size="sm" onClick={() => setParams(new URLSearchParams(), { replace: true })}>
+                    Clear filters
+                  </Button>
+                }
+              />
+            )
+          ) : (
+            <Table label="Conversations" minWidth={920}>
+              <thead>
+                <tr>
+                  <SortTh active={sortState('name')} onSort={() => sortBy('name')}>
+                    Conversation
+                  </SortTh>
+                  <SortTh active={sortState('account')} onSort={() => sortBy('account')}>
+                    Account
+                  </SortTh>
+                  <th>Source</th>
+                  <th>Status</th>
+                  <th>Signal Loop</th>
+                  <SortTh active={sortState('cost')} onSort={() => sortBy('cost')} align="right">
+                    AI cost
+                  </SortTh>
+                  <SortTh active={sortState('duration')} onSort={() => sortBy('duration')} align="right">
+                    Took
+                  </SortTh>
+                  <SortTh active={sortState('created')} onSort={() => sortBy('created')} align="right">
+                    Received
+                  </SortTh>
+                </tr>
+              </thead>
+              <tbody>
+                {visible.map((r) => {
+                  const kind = docKindLabel(r.docKind);
+                  const fmt = (r.sourceFormat ?? r.filename.split('.').pop() ?? '').toUpperCase();
+                  return (
+                    <tr key={r.id} className="is-clickable has-row-link" onClick={() => navigate(`/app/runs/${r.id}`)}>
+                      <td style={{ maxWidth: 320 }}>
+                        <Link to={`/app/runs/${r.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
+                          <CellText primary={r.filename} secondary={[kind, fmt && fmt.length <= 5 ? fmt : null].filter(Boolean).join(', ') || 'Conversation'} />
+                        </Link>
+                      </td>
+                      <td className="is-nowrap">
+                        <CellText primary={r.accountId ? world.accountName(r.accountId) : <span className="ds-subtle">No account</span>} secondary={r.callId ?? undefined} />
+                      </td>
+                      <td className="is-nowrap">
+                        <SourceLabel source={r.source} />
+                      </td>
+                      <td className="is-nowrap">
+                        <span className="ds-row" style={{ gap: 8 }}>
+                          <RunStatusBadge status={r.status} />
+                          {r.mode === 'replay' ? <ModeBadge run={r} /> : null}
+                        </span>
+                      </td>
+                      <td className="is-nowrap">
+                        <Result run={r} />
+                      </td>
+                      <td className="is-num">{inProgress(r) ? '—' : money(r.costUsd, { precise: true })}</td>
+                      <td className="is-num">{inProgress(r) ? '—' : ms(r.durationMs)}</td>
+                      <td className="is-num ds-muted">
+                        <When value={r.createdAt} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          )}
+        </Card>
       )}
-    </div>
+    </Page>
+  );
+}
+
+function PagerFooter({ shown, total, onMore }: { shown: number; total: number; onMore: () => void }) {
+  return (
+    <>
+      <span>
+        Showing {shown} of {total}
+      </span>
+      {shown < total ? (
+        <Button size="sm" variant="ghost" onClick={onMore}>
+          Show more
+        </Button>
+      ) : null}
+    </>
   );
 }

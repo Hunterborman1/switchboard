@@ -34,7 +34,14 @@ export type RedactedDoc = {
   vault: Record<string, string>;
 };
 
-export type LlmPurpose = 'screen' | 'extract' | 'theme_name' | 'judge';
+export type LlmPurpose = 'screen' | 'extract' | 'theme_name' | 'judge' | 'second_opinion';
+
+/**
+ * Which model chain serves a call. primary: primary → schema retry → secondary (extraction,
+ * theme naming). decision: the small fast model, falling back to the primary (never the
+ * secondary), for short verdicts: triage and the second opinion at the gate.
+ */
+export type LlmTier = 'decision' | 'primary';
 
 export type LlmCallRow = {
   id: string;
@@ -47,8 +54,8 @@ export type LlmCallRow = {
   ms: number;
   ok: boolean;
   error: string | null;
-  attempt: number; // 1 = first try, 2 = schema retry, 3 = secondary
-  fallback: boolean; // secondary model used
+  attempt: number; // 1 = first try, 2 = schema retry, 3 = fallback (secondary; the primary for decision-tier calls)
+  fallback: boolean; // fallback model used
   schemaRetry: boolean;
   createdAt: string;
 };
@@ -77,6 +84,8 @@ export type LlmRequest<T> = {
   runId: string | null;
   /** Light deterministic repair applied before Zod validation (e.g. truncating long strings). */
   repair?: (raw: unknown) => unknown;
+  /** Model chain (default 'primary'). */
+  tier?: LlmTier;
 };
 
 export interface LlmClient {
@@ -180,7 +189,14 @@ export type PipelineInput = {
   taxonomy?: Taxonomy | null;
   /** Skip extraction when the screen says nothing is actionable (default true). */
   skipExtractWhenNotActionable?: boolean;
+  /**
+   * The workspace's connectors. A rule whose channel's connector is not connected routes to
+   * triage; deliveries record the connected account. Omitted (scripts, evals): all connected.
+   */
+  connections?: ConnectionState[] | null;
 };
+
+export type ConnectionState = { id: string; status: 'connected' | 'disconnected' | 'error'; account: string | null; config: Record<string, string> };
 
 export type PipelineResult = {
   status: 'awaiting_review' | 'completed' | 'failed';

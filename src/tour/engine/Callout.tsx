@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type Ref } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Button, KeyHint } from '../../narrative/components';
+import { Button, IconButton, Kbd } from '../../ds';
+import { IconArrowRight, IconChevronRight, IconPause } from '../../ds/icons';
 import { useCalm } from '../../narrative/hooks';
 import { chapterById } from '../script/chapters';
 import { MAIN_ORDER, STEPS } from '../script/steps';
@@ -85,7 +86,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
     >
       <motion.div
         key={step.id}
-        className={`t-callout__card n-glass ${shake ? 'n-shake' : ''}`}
+        className={`t-callout__card ${shake ? 'n-shake' : ''}`}
         initial={calm ? { opacity: 0 } : { opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
@@ -95,22 +96,18 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
             <span className="t-callout__num">
               Step {pos.n} of {pos.of}
             </span>
-            <span className="t-callout__sep" aria-hidden="true">·</span>
             <span className="t-callout__chapter">{chapter.title}</span>
           </span>
-          <button className="t-icon-btn" onClick={() => tour.setMenuOpen(true)} aria-label="Pause menu (Esc)" title="Pause menu (Esc)">
-            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M5 3v10M11 3v10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-          </button>
+          <IconButton label="Pause menu (Esc)" icon={<IconPause size={14} />} size="sm" tooltip={false} title="Pause menu (Esc)" className="t-callout__pause" onClick={() => tour.setMenuOpen(true)} />
         </div>
         <h2 id="t-callout-title" className="t-callout__title">{title}</h2>
         <p id="t-callout-body" className="t-callout__body">{body}</p>
         {missing && <p className="t-callout__missing">This part of the page isn’t on screen right now. Carry on when you’re ready.</p>}
         {moreText && (
           <div className="t-callout__more">
-            <button className="t-more-btn" onClick={() => setMore((v) => !v)} aria-expanded={more}>
-              How this works <span aria-hidden="true" style={{ display: 'inline-block', transform: more ? 'rotate(90deg)' : 'none', transition: 'transform 180ms' }}>›</span>
+            <button type="button" className="t-more-btn" onClick={() => setMore((v) => !v)} aria-expanded={more}>
+              <IconChevronRight size={14} className="t-more-btn__chev" data-open={more ? 'true' : 'false'} />
+              How this works
             </button>
             <AnimatePresence initial={false}>
               {more && (
@@ -123,7 +120,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
         )}
         <div className="t-callout__foot">
           {tour.canGoBack ? (
-            <Button variant="quiet" size="sm" className="t-callout__back" onClick={tour.back} aria-label="Back (←)">
+            <Button variant="ghost" size="sm" className="t-callout__back" onClick={tour.back} aria-label="Back (←)">
               Back
             </Button>
           ) : (
@@ -135,9 +132,8 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
                 <Button
                   key={a.label}
                   ref={i === actions.length - 1 ? primaryRef : undefined}
-                  variant={a.variant ?? 'ghost'}
+                  variant={a.variant === 'primary' ? 'primary' : 'secondary'}
                   size="sm"
-                  
                   onClick={() => {
                     if (a.apply) tour.setCtx(a.apply(ctx));
                     tour.goto(typeof a.to === 'function' ? a.to(ctx) : a.to);
@@ -147,7 +143,7 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
                 </Button>
               ))
             ) : missing ? (
-              <Button ref={primaryRef} size="sm" onClick={tour.skip}>
+              <Button ref={primaryRef} variant="primary" size="sm" onClick={tour.skip}>
                 Next
               </Button>
             ) : waiting ? (
@@ -156,25 +152,31 @@ export function TourCallout({ mode, missing, floatingRef, style, shakeKey, arrow
                   <span className="t-wait__dot" aria-hidden="true" />
                   {hint ?? 'Your move'}
                 </span>
-                <Button variant="quiet" size="sm" onClick={tour.skip} title="Skip this step">
+                <Button variant="ghost" size="sm" onClick={tour.skip} title="Skip this step">
                   Skip
                 </Button>
               </>
             ) : ready ? (
               <>
-                <span className="t-callout__key"><KeyHint keys={['→']} /></span>
-                <Button ref={primaryRef} size="sm" onClick={tour.skip}>
+                <span className="t-callout__key" aria-hidden="true">
+                  <Kbd>
+                    <IconArrowRight size={12} />
+                  </Kbd>
+                </span>
+                <Button ref={primaryRef} variant="primary" size="sm" onClick={tour.skip}>
                   Next
                 </Button>
               </>
             ) : (
-              <span className="t-wait" role="status">
-                <span className="t-spinner" aria-hidden="true" />
-                {readyLabel}
-                <button className="t-more-btn" style={{ marginLeft: 6 }} onClick={tour.skip}>
+              <>
+                <span className="t-wait" role="status">
+                  <span className="ds-spinner t-wait__spin" aria-hidden="true" />
+                  {readyLabel}
+                </span>
+                <Button variant="ghost" size="sm" onClick={tour.skip} title="Skip this step">
                   Skip
-                </button>
-              </span>
+                </Button>
+              </>
             )}
           </div>
         </div>

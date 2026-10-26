@@ -1,0 +1,81 @@
+/* Overview: bar lists, the review preview and the connection alert. */
+
+.barList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 24px;
+  font-size: var(--text-sm);
+}
+.barLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+.barTrack {
+  min-width: 0;
+}
+.barValue {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.cardLink {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--warning-subtle);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.alert > svg {
+  flex: none;
+  color: var(--warning);
+}
+.alert > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewItem {
+  align-items: flex-start;
+}
+.reviewText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+.reviewSummary {
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reviewMeta {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}

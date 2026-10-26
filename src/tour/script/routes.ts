@@ -5,7 +5,13 @@
 export const R = {
   hub: '/',
   scene: (part: string) => `/walkthrough/${part}`,
-  // Signal Loop (the agent)
+  // Switchboard (the platform)
+  overview: '/app/overview',
+  connections: '/app/connections',
+  connection: (id: string) => `/app/connections/${encodeURIComponent(id)}`,
+  people: '/app/people',
+  analyses: '/app/analyses',
+  // Signal Loop (the analysis)
   newCall: '/app/new',
   run: (id: string) => `/app/runs/${encodeURIComponent(id)}`,
   review: '/app/review',

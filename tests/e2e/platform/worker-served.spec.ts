@@ -8,7 +8,7 @@ import { existsSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { password, signIn } from './helpers';
 
-const WORKER = 'http://127.0.0.1:8812';
+const WORKER = `http://127.0.0.1:${process.env.PLATFORM_E2E_WORKER_PORT ?? 8812}`;
 const built = existsSync(new URL('../../../dist/index.html', import.meta.url));
 
 test.skip(!built, 'dist/ is not built');
@@ -57,14 +57,14 @@ test('a page loads again on revisit in the same context, under the CSP', async (
 test('the sign-in page renders under the CSP (inline styles, self-hosted fonts)', async ({ page }) => {
   const problems = watch(page);
   await page.goto('/repo/invoca/login');
-  await expect(page.getByRole('button', { name: 'Enter' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
   expect(problems).toEqual([]);
 });
 
 test('signing in through the real form works (Origin: null under the referrer policy)', async ({ page }) => {
   await page.goto('/repo/invoca/login');
   await page.getByLabel(/password/i).fill(password());
-  await page.getByRole('button', { name: 'Enter' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page).not.toHaveURL(/\/login/);
   await rendered(page);
 });

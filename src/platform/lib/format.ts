@@ -2,7 +2,7 @@
  * Number and time formatting for Agent Ops. Null renders as "—". Estimates are named as
  * estimates in their labels ("Estimated value"), not marked with a "~" in the number.
  */
-import type { ConsoleTimezone } from '../../uis/format';
+import type { ConsoleTimezone } from '../../ds/time/format';
 import { pctText } from '../../shared/format';
 
 export const DASH = '—';
@@ -45,12 +45,25 @@ export function signedPct(v: number | null | undefined): string {
   const p = Math.round(v * 100);
   return `${p > 0 ? '+' : p < 0 ? '−' : '±'}${Math.abs(p)}%`;
 }
-/** Agent colours on the flat chart palette (DESIGN.md): older seeded values map onto it. */
-const SERIES_REMAP: Record<string, string> = { '#00A87F': '#008463', '#5E74E3': '#2F5DB8' };
-const SERIES = ['#008463', '#2F5DB8', '#C2780C', '#7A4FB5', '#3E8E9E', '#B5475A'];
+/**
+ * Agent colours: the design system's chart ramp (--chart-1…6). Registry records carry a hex;
+ * known palette values (and older seeded ones) map onto the matching token, so colour follows
+ * the agent and changes in tokens.css only.
+ */
+const CHART_TOKEN: Record<string, string> = {
+  '#008463': 'var(--chart-1)',
+  '#00A87F': 'var(--chart-1)',
+  '#2F5DB8': 'var(--chart-2)',
+  '#5E74E3': 'var(--chart-2)',
+  '#C2780C': 'var(--chart-3)',
+  '#7A4FB5': 'var(--chart-4)',
+  '#3E8E9E': 'var(--chart-5)',
+  '#B5475A': 'var(--chart-6)',
+};
+const SERIES = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)'];
 export function seriesColor(c: string | null | undefined, index = 0): string {
   if (!c) return SERIES[index % SERIES.length]!;
-  return SERIES_REMAP[c.toUpperCase()] ?? c;
+  return CHART_TOKEN[c.toUpperCase()] ?? c;
 }
 
 export function multiple(v: number | null | undefined): string {

@@ -5,6 +5,7 @@
  * the loop back to the CSM.
  */
 import type { Delivery, Insight, Notification, ReviewAction, ReviewRecord } from '../shared/contracts.ts';
+import { CHANNEL_CONNECTOR } from '../shared/platform.ts';
 import { deliverInsight, routedNotification, shippedNotification } from '../pipeline/deliver.ts';
 import { routeInsight } from '../pipeline/route.ts';
 import { randomId } from '../pipeline/util.ts';
@@ -35,22 +36,28 @@ export async function applyReview(env: Env, ws: string, insightId: string, actio
   let notification: Notification | null = null;
 
   if (action.action === 'reject') {
-    updated = { ...updated, status: 'rejected', gateReasons: [...insight.gateReasons, `rejected by reviewer${action.reason ? `: ${action.reason}` : ''}`] };
+    updated = { ...updated, status: 'rejected', gateReasons: [...insight.gateReasons, `rejected by ${reviewer}${action.reason ? `: ${action.reason}` : ''}`] };
   } else {
     if (action.action === 'edit' && action.edits) {
       updated = { ...updated, ...Object.fromEntries(Object.entries(action.edits).filter(([, v]) => v !== undefined)) } as Insight;
     }
+    // Same routing as a live run: this workspace's rules, directory and connectors.
     const ctx = await loadContext(env, ws, insight.accountId);
-    const decision = routeInsight({ type: updated.type, productArea: updated.productArea, severity: updated.severity, arrBand: ctx.account?.arrBand ?? null }, ctx.rules, ctx.people);
+    const connected = new Set(ctx.connections.filter((c) => c.status === 'connected').map((c) => c.id));
+    const decision = routeInsight({ type: updated.type, productArea: updated.productArea, severity: updated.severity, arrBand: ctx.account?.arrBand ?? null }, ctx.rules, ctx.people, { connected });
     updated = {
       ...updated,
       status: 'routed',
       ownerId: decision.ownerId,
       channel: decision.channel,
       ruleId: decision.ruleId,
-      gateReasons: [...insight.gateReasons, action.action === 'edit' ? 'edited and approved by reviewer' : 'approved by reviewer'],
+      gateReasons: [...insight.gateReasons, action.action === 'edit' ? `edited and approved by ${reviewer}` : `approved by ${reviewer}`, ...(decision.diverted ? [decision.reason] : [])],
     };
-    const dctx = { account: ctx.account, owner: ctx.people.find((p) => p.id === decision.ownerId) ?? null, csm: ctx.people.find((p) => p.id === updated.csmId) ?? null, now, ids: randomId };
+    const via = ctx.connections.find((c) => c.id === CHANNEL_CONNECTOR[decision.channel]);
+    const dctx = {
+      account: ctx.account, owner: ctx.people.find((p) => p.id === decision.ownerId) ?? null, csm: ctx.people.find((p) => p.id === updated.csmId) ?? null, now, ids: randomId, people: ctx.people,
+      connectorAccount: via?.account ?? null, connectorConfig: via?.config ?? {},
+    };
     // Deliveries created by a review belong to the reviewer's workspace.
     delivery = deliverInsight({ ...updated, workspaceId: ws }, decision, dctx);
     const n = routedNotification({ ...updated, workspaceId: ws }, delivery, dctx);

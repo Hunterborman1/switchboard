@@ -12,7 +12,7 @@ export function loginPage({ next, notice }: { next: string; notice?: string | nu
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Sign in · Signal Loop</title>
+<title>Sign in · Switchboard</title>
 <link rel="icon" href="${PREFIX}/public/mark.svg" type="image/svg+xml">
 <link rel="preload" href="${PREFIX}/public/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -20,7 +20,7 @@ export function loginPage({ next, notice }: { next: string; notice?: string | nu
   :root{color-scheme:light;--bg:#FFFFFF;--bg-subtle:#F7F8F7;--border:#E3E6E3;--border-strong:#CDD2CD;--text:#111614;--text-2:#525C57;--text-3:#6B756F;--accent:#008463;--accent-hover:#00785A;--accent-text:#006B51;--danger:#B42318;--danger-subtle:#FDECEA;--shadow-2:0 4px 12px rgba(16,24,20,.08),0 1px 3px rgba(16,24,20,.06)}
   *{box-sizing:border-box;margin:0}
   body{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;background:var(--bg-subtle);color:var(--text);font:400 14px/1.5 "Inter Variable",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss03"}
-  header{height:56px;display:flex;align-items:center;padding:0 24px;background:var(--bg);border-bottom:1px solid var(--border)}
+  header{height:52px;display:flex;align-items:center;padding:0 24px;background:var(--bg);border-bottom:1px solid var(--border)}
   .mark{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:14px;letter-spacing:-.01em}
   .mark span{color:var(--text-3);font-weight:400;letter-spacing:0}
   main{display:grid;place-items:center;padding:32px 16px}
@@ -40,17 +40,17 @@ export function loginPage({ next, notice }: { next: string; notice?: string | nu
 </head>
 <body>
 <header>
-  <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#008463"/><path d="M7 10.5v3M10.33 8v8M13.67 6.5v11M17 9.5v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Signal Loop <span>Prepared for Invoca</span></span>
+  <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#008463"/><g fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 7.5c3 0 3.5 4.5 6.5 4.5M5.5 16.5c3 0 3.5-4.5 6.5-4.5M5.5 12H12"/><path d="M12 12c3 0 3.5-4.5 6.5-4.5M12 12c3 0 3.5 4.5 6.5 4.5"/></g><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg>Switchboard <span>Prepared for Invoca</span></span>
 </header>
 <main>
 <form class="card" method="POST" action="${PREFIX}/api/unlock">
-  <h1>Sign in to Signal Loop</h1>
-  <p class="lede">A working system that turns what customers tell CSMs into product insight, with a guided walkthrough.</p>
+  <h1>Sign in to Switchboard</h1>
+  <p class="lede">Customer conversations in, the right people out. Includes Signal Loop, the product-feedback analysis, and a guided walkthrough.</p>
   ${notice ? `<div class="notice" role="alert">${esc(notice)}</div>` : ''}
   <input type="hidden" name="next" value="${esc(next)}">
   <label for="password">Password</label>
   <input id="password" name="password" type="password" autocomplete="current-password" autofocus required>
-  <button type="submit">Enter</button>
+  <button type="submit">Sign in</button>
 </form>
 </main>
 <footer><span>Hunter Borman · AI Operations Lead</span><span>Private preview</span></footer>

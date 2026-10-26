@@ -43,10 +43,15 @@ export const MessLevel = z.union([z.literal(1), z.literal(2), z.literal(3), z.li
 export type MessLevel = z.infer<typeof MessLevel>;
 export const EdgeKind = z.enum(['nothing_actionable', 'injection', 'phi_heavy', 'non_english', 'duplicate']);
 export type EdgeKind = z.infer<typeof EdgeKind>;
-export const FileFormat = z.enum(['vtt', 'txt', 'md', 'eml', 'chat']);
+/** Parsed structure. 'srt' is subtitle cues; 'doc' is prose (PDF, DOCX, slides, HTML) split into sections. */
+export const FileFormat = z.enum(['vtt', 'txt', 'md', 'eml', 'chat', 'srt', 'doc']);
 export type FileFormat = z.infer<typeof FileFormat>;
 
-export const Channel = z.enum(['slack', 'jira', 'linear', 'email_digest', 'triage']);
+/**
+ * Where a routed insight goes. Each channel is delivered through a connector
+ * (src/shared/platform.ts CHANNEL_CONNECTOR); 'triage' is internal and always available.
+ */
+export const Channel = z.enum(['slack', 'teams', 'jira', 'linear', 'salesforce', 'email', 'email_digest', 'google_drive', 'triage']);
 export type Channel = z.infer<typeof Channel>;
 
 export const ARR_BANDS = ['<50k', '50k-250k', '250k-1m', '>1m'] as const;
@@ -81,6 +86,12 @@ export const Person = z.object({
   slackHandle: z.string(),
   email: z.string(),
   initials: z.string(),
+  /** Per-tool handles used to tag this person (src/shared/platform.ts PersonIdentities). */
+  identities: z.record(z.string(), z.string()).optional(),
+  /** False once removed from the workspace directory; kept so history still resolves the name. */
+  active: z.boolean().optional(),
+  /** True for people added in this workspace (not in the seed directory). */
+  custom: z.boolean().optional(),
 });
 export type Person = z.infer<typeof Person>;
 
@@ -200,6 +211,12 @@ export const Run = z.object({
   reviewCount: z.number().int(),
   injectionFlagged: z.boolean(),
   actionable: z.boolean().nullable(),
+  /** Where it came from: upload, paste, library, or a connector id (src/shared/platform.ts SourceId). */
+  source: z.string().nullable().optional(),
+  /** What it is, from the decision model's triage (src/shared/platform.ts DocKind). */
+  docKind: z.string().nullable().optional(),
+  /** Original file type before conversion to text (pdf, docx, …), when it was a file. */
+  sourceFormat: z.string().nullable().optional(),
 });
 export type Run = z.infer<typeof Run>;
 
@@ -248,6 +265,15 @@ export const Insight = z.object({
   promptVersion: z.string(),
   model: z.string(),
   createdAt: z.string(),
+  /**
+   * The decision model's independent check at the gate (additive). It can send a borderline
+   * item straight to its owner when it agrees, or hold an auto-route item for review when it
+   * does not. High-stakes items (churn risk, critical bugs, flagged files) are always reviewed.
+   */
+  secondOpinion: z
+    .object({ agree: z.boolean(), confidence: z.number(), note: z.string(), model: z.string(), effect: z.enum(['promoted', 'demoted', 'none']) })
+    .nullable()
+    .optional(),
 });
 export type Insight = z.infer<typeof Insight>;
 
@@ -275,6 +301,13 @@ export const ScreenOutput = z.object({
   injection_excerpt: z.string().nullable(),
   call_kind: z.enum(['qbr', 'check_in', 'renewal', 'escalation', 'onboarding', 'notes', 'email', 'other']),
   reason: z.string().max(200),
+  // ---- decision-model triage (additive; absent on runs recorded before it existed)
+  /** What the input is, whatever the file type (src/shared/platform.ts DocKind). */
+  doc_kind: z.enum(['call_transcript', 'meeting_notes', 'email_thread', 'chat_thread', 'support_ticket', 'survey_response', 'document', 'other']).optional(),
+  /** How noisy it is; picks the extraction path. */
+  complexity: z.enum(['clean', 'noisy', 'very_noisy']).optional(),
+  /** Platform analyses that apply to it (src/shared/platform.ts ANALYSES ids). */
+  analyses: z.array(z.string()).optional(),
 });
 export type ScreenOutput = z.infer<typeof ScreenOutput>;
 
@@ -334,6 +367,10 @@ export const Delivery = z.object({
   /** Ticket lifecycle for jira/linear: open → in_progress → shipped. */
   ticketState: z.enum(['open', 'in_progress', 'shipped', 'wont_do']).nullable(),
   createdAt: z.string(),
+  /** People tagged on it, by their handle in that tool: the owner, the account's CSM, watchers. */
+  mentions: z.array(z.object({ personId: z.string(), handle: z.string(), role: z.enum(['owner', 'csm', 'watcher']) })).optional(),
+  /** The connected account it went through ("invoca.slack.com"). */
+  connectorAccount: z.string().nullable().optional(),
 });
 export type Delivery = z.infer<typeof Delivery>;
 
@@ -417,9 +454,12 @@ export const Session = z.object({
   workspaceId: z.string(),
   isOwner: z.boolean(), // shared hb_auth cookie → Hunter
   budget: Budget,
-  models: z.object({ primary: z.string(), secondary: z.string() }),
+  /** primary extracts; secondary is the fallback and eval judge; decision triages and gives second opinions. */
+  models: z.object({ primary: z.string(), secondary: z.string(), decision: z.string().optional() }),
   promptVersion: z.string(),
   linkExpiresAt: z.string().nullable(), // when signed in via link
+  /** Who the viewer is acting as in this workspace (defaults to the workspace admin persona). */
+  actor: z.object({ personId: z.string(), name: z.string(), title: z.string(), initials: z.string(), isAdmin: z.boolean() }).optional(),
 });
 export type Session = z.infer<typeof Session>;
 
@@ -430,7 +470,18 @@ export type ApiError = { error: { code: string; message: string } };
 
 export const CreateRun = z.union([
   z.object({ fileId: z.string(), mode: z.enum(['auto', 'replay']).default('auto'), rerun: z.boolean().optional() }),
-  z.object({ text: z.string().min(40).max(60_000), filename: z.string().max(120).default('pasted-notes.txt'), mode: z.literal('auto').default('auto'), rerun: z.boolean().optional() }),
+  z.object({
+    text: z.string().min(40).max(200_000),
+    filename: z.string().max(160).default('pasted-notes.txt'),
+    mode: z.literal('auto').default('auto'),
+    rerun: z.boolean().optional(),
+    /** Parser hint from the browser-side converter (e.g. 'doc' for a PDF turned into text). */
+    formatHint: FileFormat.optional(),
+    /** Original file type before conversion (pdf, docx, json, …). */
+    sourceFormat: z.string().max(12).optional(),
+    /** How it arrived: 'upload' | 'paste' | a connector id. */
+    source: z.string().max(24).optional(),
+  }),
 ]);
 export type CreateRun = z.infer<typeof CreateRun>;
 /**

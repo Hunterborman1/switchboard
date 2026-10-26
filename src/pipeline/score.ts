@@ -3,8 +3,11 @@
  *   ≥ 0.80 auto_route · 0.55–0.80 review · < 0.55 held · no grounded quote → dropped.
  *   churn_risk and high/critical bugs always go to review; so does everything in a file
  *   where a prompt injection was suspected.
+ * The decision model's second opinion can then move an item one way, by policy in code
+ * (applySecondOpinion): a borderline item it agrees with goes to its owner, an auto-route item
+ * it disputes goes to a person. Forced reviews never move.
  */
-import { THRESHOLDS, type Account, type Evidence, type Gate, type InsightStatus, type InsightType, type Severity } from '../shared/contracts.ts';
+import { THRESHOLDS, type Account, type Evidence, type Gate, type Insight, type InsightStatus, type InsightType, type Severity } from '../shared/contracts.ts';
 import { ACCOUNT_CONTEXT, TYPE_PRIORS } from '../shared/scoring.ts';
 import { clamp01, round } from './util.ts';
 
@@ -48,6 +51,8 @@ export type ScoreResult = {
   gate: Gate;
   status: InsightStatus;
   gateReasons: string[];
+  /** In review for a reason other than the confidence band (churn risk, a critical bug, a flagged file…). */
+  forced: boolean;
 };
 
 const f2 = (n: number) => n.toFixed(2);
@@ -63,6 +68,7 @@ export function scoreInsight(input: ScoreInput): ScoreResult {
       gate: 'dropped',
       status: 'dropped_ungrounded',
       gateReasons: [`no quote could be grounded (best match ${f2(best)} < ${f2(t.grounding)})`],
+      forced: false,
     };
   }
   const groundingScore = Math.max(...grounded.map((e) => e.score));
@@ -94,5 +100,38 @@ export function scoreInsight(input: ScoreInput): ScoreResult {
   }
   if (ctx.notes.length && gate !== 'held') reasons.push(`account context ×${ctx.factor.toFixed(2)} (${ctx.notes.join(', ')})`);
   const status: InsightStatus = gate === 'auto_route' ? 'routed' : gate === 'review' ? 'pending_review' : 'held';
-  return { groundingScore: round(groundingScore, 3), confidenceFinal, gate, status, gateReasons: reasons };
+  return { groundingScore: round(groundingScore, 3), confidenceFinal, gate, status, gateReasons: reasons, forced: forceReview.length > 0 };
+}
+
+export type SecondOpinionVerdict = { agree: boolean; confidence: number; note: string };
+export type SecondOpinion = NonNullable<Insight['secondOpinion']>;
+
+/** Agreement needed to send a borderline item straight to its owner. */
+export const SECOND_OPINION_PROMOTE_AT = 0.85;
+/** Disagreement needed to hold an auto-route item for a person. */
+export const SECOND_OPINION_DEMOTE_AT = 0.6;
+
+/**
+ * The second-opinion policy, applied in code:
+ *   - in review only because of the confidence band (not forced), and the second opinion agrees
+ *     with confidence ≥ 0.85 → auto-route ("Second opinion agreed (0.91)");
+ *   - auto-route, and the second opinion disagrees with confidence ≥ 0.6 → review
+ *     ("Second opinion disagreed: <note>");
+ *   - anything else is unchanged (held and forced items never move).
+ */
+export function applySecondOpinion(
+  s: Pick<ScoreResult, 'gate' | 'status' | 'gateReasons' | 'forced'>,
+  verdict: SecondOpinionVerdict,
+  model: string,
+): { gate: Gate; status: InsightStatus; gateReasons: string[]; secondOpinion: SecondOpinion } {
+  const confidence = round(clamp01(verdict.confidence), 2);
+  const base = { agree: verdict.agree, confidence, note: verdict.note, model };
+  if (s.gate === 'review' && !s.forced && verdict.agree && confidence >= SECOND_OPINION_PROMOTE_AT) {
+    return { gate: 'auto_route', status: 'routed', gateReasons: [...s.gateReasons, `Second opinion agreed (${f2(confidence)})`], secondOpinion: { ...base, effect: 'promoted' } };
+  }
+  if (s.gate === 'auto_route' && !verdict.agree && confidence >= SECOND_OPINION_DEMOTE_AT) {
+    const why = verdict.note.trim().replace(/\.$/, '') || 'the quotes do not support it';
+    return { gate: 'review', status: 'pending_review', gateReasons: [...s.gateReasons, `Second opinion disagreed: ${why}`], secondOpinion: { ...base, effect: 'demoted' } };
+  }
+  return { gate: s.gate, status: s.status, gateReasons: s.gateReasons, secondOpinion: { ...base, effect: 'none' } };
 }

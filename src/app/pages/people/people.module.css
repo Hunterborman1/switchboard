@@ -1,0 +1,92 @@
+/* People: directory table and the person drawer. */
+
+.nameButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  text-align: left;
+}
+.nameButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.inlineBadge {
+  margin-left: 8px;
+  vertical-align: 1px;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.email {
+  min-width: 0;
+  max-width: 220px;
+  margin-right: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.formTitle {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+}
+.formHint {
+  margin: -6px 0 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.span2 {
+  grid-column: span 2;
+}
+@media (max-width: 520px) {
+  .formGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .span2 {
+    grid-column: auto;
+  }
+}
+.handles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.handleRow {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+.handleLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+}
+@media (max-width: 520px) {
+  .handleRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+}

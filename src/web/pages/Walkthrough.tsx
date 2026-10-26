@@ -9,6 +9,7 @@
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
+import { Skeleton } from '../../ds';
 import { Scene, SceneTopBar } from '../../narrative/Scene';
 import { SCENES } from '../../narrative/scenes';
 import { useCalm } from '../../narrative/hooks';
@@ -17,14 +18,18 @@ import { firstStepOf, FIRST_STEP } from '../../tour/script/steps';
 import { useTour } from '../../tour/engine/TourProvider';
 import type { ChapterId } from '../../tour/engine/types';
 
-/** Shown while the engine aligns with a deep link: the scene chrome and a quiet line, never a blank screen. */
+/** Shown while the engine aligns with a deep link: the scene chrome and a placeholder the shape of a scene head. */
 function SceneSkeleton() {
   return (
-    <main className="sl-n n-page">
+    <main className="ds-app sl-n n-page">
       <section className="n-scene" aria-busy="true" aria-label="Loading the walkthrough" data-testid="scene-skeleton">
         <SceneTopBar />
         <div className="n-scene__body">
-          <div className="n-scene__skeleton">Loading the walkthrough…</div>
+          <div className="n-scene__skeleton">
+            <Skeleton width="56%" height={40} radius={6} />
+            <Skeleton width="72%" height={16} />
+            <Skeleton width="100%" height={280} radius={8} style={{ marginTop: 24 }} />
+          </div>
         </div>
       </section>
     </main>
@@ -63,7 +68,7 @@ export function Walkthrough() {
   const last = tour.beat >= beats - 1;
   const C = def.component;
   return (
-    <main className="sl-n n-page" data-scene={step.scene}>
+    <main className="ds-app sl-n n-page" data-scene={step.scene}>
       <Scene
         label={ch.title}
         group={GROUPS.find((g) => g.ids.includes(ch.id))?.label}

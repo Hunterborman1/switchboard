@@ -1,191 +1,374 @@
+/**
+ * Quality page parts: accuracy by insight type, the mess-level heat table, the safety checks
+ * and the candidate comparison. Every rate shows its counts ("125 of 141").
+ */
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import type { EvalRun } from '../../../shared/contracts';
 import { INSIGHT_TYPES } from '../../../shared/contracts';
-import { RateWithDenominator } from '../../../uis/RateWithDenominator';
-import { StatusChip } from '../../../uis/StatusChip';
-import { Hint } from '../../components/Hint';
-import { TYPE_COLOR, TYPE_LABEL } from '../../lib/labels';
-import { metricPct } from '../../../shared/format';
-import { LEVELS, metric, passed, thresholdLabel, unitFor, type Metric } from './evalModel';
+import { metricPct, ptsText, rateOf } from '../../../shared/format';
+import { Badge, Button, DotLabel, Table, Tooltip, type Tone } from '../../../ds';
+import { IconAlertTriangle, IconCheck, IconX } from '../../../ds/icons';
+import { TypeLabel } from '../../components/domain';
+import { money, ms } from '../../lib/labels';
+import { LEVELS, LOWER_IS_BETTER, metric, metricLabel, passed, pooledMetric, thresholdLabel, unitFor, ver, type Metric } from './evalModel';
 import styles from './Evals.module.css';
 
-export function PassChip({ m }: { m: Metric | null }) {
-  const p = passed(m);
-  if (p == null) {
-    return (
-      <StatusChip tone="neutral" size="sm">
-        No target
-      </StatusChip>
-    );
-  }
-  return (
-    <StatusChip tone={p ? 'success' : 'danger'} size="sm">
-      {p ? 'Pass' : 'Below target'}
-    </StatusChip>
-  );
-}
+const counts = (m: Metric | null) => (m?.numerator != null && m.denominator != null ? `${m.numerator} of ${m.denominator}` : null);
 
-/**
- * One horizontal bar 0–100%. Per-type metrics carry no gate threshold of their own: the
- * dashed tick is the pooled promotion-gate level, drawn as a reference target. A bar under it
- * is tinted amber ("under target"), never red, because nothing per type is gated.
- */
-function Bar({ m, series, target }: { m: Metric | null; series: 'precision' | 'recall'; target: number | null }) {
-  const v = m?.value ?? null;
-  const t = m?.threshold ?? null;
-  const fail = passed(m) === false;
-  const under = !fail && t == null && target != null && v != null && v < target;
-  const word = series === 'precision' ? 'Precision' : 'Recall';
+/** A rate as a bar with the reference target as a tick, the percent and its counts. */
+function RateBar({ m, target, series, name }: { m: Metric | null; target: number | null; series: 'precision' | 'recall'; name: string }) {
+  const v = rateOf(m);
+  const under = v != null && target != null && v < target;
   return (
-    <div className={styles.barRow}>
-      <span className={styles.barLabel}>{word}</span>
-      <div
-        className={styles.barTrack}
+    <div className={styles.rate} data-testid="rate">
+      <span
+        className={styles.rateTrack}
         role="img"
-        aria-label={`${word} ${v == null ? 'not measured' : metricPct(m)}${t != null ? `, gate threshold ${(t * 100).toFixed(0)}%` : target != null ? `, reference target ${(target * 100).toFixed(0)}% (not gated)${under ? ', under target' : ''}` : ''}`}
+        aria-label={`${name}: ${v == null ? 'not measured' : `${metricPct(m)}, ${counts(m) ?? ''}`}${target != null ? `. Reference target ${(target * 100).toFixed(0)}%${under ? ', below it' : ''}` : ''}`}
       >
-        {v != null ? <span className={`${styles.barFill} ${series === 'recall' ? styles.barRecall : ''} ${fail ? styles.barFail : under ? styles.barUnder : ''}`} style={{ width: `${(v * 100).toFixed(1)}%` }} /> : null}
-        {t != null ? <span className={styles.barThreshold} style={{ left: `${(t * 100).toFixed(1)}%` }} title={`gate threshold ${(t * 100).toFixed(0)}%`} /> : null}
-        {t == null && target != null ? <span className={styles.barTarget} style={{ left: `${(target * 100).toFixed(1)}%` }} title={`reference: the pooled gate is ${(target * 100).toFixed(0)}%. Per-type values are reported, not gated.`} /> : null}
-      </div>
-      <span className={`${styles.barValue} ${fail ? styles.textFail : under ? styles.textUnder : ''}`}>
-        {m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit="" variant="split" /> : '—'}
+        {v != null ? <span className={`${styles.rateFill} ${series === 'recall' ? styles.rateFillRecall : styles.rateFillPrecision}`} style={{ width: `${(v * 100).toFixed(1)}%` }} /> : null}
+        {target != null ? <span className={styles.rateTarget} style={{ left: `${(target * 100).toFixed(1)}%` }} /> : null}
+      </span>
+      <span className={styles.rateNumbers}>
+        <span className={styles.rateValue}>
+          {under ? <IconAlertTriangle size={12} className={styles.rateWarn} aria-hidden="true" /> : null}
+          {v == null ? '—' : metricPct(m)}
+        </span>
+        <span className={styles.rateCount}>{counts(m) ?? 'No data'}</span>
       </span>
     </div>
   );
 }
 
-export function TypeBars({ run }: { run: EvalRun }) {
+export function TypeTable({ run }: { run: EvalRun }) {
   // The gate applies to pooled precision and recall; per type, those levels are only a reference.
   const pT = metric(run, 'precision')?.threshold ?? 0.85;
   const rT = metric(run, 'recall')?.threshold ?? 0.8;
-  const under = INSIGHT_TYPES.filter((t) => {
-    const p = metric(run, `precision.${t}`);
-    return p?.value != null && p.threshold == null && p.value < pT;
-  });
   return (
-    <div className={styles.typeBars}>
-      <div className={styles.legend} aria-hidden="true">
-        <span>
-          <i className={styles.legendP} /> Precision
-        </span>
-        <span>
-          <i className={styles.legendR} /> Recall
-        </span>
-        <span>
-          <i className={styles.legendU} /> Under target
-        </span>
-        <span>
-          <i className={styles.legendTarget} /> Overall target ({(pT * 100).toFixed(0)}% precision, {(rT * 100).toFixed(0)}% recall)
-        </span>
-      </div>
-      {INSIGHT_TYPES.map((t) => {
-        const p = metric(run, `precision.${t}`);
-        const r = metric(run, `recall.${t}`);
-        return (
-          <div key={t} className={styles.typeBlock}>
-            <span className="sl-type">
-              <i style={{ background: TYPE_COLOR[t] }} aria-hidden="true" />
-              {TYPE_LABEL[t]}
-            </span>
-            <Bar m={p} series="precision" target={pT} />
-            <Bar m={r} series="recall" target={rT} />
-          </div>
-        );
-      })}
-      <p className="sl-caption" data-testid="type-gate-note">
-        A new prompt only goes live if precision is at least {(pT * 100).toFixed(0)}% and recall at least {(rT * 100).toFixed(0)}% across all types combined. Each type is shown against those same targets for reference.
-        {under.length
-          ? ` Below target today: ${under.map((t) => TYPE_LABEL[t].toLowerCase()).join(', ')}. Churn risk is always checked by a person; next up are per-type thresholds and more labelled examples for these types.`
-          : ''}
-      </p>
-    </div>
-  );
-}
-
-export function LevelHeatmap({ run }: { run: EvalRun }) {
-  return (
-    <div className="sl-scroll-x">
-      <table className={styles.heat}>
-        <caption className="sl-sr-only">Precision and recall by how messy the file is</caption>
+    <>
+      <Table label="Precision and recall by insight type" minWidth={340}>
         <thead>
           <tr>
-            <th scope="col" />
-            {LEVELS.map((l) => (
-              <th key={l.n} scope="col">
-                <Hint label={l.hint}>
-                  <span tabIndex={0} className={styles.heatHead}>
-                    <span>{l.label}</span>
-                    <span>Level {l.n}</span>
-                  </span>
-                </Hint>
-              </th>
-            ))}
+            <th>Insight type</th>
+            <th>Precision</th>
+            <th>Recall</th>
           </tr>
         </thead>
         <tbody>
-          {(['precision', 'recall'] as const)
-            // A run recorded before per-level precision existed shows recall only, not a row of gaps.
-            .filter((kind) => LEVELS.some((l) => metric(run, `${kind}.level${l.n}`)?.denominator != null))
-            .map((kind) => (
-            <tr key={kind}>
-              <th scope="row">{kind === 'precision' ? 'Precision' : 'Recall'}</th>
-              {LEVELS.map((l) => {
-                const m = metric(run, `${kind}.level${l.n}`);
-                const p = passed(m);
-                return (
-                  <td key={l.n} className={p === false ? styles.cellFail : p ? styles.cellPass : ''}>
-                    <span className={styles.cellPct}>{m?.value == null ? '—' : metricPct(m)}</span>
-                    <span className={styles.cellDen}>{m?.numerator != null ? `${m.numerator} / ${m.denominator}` : 'No data'}</span>
-                    <span className={styles.cellBar} aria-hidden="true">
-                      <span style={{ width: `${((m?.value ?? 0) * 100).toFixed(1)}%` }} />
-                    </span>
-                    {p === false ? <span className="sl-sr-only">below target</span> : null}
-                  </td>
-                );
-              })}
+          {INSIGHT_TYPES.map((t) => (
+            <tr key={t}>
+              <td className="is-nowrap">
+                <TypeLabel type={t} />
+              </td>
+              <td className={styles.rateCell}>
+                <RateBar m={metric(run, `precision.${t}`)} target={pT} series="precision" name="Precision" />
+              </td>
+              <td className={styles.rateCell}>
+                <RateBar m={metric(run, `recall.${t}`)} target={rT} series="recall" name="Recall" />
+              </td>
             </tr>
           ))}
         </tbody>
-      </table>
-      <p className="sl-caption" style={{ marginTop: 8 }}>
-        Precision: how much of what the AI found was right. Recall: how many of the planted insights it found. Cells with their own go-live rule are coloured: green passes, red does not. Each level has 8 labelled files.
-      </p>
-    </div>
+      </Table>
+      <div className={styles.tableNote}>
+        <span className={styles.legendRow}>
+          <DotLabel color="var(--chart-1)">Precision</DotLabel>
+          <DotLabel color="var(--chart-2)">Recall</DotLabel>
+          <span className={styles.legendTick}>
+            <span className={styles.legendTickMark} aria-hidden="true" />
+            Overall target
+          </span>
+        </span>
+        <span>
+          The gate checks all types together ({(pT * 100).toFixed(0)}% precision, {(rT * 100).toFixed(0)}% recall). Each type is shown against that line, not gated.
+        </span>
+      </div>
+    </>
   );
 }
 
-export function MetricCard({ m, title, note }: { m: Metric | null; title: string; note: string }) {
-  const lower = m ? ['negative_fp_rate', 'phi_leakage'].includes(m.key) : false;
-  if (m && m.denominator == null && m.numerator != null) {
-    // A count with no denominator (quotes dropped by grounding): show the count, never a %.
-    return (
-      <div className={styles.metricCard}>
-        <span className={styles.metricTitle}>{title}</span>
-        <span className={styles.metricTop}>
-          <span className={styles.metricBig}>{m.numerator}</span>
-          <PassChip m={m} />
-        </span>
-        <span className="sl-meta">
-          {m.numerator} {unitFor(m.key)} across the test files
-        </span>
-        <span className="sl-caption">{note}</span>
-      </div>
-    );
-  }
+const HEAT_STEPS = [0.5, 0.6, 0.7, 0.8, 0.9, 1];
+/** Sequential, one hue: from a whisper of the accent at 50% or lower to a clear tint at 100%. */
+const heat = (v: number | null) => (v == null ? 'var(--bg-subtle)' : `color-mix(in srgb, var(--accent) ${(4 + Math.max(0, Math.min(1, (v - 0.5) / 0.5)) * 30).toFixed(0)}%, var(--bg))`);
+
+export function LevelHeat({ run }: { run: EvalRun }) {
+  // A run recorded before per-level precision existed shows recall only, not a row of gaps.
+  const kinds = (['precision', 'recall'] as const).filter((kind) => LEVELS.some((l) => metric(run, `${kind}.level${l.n}`)?.denominator != null));
+  const gated = kinds.some((k) => LEVELS.some((l) => metric(run, `${k}.level${l.n}`)?.threshold != null));
   return (
-    <div className={`${styles.metricCard} ${passed(m) === false ? styles.metricFail : ''}`}>
-      <span className={styles.metricTitle}>{title}</span>
-      <span className={styles.metricTop}>
-        <span className={styles.metricBig}>{m?.value == null ? '—' : metricPct(m, m.value === 0 || m.value === 1 ? 0 : 1)}</span>
-        <PassChip m={m} />
-      </span>
-      <span className="sl-meta">
-        {m ? <RateWithDenominator rate={m.value} numerator={m.numerator} denominator={m.denominator} unit={unitFor(m.key)} /> : 'Not measured'}
-      </span>
-      <span className="sl-caption">
-        {note}
-        {m && m.threshold != null ? `. Target ${thresholdLabel(m)}${lower ? ', lower is better' : ''}.` : '.'}
-      </span>
+    <>
+      <div className={styles.heatWrap}>
+        <table className={styles.heat}>
+          <caption className="ds-sr-only">Precision and recall by how messy the file is</caption>
+          <thead>
+            <tr>
+              <th scope="col" className={styles.heatCorner}>
+                <span className="ds-sr-only">Measure</span>
+              </th>
+              {LEVELS.map((l) => (
+                <th key={l.n} scope="col" className={styles.heatHead}>
+                  <Tooltip label={l.hint}>
+                    <span tabIndex={0} className={styles.heatHeadText}>
+                      <span className={styles.heatLevel}>Level {l.n}</span>
+                      <span className={styles.heatName}>{l.label}</span>
+                    </span>
+                  </Tooltip>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {kinds.map((kind) => (
+              <tr key={kind}>
+                <th scope="row" className={styles.heatRow}>
+                  {kind === 'precision' ? 'Precision' : 'Recall'}
+                </th>
+                {LEVELS.map((l) => {
+                  const m = metric(run, `${kind}.level${l.n}`);
+                  const p = passed(m);
+                  const v = rateOf(m);
+                  return (
+                    <td key={l.n} className={styles.heatCell} style={{ '--heat': heat(v) } as CSSProperties}>
+                      <span className={styles.heatValue}>
+                        {v == null ? '—' : metricPct(m)}
+                        {p != null && m?.threshold != null ? (
+                          <span className={p ? styles.heatPass : styles.heatFail} title={`Go-live rule: ${thresholdLabel(m)}`}>
+                            {p ? <IconCheck size={12} /> : <IconX size={12} />}
+                            <span className="ds-sr-only">{p ? `passes its go-live rule, ${thresholdLabel(m)}` : `below its go-live rule, ${thresholdLabel(m)}`}</span>
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className={styles.heatCount}>{counts(m) ?? 'No data'}</span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className={styles.tableNote}>
+        <span className={styles.scale} aria-hidden="true">
+          <span className={styles.scaleEnd}>50%</span>
+          {HEAT_STEPS.map((s) => (
+            <span key={s} className={styles.scaleStep} style={{ background: heat(s) }} />
+          ))}
+          <span className={styles.scaleEnd}>100%</span>
+        </span>
+        <span>
+          Darker is better. Each level has its own labelled files.
+          {gated ? ' A tick marks a cell with its own go-live rule.' : ''}
+        </span>
+      </div>
+    </>
+  );
+}
+
+/** Pass, below target, or reported only (no rule). */
+function CheckBadge({ m }: { m: Metric | null }) {
+  const p = passed(m);
+  if (p == null) return <Badge>Reported</Badge>;
+  return (
+    <Badge tone={p ? 'success' : 'danger'} dot>
+      {p ? 'Pass' : 'Below target'}
+    </Badge>
+  );
+}
+
+const SAFETY: { keys: string[]; title: string; note: string }[] = [
+  {
+    keys: ['grounding_rate'],
+    title: 'Quotes found in the conversation',
+    note: 'Word for word or a close match',
+  },
+  {
+    keys: ['hallucinations_caught', 'hallucination_caught'],
+    title: 'Made-up quotes caught',
+    note: 'The insight was dropped',
+  },
+  {
+    keys: ['negative_fp_rate'],
+    title: 'Insights invented from nothing',
+    note: 'On test calls with nothing actionable',
+  },
+  {
+    keys: ['injection_flagged', 'injection_resistance'],
+    title: 'Manipulation attempts caught',
+    note: 'Hidden instructions in a file changed nothing',
+  },
+  {
+    keys: ['phi_leakage'],
+    title: 'Health information reaching the AI',
+    note: 'Files where any of it got through redaction',
+  },
+  {
+    keys: ['routing_accuracy'],
+    title: 'Sent to the expected owner',
+    note: 'Routing on the labelled files',
+  },
+  {
+    keys: ['run_failures'],
+    title: 'Test files that failed to run',
+    note: 'Every file must run to completion',
+  },
+];
+
+export function SafetyTable({ run }: { run: EvalRun }) {
+  const rows = SAFETY.map((s) => ({
+    ...s,
+    m: s.keys.map((k) => metric(run, k)).find(Boolean) ?? null,
+  })).filter((r) => r.m);
+  return (
+    <Table label="Safety and routing checks" minWidth={640}>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th className="is-num">Result</th>
+          <th className="is-num">Counts</th>
+          <th className="is-num">Target</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(({ title, note, m }) => {
+          const countOnly = m!.denominator == null;
+          return (
+            <tr key={m!.key}>
+              <td>
+                <span className={styles.checkTitle}>{title}</span>
+                <span className={styles.checkNote}>{note}</span>
+              </td>
+              <td className="is-num">{countOnly ? (m!.numerator ?? '—') : metricPct(m, m!.value === 0 || m!.value === 1 ? 0 : 1)}</td>
+              <td className="is-num ds-muted">{countOnly ? `${m!.numerator ?? 0} ${unitFor(m!.key)}` : counts(m)}</td>
+              <td className="is-num ds-muted">{m!.threshold != null ? thresholdLabel(m!) : 'None'}</td>
+              <td className="is-nowrap">
+                <CheckBadge m={m} />
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </Table>
+  );
+}
+
+type Diff = {
+  key: string;
+  label: string;
+  before: ReactNode;
+  after: ReactNode;
+  change: string;
+  better: boolean | null;
+};
+
+const rateCell = (m: Metric | null) =>
+  m ? (
+    <span className={styles.diffValue}>
+      {metricPct(m)}
+      {counts(m) ? <span className={styles.diffCount}>{counts(m)}</span> : null}
+    </span>
+  ) : (
+    '—'
+  );
+
+function rateDiff(label: string, key: string, current: EvalRun, candidate: EvalRun, alt?: () => Metric | null, altCur?: () => Metric | null): Diff | null {
+  const a = metric(current, key) ?? altCur?.() ?? null;
+  const b = metric(candidate, key) ?? alt?.() ?? null;
+  const av = rateOf(a);
+  const bv = rateOf(b);
+  if (av == null || bv == null) return null;
+  const d = bv - av;
+  const better = Math.abs(d) < 0.0005 ? null : LOWER_IS_BETTER.has(key) ? d < 0 : d > 0;
+  return {
+    key,
+    label,
+    before: rateCell(a),
+    after: rateCell(b),
+    change: Math.abs(d) < 0.0005 ? 'No change' : ptsText(d),
+    better,
+  };
+}
+
+function relDiff(key: string, label: string, a: number, b: number, fmt: (v: number) => string): Diff {
+  const d = a ? (b - a) / a : 0;
+  return {
+    key,
+    label,
+    before: fmt(a),
+    after: fmt(b),
+    change: Math.abs(d) < 0.005 ? 'No change' : `${d > 0 ? '+' : '−'}${Math.abs(d * 100).toFixed(0)}%`,
+    better: Math.abs(d) < 0.005 ? null : d < 0,
+  };
+}
+
+/** The headline differences between the live prompt and the candidate, then every changed rate on request. */
+export function CandidateCompare({ candidate, current }: { candidate: EvalRun; current: EvalRun }) {
+  const [all, setAll] = useState(false);
+  const key: Diff[] = [
+    rateDiff(
+      'Precision',
+      'precision',
+      current,
+      candidate,
+      () => pooledMetric(candidate, 'precision'),
+      () => pooledMetric(current, 'precision'),
+    ),
+    rateDiff(
+      'Recall',
+      'recall',
+      current,
+      candidate,
+      () => pooledMetric(candidate, 'recall'),
+      () => pooledMetric(current, 'recall'),
+    ),
+    rateDiff('Recall on the messiest files', 'recall.level5', current, candidate),
+    rateDiff('Quotes grounded', 'grounding_rate', current, candidate),
+    relDiff('cost', `Test cost (${candidate.files} files)`, current.costUsd, candidate.costUsd, (v) => money(v, { precise: true })),
+    relDiff('p95', 'Slowest 5% of files', current.p95Ms, candidate.p95Ms, (v) => ms(v)),
+  ].filter((d): d is Diff => !!d);
+  const shown = new Set(key.map((d) => d.key));
+  const rest = candidate.metrics
+    // Count-only metrics (no denominator) and the gate's own regression rows don't belong in a rate diff.
+    .filter((m) => m.denominator != null && !m.key.startsWith('regression.') && !shown.has(m.key))
+    .map((m) => rateDiff(metricLabel(m), m.key, current, candidate))
+    .filter((d): d is Diff => !!d && d.better != null && d.change !== 'No change')
+    .sort((a, b) => Number(a.better) - Number(b.better));
+  const rows = all ? [...key, ...rest] : key;
+  const tone = (d: Diff): Tone => (d.better == null ? 'neutral' : d.better ? 'success' : 'danger');
+  return (
+    <div className={styles.compare}>
+      <Table label={`${ver(current.promptVersion)} compared with ${ver(candidate.promptVersion)}`} minWidth={520}>
+        <thead>
+          <tr>
+            <th>Measure</th>
+            <th className="is-num">{ver(current.promptVersion)} (live)</th>
+            <th className="is-num">{ver(candidate.promptVersion)}</th>
+            <th className="is-num">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((d) => (
+            <tr key={d.key}>
+              <td className={styles.compareLabel}>{d.label}</td>
+              <td className="is-num ds-muted">{d.before}</td>
+              <td className="is-num">{d.after}</td>
+              <td className="is-num">
+                <Badge tone={tone(d)}>{d.change}</Badge>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      {rest.length ? (
+        <div className={styles.compareMore}>
+          <span>
+            {all ? `Every measure that changed, worse first.` : `${rest.length} more measure${rest.length === 1 ? '' : 's'} changed, ${rest.filter((d) => d.better === false).length} for the worse.`}
+          </span>
+          <Button size="sm" variant="ghost" onClick={() => setAll((v) => !v)} aria-expanded={all}>
+            {all ? 'Show fewer' : 'Show all changes'}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

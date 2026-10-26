@@ -1,118 +1,133 @@
 /**
- * Signal Loop Narrative · components. Small, flat, composable (docs/DESIGN.md).
- * See ./README.md for the token + component reference.
+ * Narrative layer · components. The presentation pages (scenes, hub, write-up, Q&A, presenter)
+ * are pages of the same product: they use the Switchboard design system (src/ds) for buttons,
+ * badges, cards, quotes and marks, and add only what a presentation needs: the scene headline,
+ * reveal-on-beat, a count-up stat and the persona card. See ./README.md.
  */
-import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
+import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ProductMark } from '../ds';
+import { IconArrowRight, IconCheck, IconChevronRight } from '../ds/icons';
 import { useCalm, useCountUp } from './hooks';
-import { DUR, EASE, reveal, revealReduced, stagger } from './motion';
-import { ProductMark } from '../uis/ProductSwitcher';
+import { DUR, EASE } from './motion';
 
 const cx = (...c: Array<string | false | null | undefined>) => c.filter(Boolean).join(' ');
 
-// ---------------------------------------------------------------- brand
+// ---------------------------------------------------------------- brand + page bar
 
-/** The Signal Loop mark: a flat accent tile with four waveform bars. */
-export function LoopGlyph({ size = 24 }: { size?: number; live?: boolean }) {
-  return <ProductMark product="signal-loop" size={size} />;
-}
-
-export function Mark({ sub, href, size = 24 }: { sub?: string; href?: string; size?: number }) {
+/** The product lockup: the Switchboard mark and name, optionally linking home. */
+export function Brand({ href, label = 'Switchboard' }: { href?: string; label?: string }) {
   const inner = (
     <>
-      <LoopGlyph size={size} />
-      <span className="n-mark__name">Signal Loop</span>
-      {sub && <span className="n-mark__sub">{sub}</span>}
+      <ProductMark product="switchboard" size={22} />
+      <span className="n-brand__name">{label}</span>
     </>
   );
   return href ? (
-    <a className="n-mark" href={href} aria-label="Signal Loop home">
+    <a className="n-brand" href={href} aria-label={`${label} home`}>
       {inner}
     </a>
   ) : (
-    <span className="n-mark">{inner}</span>
+    <span className="n-brand">{inner}</span>
   );
 }
 
-/** Kept for call sites from the dark theme: the light theme has no backdrop. */
-export function Backdrop(_props: { grain?: boolean }) {
-  return null;
+/**
+ * The 52px bar every presentation page shares (hub, write-up, Q&A, presenter, not found): the
+ * product lockup, an optional page name after a slash, and the page's actions on the right.
+ */
+export function SiteBar({ context, children, full }: { context?: ReactNode; children?: ReactNode; full?: boolean }) {
+  return (
+    <header className="n-sitebar">
+      <div className={cx('n-sitebar__in', full && 'n-sitebar__in--full')}>
+        <Brand href={import.meta.env.BASE_URL} />
+        {context ? (
+          <span className="n-sitebar__context">
+            <span className="n-sitebar__slash" aria-hidden="true">
+              /
+            </span>
+            <span className="n-sitebar__page">{context}</span>
+          </span>
+        ) : null}
+        <span className="n-sitebar__spacer" />
+        {children ? <div className="n-sitebar__end">{children}</div> : null}
+      </div>
+    </header>
+  );
 }
 
 // ---------------------------------------------------------------- type
 
-export function Eyebrow({ num, children }: { num?: string; children: ReactNode; rule?: boolean }) {
+export function Display({ as: Tag = 'h1', children, className, style }: { as?: 'h1' | 'h2' | 'h3' | 'p'; children: ReactNode; className?: string; style?: CSSProperties }) {
   return (
-    <p className="n-eyebrow">
-      {num && <span className="n-eyebrow__num">{num}</span>}
-      <span>{children}</span>
-    </p>
-  );
-}
-
-type DisplaySize = 'sm' | 'md' | 'lg' | 'xl';
-export function Display({ size = 'lg', as = 'h1', children, style, className }: { size?: DisplaySize; as?: 'h1' | 'h2' | 'h3' | 'p'; children: ReactNode; style?: CSSProperties; className?: string }) {
-  const Tag = as;
-  return (
-    <Tag className={cx('n-display', `n-display--${size}`, className)} style={style}>
+    <Tag className={cx('n-display', className)} style={style}>
       {children}
     </Tag>
   );
 }
 
-export function Lede({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+export function Lede({ children, className }: { children: ReactNode; className?: string }) {
+  return <p className={cx('n-lede', className)}>{children}</p>;
+}
+
+/**
+ * Scene head: one headline and one supporting line per beat. Every beat's head is laid out in
+ * the same grid cell, so the head is always as tall as its longest version and nothing below it
+ * moves when the beat changes. Only the active one is visible (and in the accessibility tree).
+ */
+export function SceneHead({ heads, active = 0 }: { heads: { title: ReactNode; line?: ReactNode }[]; active?: number }) {
+  const cur = Math.max(0, Math.min(active, heads.length - 1));
   return (
-    <p className="n-lede" style={style}>
-      {children}
-    </p>
+    <div className="n-head">
+      {heads.map((h, i) => (
+        <div key={i} className="n-head__v" data-active={i === cur ? 'true' : 'false'} aria-hidden={i === cur ? undefined : true}>
+          <h1 className="n-display">{h.title}</h1>
+          {h.line ? <p className="n-lede">{h.line}</p> : null}
+        </div>
+      ))}
+    </div>
   );
 }
 
-export function Kicker({ children }: { children: ReactNode }) {
-  return <p className="n-kicker">{children}</p>;
-}
-
-/** Scene head: one headline and one supporting line, cross-fading when `k` changes. */
-export function SceneHead({ k, title, line, size = 'md' }: { k?: string | number; title: ReactNode; line?: ReactNode; size?: DisplaySize }) {
+/**
+ * A part of a scene that arrives on a beat. It always takes its space (so nothing moves when it
+ * appears) and is invisible, and out of the accessibility tree, until `show`.
+ */
+export function Appear({
+  show,
+  delay = 0,
+  y = 6,
+  as = 'div',
+  className,
+  style,
+  children,
+  attrs,
+}: {
+  show: boolean;
+  delay?: number;
+  y?: number;
+  as?: 'div' | 'li' | 'section' | 'span';
+  className?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
+  attrs?: Record<string, string>;
+}) {
   const calm = useCalm();
+  const M = (as === 'li' ? motion.li : as === 'section' ? motion.section : as === 'span' ? motion.span : motion.div) as typeof motion.div;
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={k ?? 'head'}
-        className="n-head"
-        initial={calm ? { opacity: 0 } : { opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, transition: { duration: calm ? 0 : DUR.ui * 0.6, ease: [0.4, 0, 1, 1] } }}
-        transition={{ duration: calm ? 0 : DUR.ui, ease: EASE }}
-      >
-        <Display size={size} as="h2">
-          {title}
-        </Display>
-        {line && <Lede>{line}</Lede>}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
-
-/** Fade-up wrapper; children with <Reveal.Item> follow one after another. */
-export function Reveal({ children, delay = 0, each, className, style, as = 'div' }: { children: ReactNode; delay?: number; each?: number; className?: string; style?: CSSProperties; as?: 'div' | 'section' | 'ul' }) {
-  const calm = useCalm();
-  const M = as === 'section' ? motion.section : as === 'ul' ? motion.ul : motion.div;
-  return (
-    <M className={className} style={style} variants={calm ? stagger(0, 0) : stagger(delay, each)} initial="hidden" animate="show" exit="exit">
+    <M
+      className={className}
+      initial={false}
+      animate={{ opacity: show ? 1 : 0, y: show || calm ? 0 : y }}
+      transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: show && !calm ? delay : 0 }}
+      style={{ ...style, visibility: show ? 'visible' : 'hidden' }}
+      aria-hidden={show ? undefined : true}
+      {...attrs}
+    >
       {children}
     </M>
   );
 }
-function RevealItem({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
-  const calm = useCalm();
-  return (
-    <motion.div className={className} style={style} variants={calm ? revealReduced : reveal}>
-      {children}
-    </motion.div>
-  );
-}
-Reveal.Item = RevealItem;
 
 // ---------------------------------------------------------------- figures
 
@@ -124,7 +139,7 @@ export function Stat({ value, label, prefix = '', suffix = '', decimals = 0, sta
       <div className="n-stat__value" aria-label={`${prefix}${decimals ? value.toFixed(decimals) : value}${suffix}`}>
         {prefix}
         {shown}
-        {suffix && <small>{suffix}</small>}
+        {suffix && <span className="n-stat__unit">{suffix}</span>}
       </div>
       <div className="n-stat__label">{label}</div>
       {note && <div className="n-note">{note}</div>}
@@ -132,89 +147,25 @@ export function Stat({ value, label, prefix = '', suffix = '', decimals = 0, sta
   );
 }
 
-// ---------------------------------------------------------------- surfaces
+// ---------------------------------------------------------------- small marks
 
-export function Card({ children, raised, accent, flush, className, style }: { children: ReactNode; raised?: boolean; accent?: boolean; flush?: boolean; className?: string; style?: CSSProperties }) {
-  return <div className={cx('n-card', raised && 'n-card--raised', accent && 'n-card--accent', flush && 'n-card--flush', className)} style={style}>{children}</div>;
+export function Arrow({ dir = 'right', size = 16 }: { dir?: 'right' | 'left' | 'down'; size?: number }) {
+  const r = dir === 'left' ? 180 : dir === 'down' ? 90 : 0;
+  return <IconArrowRight size={size} style={r ? { transform: `rotate(${r}deg)` } : undefined} aria-hidden="true" />;
 }
 
-export function Callout({ children, tone, style }: { children: ReactNode; tone?: 'assumption' | 'danger'; style?: CSSProperties }) {
+/** A small accent check in a circle, for lists of things that are true. */
+export function Check() {
   return (
-    <div className={cx('n-callout', tone && `n-callout--${tone}`)} style={style} role="note">
-      <div>{children}</div>
-    </div>
-  );
-}
-
-export function Chip({ children, tone }: { children: ReactNode; tone?: 'accent' | 'indigo' | 'danger' | 'amber'; dot?: boolean }) {
-  return <span className={cx('n-chip', tone && `n-chip--${tone}`)}>{children}</span>;
-}
-
-export function Divider({ vertical }: { vertical?: boolean }) {
-  return <hr className={cx('n-divider', vertical && 'n-divider--v')} aria-hidden="true" />;
-}
-
-// ---------------------------------------------------------------- controls
-
-type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'quiet'; size?: 'sm' | 'lg'; arrow?: boolean };
-export const Button = forwardRef<HTMLButtonElement, BtnProps>(function Button({ variant = 'primary', size, arrow, className, children, type = 'button', ...rest }, ref) {
-  return (
-    <button ref={ref} type={type} className={cx('n-btn', `n-btn--${variant}`, size && `n-btn--${size}`, className)} {...rest}>
-      {children}
-      {arrow && <Arrow />}
-    </button>
-  );
-});
-
-export function Arrow({ dir = 'right' }: { dir?: 'right' | 'left' | 'up' }) {
-  const r = dir === 'left' ? 180 : dir === 'up' ? -90 : 0;
-  return (
-    <svg className="n-btn__arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ transform: `rotate(${r}deg)` }}>
-      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function Check({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function Key({ children }: { children: ReactNode }) {
-  return <kbd className="n-key">{children}</kbd>;
-}
-export function KeyHint({ keys, label }: { keys: ReactNode[]; label?: ReactNode }) {
-  return (
-    <span className="n-keys">
-      {keys.map((k, i) => (
-        <Key key={i}>{k}</Key>
-      ))}
-      {label && <span>{label}</span>}
+    <span className="n-check" aria-hidden="true">
+      <IconCheck size={12} strokeWidth={2.4} />
     </span>
   );
 }
 
-export function Progress({ value, label }: { value: number; label?: string }) {
-  const pct = Math.max(0, Math.min(1, value)) * 100;
-  return (
-    <div className="n-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)} aria-label={label}>
-      <div className="n-progress__bar" style={{ width: `${pct}%` }} />
-    </div>
-  );
-}
-
-export function Beats({ count, current }: { count: number; current: number }) {
-  if (count <= 1) return null;
-  return (
-    <span className="n-beats" aria-label={`Step ${current + 1} of ${count}`}>
-      {Array.from({ length: count }, (_, i) => (
-        <span key={i} className="n-beats__dot" data-on={i <= current} />
-      ))}
-    </span>
-  );
+/** A quiet label above a group (13px, secondary). */
+export function Label({ children, as: Tag = 'span', className }: { children: ReactNode; as?: ElementType; className?: string }) {
+  return <Tag className={cx('n-label', className)}>{children}</Tag>;
 }
 
 // ---------------------------------------------------------------- persona card
@@ -235,11 +186,20 @@ export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; fl
   const calm = useCalm();
   const fade = { duration: calm ? 0 : DUR.ui, ease: EASE };
   return (
-    <button className="n-persona" onClick={onFlip} aria-pressed={flipped} aria-label={`${persona.role}: ${flipped ? 'showing struggles and success. Select to go back to the job' : 'showing the job. Select to see what gets in the way'}`} data-no-advance>
+    <button
+      type="button"
+      className="n-persona"
+      onClick={onFlip}
+      aria-pressed={flipped}
+      aria-label={`${persona.role}: ${flipped ? 'showing struggles and success. Select to go back to the job' : 'showing the job. Select to see what gets in the way'}`}
+      data-no-advance
+    >
       <div className="n-persona__head">
         <div className="n-persona__glyph">{persona.glyph}</div>
-        <p className="n-persona__role">{persona.role}</p>
-        <p className="n-persona__who">{persona.who}</p>
+        <div className="n-persona__id">
+          <p className="n-persona__role">{persona.role}</p>
+          <p className="n-persona__who">{persona.who}</p>
+        </div>
       </div>
       <div className="n-persona__panes">
         <AnimatePresence initial={false}>
@@ -252,7 +212,7 @@ export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; fl
           ) : (
             <motion.div key="back" className="n-persona__pane" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
               <div className="n-persona__section">
-                <span className="n-label">What gets in the way today</span>
+                <span className="n-persona__k">What gets in the way today</span>
                 <ul>
                   {persona.struggles.map((x) => (
                     <li key={x}>{x}</li>
@@ -260,7 +220,7 @@ export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; fl
                 </ul>
               </div>
               <div className="n-persona__section">
-                <span className="n-label">Success looks like</span>
+                <span className="n-persona__k">Success looks like</span>
                 <p className="n-persona__success">{persona.success}</p>
               </div>
             </motion.div>
@@ -268,8 +228,8 @@ export function PersonaCard({ persona, flipped, onFlip }: { persona: Persona; fl
         </AnimatePresence>
       </div>
       <div className="n-persona__foot">
-        <span>{flipped ? 'Today' : 'The job'}</span>
-        <span>{flipped ? 'Back to the job' : 'What gets in the way'}</span>
+        <span className="n-persona__flip">{flipped ? 'Back to the job' : 'What gets in the way'}</span>
+        <IconChevronRight size={16} className="n-persona__chev" />
       </div>
     </button>
   );

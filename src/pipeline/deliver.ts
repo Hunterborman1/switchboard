@@ -1,10 +1,15 @@
 /**
- * Deliver: mock adapters for Slack, Jira, Linear, the weekly email digest and triage. Each
- * produces a realistic payload preview and a receipt (INTG-482, a Slack ts, …) with simulated
- * attempt timings. Deterministic per insight id, including one transient failure-then-retry
- * case (about 1 in 9 Jira/Linear deliveries) so retries are visible in the UI.
+ * Deliver: simulated adapters for every channel a rule can route to (Slack, Teams, Jira, Linear,
+ * Salesforce, direct email, the weekly email digest, a Google Drive voice-of-customer doc) and
+ * triage. Each produces a realistic payload preview and a receipt (INTG-482, a Slack ts, a
+ * Salesforce task id, …) with simulated attempt timings, and tags the owner, the account's CSM
+ * and, for high-stakes items on large accounts, the VP of Customer Success, by their handle in
+ * that tool. Deterministic per insight id, including one transient failure-then-retry case
+ * (about 1 in 9 Jira/Linear/Salesforce deliveries) so retries are visible in the UI. Nothing
+ * leaves the Worker.
  */
 import type { Account, Channel, Delivery, Insight, Notification, Person } from '../shared/contracts.ts';
+import { CHANNEL_CONNECTOR, personHandle } from '../shared/platform.ts';
 import type { RouteDecision } from './route.ts';
 import { fnv1a } from './util.ts';
 
@@ -51,7 +56,58 @@ export type DeliverContext = {
   csm: Person | null;
   now: number;
   ids: (prefix: string) => string;
+  /** The workspace directory (for watchers). Omitted: owner and CSM only. */
+  people?: Person[];
+  /** The connected account the channel's connector delivers through ("invoca.slack.com"). */
+  connectorAccount?: string | null;
+  /** That connector's settings (default channel, project, folder …). */
+  connectorConfig?: Record<string, string>;
 };
+
+export type Mention = NonNullable<Delivery['mentions']>[number];
+
+/** Accounts above this ARR get the VP of Customer Success watching churn and pricing signals. */
+export const WATCHER_ARR_USD = 250_000;
+
+export function vpCustomerSuccess(people: Person[]): Person | null {
+  return people.find((p) => p.active !== false && /\b(VP|Vice President)\b/i.test(p.title) && /customer success/i.test(p.title)) ?? null;
+}
+
+/**
+ * Who a delivery tags, by their handle in the destination tool: the owner, the account's CSM,
+ * and for churn risk or pricing push-back on accounts over $250k ARR the VP of Customer Success.
+ * Each person once; people no longer in the directory are not tagged.
+ */
+export function deliveryMentions(insight: Pick<Insight, 'type'>, channel: Channel, ctx: Pick<DeliverContext, 'owner' | 'csm' | 'account' | 'people'>): Mention[] {
+  const connector = CHANNEL_CONNECTOR[channel];
+  const out: Mention[] = [];
+  const add = (p: Person | null | undefined, role: Mention['role']) => {
+    if (!p || p.active === false || out.some((m) => m.personId === p.id)) return;
+    out.push({ personId: p.id, handle: personHandle(p, connector), role });
+  };
+  add(ctx.owner, 'owner');
+  add(ctx.csm, 'csm');
+  if ((insight.type === 'churn_risk' || insight.type === 'pricing_objection') && (ctx.account?.arrUsd ?? 0) > WATCHER_ARR_USD) add(vpCustomerSuccess(ctx.people ?? []), 'watcher');
+  return out;
+}
+
+const at = (h: string) => `@${h.replace(/^@/, '')}`;
+
+/** UTC date (YYYY-MM-DD), `plusDays` after `now`. */
+function day(now: number, plusDays = 0): string {
+  return new Date(now + plusDays * 86_400_000).toISOString().slice(0, 10);
+}
+
+const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+function base62(n: number, len: number): string {
+  let out = '';
+  let x = Math.abs(n);
+  for (let i = 0; i < len; i++) {
+    out = B62[x % 62]! + out;
+    x = Math.floor(x / 62) || fnv1a(String(n + i));
+  }
+  return out;
+}
 
 /**
  * Flat fields every destination preview reads (account, ARR, renewal, area, confidence, CSM),
@@ -104,8 +160,12 @@ function channelPayload(channel: Channel, insight: Insight, decision: RouteDecis
   const quote = bestQuote(insight);
   const acct = ctx.account ? `${ctx.account.name} (${ctx.account.tier}, ${money(ctx.account.arrUsd)} ARR, renews ${ctx.account.renewalDate})` : 'No account';
   const title = `${TYPE_LABEL[insight.type]}: ${insight.summary}`;
+  const mentions = deliveryMentions(insight, channel, ctx);
+  const cc = mentions.length ? mentions.map((m) => at(m.handle)).join(' ') : 'owner';
   switch (channel) {
     case 'slack':
+    case 'teams':
+      // Teams posts carry the same blocks, so one chat preview renders both.
       return {
         channel: decision.destination,
         text: title,
@@ -114,8 +174,42 @@ function channelPayload(channel: Channel, insight: Insight, decision: RouteDecis
           { type: 'section', text: insight.summary },
           { type: 'quote', text: quote },
           { type: 'fields', fields: [['Account', acct], ['Severity', insight.severity], ['Confidence', insight.confidenceFinal.toFixed(2)], ['CSM', ctx.csm?.name ?? '—']] },
-          { type: 'context', text: `Signal Loop · ${insight.id} · cc ${ctx.owner ? `@${ctx.owner.slackHandle.replace(/^@/, '')}` : 'owner'}` },
+          { type: 'context', text: `Signal Loop · ${insight.id} · cc ${cc}` },
         ],
+      };
+    case 'salesforce': {
+      const owner = ctx.owner?.name ?? ctx.connectorConfig?.taskQueue ?? 'Account owner';
+      return {
+        object: 'Account',
+        destination: decision.destination,
+        title,
+        activity: { type: 'Customer signal', subject: title, date: day(ctx.now), description: `${insight.rationale}\n\n> ${quote}\n\n${acct}` },
+        task: {
+          subject: `Follow up: ${insight.summary}`, owner, ownerHandle: ctx.owner ? personHandle(ctx.owner, 'salesforce') : null, status: 'Not Started',
+          priority: insight.severity === 'critical' || insight.severity === 'high' ? 'High' : 'Normal', dueDate: day(ctx.now, insight.severity === 'critical' ? 1 : 3),
+        },
+        description: `${insight.rationale}\n\n> ${quote}`,
+      };
+    }
+    case 'email':
+      return {
+        to: ctx.owner?.email ?? decision.destination,
+        cc: ctx.csm && ctx.csm.id !== ctx.owner?.id ? [ctx.csm.email] : [],
+        from: ctx.connectorAccount ?? 'signals@invoca.example',
+        subject: title,
+        title,
+        body: [insight.rationale, '', `> ${quote}`, '', `Account: ${acct}`, `Severity: ${insight.severity} · confidence ${insight.confidenceFinal.toFixed(2)}`].join('\n'),
+        description: insight.rationale,
+      };
+    case 'google_drive':
+      return {
+        doc: `Voice of customer · ${AREA_LABEL[insight.productArea]}`,
+        folder: ctx.connectorConfig?.folder || decision.destination || 'Customer Success / Signals',
+        heading: day(ctx.now),
+        section: TYPE_LABEL[insight.type],
+        title,
+        entry: `${ctx.account?.name ?? 'Unknown account'}: ${insight.summary}`,
+        description: insight.rationale,
       };
     case 'jira':
       return {
@@ -160,6 +254,14 @@ function channelPayload(channel: Channel, insight: Insight, decision: RouteDecis
 function receiptFor(channel: Channel, insight: Insight, decision: RouteDecision, now: number): string {
   const h = fnv1a(insight.id);
   switch (channel) {
+    case 'teams':
+      return `${now}${String(h % 1000).padStart(3, '0')}`;
+    case 'salesforce':
+      return `00T5f00000${base62(h, 5)}`;
+    case 'email':
+      return `<sl.${h.toString(16).padStart(8, '0')}.${Math.floor(now / 1000).toString(36)}@invoca.example>`;
+    case 'google_drive':
+      return `VOC-${JIRA_KEYS[insight.productArea]}#r${120 + (h % 880)}`;
     case 'jira':
       return `${projectKey(decision.destination, insight.productArea)}-${100 + (h % 900)}`;
     case 'linear': {
@@ -177,11 +279,13 @@ function receiptFor(channel: Channel, insight: Insight, decision: RouteDecision,
   }
 }
 
-const ADAPTER_NAME: Record<Channel, string> = { slack: 'Slack', jira: 'Jira', linear: 'Linear', email_digest: 'Digest', triage: 'Triage' };
+const ADAPTER_NAME: Record<Channel, string> = {
+  slack: 'Slack', teams: 'Teams', jira: 'Jira', linear: 'Linear', salesforce: 'Salesforce', email: 'Email', email_digest: 'Digest', google_drive: 'Google Drive', triage: 'Triage',
+};
 
 /** Whether this insight hits the deterministic transient-failure case. */
 export function hitsTransientFailure(insightId: string, channel: Channel): boolean {
-  return (channel === 'jira' || channel === 'linear') && fnv1a(`retry:${insightId}`) % 9 === 0;
+  return (channel === 'jira' || channel === 'linear' || channel === 'salesforce') && fnv1a(`retry:${insightId}`) % 9 === 0;
 }
 
 export function deliverInsight(insight: Insight, decision: RouteDecision, ctx: DeliverContext): Delivery {
@@ -210,6 +314,8 @@ export function deliverInsight(insight: Insight, decision: RouteDecision, ctx: D
     payload: renderPayload(channel, insight, decision, ctx),
     ticketState: channel === 'jira' || channel === 'linear' ? 'open' : null,
     createdAt: new Date(ctx.now).toISOString(),
+    mentions: deliveryMentions(insight, channel, ctx),
+    connectorAccount: CHANNEL_CONNECTOR[channel] ? ctx.connectorAccount ?? null : null,
   };
 }
 

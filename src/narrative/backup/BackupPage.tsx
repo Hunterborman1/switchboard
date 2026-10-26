@@ -5,7 +5,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Arrow, Button, Callout, Card, Chip, Display, Lede, Mark, Stat } from '../components';
+import { Badge, Button, Callout, TabLinks } from '../../ds';
+import { IconArrowLeft, IconArrowRight } from '../../ds/icons';
+import { SiteBar, Stat } from '../components';
 import { useCalm } from '../hooks';
 import { EASE } from '../motion';
 import { BACKUPS } from '../../tour/script/chapters';
@@ -16,6 +18,19 @@ import './backup.css';
 
 // ---------------------------------------------------------------- frame
 
+/** A plain panel: white, 1px border, 8px radius (the system's card surface without a header). */
+function Card({ children, accent }: { children: ReactNode; accent?: boolean }) {
+  return (
+    <section className="bk-card" data-accent={accent ? 'true' : undefined}>
+      {children}
+    </section>
+  );
+}
+
+function Lede({ children }: { children: ReactNode }) {
+  return <p className="bk-lede">{children}</p>;
+}
+
 function Frame({ topic, num, title, children }: { topic: string | null; num: string; title: string; children: ReactNode }) {
   const navigate = useNavigate();
   const back = () => {
@@ -24,27 +39,22 @@ function Frame({ topic, num, title, children }: { topic: string | null; num: str
     else navigate('/');
   };
   return (
-    <main className="sl-n n-page bk-page" data-testid="backup-page" data-topic={topic ?? 'index'}>
-      <header className="bk-top">
-        <Mark href={import.meta.env.BASE_URL} sub="Questions" />
-        <button className="n-btn n-btn--ghost n-btn--sm" onClick={back} data-testid="backup-back">
-          <Arrow dir="left" /> Back
-        </button>
-      </header>
-      <nav className="bk-switch" aria-label="Q&A backup topics">
-        {BACKUPS.map((b) => (
-          <Link key={b.topic} to={`/backup/${b.topic}`} className="bk-switch__item" aria-current={b.topic === topic ? 'page' : undefined}>
-            {b.title}
-          </Link>
-        ))}
-      </nav>
-      <div className="bk-body">
-        <div className="bk-head">
-          <p className="bk-kicker">{num}</p>
-          <Display size="md" as="h1">
-            {title}
-          </Display>
+    <main className="ds-app sl-n n-page bk-page" data-testid="backup-page" data-topic={topic ?? 'index'}>
+      <SiteBar context="Questions">
+        <Button variant="ghost" size="sm" icon={<IconArrowLeft size={16} />} onClick={back} data-testid="backup-back">
+          Back
+        </Button>
+      </SiteBar>
+      <div className="bk-switch">
+        <div className="bk-switch__in">
+          <TabLinks label="Q&A topics" items={BACKUPS.map((b) => ({ to: `/backup/${b.topic}`, label: b.title }))} />
         </div>
+      </div>
+      <div className="bk-body">
+        <header className="bk-head">
+          <p className="bk-kicker">{num}</p>
+          <h1 className="bk-title">{title}</h1>
+        </header>
         {children}
       </div>
     </main>
@@ -99,11 +109,11 @@ function Gauge({ spent, limit }: { spent: number; limit: number }) {
   const c = Math.PI * r;
   return (
     <svg viewBox="0 0 200 120" className="bk-gauge" role="img" aria-label={`Live AI budget: $${spent.toFixed(2)} of $${limit.toFixed(2)} used`}>
-      <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#EFF1EF" strokeWidth="12" strokeLinecap="round" />
+      <path d="M20 100 A80 80 0 0 1 180 100" fill="none" className="bk-gauge__track" strokeWidth="12" strokeLinecap="round" />
       <motion.path
         d="M20 100 A80 80 0 0 1 180 100"
         fill="none"
-        stroke="#008463"
+        className="bk-gauge__fill"
         strokeWidth="12"
         strokeLinecap="round"
         strokeDasharray={c}
@@ -117,12 +127,13 @@ function Gauge({ spent, limit }: { spent: number; limit: number }) {
   );
 }
 
+// Measured shares of AI spend across the 48 recorded runs (data/replays/*.json).
 const STEP_COST = [
-  { k: 'Quick screen', share: 0.12, note: 'a short, cheap check' },
-  { k: 'Finding the feedback', share: 0.71, note: 'the whole redacted transcript in, structured results out' },
-  { k: 'Naming themes', share: 0.07, note: 'only when a new theme forms' },
-  { k: 'Similarity matching', share: 0.02, note: 'close to nothing' },
-  { k: 'Retries and backup model', share: 0.08, note: 'budgeted, not hoped away' },
+  { k: 'Quick screen', share: 0.23, note: 'a short check on every file' },
+  { k: 'Finding the feedback', share: 0.68, note: 'the whole redacted transcript in, structured results out' },
+  { k: 'Naming themes', share: 0.09, note: 'only when a new theme forms' },
+  { k: 'Similarity matching', share: 0, note: 'runs on the hosting platform, not billed per call' },
+  { k: 'Retries and backup model', share: 0, note: 'none needed in the 48 recorded runs; budgeted anyway' },
 ];
 
 function Cost() {
@@ -132,10 +143,10 @@ function Cost() {
     <>
       <div className="bk-stats">
         <Card>
-          {perCall != null && perCall > 0 ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.004} prefix="~$" decimals={3} label="per call (estimate)" tone="accent" note="live figures unavailable right now" />}
+          {perCall != null && perCall > 0 ? <Stat value={perCall} prefix="$" decimals={4} label="per call (measured on live runs)" tone="accent" note={`${d?.liveRuns ?? 0} live runs so far`} /> : <Stat value={0.0014} prefix="~$" decimals={4} label="per call (recorded runs)" tone="accent" note="live figures unavailable right now" />}
         </Card>
         <Card>
-          <Stat value={(perCall ?? 0.004) * 1000} prefix="$" decimals={2} label="per 1,000 calls" note="before volume discounts or caching" />
+          <Stat value={(perCall ?? 0.0014) * 1000} prefix="$" decimals={2} label="per 1,000 calls" note="before volume discounts or caching" />
         </Card>
         <Card>
           {d?.p50Ms != null ? <Stat value={d.p50Ms / 1000} decimals={1} suffix=" seconds" label="typical run time" note="all ten steps, end to end" /> : <Stat value={0} label="typical run time" note="not measured yet" />}
@@ -227,18 +238,18 @@ function FailureFlow() {
         const last = i === FLOW.length - 1;
         return (
           <g key={f.k}>
-            <motion.rect x={x} y={40} width={160} height={74} rx={8} fill={last ? '#FBF1DE' : '#FFFFFF'} stroke={last ? '#E2C48F' : '#CDD2CD'} initial={calm ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: calm ? 0 : 0.18, delay: calm ? 0 : i * 0.1, ease: EASE }} />
+            <motion.rect x={x} y={40} width={160} height={74} rx={8} className={last ? 'bk-flow__box bk-flow__box--last' : 'bk-flow__box'} initial={calm ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: calm ? 0 : 0.18, delay: calm ? 0 : i * 0.1, ease: EASE }} />
             <text x={x + 80} y={74} textAnchor="middle" className="bk-flow__k">{f.k}</text>
             <text x={x + 80} y={96} textAnchor="middle" className="bk-flow__s">{f.s}</text>
             {!last && (
               <>
-                <motion.path d={`M${x + 160} 77 H${x + step}`} stroke="#9AA39E" strokeWidth="1.5" initial={calm ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: calm ? 0 : 0.24, delay: calm ? 0 : 0.1 + i * 0.1 }} />
+                <motion.path d={`M${x + 160} 77 H${x + step}`} className="bk-flow__line" strokeWidth="1.5" initial={calm ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: calm ? 0 : 0.24, delay: calm ? 0 : 0.1 + i * 0.1 }} />
                 <text x={x + 178} y={66} textAnchor="middle" className="bk-flow__f">fails</text>
               </>
             )}
             {i < FLOW.length - 1 && i > 0 && (
               <>
-                <path d={`M${x + 80} 114 V146 H${x + 120}`} stroke="#008463" fill="none" />
+                <path d={`M${x + 80} 114 V146 H${x + 120}`} className="bk-flow__okline" fill="none" />
                 <text x={x + 126} y={150} className="bk-flow__ok">works, carry on</text>
               </>
             )}
@@ -402,20 +413,30 @@ function AgentOps() {
   const navigate = useNavigate();
   return (
     <>
-      <Lede>Signal Loop is one agent. Agent Ops is the platform it reports into: the place an exec and the AI team look to see what’s running, who owns it, who uses it, and what it returns.</Lede>
+      <Lede>Signal Loop is one agent, running inside Switchboard. Agent Ops is where it is operated: the place an exec and the AI team look to see what’s running, who owns it, who uses it, and what it returns.</Lede>
       <div className="bk-split">
         <Card>
           <span className="n-label">Registry</span>
           <div className="bk-reg">
             <div className="bk-reg__row">
               <b>Signal Loop</b>
-              <Chip tone="accent">Live</Chip>
-              <span className="n-note">Built in code · Customer Success · a named owner and a business owner</span>
+              <Badge tone="success" dot>
+                Live
+              </Badge>
+              <span className="bk-reg__meta">
+                <span>Built in code</span>
+                <span>Customer Success</span>
+                <span>Named owner and business owner</span>
+              </span>
             </div>
             <div className="bk-reg__row">
               <b>RFP &amp; Security Questionnaire Responder</b>
-              <Chip>Simulated</Chip>
-              <span className="n-note">Built in Gumloop · Sales · a named owner and a business owner</span>
+              <Badge>Simulated</Badge>
+              <span className="bk-reg__meta">
+                <span>Built in Gumloop</span>
+                <span>Sales</span>
+                <span>Named owner and business owner</span>
+              </span>
             </div>
           </div>
           <p className="n-body" style={{ marginTop: 12 }}>Two agents today; the registry is built for fifty. Every one has a purpose, a record of the data it touches, a review schedule and a next review date.</p>
@@ -450,7 +471,7 @@ function AgentOps() {
           <p className="n-body">Each agent has a review date. Overdue reviews show up in “needs attention” next to missed targets and gaps in the standard.</p>
         </Card>
       </div>
-      <Callout tone="assumption">
+      <Callout tone="warning">
         <b>How hours returned are counted.</b> For each unit of work: the minutes it used to take, minus the minutes a person now spends reviewing it. The “used to take” minutes are labelled assumptions until a two-week time study replaces them. Review minutes are measured, not estimated.
       </Callout>
       <Card>
@@ -458,7 +479,7 @@ function AgentOps() {
         <p className="n-body">Agents in production, active users and the trend, hours returned and what they’re worth, AI cost and return, what needs attention and who owns it, and what changed (prompts, models, thresholds) with the test result that allowed it.</p>
       </Card>
       <div>
-        <Button onClick={() => navigate('/ops')} arrow>
+        <Button variant="primary" iconRight={<IconArrowRight size={16} />} onClick={() => navigate('/ops')}>
           Open Agent Ops
         </Button>
       </div>
@@ -517,12 +538,13 @@ function Index() {
   return (
     <div className="bk-cards">
       {BACKUPS.map((b, i) => (
-        <Link key={b.topic} to={`/backup/${b.topic}`} className="bk-index n-card">
+        <Link key={b.topic} to={`/backup/${b.topic}`} className="bk-index">
           <span className="bk-index__n">Question {i + 1}</span>
           <b>{b.title}</b>
           <span className="n-body">{b.blurb}</span>
           <span className="bk-index__go">
-            Open <Arrow />
+            Open
+            <IconArrowRight size={16} />
           </span>
         </Link>
       ))}
@@ -546,7 +568,7 @@ export function BackupPage() {
   const meta = idx >= 0 ? BACKUPS[idx] : undefined;
   const Page = meta ? PAGES[meta.topic] : undefined;
   useEffect(() => {
-    document.title = meta ? `${meta.title} · Signal Loop` : 'Questions · Signal Loop';
+    document.title = meta ? `${meta.title} · Switchboard` : 'Questions · Switchboard';
     window.scrollTo(0, 0);
   }, [meta]);
   if (!meta || !Page) {

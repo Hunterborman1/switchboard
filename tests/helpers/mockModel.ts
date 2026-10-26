@@ -3,7 +3,9 @@
  * transcript lines ("[t003] Speaker (role): text") and emits verbatim quotes for keyword
  * rules, so the real grounding, scoring, routing and delivery code runs on realistic output.
  * Magic words: HALLUCINATE (emit a fabricated quote), FORCE_LLM_ERROR (HTTP 500),
- * FORCE_BAD_JSON (invalid output on the first attempt), SLOW_MODEL (sleep).
+ * FORCE_BAD_JSON (invalid output on the first attempt), SLOW_MODEL (sleep), DECISION_DOWN (the
+ * decision model answers 503), SECOND_OPINION_AGREE / SECOND_OPINION_DISAGREE (in a quote: the
+ * second opinion agrees at 0.93 / disagrees at 0.9; otherwise it agrees at 0.8, which moves nothing).
  */
 import type { ExtractionOutput, ScreenOutput } from '../../src/shared/contracts.ts';
 
@@ -48,7 +50,21 @@ export function mockScreen(user: string): ScreenOutput {
     injection_excerpt: injection ? 'ignore all previous instructions' : null,
     call_kind: 'check_in',
     reason: actionable ? 'Customer raised product feedback' : 'Pleasantries and scheduling only',
+    doc_kind: 'call_transcript',
+    complexity: 'clean',
+    analyses: actionable ? ['product_feedback', 'follow_ups'] : ['follow_ups'],
   };
+}
+
+export function mockSecondOpinion(user: string): { verdicts: { key: string; agree: boolean; confidence: number; note: string }[] } {
+  const verdicts: { key: string; agree: boolean; confidence: number; note: string }[] = [];
+  for (const m of user.matchAll(/<item key="([^"]+)">\n([\s\S]*?)\n<\/item>/g)) {
+    const body = m[2]!;
+    if (/SECOND_OPINION_DISAGREE/.test(body)) verdicts.push({ key: m[1]!, agree: false, confidence: 0.9, note: 'The quote does not say this' });
+    else if (/SECOND_OPINION_AGREE/.test(body)) verdicts.push({ key: m[1]!, agree: true, confidence: 0.93, note: 'The quote says exactly this' });
+    else verdicts.push({ key: m[1]!, agree: true, confidence: 0.8, note: 'The quote supports it' });
+  }
+  return { verdicts };
 }
 
 export function mockExtract(user: string): ExtractionOutput {
@@ -81,9 +97,10 @@ export function mockThemeNames(user: string): { themes: { key: string; name: str
   return { themes: out };
 }
 
-/** Respond by schema name (screen | insights | themes). */
+/** Respond by schema name (screen | insights | themes | second_opinion). */
 export function mockRespond(schemaName: string, user: string): unknown {
   if (schemaName === 'screen') return mockScreen(user);
+  if (schemaName === 'second_opinion') return mockSecondOpinion(user);
   if (schemaName === 'insights') return mockExtract(user);
   if (schemaName === 'themes') return mockThemeNames(user);
   return {};

@@ -138,7 +138,9 @@ describe('run reservation size', () => {
     // 60k chars: 20k tokens × 3 attempts × 2 transcript calls at $0.10/M in, plus max outputs.
     expect(big).toBeGreaterThan((20_000 * 6 * 0.1 + (400 + 2500 + 600) * 3 * 0.5) / 1e6);
     expect(estimateRunCostUsd(60_000, ['unknown/model'])).toBeGreaterThan(big);
-    expect(big).toBeLessThan(RUN_COST_ESTIMATE_USD * 3);
+    // 60k chars are extracted in five parallel windows, each with its full fallback chain.
+    expect(big).toBeLessThan(RUN_COST_ESTIMATE_USD * 5);
+    expect(estimateRunCostUsd(60_000, [...models, 'z-ai/glm-5.3-flash'])).toBeGreaterThan(big);
   });
 });
 

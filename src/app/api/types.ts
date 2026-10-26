@@ -21,8 +21,12 @@ import type {
   RunDetail,
   Theme,
 } from '../../shared/contracts';
+import type { AnalysisDef, Connection, ConnectionActivity } from '../../shared/platform';
 
 export type { RunDetail };
+
+export type ConnectionDetail = { connection: Connection; activity: ConnectionActivity[] };
+export type AnalysisSummary = AnalysisDef & { runs?: number };
 
 export type World = { accounts: Account[]; people: Person[] };
 export type LibraryFileDetail = { file: LibraryFile; content: string };

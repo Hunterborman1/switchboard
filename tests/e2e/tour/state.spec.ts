@@ -53,8 +53,8 @@ test.describe('tour state, exits and access', () => {
   });
 
   test('keyboard only: scenes into the product', async ({ page }) => {
-    await go(page, '/walkthrough/states?tour=states&beat=3');
-    await page.keyboard.press('ArrowRight'); // last beat → ch1
+    await go(page, '/walkthrough/platform?tour=platform&beat=3');
+    await page.keyboard.press('ArrowRight'); // last beat of the last scene before the product → ch1
     await expectStep(page, 'ch1.intro');
     // the event step focuses the real control; Enter activates it
     // (activeElement, not :focus: under parallel load the page may not hold OS-level focus, and

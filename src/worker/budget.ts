@@ -22,7 +22,7 @@ export function limitUsd(env: Env): number {
 
 /** The reservation for a live run over `contentChars` characters of input. */
 export function runEstimate(env: Env, contentChars: number): number {
-  return estimateRunCostUsd(contentChars, [env.MODEL_PRIMARY, env.MODEL_SECONDARY]);
+  return estimateRunCostUsd(contentChars, [env.MODEL_PRIMARY, env.MODEL_SECONDARY, env.MODEL_DECISION ?? '']);
 }
 
 export async function spentUsd(db: D1Database): Promise<number> {

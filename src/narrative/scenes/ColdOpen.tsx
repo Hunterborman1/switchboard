@@ -1,11 +1,12 @@
 /**
- * Part 0 · Cold open. A recorded 13-minute QBR, drawn as a flat waveform with one highlighted
+ * Part 1 · Cold open. A recorded 13-minute QBR, drawn as a flat waveform with one highlighted
  * moment and its transcript. Beat 1 names the idea ("Every call is a signal.") and shows what
  * that sentence becomes once Signal Loop has read it.
  */
 import { motion } from 'motion/react';
 import { useMemo } from 'react';
-import { SceneHead } from '../components';
+import { ConnectorMark } from '../../ds';
+import { Appear, SceneHead } from '../components';
 import { useCalm } from '../hooks';
 import { DUR, EASE } from '../motion';
 
@@ -32,39 +33,38 @@ export function Waveform({ highlight = true }: { highlight?: boolean }) {
   const hiB = (HIGHLIGHT.to / CALL_SEC) * W;
   return (
     <div className="sc-cold__wavewrap" aria-hidden="true">
-    <svg className="sc-cold__wave" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-      <motion.rect
-        x={hiA - 2}
-        y={0}
-        width={hiB - hiA + 4}
-        height={H}
-        rx={4}
-        fill="#E8F4EF"
-        initial={calm ? false : { opacity: 0 }}
-        animate={{ opacity: highlight ? 1 : 0 }}
-        transition={{ duration: calm ? 0 : DUR.ui, ease: EASE, delay: calm ? 0 : 0.45 }}
-      />
-      {amps.map((a, i) => {
-        const x = i * step + step / 2;
-        const h = Math.max(4, a * (H - 8));
-        const hot = highlight && x >= hiA && x <= hiB;
-        return (
-          <motion.rect
-            key={i}
-            x={x - 2}
-            width={4}
-            rx={2}
-            y={H / 2 - h / 2}
-            height={h}
-            fill={hot ? '#008463' : '#CDD2CD'}
-            initial={calm ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: calm ? 0 : DUR.ui, ease: EASE, delay: calm ? 0 : (i / BARS) * 0.4 }}
-          />
-        );
-      })}
-      <line x1={hiA} x2={hiA} y1={-2} y2={H + 2} stroke="#006B51" strokeWidth={1.5} vectorEffect="non-scaling-stroke" opacity={highlight ? 1 : 0} />
-    </svg>
+      <svg className="sc-cold__wave" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+        <motion.rect
+          x={hiA - 2}
+          y={0}
+          width={hiB - hiA + 4}
+          height={H}
+          rx={4}
+          style={{ fill: 'var(--accent-subtle)' }}
+          initial={calm ? false : { opacity: 0 }}
+          animate={{ opacity: highlight ? 1 : 0 }}
+          transition={{ duration: calm ? 0 : DUR.ui, ease: EASE, delay: calm ? 0 : 0.45 }}
+        />
+        {amps.map((a, i) => {
+          const x = i * step + step / 2;
+          const h = Math.max(4, a * (H - 8));
+          const hot = highlight && x >= hiA && x <= hiB;
+          return (
+            <motion.rect
+              key={i}
+              x={x - 2}
+              width={4}
+              rx={2}
+              y={H / 2 - h / 2}
+              height={h}
+              style={{ fill: hot ? 'var(--accent)' : 'var(--border-strong)' }}
+              initial={calm ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: calm ? 0 : DUR.ui, ease: EASE, delay: calm ? 0 : (i / BARS) * 0.4 }}
+            />
+          );
+        })}
+      </svg>
       <div className="sc-cold__axis">
         <span>00:00</span>
         <span className="sc-cold__axis-hi" style={{ left: `${(HIGHLIGHT.from / CALL_SEC) * 100}%`, opacity: highlight ? 1 : 0 }}>
@@ -89,64 +89,64 @@ const BECOMES = [
   { k: 'Why it matters', v: 'Brightline renews in 12 weeks' },
 ];
 
+const HEADS = [
+  { title: 'One sentence in this 13-minute call belongs on the roadmap.', line: 'A quarterly review with Brightline Home Services on October 21. Most of it is routine. This part isn’t.' },
+  { title: 'Every call is a signal.', line: 'Signal Loop turns what customers tell Invoca’s CSMs into product insight with the quote attached, sent to the person who can act on it.' },
+];
+
 export function ColdOpen({ beat }: { beat: number }) {
   const calm = useCalm();
   const resolved = beat >= 1;
   return (
-    <div className="sc-cold">
-      <SceneHead
-        k={resolved ? 'b1' : 'b0'}
-        size={resolved ? 'lg' : 'md'}
-        title={resolved ? 'Every call is a signal.' : 'One sentence in this 13-minute call belongs on the roadmap.'}
-        line={
-          resolved
-            ? 'Signal Loop turns what customers tell Invoca’s CSMs into product insight with the quote attached, sent to the person who can act on it.'
-            : 'A quarterly review with Brightline Home Services on October 21. Most of it is routine. This part isn’t.'
-        }
-      />
+    <div className="sc sc-cold">
+      <SceneHead heads={HEADS} active={resolved ? 1 : 0} />
 
-      <div className="sc-cold__call n-card" data-no-advance>
-        <div className="sc-cold__callhead">
-          <span className="sc-cold__title">Quarterly review · Brightline Home Services</span>
-          <span className="sc-cold__meta">13 min · 3 speakers · recorded</span>
-        </div>
-        <Waveform />
-        <ol className="sc-cold__lines">
-          {LINES.map((l, i) => (
-            <motion.li
-              key={l.t}
-              data-hot={l.hot ? 'true' : undefined}
-              initial={calm ? false : { opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.5 + i * 0.12 }}
-            >
-              <span className="sc-cold__ts">{fmt(l.t)}</span>
-              <span className="sc-cold__who">
-                {l.who} <span>{l.org}</span>
-              </span>
-              <span className="sc-cold__text">“{l.text}”</span>
-            </motion.li>
-          ))}
-        </ol>
-      </div>
-
-      <motion.div
-        className="sc-cold__becomes"
-        initial={false}
-        animate={{ opacity: resolved ? 1 : 0, y: resolved || calm ? 0 : 6 }}
-        transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: resolved && !calm ? 0.12 : 0 }}
-        aria-hidden={!resolved}
-      >
-        <span className="n-label">What Signal Loop makes of that sentence</span>
-        <dl>
-          {BECOMES.map((b) => (
-            <div key={b.k}>
-              <dt>{b.k}</dt>
-              <dd>{b.v}</dd>
+      <div className="sc-cold__visual">
+        <section className="sc-cold__call" aria-label="The recorded call" data-no-advance>
+          <header className="sc-cold__callhead">
+            <ConnectorMark id="gong" size={24} title="Recorded in Gong" />
+            <div className="sc-cold__titles">
+              <span className="sc-cold__title">Quarterly review</span>
+              <span className="sc-cold__account">Brightline Home Services</span>
             </div>
-          ))}
-        </dl>
-      </motion.div>
+            <span className="sc-cold__meta">
+              <span>13 min</span>
+              <span>3 speakers</span>
+            </span>
+          </header>
+          <Waveform />
+          <ol className="sc-cold__lines">
+            {LINES.map((l, i) => (
+              <motion.li
+                key={l.t}
+                data-hot={l.hot ? 'true' : undefined}
+                initial={calm ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: calm ? 0 : DUR.layout, ease: EASE, delay: calm ? 0 : 0.5 + i * 0.12 }}
+              >
+                <span className="sc-cold__ts">{fmt(l.t)}</span>
+                <span className="sc-cold__who">
+                  <b>{l.who}</b>
+                  <span>{l.org}</span>
+                </span>
+                <span className="sc-cold__text">“{l.text}”</span>
+              </motion.li>
+            ))}
+          </ol>
+        </section>
+
+        <Appear show={resolved} delay={0.12} className="sc-cold__becomes">
+          <h2 className="n-label">What Signal Loop makes of that sentence</h2>
+          <dl>
+            {BECOMES.map((b) => (
+              <div key={b.k}>
+                <dt>{b.k}</dt>
+                <dd>{b.v}</dd>
+              </div>
+            ))}
+          </dl>
+        </Appear>
+      </div>
     </div>
   );
 }

@@ -15,8 +15,9 @@ import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/te
  * projects by default), so `--project app` stays fast.
  */
 const APP_PORT = Number(process.env.APP_E2E_PORT ?? 5179);
-const PLATFORM_PORT = 5192;
-const PLATFORM_WORKER_PORT = 8812;
+// Overridable so a second checkout can run the suite while another holds the defaults.
+const PLATFORM_PORT = Number(process.env.PLATFORM_E2E_PORT ?? 5192);
+const PLATFORM_WORKER_PORT = Number(process.env.PLATFORM_E2E_WORKER_PORT ?? 8812);
 const PERSIST = '.wrangler/ao-e2e';
 
 function selectedProjects(): string[] {

@@ -62,7 +62,7 @@ export async function loadRun(env: Env, runId: string, workspaceId: string, prel
 export function pipelineInput(runId: string, workspaceId: string, l: LoadedRun): PipelineInput {
   return {
     runId, workspaceId, fileId: l.run.fileId, filename: l.run.filename, content: l.content, formatHint: (l.run.format as never) ?? null,
-    promptVersion: l.ctx.promptVersion, account: l.ctx.account, people: l.ctx.people, accounts: l.ctx.accounts, rules: l.ctx.rules, taxonomy: l.ctx.taxonomy,
+    promptVersion: l.ctx.promptVersion, account: l.ctx.account, people: l.ctx.people, accounts: l.ctx.accounts, rules: l.ctx.rules, taxonomy: l.ctx.taxonomy, connections: l.ctx.connections,
   };
 }
 

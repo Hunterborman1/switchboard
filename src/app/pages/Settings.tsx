@@ -1,168 +1,258 @@
-import { useState } from 'react';
-import { BUDGET_LIMIT_USD, THRESHOLDS } from '../../shared/contracts';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { Badge } from '../../system/components/primitives/Badge.jsx';
-import { Modal } from '../../system/components/overlay/Modal.jsx';
-import { Callout } from '../../system/components/blocks/Callout.jsx';
-import { SettingsRow } from '../../system/components/blocks/SettingsRow.jsx';
-import { CardSkeleton, PageHeaderSkeleton, SkeletonSurface } from '../../uis/Skeleton';
-import { MonoId } from '../../uis/MonoId';
+/**
+ * Settings: the workspace, the models it calls (the one page that shows their exact ids), the
+ * thresholds that decide where an insight goes, the prompt version and how data is handled.
+ */
+import { useState, type ReactNode } from 'react';
+import { THRESHOLDS } from '../../shared/contracts';
+import { Badge, Button, ButtonLink, Card, DotLabel, IconButton, Modal, Page, PageHeader, Skeleton, useToast } from '../../ds';
+import { IconCheck, IconCopy, IconRefresh } from '../../ds/icons';
 import { api } from '../api/client';
 import { invalidate, useSession } from '../api/hooks';
-import { AppPageHeader, ErrorState, Panel, useToast } from '../components/ui';
-import { money } from '../lib/labels';
+import { useDocumentTitle } from '../AppShell';
+import { ErrorState } from '../components/domain';
+import { dateShort } from '../lib/labels';
 import styles from './settings/Settings.module.css';
 
-function ThresholdBar() {
+/** Shown in the product switcher; the workspace has no editable name yet. */
+const WORKSPACE_NAME = 'Invoca Customer Success';
+
+function SettingRow({ label, description, children }: { label: ReactNode; description?: ReactNode; children: ReactNode }) {
+  return (
+    <li className={styles.row}>
+      <div className={styles.rowText}>
+        <span className={styles.rowLabel}>{label}</span>
+        {description ? <span className={styles.rowDescription}>{description}</span> : null}
+      </div>
+      <div className={styles.rowControl}>{children}</div>
+    </li>
+  );
+}
+
+/** An id a person might copy: the full value in mono, and a copy button beside it. */
+function CopyValue({ value, label }: { value: string; label: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <span className={styles.copyValue}>
+      <span className={styles.mono} title={value}>
+        {value}
+      </span>
+      <IconButton
+        label={copied ? 'Copied' : label}
+        size="sm"
+        icon={copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+        onClick={() => {
+          void navigator.clipboard?.writeText(value).then(() => {
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1400);
+          });
+        }}
+      />
+    </span>
+  );
+}
+
+function ModelId({ id }: { id: string | null | undefined }) {
+  if (!id) return <span className={styles.notSet}>Not configured</span>;
+  return <CopyValue value={id} label="Copy model ID" />;
+}
+
+const fixed = (n: number) => n.toFixed(2);
+
+/** The 0 to 1 confidence score and the two lines that split it. */
+function ThresholdScale() {
   const review = THRESHOLDS.review * 100;
   const auto = THRESHOLDS.autoRoute * 100;
   return (
-    <div className={styles.scale} role="img" aria-label={`Confidence score: below ${THRESHOLDS.review} held, ${THRESHOLDS.review} to ${THRESHOLDS.autoRoute} reviewed by a person, ${THRESHOLDS.autoRoute} and above sent automatically`}>
-      <div className={styles.track}>
-        <span className={styles.zoneHeld} style={{ width: `${review}%` }}>
-          Held
-        </span>
-        <span className={styles.zoneReview} style={{ width: `${auto - review}%` }}>
-          Person reviews
-        </span>
-        <span className={styles.zoneAuto} style={{ width: `${100 - auto}%` }}>
-          Sent automatically
-        </span>
+    <div className={styles.scaleBlock}>
+      <div
+        className={styles.track}
+        role="img"
+        aria-label={`Confidence score from 0 to 1: below ${fixed(THRESHOLDS.review)} is held, ${fixed(THRESHOLDS.review)} to ${fixed(THRESHOLDS.autoRoute)} goes to review, ${fixed(THRESHOLDS.autoRoute)} and above is sent automatically`}
+      >
+        <span className={`${styles.zone} ${styles.zoneHeld}`} style={{ width: `${review}%` }} />
+        <span className={`${styles.zone} ${styles.zoneReview}`} style={{ width: `${auto - review}%` }} />
+        <span className={`${styles.zone} ${styles.zoneAuto}`} style={{ width: `${100 - auto}%` }} />
       </div>
       <div className={styles.ticks} aria-hidden="true">
-        <span style={{ left: 0 }}>0.00</span>
-        <span style={{ left: `${review}%` }}>{THRESHOLDS.review.toFixed(2)}</span>
-        <span style={{ left: `${auto}%` }}>{THRESHOLDS.autoRoute.toFixed(2)}</span>
-        <span style={{ left: '100%' }}>1.00</span>
+        <span className={styles.tickStart}>0</span>
+        <span className={styles.tick} style={{ left: `${review}%` }}>
+          {fixed(THRESHOLDS.review)}
+        </span>
+        <span className={styles.tick} style={{ left: `${auto}%` }}>
+          {fixed(THRESHOLDS.autoRoute)}
+        </span>
+        <span className={styles.tickEnd}>1</span>
+      </div>
+      <div className={styles.legend} aria-hidden="true">
+        <DotLabel color="var(--border-strong)">Held</DotLabel>
+        <DotLabel color="var(--warning-mark)">A person reviews</DotLabel>
+        <DotLabel color="var(--accent)">Sent automatically</DotLabel>
       </div>
     </div>
   );
 }
 
+function SettingsSkeleton() {
+  return (
+    <div className="ds-stack" style={{ gap: 24 }} aria-busy="true" aria-label="Loading settings">
+      {[3, 3, 2].map((rows, i) => (
+        <div key={i} className="ds-card">
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+            <Skeleton width={140} height={12} />
+          </div>
+          {Array.from({ length: rows }, (_, r) => (
+            <div key={r} style={{ display: 'flex', justifyContent: 'space-between', gap: 24, padding: '22px 20px', borderBottom: r < rows - 1 ? '1px solid var(--border-row)' : 0 }}>
+              <Skeleton width="40%" height={10} />
+              <Skeleton width={120} height={10} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
+  useDocumentTitle('Settings');
   const session = useSession();
   const toast = useToast();
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
-
-  if (session.loading) {
-    return (
-      <SkeletonSurface label="Loading settings">
-        <PageHeaderSkeleton />
-        <div className="sl-stack-lg">
-          <CardSkeleton lines={3} />
-          <CardSkeleton lines={4} />
-        </div>
-      </SkeletonSurface>
-    );
-  }
-  if (session.error && !session.data) {
-    return (
-      <div className="sl-page">
-        <AppPageHeader title="Settings" subtitle="Models, budget and the rules that decide what gets sent" dataAsOf={null} />
-        <ErrorState error={session.error} onRetry={() => void session.refresh()} what="settings" />
-      </div>
-    );
-  }
-  const s = session.data!;
 
   const reset = async () => {
     setBusy(true);
     try {
       await api.resetWorkspace();
       invalidate('');
-      toast({ tone: 'success', title: 'Workspace reset', body: 'Your runs, reviews and rule overrides are cleared. Seeded history is untouched.' });
+      toast({ tone: 'success', title: 'Workspace reset', body: 'Your conversations, reviews and rule changes are cleared. Sample history is untouched.' });
       setConfirm(false);
     } catch (e) {
-      toast({ tone: 'danger', title: 'Reset failed', body: e instanceof Error ? e.message : String(e) });
+      toast({ tone: 'danger', title: 'Couldn’t reset the workspace', body: e instanceof Error ? e.message : String(e) });
     } finally {
       setBusy(false);
     }
   };
 
+  const header = <PageHeader title="Settings" description="Your workspace, the AI models it calls and the rules that decide what gets sent." />;
+
+  if (session.loading) {
+    return (
+      <Page width="narrow">
+        {header}
+        <SettingsSkeleton />
+      </Page>
+    );
+  }
+  if (session.error && !session.data) {
+    return (
+      <Page width="narrow">
+        {header}
+        <Card>
+          <ErrorState error={session.error} onRetry={() => void session.refresh()} what="settings" />
+        </Card>
+      </Page>
+    );
+  }
+  const s = session.data!;
+  const version = s.promptVersion.split('@').pop() ?? s.promptVersion;
+
   return (
-    <div className="sl-page">
-      <AppPageHeader title="Settings" subtitle="Models, budget and the rules that decide what gets sent" dataAsOf={session.dataAsOf} />
-      <Callout tone="neutral" title="Viewer changes stay in your workspace">
-        Everything you change in this demo (routing rules, review decisions, ticket states) is written to your own workspace
-        <span className="sl-mono"> ({s.workspaceId})</span>. Other viewers see the seeded baseline plus their own changes, never yours.
-      </Callout>
+    <Page width="narrow">
+      {header}
 
-      <div className="sl-grid-2">
-        <Panel title="Model configuration" sub="The exact AI models this deployment calls. Two at most, chosen for speed in testing. Everywhere else in the app they appear as Main model and Backup model." flush>
-          <SettingsRow label="Main model" description="The fast model: screening, extraction and naming themes." controlWidth="auto">
-            <MonoId value={s.models.primary} keep={40} />
-          </SettingsRow>
-          <SettingsRow label="Backup model" description="Takes over when the main model fails or is slow. From a different AI family, it also grades the evals." controlWidth="auto">
-            <MonoId value={s.models.secondary} keep={40} />
-          </SettingsRow>
-          <SettingsRow label="Extraction prompt" description="Recorded on every insight; each version is tested before it goes live." controlWidth="auto" last>
-            <Badge tone="brand" uppercase={false}>
-              {s.promptVersion}
+      <Card title="Workspace" description="Everything you change here is saved to your own private workspace. Other viewers never see it." flush>
+        <ul className={styles.rows}>
+          <SettingRow label="Name">
+            <span className={styles.value}>{WORKSPACE_NAME}</span>
+          </SettingRow>
+          <SettingRow label="Workspace ID" description="Quote it if you report a problem.">
+            <CopyValue value={s.workspaceId} label="Copy workspace ID" />
+          </SettingRow>
+          <SettingRow
+            label="Your access"
+            description={
+              s.isOwner
+                ? 'Signed in as the owner. You can change workspace-wide settings.'
+                : s.linkExpiresAt
+                  ? `Signed in with a private link that works until ${dateShort(s.linkExpiresAt)}.`
+                  : 'Signed in as a viewer.'
+            }
+          >
+            <Badge tone={s.isOwner ? 'accent' : 'neutral'}>{s.isOwner ? 'Owner' : 'Viewer'}</Badge>
+          </SettingRow>
+          <SettingRow label="Reset workspace" description="Clears your conversations, review decisions, ticket changes and routing changes. Sample history stays.">
+            <Button variant="danger" icon={<IconRefresh size={14} />} onClick={() => setConfirm(true)}>
+              Reset workspace
+            </Button>
+          </SettingRow>
+        </ul>
+      </Card>
+
+      <Card title="Models" description="The AI models this workspace calls. Everywhere else in the app they appear by role." flush>
+        <ul className={styles.rows}>
+          <SettingRow label="Decision model" description="Triage and second opinions. Fast, so it can sit in front of every conversation.">
+            <ModelId id={s.models.decision} />
+          </SettingRow>
+          <SettingRow label="Main model" description="Reads each conversation and pulls out the insights.">
+            <ModelId id={s.models.primary} />
+          </SettingRow>
+          <SettingRow label="Backup model" description="Takes over when the main model fails, and grades the quality checks. A different AI family.">
+            <ModelId id={s.models.secondary} />
+          </SettingRow>
+        </ul>
+      </Card>
+
+      <Card title="Thresholds" description="Every insight gets a confidence score from 0 to 1. Read-only here: the owner changes these, and only after the new values pass the quality check." flush>
+        <ThresholdScale />
+        <ul className={styles.rows}>
+          <SettingRow label="Send automatically" description="At or above this score, the insight goes straight to its owner.">
+            <span className={styles.value}>≥ {fixed(THRESHOLDS.autoRoute)}</span>
+          </SettingRow>
+          <SettingRow label="Send for review" description="From this score up, a person checks it first. Churn risk and critical bugs always come here.">
+            <span className={styles.value}>≥ {fixed(THRESHOLDS.review)}</span>
+          </SettingRow>
+          <SettingRow label="Quote match" description="Each quote must match the conversation at least this closely, or the insight is dropped.">
+            <span className={styles.value}>≥ {fixed(THRESHOLDS.grounding)}</span>
+          </SettingRow>
+        </ul>
+      </Card>
+
+      <Card title="Prompt" flush>
+        <ul className={styles.rows}>
+          <SettingRow label="Extraction prompt" description="Recorded on every insight. A new version goes live only if it passes the quality check.">
+            <Badge tone="accent" size="lg">
+              {version}
             </Badge>
-          </SettingsRow>
-        </Panel>
+            <ButtonLink to="/app/evals" variant="ghost" size="sm">
+              View quality
+            </ButtonLink>
+          </SettingRow>
+        </ul>
+      </Card>
 
-        <Panel title="Budget" sub="Live AI spend, shared by everyone viewing this demo." flush>
-          <SettingsRow label="Spending limit" description="A hard limit at the AI provider, plus an in-app check before every run." controlWidth="auto">
-            <span className="sl-num sl-strong">{money(s.budget.limitUsd ?? BUDGET_LIMIT_USD, { precise: true })}</span>
-          </SettingsRow>
-          <SettingsRow label="Spent so far" description={`${s.budget.liveRuns.toLocaleString()} live runs and ${s.budget.replayRuns.toLocaleString()} replays`} controlWidth="auto">
-            <span className="sl-num">{money(s.budget.spentUsd, { precise: true })}</span>
-          </SettingsRow>
-          <SettingsRow label="When the limit is reached" description="Runs replay recorded live runs at real speed, clearly labelled. Custom uploads pause and say why." controlWidth="auto" last>
-            <Badge tone={s.budget.liveEnabled ? 'success' : 'warning'} uppercase={false}>
-              {s.budget.liveEnabled ? 'Live AI on' : 'Replay mode'}
+      <Card title="Data handling" flush>
+        <ul className={styles.rows}>
+          <SettingRow label="Redaction" description="Names, emails, phone numbers and health information are replaced with placeholders before any model call.">
+            <Badge tone="success" dot>
+              On
             </Badge>
-          </SettingsRow>
-        </Panel>
-      </div>
-
-      <Panel title="Confidence thresholds" sub="Every insight gets a confidence score from 0 to 1 that decides where it goes. Read-only here: changing them has to pass the evals first.">
-        <div className="sl-stack-lg">
-          <ThresholdBar />
-          <div className="sl-grid-3">
-            <div className={styles.rule}>
-              <span className={styles.ruleLabel}>Sent automatically</span>
-              <span className={styles.ruleValue}>≥ {THRESHOLDS.autoRoute.toFixed(2)}</span>
-              <p className="sl-p">At or above this score the insight goes straight to its owner. The score combines the AI’s confidence, how well the quote matched and how reliable that insight type usually is.</p>
-            </div>
-            <div className={styles.rule}>
-              <span className={styles.ruleLabel}>Person reviews</span>
-              <span className={styles.ruleValue}>
-                {THRESHOLDS.review.toFixed(2)} – {THRESHOLDS.autoRoute.toFixed(2)}
-              </span>
-              <p className="sl-p">Goes to the review queue. Churn risk and critical bugs always land here, whatever their score.</p>
-            </div>
-            <div className={styles.rule}>
-              <span className={styles.ruleLabel}>Quote match</span>
-              <span className={styles.ruleValue}>≥ {THRESHOLDS.grounding.toFixed(2)}</span>
-              <p className="sl-p">Every quote must be found in the conversation, word for word or a close match at this similarity. Below it the insight is dropped as made up.</p>
-            </div>
-          </div>
-        </div>
-      </Panel>
-
-      <Panel title="Your workspace" sub="Start the walkthrough over with a clean slate.">
-        <div className="sl-spread">
-          <p className="sl-p" style={{ maxWidth: '62ch' }}>
-            Clears the runs, review decisions, ticket changes and routing overrides you made. Seeded history and other viewers' workspaces are not affected.
-          </p>
-          <Button variant="danger" iconLeft="refresh" onClick={() => setConfirm(true)}>
-            Reset my workspace
-          </Button>
-        </div>
-      </Panel>
+          </SettingRow>
+          <SettingRow label="Provider data collection" description="Model providers are told not to store or train on anything this workspace sends.">
+            <Badge tone="success" dot>
+              Off
+            </Badge>
+          </SettingRow>
+        </ul>
+      </Card>
 
       <Modal
         open={confirm}
         onClose={() => (busy ? undefined : setConfirm(false))}
-        eyebrow="Workspace"
-        title="Reset your workspace?"
-        size="sm"
+        title="Reset this workspace?"
+        width={440}
         footer={
           <>
-            <Button variant="tertiary" onClick={() => setConfirm(false)} disabled={busy}>
+            <Button variant="ghost" onClick={() => setConfirm(false)} disabled={busy}>
               Cancel
             </Button>
             <Button variant="danger" loading={busy} onClick={() => void reset()}>
@@ -171,10 +261,10 @@ export default function SettingsPage() {
           </>
         }
       >
-        <p className="sl-p">
-          Your runs, reviews and rule overrides in <span className="sl-mono">{s.workspaceId}</span> will be cleared. This cannot be undone. The seeded baseline stays.
+        <p className={styles.modalText}>
+          Your conversations, review decisions, ticket changes and routing changes will be cleared. This can’t be undone. Sample history stays, and other viewers aren’t affected.
         </p>
       </Modal>
-    </div>
+    </Page>
   );
 }

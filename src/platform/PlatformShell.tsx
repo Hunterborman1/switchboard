@@ -1,43 +1,47 @@
 /**
- * Agent Ops shell: the shared light ConsoleShell (same sidebar as Signal Loop, per
- * docs/DESIGN.md "Shells"), with a product switcher at the top, sentence-case section labels,
- * and a slim top bar carrying the section title, an "About this data" panel and a compact
- * time-zone select on every page.
+ * The Agent Ops shell: the shared design-system Shell (the same frame as Switchboard),
+ * configured for this product. A product switcher top-left, Platform / Observe / Govern
+ * navigation, a footer with the walkthrough pill, the way back to Switchboard and the user,
+ * and a top bar with breadcrumbs, "About this data" and the time zone.
+ *
+ * Mount it as the layout for /ops (it renders <Outlet/> unless given children). Rendering it
+ * twice is safe: a nested PlatformShell renders only its content.
  */
-import '../theme/invoca.css';
-import '../uis/uis.css';
 import './platform.css';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import { ConsoleShell, type ConsoleNavGroup } from '../uis/ConsoleShell';
-import { TimezoneProvider, useTimezone } from '../uis/TimezoneContext';
-import type { ConsoleTimezone } from '../uis/format';
+import { createContext, Suspense, useContext, useEffect, useState, type ReactNode } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Avatar, Button, Drawer, Menu, PageSkeleton, ProductMark, Select, Shell, ToastProvider, type Crumb, type NavGroup } from '../ds';
+import { IconActivity, IconChevronsUpDown, IconCpu, IconFileText, IconHome, IconInfo, IconSettings, IconShield, IconUsers } from '../ds/icons';
+import { useMe } from '../app/api/hooks';
+import { PLATFORM_NAME } from '../shared/platform';
+import { tourAnchor } from '../tour/anchors';
 import { TourPillSlot } from '../tour/hud/pillSlot';
-import { ProductMark, ProductSwitcher } from '../uis/ProductSwitcher';
+import { TimezoneProvider, useTimezone } from '../ds/time/TimezoneContext';
+import type { ConsoleTimezone } from '../ds/time/format';
 import type { PlatformMeta } from '../worker/platform/types';
 import { useApi } from './lib/api';
 import { day, dayYear } from './lib/format';
-import { IconInfoSmall } from './ui/InfoTip';
-import { Drawer } from './ui/kit';
-import { IconCost, IconLogs, IconOverview, IconPulse, IconRegistry, IconShield, IconUsers } from './ui/icons';
+import { IconCoin } from './ui/icons';
 
 const Nested = createContext(false);
+const PRODUCT = 'Agent Ops';
+const SWITCHBOARD_HREF = '/app/overview';
 
-const GROUPS: ConsoleNavGroup[] = [
+const GROUPS: NavGroup[] = [
   {
     label: 'Platform',
     items: [
-      { to: '/ops', label: 'Overview', icon: <IconOverview />, end: true },
-      { to: '/ops/agents', label: 'Agent registry', icon: <IconRegistry /> },
+      { to: '/ops', label: 'Overview', icon: <IconHome />, end: true, match: ['/ops/summary'] },
+      { to: '/ops/agents', label: 'Agent registry', icon: <IconCpu />, match: ['/ops/runbook'] },
       { to: '/ops/usage', label: 'Usage', icon: <IconUsers /> },
     ],
   },
   {
     label: 'Observe',
     items: [
-      { to: '/ops/logs', label: 'Logs and traces', icon: <IconLogs /> },
-      { to: '/ops/reliability', label: 'Reliability', icon: <IconPulse /> },
-      { to: '/ops/cost', label: 'Cost', icon: <IconCost /> },
+      { to: '/ops/logs', label: 'Logs and traces', icon: <IconFileText />, match: ['/ops/traces'] },
+      { to: '/ops/reliability', label: 'Reliability', icon: <IconActivity /> },
+      { to: '/ops/cost', label: 'Cost', icon: <IconCoin /> },
     ],
   },
   {
@@ -46,143 +50,167 @@ const GROUPS: ConsoleNavGroup[] = [
   },
 ];
 
-/** Section title per first path segment, with the nav group it sits under. */
-const CRUMB: Record<string, { label: string; group?: string; groupTo?: string }> = {
-  '': { label: 'Overview', group: 'Platform' },
-  agents: { label: 'Agent registry', group: 'Platform' },
-  usage: { label: 'Usage', group: 'Platform' },
-  logs: { label: 'Logs and traces', group: 'Observe' },
-  traces: { label: 'Trace', group: 'Logs and traces', groupTo: '/ops/logs' },
-  reliability: { label: 'Reliability', group: 'Observe' },
-  cost: { label: 'Cost', group: 'Observe' },
-  standard: { label: 'Standard and reviews', group: 'Govern' },
-  summary: { label: 'Executive summary', group: 'Overview', groupTo: '/ops' },
-  runbook: { label: 'Runbook', group: 'Agent registry', groupTo: '/ops/agents' },
+type Section = { group: string; label: string; to: string };
+/** Breadcrumb lead per first path segment. Detail pages append their own crumb with useCrumbs. */
+const SECTIONS: Record<string, Section> = {
+  '': { group: 'Platform', label: 'Overview', to: '/ops' },
+  summary: { group: 'Platform', label: 'Overview', to: '/ops' },
+  agents: { group: 'Platform', label: 'Agent registry', to: '/ops/agents' },
+  runbook: { group: 'Platform', label: 'Agent registry', to: '/ops/agents' },
+  usage: { group: 'Platform', label: 'Usage', to: '/ops/usage' },
+  logs: { group: 'Observe', label: 'Logs and traces', to: '/ops/logs' },
+  traces: { group: 'Observe', label: 'Logs and traces', to: '/ops/logs' },
+  reliability: { group: 'Observe', label: 'Reliability', to: '/ops/reliability' },
+  cost: { group: 'Observe', label: 'Cost', to: '/ops/cost' },
+  standard: { group: 'Govern', label: 'Standard and reviews', to: '/ops/standard' },
 };
+const segmentOf = (pathname: string) => pathname.replace(/^.*?\/ops\/?/, '').split('/')[0] ?? '';
 
-/** Product name + switcher: the same component as Signal Loop's sidebar, so the two shells match. */
-function Brand() {
-  return <ProductSwitcher current="agent-ops" caption="Prepared for Invoca" hrefs={{ 'signal-loop': '/app', 'agent-ops': '/ops' }} />;
+function sectionCrumb(pathname: string): Crumb[] {
+  const s = SECTIONS[segmentOf(pathname)];
+  if (!s) return [{ label: PRODUCT }];
+  return [{ label: s.group }, { label: s.label, to: s.to }];
 }
 
-function BrandCollapsed() {
+function Switcher() {
+  const navigate = useNavigate();
   return (
-    <Link to="/ops" className="ao-brand-collapsed" aria-label="Agent Ops home" title="Agent Ops">
-      <ProductMark product="agent-ops" size={24} />
-    </Link>
+    <Menu
+      label="Switch product"
+      placement="bottom-start"
+      width={268}
+      trigger={
+        <button type="button" className="ds-switcher">
+          <span className="ds-switcher__mark">
+            <ProductMark product="agent-ops" size={28} />
+          </span>
+          <span className="ds-switcher__text">
+            <span className="ds-switcher__name">{PRODUCT}</span>
+            <span className="ds-switcher__sub">Invoca AI Operations</span>
+          </span>
+          <IconChevronsUpDown />
+        </button>
+      }
+      items={[
+        { kind: 'label', label: 'Products' },
+        { label: PLATFORM_NAME, sub: 'Conversations in, the right people out', icon: <ProductMark product="switchboard" size={20} />, onSelect: () => navigate(SWITCHBOARD_HREF) },
+        { label: PRODUCT, sub: 'AI operations for every agent', icon: <ProductMark product="agent-ops" size={20} />, checked: true, onSelect: () => navigate('/ops') },
+        { kind: 'separator' },
+        { label: 'Back to the walkthrough hub', onSelect: () => navigate('/') },
+      ]}
+    />
   );
 }
 
-function Footer({ collapsed }: { collapsed: boolean }) {
+/** The person using the workspace, as in Switchboard; workspace settings live there. */
+function UserMenu() {
+  const { data: me } = useMe();
+  const navigate = useNavigate();
   return (
-    <div className="ao-footer">
-      <TourPillSlot placement="rail" compact={collapsed} />
-      {collapsed ? (
-        <Link to="/app" className="ao-brand-collapsed ao-footer-switch" aria-label="Open Signal Loop" title="Signal Loop">
-          <ProductMark product="signal-loop" size={20} />
-        </Link>
-      ) : (
-        <p className="ao-footer-note">Every agent reports here. Signal Loop is one of them.</p>
-      )}
-    </div>
+    <Menu
+      label="Account"
+      placement="top-start"
+      width={248}
+      trigger={
+        <button type="button" className="ds-user">
+          <Avatar name={me?.name ?? 'You'} initials={me?.initials} size="lg" />
+          <span className="ds-user__text">
+            <span className="ds-user__name">{me?.name ?? 'Loading…'}</span>
+            <span className="ds-user__sub">{me?.title ?? ' '}</span>
+          </span>
+          <IconChevronsUpDown />
+        </button>
+      }
+      items={[
+        { kind: 'label', label: 'Workspace' },
+        { label: 'Manage people', icon: <IconUsers />, onSelect: () => navigate('/app/people') },
+        { label: 'Workspace settings', icon: <IconSettings />, onSelect: () => navigate('/app/settings') },
+      ]}
+    />
+  );
+}
+
+function Footer() {
+  return (
+    <>
+      <TourPillSlot placement="rail" />
+      <Link to={SWITCHBOARD_HREF} className="ds-nav-item">
+        <ProductMark product="switchboard" size={16} />
+        <span className="ds-nav-item__label">{PLATFORM_NAME}</span>
+      </Link>
+      <UserMenu />
+    </>
   );
 }
 
 function TimezoneSelect() {
   const { timezone, setTimezone } = useTimezone();
   return (
-    <label className="ao-tz">
-      <span>Time zone</span>
-      <select className="ao-select" aria-label="Time zone" value={timezone} onChange={(e) => setTimezone(e.target.value as ConsoleTimezone)}>
-        <option value="UTC">UTC</option>
-        <option value="America/Los_Angeles">Pacific (PT)</option>
-      </select>
-    </label>
+    <Select
+      selectSize="sm"
+      className="ao-tz"
+      aria-label="Time zone"
+      value={timezone}
+      onChange={(e) => setTimezone(e.target.value as ConsoleTimezone)}
+      options={[
+        { value: 'UTC', label: 'UTC' },
+        { value: 'America/Los_Angeles', label: 'Pacific' },
+      ]}
+    />
   );
 }
 
 /** One calm explanation of where the numbers come from, available from every page. */
 export function AboutDataDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const meta = useApi<PlatformMeta>('/meta');
+  const meta = useApi<PlatformMeta>(open ? '/meta' : null);
   const m = meta.data;
   return (
-    <Drawer open={open} onClose={onClose} title="About this data" sub="Where the numbers in Agent Ops come from.">
-      <dl className="ao-deflist">
-        <div>
-          <dt>Six weeks of simulated history</dt>
-          <dd>
-            Org-wide usage, runs and costs{m ? ` from ${day(m.simulatedFrom)} to ${dayYear(m.simulatedTo)}` : ''} are simulated so the platform has a realistic history to show. Every simulated item is
-            labelled “Simulated” where it appears on its own.
-          </dd>
-        </div>
-        <div>
-          <dt>Live activity from this demo</dt>
-          <dd>Signal Loop is a real agent. Its runs, AI calls, deliveries and the people using this demo right now report here live and are labelled “Live”.</dd>
-        </div>
-        <div>
-          <dt>Hours saved and value are estimates</dt>
-          <dd>
-            Hours saved compares each task with how long it takes by hand (a registered baseline, to be confirmed by a two-week time study), minus the time a person spent reviewing. Value is hours saved
-            multiplied by a loaded hourly cost. Both baselines and the hourly cost are editable under Assumptions on the overview.
-          </dd>
-        </div>
-        <div>
-          <dt>AI cost is metered, not billed</dt>
-          <dd>AI cost adds up the token usage each AI call reports. It is not an invoice and leaves out build time and seat licences.</dd>
-        </div>
-      </dl>
-      <p>
-        <Link to="/ops?assumptions=1" className="ao-link" onClick={onClose}>
+    <Drawer
+      open={open}
+      onClose={onClose}
+      title="About this data"
+      description="Where the numbers in Agent Ops come from."
+      width={480}
+      footer={
+        <Link to="/ops?assumptions=1" className="ds-btn ds-btn--secondary" onClick={onClose}>
           Review the assumptions
         </Link>
-      </p>
+      }
+    >
+      <div className="ao-stack">
+        {[
+          {
+            title: 'Six weeks of simulated history',
+            body: `Org-wide usage, runs and costs${m ? ` from ${day(m.simulatedFrom)} to ${dayYear(m.simulatedTo)}` : ''} are simulated so the platform has a realistic history. Simulated items are labelled where they appear on their own.`,
+          },
+          { title: 'Live activity from this demo', body: 'Signal Loop is a real agent. Its runs, AI calls and deliveries, and the people using this demo right now, report here live and are labelled Live.' },
+          {
+            title: 'Hours saved and value are estimates',
+            body: 'Hours saved compare each task with how long it takes by hand, minus the time a person spent reviewing. Value is hours saved times a loaded hourly cost. Both are assumptions you can edit.',
+          },
+          { title: 'AI cost is metered, not billed', body: 'AI cost adds up the token usage each AI call reports. It is not an invoice and leaves out build time and seat licences.' },
+        ].map((x) => (
+          <section key={x.title}>
+            <h3 className="ao-subhead">{x.title}</h3>
+            <p className="ao-note">{x.body}</p>
+          </section>
+        ))}
+      </div>
     </Drawer>
   );
 }
 
-function TopBar() {
-  const { pathname } = useLocation();
+function TopbarEnd() {
   const [about, setAbout] = useState(false);
-  const seg = pathname.replace(/^.*\/ops\/?/, '').split('/')[0] ?? '';
-  const c = CRUMB[seg] ?? { label: 'Agent Ops' };
-  const deep = pathname.split('/').filter(Boolean).length > 2 && seg && seg !== 'traces' && seg !== 'summary' && seg !== 'runbook';
   return (
-    <div className="ao-topbar ao-noprint">
-      <nav className="ao-crumbs" aria-label="Breadcrumb">
-        {deep ? (
-          <>
-            <Link to={`/ops/${seg}`} className="ao-crumb-title">
-              {c.label}
-            </Link>
-          </>
-        ) : (
-          <>
-            {c.group ? (
-              <>
-                {c.groupTo ? (
-                  <Link to={c.groupTo} className="ao-crumb-parent">
-                    {c.group}
-                  </Link>
-                ) : (
-                  <span className="ao-crumb-parent">{c.group}</span>
-                )}
-                <span className="sep" aria-hidden="true">
-                  /
-                </span>
-              </>
-            ) : null}
-            <span aria-current="page">{c.label}</span>
-          </>
-        )}
-      </nav>
-      <div className="ao-topbar-end">
-        <button type="button" className="ao-btn ghost sm" onClick={() => setAbout(true)} data-testid="about-data" aria-label="About this data">
-          <IconInfoSmall /> <span className="ao-about-label">About this data</span>
-        </button>
-        <TimezoneSelect />
-      </div>
+    <>
+      <Button variant="ghost" size="sm" icon={<IconInfo size={14} />} onClick={() => setAbout(true)} data-testid="about-data" aria-label="About this data">
+        <span className="ao-about-label">About this data</span>
+      </Button>
+      <TimezoneSelect />
+      <TourPillSlot placement="bar" />
       <AboutDataDrawer open={about} onClose={() => setAbout(false)} />
-    </div>
+    </>
   );
 }
 
@@ -191,49 +219,28 @@ function ShellInner({ children }: { children?: ReactNode }) {
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [pathname]);
-  useEffect(() => {
-    // The host page's body may carry another background; the platform owns its own.
-    const prevBg = document.body.style.background;
-    document.body.style.background = '#FFFFFF';
-    return () => {
-      document.body.style.background = prevBg;
-    };
-  }, []);
-  useEffect(() => {
-    const prev = document.title;
-    const seg = pathname.replace(/^.*\/ops\/?/, '').split('/')[0] ?? '';
-    document.title = `${CRUMB[seg]?.label ?? 'Agent Ops'} · Agent Ops`;
-    return () => {
-      document.title = prev;
-    };
-  }, [pathname]);
   return (
-    <div className="sl-app ao-app">
-      <a href="#main-content" className="ao-sr" style={{ position: 'absolute' }} onFocus={(e) => e.currentTarget.classList.remove('ao-sr')} onBlur={(e) => e.currentTarget.classList.add('ao-sr')}>
-        Skip to content
-      </a>
-      <TimezoneProvider>
-        <ConsoleShell
-          storageKey="ao-rail-collapsed"
-          brand={<Brand />}
-          brandCollapsed={<BrandCollapsed />}
-          mobileBrand={
-            <span className="ao-mobile-brand">
-              <ProductMark product="agent-ops" size={20} />
-              Agent Ops
-            </span>
-          }
+    <TimezoneProvider>
+      <ToastProvider>
+        <Shell
+          className="ao-app"
+          switcher={<Switcher />}
           groups={GROUPS}
-          footer={<Footer collapsed={false} />}
-          footerCollapsed={<Footer collapsed />}
-          mobileBarEnd={<TourPillSlot placement="bar" />}
-          className="ao-shell"
+          footer={<Footer />}
+          sectionCrumb={sectionCrumb}
+          topbarEnd={<TopbarEnd />}
+          mobileBrand={
+            <>
+              <ProductMark product="agent-ops" size={22} />
+              {PRODUCT}
+            </>
+          }
+          menuAttrs={tourAnchor('nav.menu')}
         >
-          <TopBar />
-          {children ?? <Outlet />}
-        </ConsoleShell>
-      </TimezoneProvider>
-    </div>
+          <Suspense fallback={<PageSkeleton />}>{children ?? <Outlet />}</Suspense>
+        </Shell>
+      </ToastProvider>
+    </TimezoneProvider>
   );
 }
 
@@ -247,3 +254,4 @@ export function PlatformShell({ children }: { children?: ReactNode }) {
     </Nested.Provider>
   );
 }
+

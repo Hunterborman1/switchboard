@@ -1,15 +1,16 @@
 /**
- * The transcript pane: turns with speaker chips and timestamps, redaction tokens as pills,
- * and evidence spans highlighted as insights ground. A Before/After toggle swaps tokens for
- * the server's MASKED previews (originals never reach the browser). Clicking a highlight
- * selects its insight; selecting an insight scrolls here and flashes its span.
+ * The transcript card: readable turns (speaker, time, text), hidden personal details as subtle
+ * inline chips, and the customer quotes behind each insight highlighted once they are checked.
+ * A Before/After toggle swaps the placeholders for the server's partly hidden previews (the
+ * originals never reach the browser). Clicking a highlight selects its insight; selecting an
+ * insight scrolls here and highlights its quote. Long transcripts scroll inside the card.
  */
 import { Fragment, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import type { Redaction, Turn } from '../../../shared/contracts';
 import { emit } from '../../../shared/events';
 import { tourAnchor } from '../../../tour/anchors';
-import { SegmentedControl } from '../../../uis/SegmentedControl';
-import { IconLock } from '../../components/icons';
+import { Card, cx, Segmented, Skeleton } from '../../../ds';
+import { IconLock } from '../../../ds/icons';
 import styles from './Transcript.module.css';
 
 export type Highlight = {
@@ -25,6 +26,30 @@ export type Highlight = {
 type Range = { from: number; to: number; h: Highlight };
 
 const TOKEN_RE = /\[([A-Z]+)_(\d+)\]/g;
+
+const TOKEN_WORD: Record<string, string> = {
+  PERSON: 'Person',
+  PHONE: 'Phone',
+  EMAIL: 'Email',
+  CARD: 'Card',
+  SSN: 'SSN',
+  DOB: 'Date of birth',
+  PATIENT: 'Patient',
+  MRN: 'Record number',
+  ADDRESS: 'Address',
+};
+
+const KIND_WORD: Record<string, string> = {
+  person: 'name',
+  phone: 'phone number',
+  email: 'email address',
+  card: 'card number',
+  ssn: 'social security number',
+  dob: 'date of birth',
+  patient: 'patient name',
+  mrn: 'medical record number',
+  address: 'address',
+};
 
 function findRange(turn: Turn, h: Highlight): Range | null {
   const t = turn.text;
@@ -49,14 +74,15 @@ function renderTokens(text: string, mode: 'after' | 'before', previews: Map<stri
     if (m.index > last) out.push(text.slice(last, m.index));
     const token = m[0];
     const r = previews.get(token);
+    const what = KIND_WORD[r?.kind ?? m[1]!.toLowerCase()] ?? 'personal detail';
     out.push(
       mode === 'after' ? (
-        <span key={`${keyBase}-${m.index}`} className={styles.token} title={`A ${r?.kind ?? 'personal value'} was replaced before anything was sent to AI`}>
+        <span key={`${keyBase}-${m.index}`} className={styles.token} title={`A ${what} was replaced with this placeholder before any AI saw the text`}>
           <IconLock size={10} />
-          {token.slice(1, -1)}
+          {`${TOKEN_WORD[m[1]!] ?? m[1]!.charAt(0) + m[1]!.slice(1).toLowerCase()} ${m[2]}`}
         </span>
       ) : (
-        <span key={`${keyBase}-${m.index}`} className={styles.masked} title={`Partly hidden preview of ${token}. The original never leaves the server.`}>
+        <span key={`${keyBase}-${m.index}`} className={styles.masked} title={`The original ${what}, partly hidden. The full value never leaves the server.`}>
           {r?.preview ?? '•••'}
         </span>
       ),
@@ -67,6 +93,22 @@ function renderTokens(text: string, mode: 'after' | 'before', previews: Map<stri
   return out;
 }
 
+const MARK_CLASS: Record<Highlight['kind'], string | undefined> = {
+  grounded: styles.markQuote,
+  fuzzy: styles.markQuote,
+  dropped: styles.markDropped,
+};
+
+/** Text that may hold redaction placeholders ([PERSON_1]): shows them as the same quiet chips as the transcript. */
+export function RedactedText({ text }: { text: string }) {
+  return <>{renderTokens(text, 'after', new Map(), 'rt')}</>;
+}
+
+/** Plain-text form for labels and tooltips: "[PERSON_1]" becomes "Person 1". */
+export function redactedPlain(text: string): string {
+  return text.replace(TOKEN_RE, (_m, kind: string, n: string) => `${TOKEN_WORD[kind] ?? kind.charAt(0) + kind.slice(1).toLowerCase()} ${n}`);
+}
+
 export function Transcript({
   turns,
   redactions,
@@ -74,9 +116,11 @@ export function Transcript({
   mode,
   onModeChange,
   focus,
+  activeInsight,
   onSelectInsight,
   pending,
   pendingLabel,
+  emptyLabel,
 }: {
   turns: Turn[];
   redactions: Redaction[];
@@ -84,13 +128,18 @@ export function Transcript({
   mode: 'after' | 'before';
   onModeChange: (m: 'after' | 'before') => void;
   focus: { insightId: string; n: number } | null;
+  activeInsight: string | null;
   onSelectInsight: (insightId: string) => void;
   pending: boolean;
   pendingLabel: string;
+  emptyLabel: string;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const previews = useMemo(() => new Map(redactions.map((r) => [r.token, r])), [redactions]);
   const redactionCount = redactions.reduce((a, r) => a + r.count, 0);
+  const quoteCount = highlights.filter((h) => h.kind !== 'dropped').length;
+  const hasDropped = highlights.some((h) => h.kind === 'dropped');
 
   const rangesByTurn = useMemo(() => {
     const map = new Map<string, Range[]>();
@@ -102,7 +151,10 @@ export function Transcript({
         if (r) {
           const list = map.get(t.id) ?? [];
           if (!list.some((x) => x.from < r.to && r.from < x.to)) list.push(r);
-          map.set(t.id, list.sort((a, b) => a.from - b.from));
+          map.set(
+            t.id,
+            list.sort((a, b) => a.from - b.from),
+          );
           break;
         }
       }
@@ -110,114 +162,140 @@ export function Transcript({
     return map;
   }, [highlights, turns]);
 
+  // Selecting an insight: scroll its quote to the middle of the transcript and highlight it.
   useEffect(() => {
     if (!focus) return;
-    const el = scrollRef.current?.querySelector<HTMLElement>(`[data-ev="${focus.insightId}"]`);
-    if (!el || !scrollRef.current) return;
     const box = scrollRef.current;
+    const el = box?.querySelector<HTMLElement>(`[data-ev="${focus.insightId}"]`);
+    if (!el || !box) return;
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const top = el.offsetTop - box.clientHeight / 2 + el.offsetHeight / 2;
-    box.scrollTo({ top: Math.max(0, top), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    box.scrollTo({
+      top: Math.max(0, top),
+      behavior: smooth ? 'smooth' : 'auto',
+    });
+    // In one column the transcript sits above the insights: bring it into view.
+    const card = cardRef.current?.getBoundingClientRect();
+    if (card && (card.bottom < 80 || card.top > window.innerHeight - 80))
+      cardRef.current?.scrollIntoView({
+        block: 'start',
+        behavior: smooth ? 'smooth' : 'auto',
+      });
     el.classList.remove(styles.flash!);
     void el.offsetWidth;
     el.classList.add(styles.flash!);
   }, [focus]);
 
+  const empty = !pending && turns.length === 0;
+  const description = pending
+    ? pendingLabel
+    : empty
+      ? 'Nothing to show'
+      : `${turns.length} line${turns.length === 1 ? '' : 's'}, ${redactionCount} personal detail${redactionCount === 1 ? '' : 's'} hidden, ${quoteCount} quote${quoteCount === 1 ? '' : 's'} found`;
+
   return (
-    <section className={styles.pane} aria-label="Transcript" {...tourAnchor('run.transcript')}>
-      <header className={styles.head}>
-        <div className={styles.headText}>
-          <h2 className={styles.title}>Transcript</h2>
-          <p className={styles.sub}>
-            {pending ? pendingLabel : `${turns.length} lines · ${redactionCount} personal detail${redactionCount === 1 ? '' : 's'} hidden · ${highlights.filter((h) => h.kind !== 'dropped').length} quote${highlights.filter((h) => h.kind !== 'dropped').length === 1 ? '' : 's'} found`}
-          </p>
-        </div>
-        <div {...tourAnchor('run.redaction')} className={styles.toggle}>
-          <SegmentedControl<'after' | 'before'>
-            ariaLabel="Redaction view"
-            size="sm"
-            value={mode}
-            onChange={(v) => {
-              onModeChange(v);
-              emit({ name: 'redaction.toggled', showing: v });
-            }}
-            disabled={pending || redactionCount === 0}
-            options={[
-              { value: 'after', label: 'Sent to AI', title: 'The redacted text: placeholders like PHONE_1 replace personal details' },
-              { value: 'before', label: 'Before redaction', title: 'Partly hidden previews of the original values; originals never leave the server' },
-            ]}
-          />
-        </div>
-      </header>
-      {redactionCount > 0 && !pending ? (
-        <div className={styles.legend}>
-          <span className={styles.legendItem}>
-            <span className={styles.swatchEv} /> Quote found
-          </span>
-          <span className={styles.legendItem}>
-            <span className={styles.swatchDrop} /> Closest match to a dropped quote
-          </span>
-          <span className={styles.legendItem}>
-            {mode === 'after' ? (
-              <span className={styles.token}>
-                <IconLock size={10} />
-                TOKEN
+    <div ref={cardRef} className={styles.anchor}>
+      <Card title="Transcript" description={description} flush className={styles.card} bodyClassName={styles.body} attrs={{ ...tourAnchor('run.transcript'), 'aria-label': 'Transcript' }}>
+        {empty ? null : (
+          <div className={styles.toolbar}>
+            <div className={styles.legend} aria-label="Key">
+              <span className={styles.legendItem}>
+                <span className={cx(styles.swatch, styles.swatchQuote)} aria-hidden="true" />
+                Customer quote
               </span>
-            ) : (
-              <span className={styles.masked}>J••• M•••</span>
-            )}{' '}
-            {mode === 'after' ? 'Hidden personal detail' : 'Original, partly hidden'}
-          </span>
-        </div>
-      ) : null}
-      <div ref={scrollRef} className={styles.scroll} tabIndex={0} aria-label="Transcript turns">
-        {pending ? (
-          <div className={styles.skel} aria-hidden="true">
-            {Array.from({ length: 9 }, (_, i) => (
-              <div key={i} className={styles.skelTurn}>
-                <span className={styles.skelChip} />
-                <span className={styles.skelLine} style={{ width: `${88 - ((i * 23) % 35)}%` }} />
-                {i % 2 === 0 ? <span className={styles.skelLine} style={{ width: `${55 - ((i * 13) % 20)}%` }} /> : null}
-              </div>
-            ))}
+              {hasDropped ? (
+                <span className={styles.legendItem}>
+                  <span className={cx(styles.swatch, styles.swatchDropped)} aria-hidden="true" />
+                  Closest to a dropped quote
+                </span>
+              ) : null}
+            </div>
+            <div className={cx(styles.toggle, (pending || redactionCount === 0) && styles.toggleIdle)} {...tourAnchor('run.redaction')}>
+              <span className={styles.toggleLabel}>Redaction</span>
+              {redactionCount === 0 && !pending ? (
+                <span className={styles.toggleNone}>Nothing to hide</span>
+              ) : (
+                <Segmented<'before' | 'after'>
+                  label="Redaction view"
+                  size="sm"
+                  value={mode}
+                  onChange={(v) => {
+                    if (pending) return;
+                    onModeChange(v);
+                    emit({ name: 'redaction.toggled', showing: v });
+                  }}
+                  options={[
+                    {
+                      value: 'before',
+                      label: 'Before',
+                      attrs: {
+                        title: 'Partly hidden previews of the original values. The originals never leave the server.',
+                      },
+                    },
+                    {
+                      value: 'after',
+                      label: 'After',
+                      attrs: {
+                        title: 'What the AI saw: placeholders instead of personal details',
+                      },
+                    },
+                  ]}
+                />
+              )}
+            </div>
           </div>
-        ) : turns.length === 0 ? (
-          <p className={styles.empty}>No turns were parsed from this file.</p>
-        ) : (
-          <ol className={styles.turns}>
-            {turns.map((t) => {
-              const ranges = rangesByTurn.get(t.id) ?? [];
-              const parts: ReactNode[] = [];
-              let cur = 0;
-              ranges.forEach((r, i) => {
-                if (r.from > cur) parts.push(<Fragment key={`p${i}`}>{renderTokens(t.text.slice(cur, r.from), mode, previews, `${t.id}-a${i}`)}</Fragment>);
-                parts.push(
-                  <mark
-                    key={`m${i}`}
-                    data-ev={r.h.insightId}
-                    className={`${styles.mark} ${styles[`mark_${r.h.kind}`] ?? ''}`}
-                    onClick={() => onSelectInsight(r.h.insightId)}
-                    title={r.h.label}
-                  >
-                    {renderTokens(t.text.slice(r.from, r.to), mode, previews, `${t.id}-m${i}`)}
-                  </mark>,
-                );
-                cur = r.to;
-              });
-              if (cur < t.text.length) parts.push(<Fragment key="tail">{renderTokens(t.text.slice(cur), mode, previews, `${t.id}-t`)}</Fragment>);
-              return (
-                <li key={t.id} className={`${styles.turn} ${styles[`role_${t.role}`] ?? ''}`}>
-                  <div className={styles.turnHead}>
-                    <span className={styles.speaker}>{t.speaker}</span>
-                    {t.ts ? <time className={styles.ts}>{t.ts}</time> : null}
-                    <span className={styles.tid} title="Line ID">{t.id}</span>
-                  </div>
-                  <p className={styles.text}>{parts}</p>
-                </li>
-              );
-            })}
-          </ol>
         )}
-      </div>
-    </section>
+        <div ref={scrollRef} className={styles.scroll} tabIndex={0} aria-label="Transcript lines">
+          {pending ? (
+            <div className={styles.skeleton} aria-hidden="true">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div key={i} className={styles.skeletonTurn}>
+                  <Skeleton width={i % 2 ? 88 : 112} height={10} />
+                  <Skeleton width={`${92 - ((i * 23) % 30)}%`} height={10} />
+                  {i % 3 !== 1 ? <Skeleton width={`${58 - ((i * 13) % 20)}%`} height={10} /> : null}
+                </div>
+              ))}
+            </div>
+          ) : turns.length === 0 ? (
+            <p className={styles.empty}>{emptyLabel}</p>
+          ) : (
+            <ol className={styles.turns}>
+              {turns.map((t) => {
+                const ranges = rangesByTurn.get(t.id) ?? [];
+                const parts: ReactNode[] = [];
+                let cur = 0;
+                ranges.forEach((r, i) => {
+                  if (r.from > cur) parts.push(<Fragment key={`p${i}`}>{renderTokens(t.text.slice(cur, r.from), mode, previews, `${t.id}-a${i}`)}</Fragment>);
+                  parts.push(
+                    <mark
+                      key={`m${i}`}
+                      data-ev={r.h.insightId}
+                      className={cx(styles.mark, MARK_CLASS[r.h.kind], activeInsight === r.h.insightId && styles.markActive)}
+                      onClick={() => onSelectInsight(r.h.insightId)}
+                      title={r.h.label}
+                    >
+                      {renderTokens(t.text.slice(r.from, r.to), mode, previews, `${t.id}-m${i}`)}
+                    </mark>,
+                  );
+                  cur = r.to;
+                });
+                if (cur < t.text.length) parts.push(<Fragment key="tail">{renderTokens(t.text.slice(cur), mode, previews, `${t.id}-t`)}</Fragment>);
+                return (
+                  <li key={t.id} className={styles.turn}>
+                    <div className={styles.turnHead}>
+                      <span className={cx(styles.speaker, t.role === 'customer' ? styles.speakerCustomer : styles.speakerTeam)}>
+                        {t.speaker.trim().toLowerCase() === 'unknown' ? 'Unknown speaker' : renderTokens(t.speaker, mode, previews, `${t.id}-s`)}
+                      </span>
+                      {t.ts ? <time className={styles.ts}>{t.ts}</time> : null}
+                    </div>
+                    <p className={styles.text}>{parts}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </div>
+      </Card>
+    </div>
   );
 }

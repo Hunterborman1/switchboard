@@ -4,10 +4,11 @@
  * falls back to the walkthrough's anchor harness so the tour can be exercised end to end.
  */
 import { lazy, Suspense } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { AppShell, PlatformShell, appRoutes, platformRoutes } from './bridge';
 
-import { Display, Lede } from '../narrative/components';
+import { ButtonLink } from '../ds';
+import { SiteBar } from '../narrative/components';
 
 const appRoutesHaveShell = appRoutes.length === 1 && !appRoutes[0]?.path && !!appRoutes[0]?.children;
 const platformRoutesHaveShell = platformRoutes.length === 1 && !platformRoutes[0]?.path && !!platformRoutes[0]?.children;
@@ -28,13 +29,18 @@ function useDevHarness(hasRoutes: boolean): boolean {
 
 function Pending({ what }: { what: string }) {
   return (
-    <main className="sl-n n-page mount-fallback">
-      <div className="n-stack" style={{ maxWidth: 560, justifyItems: 'center' }}>
-        <Display size="md">{what} is being prepared.</Display>
-        <Lede>This part of the build isn’t deployed yet. The walkthrough and the write-up are available.</Lede>
-        <p>
-          <Link className="n-btn" to="/">Back to the start</Link>
-        </p>
+    <main className="ds-app sl-n n-page nf">
+      <SiteBar />
+      <div className="nf__body">
+        <div className="nf__card">
+          <h1 className="nf__title">{what} is being prepared.</h1>
+          <p className="nf__text">This part of the build isn’t deployed yet. The walkthrough and the write-up are available.</p>
+          <div className="nf__actions">
+            <ButtonLink variant="secondary" to="/">
+              Back to the start
+            </ButtonLink>
+          </div>
+        </div>
       </div>
     </main>
   );

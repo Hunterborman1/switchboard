@@ -47,16 +47,20 @@ export const STEPS: Step[] = [
   },
   {
     id: 'states', chapter: 'states', kind: 'scene', scene: 'states', beats: 4, route: R.scene('states'),
-    title: 'Today and tomorrow', body: 'Leaks at every handoff, then sealed.', next: 'ch1.intro',
+    title: 'Today and tomorrow', body: 'Leaks at every handoff, then sealed.', next: 'platform',
+  },
+  {
+    id: 'platform', chapter: 'platform', kind: 'scene', scene: 'platform', beats: 4, route: R.scene('platform'),
+    title: 'The platform', body: 'Signal Loop runs inside Switchboard: any conversation in, the right people out.', next: 'ch1.intro',
   },
 
   // ============================================================ ch1 · a call comes in
   {
     id: 'ch1.intro', chapter: 'ch1', kind: 'product', route: R.newCall, target: 'new.upload', placement: 'bottom',
     title: 'Bring in today’s call',
-    body: 'A CSM shouldn’t retype a call into three tools. Drop the file in; the system does the data entry.',
-    more: 'In production this is automatic: dlt pulls recordings and notes from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples). Here you pick from a synthetic library shaped like a call-recorder export.',
-    waitFor: { event: 'picker.opened', hint: 'Click Upload' },
+    body: 'A CSM shouldn’t retype a call into three tools. Bring it in, any format; the system does the data entry.',
+    more: 'Upload takes any file: transcripts (VTT, SRT, Zoom or Gong JSON), notes, email, chat exports, PDF, Word, slides and spreadsheets, converted to text in the browser. In production connectors pull recordings and notes as they happen (Gong, Zoom, Gmail, Slack, Drive; simulated here). Here you pick from a synthetic library shaped like a call-recorder export.',
+    waitFor: { event: 'picker.opened', hint: 'Click Browse conversations' },
     next: 'ch1.pick',
     notes: 'Let them click. If presenting, click Upload myself and say: this is the only manual step, and in production it goes away.',
   },
@@ -84,7 +88,7 @@ export const STEPS: Step[] = [
     title: (ctx) => introFor(ctx).title,
     body: (ctx) => introFor(ctx).body,
     more: 'Each run executes ten steps on a fast path, each saved as it runs: status, timing, hashes, model, tokens, cost. If a step fails or runs long, a durable Cloudflare Workflow resumes from the last completed step. The UI animates from those rows.',
-    waitFor: { event: 'run.started', hint: 'Click Run pipeline' },
+    waitFor: { event: 'run.started', hint: 'Click Process conversation' },
     next: 'ch2.intro',
     checkpoint: () => ({ value: 0, label: 'fields typed by the CSM', sub: '1 call in · the system does the data entry' }),
     notes: 'Name the branch out loud. If they picked something other than Brightline, say what this file is and what to watch for.',
@@ -104,19 +108,19 @@ export const STEPS: Step[] = [
     title: 'Redaction comes first', body: redactCopy,
     more: 'Regex plus validators (Luhn for cards, date sanity for DOB) swap values for reversible tokens like [PATIENT_1]. The original never leaves the Worker; the browser only sees a masked preview.',
     ready: (ctx) => stepDone(ctx.run, 'redact'), readyLabel: 'Redacting…',
-    waitFor: 'next', next: (ctx) => (has(ctx, 'privacy') ? 'ch2.privacy' : screenMatters(ctx) ? 'ch2.screen' : 'ch2.extract'),
+    waitFor: 'next', next: (ctx) => (has(ctx, 'privacy') ? 'ch2.privacy' : 'ch2.screen'),
   },
   {
     id: 'ch2.privacy', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.redaction', placement: 'bottom', pace: 'slow',
     title: 'Before and after', body: 'Toggle it. Only the redacted side ever reached a model. Tokens keep the meaning, drop the identity.',
     waitFor: { event: 'redaction.toggled', hint: 'Toggle before / after' },
-    next: (ctx) => (screenMatters(ctx) ? 'ch2.screen' : 'ch2.extract'),
+    next: 'ch2.screen',
   },
   {
     id: 'ch2.screen', chapter: 'ch2', kind: 'product', route: runRoute, target: 'run.screen', placement: 'left', pace: 'slow',
     title: (ctx) => screenCopy(ctx).title, body: (ctx) => screenCopy(ctx).body,
-    more: 'Transcript text is wrapped as data between delimiters, the model can only return a fixed schema, and it has no tools. A planted “ignore your instructions” can’t do anything, so it’s flagged and logged.',
-    ready: (ctx) => stepDone(ctx.run, 'screen'), readyLabel: 'Screening…',
+    more: (ctx) => (screenMatters(ctx) ? 'Transcript text is wrapped as data between delimiters, every model can only return a fixed schema, and none has tools. A planted “ignore your instructions” can’t do anything, so it’s flagged and logged.' : 'A small, fast model from a different family than the main one reads every input first: what it is, its language, how noisy it is, which analyses apply, and whether anyone is trying to steer the AI. It runs alongside extraction, so it adds no time, and if it fails the main model answers instead.'),
+    ready: (ctx) => stepDone(ctx.run, 'screen'), readyLabel: 'Triaging…',
     waitFor: 'next', next: 'ch2.extract',
   },
   {
@@ -130,7 +134,7 @@ export const STEPS: Step[] = [
     // A dropped quote is the story when there is one; otherwise point at the Ground step itself.
     id: 'ch2.ground', chapter: 'ch2', kind: 'product', route: runRoute, target: ['run.dropped', 'run.ground'], placement: 'bottom', pace: 'slow', anchorTimeoutMs: 2500,
     title: (ctx) => groundCopy(ctx).title, body: (ctx) => groundCopy(ctx).body, more: (ctx) => groundCopy(ctx).more,
-    ready: (ctx) => stepDone(ctx.run, 'ground'), readyLabel: 'Grounding quotes…',
+    ready: (ctx) => stepDone(ctx.run, 'ground'), readyLabel: 'Checking quotes…',
     waitFor: 'next', next: (ctx) => (has(ctx, 'messy') ? 'ch2.messy' : 'ch2.gate'),
     actions: (ctx) => {
       const dropped = ctx.run ? ctx.run.run.droppedCount + ctx.run.insights.flatMap((i) => i.evidence).filter((e) => e.method === 'failed').length : 0;
@@ -190,7 +194,7 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch3.why', chapter: 'ch3', kind: 'product', route: R.review, target: 'review.why', placement: 'bottom',
-    title: 'Every item says why it’s here', body: 'A count is never shown without its reason: “confidence 0.71 < 0.80”.',
+    title: 'Every item says why it’s here', body: 'Hover the badge for the reason, like “Score 0.71, below 0.80” or “Churn risk is always reviewed”.',
     waitFor: 'next', next: 'ch3.approve',
   },
   {
@@ -252,7 +256,13 @@ export const STEPS: Step[] = [
   },
   {
     id: 'ch4.slack', chapter: 'ch4', kind: 'product', route: R.destinations, target: 'dest.slack', placement: 'left',
-    title: 'And in Slack, with a receipt', body: 'Delivery is logged with attempts and retries. A partial failure reads as a failure.',
+    title: 'And in Slack, with a receipt', body: 'Each owner is tagged by their own handle. Delivery is logged with attempts and retries.',
+    waitFor: 'next', next: 'ch4.connections',
+  },
+  {
+    id: 'ch4.connections', chapter: 'ch4', kind: 'product', route: R.connections, target: 'connections.grid', placement: 'bottom',
+    title: 'Any tool is a connection', body: 'Disconnect one and its rules route to triage instead. Nothing silently disappears.',
+    more: 'Connectors are simulated in this demo: connecting records a workspace connection, and deliveries render as in-app previews with receipts. People are tagged by their handle in each tool, set on the People page, and you can act as anyone from the user menu.',
     waitFor: 'next', next: 'ch5.intro',
     checkpoint: (ctx) => ({ value: ctx.counters.rulesChanged, label: ctx.counters.rulesChanged === 1 ? 'routing rule changed' : 'routing rules changed', sub: '0 prompts edited' }),
   },
@@ -344,7 +354,7 @@ export const STEPS: Step[] = [
     id: 'ch8.enter', chapter: 'ch8', kind: 'product', target: ['nav.agentops', 'nav.menu'], placement: 'right', interact: 'all',
     title: 'Build it, then operate it',
     body: () =>
-      typeof window !== 'undefined' && window.matchMedia?.('(max-width: 760px)').matches
+      typeof window !== 'undefined' && window.matchMedia?.('(max-width: 900px)').matches
         ? 'Signal Loop is one agent. Open the Menu, then Agent Ops: the platform it reports into.'
         : 'Signal Loop is one agent. Open the platform it reports into.',
     more: 'Agent Ops is the internal platform for executives and the AI team. Every agent reports logs, spans, usage and work units through one SDK. This session’s telemetry is live. Signal Loop’s six-week history replays 218 real pipeline runs over synthetic calls, with simulated users; the RFP agent is fully simulated.',
@@ -417,4 +427,4 @@ export const STEP_BY_ID: Record<string, Step> = Object.fromEntries(STEPS.map((s)
 export const FIRST_STEP = 'cold-open';
 export const firstStepOf = (chapter: string): string => STEPS.find((s) => s.chapter === chapter)?.id ?? FIRST_STEP;
 /** The main-path order, for progress. */
-export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.screen', 'ch2.messy', 'ch2.clean', 'ch2.rejected', 'ch1.open'].includes(s.id)).map((s) => s.id);
+export const MAIN_ORDER = STEPS.filter((s) => !['ch2.privacy', 'ch2.messy', 'ch2.clean', 'ch2.rejected', 'ch1.open'].includes(s.id)).map((s) => s.id);

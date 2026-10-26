@@ -12,7 +12,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '0:30',
     say: [
       'This is a thirteen-minute QBR. Twenty seconds of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.',
-      'Invoca turns calls into signals for its customers. I built the same loop for Invoca’s own customer calls, and then I built the platform I’d use to operate it.',
+      'Invoca turns calls into signals for its customers. I built the same loop for Invoca’s own customer calls, inside a platform that can run more analyses like it, and Agent Ops to operate it.',
     ],
     click: ['→ once: the highlighted moment becomes what Signal Loop makes of it.'],
   },
@@ -30,11 +30,12 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     say: [
       'Invoca already does this for its customers’ calls. Option 3 asks for the same discipline pointed inward.',
       'I picked it because the data exists, it’s internal and additive, a person reviews anything high stakes, and it can show value in weeks.',
+      'And it generalises: any conversation in, the right people out. That’s Switchboard, which I’ll show in a minute.',
     ],
-    click: ['→ twice: mirror row, then the reasons.'],
+    click: ['→ twice: mirror row, then the reasons and the line on where it generalises.'],
   },
   jtbd: {
-    time: '2:15',
+    time: '2:00',
     say: [
       'Before architecture: who hires this, and for what. Four people.',
       'The CSM wants it captured without retyping. The PM wants evidence with ARR attached. The VP wants the cross-account view before the renewal, not after. Sales, competitive and support want it in their channel the same day.',
@@ -43,7 +44,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     click: ['Open all four cards (click or Enter on each) to show what gets in the way.', '→ to bring up the emotional job as the headline.'],
   },
   states: {
-    time: '2:10',
+    time: '1:55',
     say: [
       'Today it’s a relay race with no baton. Five handoffs between the call and the VP, each depending on someone remembering.',
       'Nobody is careless. Every step is manual, optional and invisible.',
@@ -52,13 +53,24 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     ],
     click: ['→ three times: leaks appear, Signal Loop seals them, the loop closes.'],
   },
+  platform: {
+    time: '1:00',
+    say: [
+      'One step back before the product. Signal Loop runs inside Switchboard.',
+      'In: any conversation, from where it already lives (Gong, Zoom, Gmail, Slack, Google Drive) or any file you upload: PDF, Word, slides, transcripts, email, chat exports.',
+      'Decide: a fast decision model reads it first, in about a second (0.9 s median in the speed test). What is it, which analyses apply, is it safe to read. It also gives a second opinion at the review gate later.',
+      'Analyse: Signal Loop is the one I built for this brief. Follow-ups, renewal risk, escalations, compliance review and call coaching are on the roadmap, and the screen says “Not built”.',
+      'Out: the right people in the tools they already use, tagged by their own handle. The connectors are simulated here, and the product says so.',
+    ],
+    click: ['→ three times: decide, analyse, out. Then Open the product.'],
+  },
   ch1: {
     time: '1:30',
     say: [
       'Now the real system. This is the only manual step, and in production it goes away: dlt pulls from whichever recorder and CRM the CS team uses.',
       'The library looks like a recorder export. Mess levels aren’t labelled on purpose. Brightline is the main path; any file works and each one tells a different story.',
     ],
-    click: ['Click Upload / “Bring in a call”.', 'Pick the highlighted Brightline QBR (or let a panelist pick).', 'Open, then Run pipeline.'],
+    click: ['Click Browse conversations.', 'Pick the highlighted Brightline QBR (or let a panelist pick).', 'Open, then Process conversation.'],
   },
   ch2: {
     time: '2:15',
@@ -128,7 +140,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     click: ['Click the Agent Ops link.', 'Walk overview → registry → agent page → usage → logs → trace → reliability.'],
   },
   rollout: {
-    time: '2:30',
+    time: '2:15',
     say: [
       'Build it, then operate it. Discovery and the time study first, then shadow mode, then champions, then the team.',
       'I measure adoption from usage events, not surveys: weekly active reviewers, capture rate, time to owner. Cost spikes and SLO breaches alert the owner; drift is caught by re-running the eval suite on a schedule and by watching the reviewer-edit rate.',
@@ -138,9 +150,9 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     click: ['→ twice: measurement, then operate.'],
   },
   horizon: {
-    time: '1:30',
+    time: '1:15',
     say: [
-      'Over 12–18 months, after the rollout: shadow, champions and the team first; every call by default from month 3 (read today’s average cost per call off the card); in-call capture; specialist agents checking each other; drafted PRDs and replies; and plugging into Invoca’s own Signal AI.',
+      'Over 12–18 months, after the rollout: shadow, champions and the team first; every call by default from month 3 (read today’s average cost per call off the card); in-call capture; more analyses on the same platform (follow-ups, renewal risk, escalations, then compliance review and coaching); specialist agents checking each other, with drafted specs; and plugging into Invoca’s own Signal AI.',
       'What doesn’t change: grounding in code, gates, routing as data, human judgement.',
     ],
     click: ['→ once.'],
@@ -149,6 +161,7 @@ export const NOTES: Record<ChapterId, ChapterNotes> = {
     time: '0:45',
     say: [
       'The POC runs entirely on Cloudflare. The production design keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for long-running workers. Strict TypeScript throughout.',
+      'The decision model stays the same model on our own key. Conversations come in through dlt and direct connectors instead of uploads, and results go out through the real Slack, Jira and Salesforce APIs instead of in-app previews.',
     ],
     click: ['→ once to slide the pieces across.'],
   },

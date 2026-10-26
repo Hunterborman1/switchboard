@@ -5,10 +5,11 @@
  * headings, paragraphs, bullet and numbered lists, tables, **bold**, `code` and links.
  */
 import { useEffect, type ReactNode } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import runbook from '../../../docs/RUNBOOK.md?raw';
 import rfpRunbook from '../../../docs/runbooks/rfp-responder.md?raw';
-import { PageHead, Panel } from '../ui/kit';
+import { Card, Page, PageHeader, Table, useCrumbs } from '../../ds';
+import { SourceBadge, useOpsTitle } from '../ui/kit';
 
 /** "Model fallback" → "model-fallback" (the anchors alerts link to). */
 export const slug = (s: string) =>
@@ -17,11 +18,11 @@ export const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-type RunbookDoc = { md: string; path: string; agentId: string; agentName: string };
+type RunbookDoc = { md: string; path: string; agentId: string; agentName: string; simulated?: boolean };
 /** Every runbook the app can render, by slug. No runbook link leaves the app. */
 export const RUNBOOKS: Record<string, RunbookDoc> = {
   'signal-loop': { md: runbook, path: 'docs/RUNBOOK.md', agentId: 'agt_signal_loop', agentName: 'Signal Loop' },
-  'rfp-responder': { md: rfpRunbook, path: 'docs/runbooks/rfp-responder.md · simulated', agentId: 'agt_rfp_responder', agentName: 'RFP & Security Questionnaire Responder' },
+  'rfp-responder': { md: rfpRunbook, path: 'docs/runbooks/rfp-responder.md', agentId: 'agt_rfp_responder', agentName: 'RFP & Security Questionnaire Responder', simulated: true },
 };
 
 /**
@@ -45,17 +46,17 @@ function inline(text: string): ReactNode[] {
   for (const m of text.matchAll(re)) {
     if (m.index! > last) out.push(text.slice(last, m.index));
     const t = m[0];
-    if (t.startsWith('**')) out.push(<b key={k++}>{t.slice(2, -2)}</b>);
-    else if (t.startsWith('`')) out.push(<code key={k++} className="ao-mono">{t.slice(1, -1)}</code>);
+    if (t.startsWith('**')) out.push(<strong key={k++}>{t.slice(2, -2)}</strong>);
+    else if (t.startsWith('`')) out.push(<code key={k++}>{t.slice(1, -1)}</code>);
     else {
       const [, label, href] = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(t)!;
       out.push(
         href!.startsWith('#') ? (
-          <a key={k++} className="ao-link" href={href}>
+          <a key={k++} href={href}>
             {label}
           </a>
         ) : (
-          <a key={k++} className="ao-link" href={href} target="_blank" rel="noreferrer noopener">
+          <a key={k++} href={href} target="_blank" rel="noreferrer noopener">
             {label}
           </a>
         ),
@@ -109,7 +110,7 @@ function BlockView({ b }: { b: Block }) {
     const items = b.lines.map((l) => l.replace(/^\s*(?:- |\d+\. )/, ''));
     const Tag = b.kind;
     return (
-      <Tag style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6, lineHeight: 1.55, fontSize: 14, color: 'var(--ao-text-2)' }}>
+      <Tag className="ao-prose__list">
         {items.map((it, i) => (
           <li key={i}>{inline(it)}</li>
         ))}
@@ -120,8 +121,8 @@ function BlockView({ b }: { b: Block }) {
     const rows = b.lines.filter((l) => !/^\|\s*-/.test(l)).map((l) => l.replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
     const [head, ...body] = rows;
     return (
-      <div style={{ overflowX: 'auto' }}>
-        <table className="ao-table">
+      <div className="ao-prose-table">
+        <Table compact>
           <thead>
             <tr>
               {head!.map((h, i) => (
@@ -140,11 +141,11 @@ function BlockView({ b }: { b: Block }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
     );
   }
-  return <p style={{ margin: 0, lineHeight: 1.55, fontSize: 14, color: 'var(--ao-text-2)' }}>{inline(b.lines.join(' '))}</p>;
+  return <p>{inline(b.lines.join(' '))}</p>;
 }
 
 export function Runbook() {
@@ -152,6 +153,8 @@ export function Runbook() {
   const source = RUNBOOKS[slugParam ?? 'signal-loop'] ?? RUNBOOKS['signal-loop']!;
   const doc = blocks(source.md);
   const { hash } = useLocation();
+  useOpsTitle(`${source.agentName} runbook`);
+  useCrumbs([{ label: source.agentName, to: `/ops/agents/${source.agentId}` }, { label: 'Runbook' }], [source.agentId]);
   useEffect(() => {
     if (!hash) return;
     // After the shell's own scroll reset on navigation.
@@ -159,24 +162,23 @@ export function Runbook() {
     return () => window.clearTimeout(t);
   }, [hash]);
   return (
-    <div className="ao-page" data-testid="runbook">
-      <PageHead
-        eyebrow={<Link to={`/ops/agents/${source.agentId}`}>{source.agentName}</Link>}
-        title={doc.title}
-        sub={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined}
-        meta={<span className="ao-mono">{source.path}</span>}
+    <Page width="narrow" attrs={{ 'data-testid': 'runbook' }}>
+      <PageHeader title={doc.title} description={doc.intro.length ? doc.intro.map((b) => b.lines.join(' ')).join(' ') : undefined} meta={
+          <>
+            <span className="ao-mono">{source.path}</span>
+            {source.simulated ? <SourceBadge source="simulated" label="Simulated agent" /> : null}
+          </>
+        }
       />
-      <div style={{ display: 'grid', gap: 16 }}>
-        {doc.sections.map((s) => (
-          <Panel key={s.title} id={slug(s.title)} title={s.title}>
-            <div style={{ display: 'grid', gap: 12 }}>
-              {s.body.map((b, i) => (
-                <BlockView key={i} b={b} />
-              ))}
-            </div>
-          </Panel>
-        ))}
-      </div>
-    </div>
+      {doc.sections.map((s) => (
+        <Card key={s.title} id={slug(s.title)} title={s.title}>
+          <div className="ao-prose">
+            {s.body.map((b, i) => (
+              <BlockView key={i} b={b} />
+            ))}
+          </div>
+        </Card>
+      ))}
+    </Page>
   );
 }

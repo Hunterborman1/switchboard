@@ -1,93 +1,33 @@
-/* Shell chrome specific to Signal Loop: the budget readout, the sidebar footer, the mobile
-   brand. Flat and quiet, per docs/DESIGN.md "Shells". */
+/* Switchboard chrome that is specific to this product. The frame itself is src/ds/shell.css. */
 
-/* "Live AI · $0.07 of $15 used" over a thin flat meter. Plain text, not a pill. */
-.sl-app .sl-budget-pill {
+/* "Live AI" status in the top bar: a dot and a word, the budget detail on hover. */
+.sl-live {
   display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  gap: 4px;
-  padding: 2px 0;
-  border-radius: var(--radius-xs);
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  cursor: default;
-}
-.sl-app .sl-budget-text { display: inline-flex; align-items: baseline; }
-.sl-app .sl-budget-label { font-weight: 500; color: var(--text); }
-.sl-app .sl-budget-pill.is-replay .sl-budget-label { color: var(--warning); }
-.sl-app .sl-budget-amt { color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: pre; }
-.sl-app .sl-budget-track {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--bg-muted);
-  overflow: hidden;
-}
-.sl-app .sl-budget-track > span {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--accent);
-  border-radius: inherit;
-  transition: width var(--dur-slow) var(--ease-out);
-}
-.sl-app .sl-budget-pill.is-replay .sl-budget-track > span { background: var(--cn-warning); }
-
-@media (max-width: 1100px) {
-  .sl-app .sl-budget-track { display: none; }
-}
-
-/* Sidebar footer: quiet secondary rows. */
-.sl-app .sl-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 100%;
-}
-.sl-app .sl-footer.is-collapsed { align-items: center; }
-.sl-app .sl-footer-item {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 32px;
-  padding: 0 var(--sp-2);
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
   text-decoration: none;
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
 }
-.sl-app .sl-footer-item:hover { background: var(--bg-muted); color: var(--text); }
-.sl-app .sl-footer-item.is-icon { justify-content: center; width: 36px; padding: 0; }
-.sl-app .sl-footer-ws {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 6px var(--sp-2);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  line-height: 18px;
+.sl-live:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+  text-decoration: none;
 }
-.sl-app .sl-footer-ws-text { display: flex; flex-direction: column; min-width: 0; }
-.sl-app .sl-footer-ws small { display: block; color: var(--text-tertiary); font-size: 12px; font-weight: 400; }
-.sl-app .sl-footer-dot {
-  margin: 6px 5px 0 5px;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
+.sl-live__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
   background: var(--success);
-  flex: none;
+  box-shadow: 0 0 0 3px var(--success-subtle);
 }
-.sl-app .sl-mobile-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
+.sl-live__dot.is-off {
+  background: var(--warning-mark);
+  box-shadow: 0 0 0 3px var(--warning-subtle);
 }

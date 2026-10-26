@@ -1,171 +1,242 @@
+/* Pipeline progress: one stepper, then the selected step's detail. Tokens only. */
+
 .wrap {
   container-type: inline-size;
-  width: 100%;
+  min-width: 0;
 }
 
-.graph {
-  --node: 32px;
-  list-style: none;
-  margin: 0;
-  padding: var(--sp-1) 0 0;
+.steps {
   display: grid;
   grid-template-columns: repeat(10, minmax(0, 1fr));
-  row-gap: var(--sp-4);
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
 }
 
-.cell {
-  position: relative;
+@container (max-width: 880px) {
+  .steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    row-gap: var(--space-2);
+  }
+}
+
+@container (max-width: 420px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.step {
+  min-width: 0;
+}
+
+.stepBtn {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 2px;
-  min-width: 0;
-  text-align: center;
-}
-
-/* ---------------------------------------------------------------- node */
-.node {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: var(--node);
-  height: var(--node);
-  border-radius: 50%;
-}
-.node:focus-visible { outline-offset: 3px; }
-.disc {
-  display: grid;
-  place-items: center;
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: var(--cn-white);
-  color: var(--text-tertiary);
-  transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
-}
-.node:hover .disc { border-color: var(--text-tertiary); }
-.num { font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.nodeSelected .disc { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* In progress: an honest spinner ring, only while the step is actually running. */
-.s_running .disc {
-  border-color: var(--accent-subtle);
-  color: var(--accent-text);
-  background: var(--cn-white);
-}
-.ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: var(--accent);
-  animation: cn-spin 0.8s linear infinite;
-  z-index: 3;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-enter);
 }
 
-.s_passed .disc { background: var(--accent); border-color: var(--accent); color: #fff; }
-.s_warned .disc { background: var(--warning-subtle); border-color: var(--cn-warning); color: var(--warning); }
-.s_failed .disc { background: var(--danger); border-color: var(--danger); color: #fff; }
-.s_skipped .disc { border-style: dashed; color: var(--text-tertiary); background: var(--bg-subtle); }
-.disc svg { width: 16px; height: 16px; }
+.stepBtn:hover {
+  background: var(--bg-subtle);
+}
 
-/* ---------------------------------------------------------------- labels */
-.label {
-  margin-top: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 18px;
-  max-width: 100%;
+.stepBtnSelected {
+  background: var(--bg-muted);
+}
+
+.stepBtnSelected:hover {
+  background: var(--bg-muted);
+}
+
+.bar {
+  flex: 1;
+  min-width: 8px;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--bg-muted);
+  transition: background-color var(--dur-base) var(--ease-enter);
+}
+
+.barPending {
+  background: var(--bg-emphasis);
+}
+
+.barRunning {
+  background: var(--accent-line);
+}
+
+.barPassed {
+  background: var(--accent);
+}
+
+.barWarned {
+  background: var(--warning-mark);
+}
+
+.barFailed {
+  background: var(--danger);
+}
+
+.barSkipped {
+  background: var(--border-strong);
+}
+
+.stepTrack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  min-width: 0;
+}
+
+.stepName {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 18px;
+  color: var(--text);
 }
-.s_pending .label { color: var(--text-tertiary); }
-.s_skipped .label { color: var(--text-tertiary); }
-.meta {
-  font-size: 12px;
+
+.stepMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: var(--text-xs);
+  line-height: 16px;
   color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  line-height: 16px;
 }
-.s_running .meta { color: var(--accent-text); }
-.s_warned .meta { color: var(--warning); }
-.vsummary { display: none; }
 
-/* ---------------------------------------------------------------- connectors */
-.link {
-  position: absolute;
-  z-index: 1;
-  top: calc(var(--node) / 2 - 1px);
-  left: calc(50% + var(--node) / 2 + 6px);
-  right: calc(-50% + var(--node) / 2 + 6px);
-  height: 2px;
-  border-radius: 1px;
-  background: var(--bg-muted);
+.warnWord {
+  color: var(--warning);
 }
-.linkFill {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
+
+/* ---------------------------------------------------------------- status icon */
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.iconPending {
+  border: 1px solid var(--border-strong);
+  color: var(--text-tertiary);
+  background: var(--bg);
+}
+
+.iconRunning {
+  color: var(--accent);
+}
+
+.iconPassed {
   background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition-property: transform;
-  transition-timing-function: var(--ease-out);
-}
-.linkOn .linkFill { transform: scaleX(1); }
-
-/* ---------------------------------------------------------------- medium: two rows of five */
-@container (max-width: 760px) {
-  .graph { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .cell:nth-child(5) .link { display: none; }
+  color: var(--text-inverse);
 }
 
-/* ---------------------------------------------------------------- narrow: vertical list */
-@container (max-width: 480px) {
-  .graph { grid-template-columns: minmax(0, 1fr); row-gap: 0; padding: 0; }
-  .cell {
-    display: grid;
-    grid-template-columns: var(--node) minmax(0, 1fr) auto;
-    grid-template-areas: 'node label meta' 'node sum sum';
-    align-items: center;
-    column-gap: var(--sp-3);
-    row-gap: 0;
-    text-align: left;
-    padding-bottom: var(--sp-3);
-  }
-  .node { grid-area: node; align-self: start; }
-  .label { grid-area: label; margin: 0; }
-  .meta { grid-area: meta; }
-  .vsummary {
-    grid-area: sum;
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .s_pending .vsummary { color: var(--text-tertiary); }
-  .cell:nth-child(5) .link { display: block; }
-  .link {
-    top: calc(var(--node) + 4px);
-    bottom: 4px;
-    left: calc(var(--node) / 2 - 1px);
-    right: auto;
-    width: 2px;
-    height: auto;
-  }
-  .linkFill { transform: scaleY(0); transform-origin: center top; }
-  .linkOn .linkFill { transform: scaleY(1); }
+.iconWarned {
+  background: var(--warning-mark);
+  color: var(--text-inverse);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .linkFill { transition: none; }
-  .ring { animation-duration: 1.6s; }
+.iconFailed {
+  background: var(--danger);
+  color: var(--text-inverse);
+}
+
+.iconSkipped {
+  background: var(--bg-muted);
+  color: var(--text-tertiary);
+}
+
+/* ---------------------------------------------------------------- detail panel */
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  min-width: 0;
+}
+
+.detailHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.detailTitle {
+  min-width: 0;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+}
+
+.detailCount {
+  margin-left: auto;
+  flex: none;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.detailStory {
+  font-size: var(--text-md);
+  line-height: 20px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.detailStoryFailed {
+  color: var(--danger);
+}
+
+.detailStoryQuiet {
+  color: var(--text-secondary);
+}
+
+.detailAbout {
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text-secondary);
+}
+
+.detailFacts {
+  margin-top: var(--space-2);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@container (max-width: 560px) {
+  .detailFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

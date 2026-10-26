@@ -1,14 +1,17 @@
-/** Vite for the Agent Ops e2e run: the real SPA, proxying the API to the e2e Worker on :8812. */
+/** Vite for the Agent Ops e2e run: the real SPA, proxying the API to the e2e Worker (:8812 unless overridden). */
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
+const PORT = Number(process.env.PLATFORM_E2E_PORT ?? 5192);
+const WORKER = `http://127.0.0.1:${process.env.PLATFORM_E2E_WORKER_PORT ?? 8812}`;
 
 export default defineConfig({
   root: fileURLToPath(new URL('../../../', import.meta.url)),
   base: '/repo/invoca/',
   plugins: [react()],
   publicDir: 'static',
-  server: { port: 5192, strictPort: true, proxy: { '/repo/invoca/api': workerProxy('http://127.0.0.1:8812'), '/repo/invoca/login': workerProxy('http://127.0.0.1:8812') } },
+  server: { port: PORT, strictPort: true, proxy: { '/repo/invoca/api': workerProxy(WORKER), '/repo/invoca/login': workerProxy(WORKER) } },
 });
 
 /**

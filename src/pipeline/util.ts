@@ -49,3 +49,23 @@ export function percentile(values: number[], p: number): number {
   const idx = Math.min(s.length - 1, Math.max(0, Math.ceil((p / 100) * s.length) - 1));
   return s[idx]!;
 }
+
+export type Settled<T> = { ok: true; value: T } | { ok: false; err: unknown };
+
+/** Map with at most `limit` calls in flight; every result is settled, in input order. */
+export async function mapSettled<T, R>(items: T[], limit: number, fn: (item: T, i: number) => Promise<R>): Promise<Settled<R>[]> {
+  const out: Settled<R>[] = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      try {
+        out[i] = { ok: true, value: await fn(items[i]!, i) };
+      } catch (err) {
+        out[i] = { ok: false, err };
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));
+  return out;
+}

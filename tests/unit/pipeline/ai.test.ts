@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createLlm } from '../../../src/worker/ai.ts';
+import { acceptsTemperature, createLlm, reasoningFor } from '../../../src/worker/ai.ts';
 import { ScreenOutput } from '../../../src/shared/contracts.ts';
 import { SCREEN_JSON_SCHEMA } from '../../../src/shared/prompts/screen.ts';
 import { LlmFailure, type LlmCallRow } from '../../../src/pipeline/types.ts';
@@ -131,5 +131,78 @@ describe('createLlm (AI SDK + OpenRouter provider)', () => {
     const llm = createLlm({ apiKey: 'k', primary: 'deepseek/deepseek-v4.1-flash', secondary: 'anthropic/claude-haiku-5.5', fetch: f, onCall: () => { throw new Error('db down'); } });
     const r = await llm.structured({ purpose: 'screen', system: 's', prompt: 'p', schema: ScreenOutput, jsonSchema: SCREEN_JSON_SCHEMA as unknown as Record<string, unknown>, schemaName: 'screen', maxTokens: 100, runId: null });
     expect(r.data.actionable).toBe(true);
+  });
+});
+
+describe('decision tier', () => {
+  const DECISION = 'z-ai/glm-5.3-flash';
+  function decisionClient(plan: Plan, extra: Record<string, unknown> = {}) {
+    const { f, bodies } = fakeFetch(plan);
+    const rows: LlmCallRow[] = [];
+    const llm = createLlm({ apiKey: 'k', primary: 'deepseek/deepseek-v4.1-flash', secondary: 'anthropic/claude-haiku-5.5', decision: DECISION, fetch: f, onCall: (r) => void rows.push(r), ...extra });
+    const req = { purpose: 'screen' as const, tier: 'decision' as const, system: 'sys', prompt: 'user text', schema: ScreenOutput, jsonSchema: SCREEN_JSON_SCHEMA as unknown as Record<string, unknown>, schemaName: 'screen', maxTokens: 300, runId: 'run_1' };
+    return { llm, rows, bodies, req };
+  }
+
+  it('uses the decision model, sorted by latency, with the usual privacy routing', async () => {
+    const { llm, rows, bodies, req } = decisionClient(() => ({ status: 200 }));
+    const r = await llm.structured(req);
+    expect(r.meta).toMatchObject({ model: DECISION, attempts: 1, fellBack: false });
+    expect(bodies[0].model).toBe(DECISION);
+    expect(bodies[0].provider).toEqual({ data_collection: 'deny', require_parameters: true, sort: 'latency' });
+    // Reasoning is mandatory on this family: the lowest effort, reasoning text excluded.
+    expect(bodies[0].reasoning).toEqual({ effort: 'low', exclude: true });
+    expect(rows).toEqual([expect.objectContaining({ model: DECISION, ok: true, attempt: 1, fallback: false })]);
+  });
+
+  it('falls back to the primary (never the secondary) when the decision model errors, and ledgers the model actually used', async () => {
+    const { llm, rows, bodies, req } = decisionClient((b) => (b.model === DECISION ? { status: 503 } : { status: 200 }));
+    const r = await llm.structured(req);
+    expect(r.meta).toMatchObject({ model: 'deepseek/deepseek-v4.1-flash', fellBack: true, attempts: 2 });
+    expect(bodies.map((b) => b.model)).toEqual([DECISION, 'deepseek/deepseek-v4.1-flash']);
+    expect(bodies[1].provider.sort).toBe('throughput');
+    expect(rows.map((x) => [x.model, x.ok, x.attempt, x.fallback])).toEqual([[DECISION, false, 1, false], ['deepseek/deepseek-v4.1-flash', true, 3, true]]);
+  });
+
+  it('falls back on invalid output and on a timeout (short decision timeout)', async () => {
+    const bad = decisionClient((b) => (b.model === DECISION ? { status: 200, content: JSON.stringify({ ...GOOD, call_kind: 7 }) } : { status: 200 }));
+    expect((await bad.llm.structured(bad.req)).meta.fellBack).toBe(true);
+    const slow = decisionClient((b) => (b.model === DECISION ? { status: 200, delayMs: 2000 } : { status: 200 }), { decisionTimeoutMs: 100 });
+    const r = await slow.llm.structured(slow.req);
+    expect(r.meta.model).toBe('deepseek/deepseek-v4.1-flash');
+    expect(r.meta.errors[0]).toMatch(/^decision timeout/);
+  });
+
+  it('when both fail it throws LlmFailure after two calls (the secondary is never tried)', async () => {
+    const { llm, bodies, req } = decisionClient(() => ({ status: 500 }));
+    await expect(llm.structured(req)).rejects.toBeInstanceOf(LlmFailure);
+    expect(bodies.map((b) => b.model)).toEqual([DECISION, 'deepseek/deepseek-v4.1-flash']);
+  });
+
+  it('primary-tier calls are unchanged by a configured decision model', async () => {
+    const { llm, bodies, req } = decisionClient(() => ({ status: 200 }));
+    await llm.structured({ ...req, tier: 'primary' });
+    expect(bodies[0].model).toBe('deepseek/deepseek-v4.1-flash');
+    expect(bodies[0].provider.sort).toBe('throughput');
+  });
+
+  it('with no decision model, or the same model as the primary, decision calls use the primary chain', async () => {
+    const same = decisionClient(() => ({ status: 200 }), { decision: 'deepseek/deepseek-v4.1-flash' });
+    await same.llm.structured(same.req);
+    expect(same.bodies[0].provider.sort).toBe('throughput');
+    const none = decisionClient((b) => (b.model.startsWith('deepseek/') ? { status: 503 } : { status: 200 }), { decision: undefined });
+    const r = await none.llm.structured(none.req);
+    expect(r.meta.model).toBe('anthropic/claude-haiku-5.5');
+  });
+
+  it('model families: temperature and reasoning settings', () => {
+    expect(acceptsTemperature('deepseek/deepseek-v4.1-flash')).toBe(true);
+    expect(acceptsTemperature('anthropic/claude-haiku-5.5')).toBe(false);
+    expect(acceptsTemperature('openai/gpt-5.4-nano')).toBe(false);
+    expect(acceptsTemperature('openai/gpt-oss-20b')).toBe(true);
+    expect(reasoningFor('deepseek/deepseek-v4.1-flash')).toEqual({ enabled: false });
+    expect(reasoningFor('openai/gpt-oss-20b')).toEqual({ effort: 'low', exclude: true });
+    expect(reasoningFor('openai/gpt-5.4-nano')).toEqual({ effort: 'minimal', exclude: true });
+    expect(reasoningFor('inference-net/schematron-v2-turbo')).toBeNull();
   });
 });

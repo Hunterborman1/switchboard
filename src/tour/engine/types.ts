@@ -23,6 +23,7 @@ export type ChapterId =
   | 'why'
   | 'jtbd'
   | 'states'
+  | 'platform'
   | 'ch1'
   | 'ch2'
   | 'ch3'
@@ -38,11 +39,11 @@ export type ChapterId =
 
 export type Chapter = {
   id: ChapterId;
-  /** Part number from the plan table (0–15). */
+  /** Part number from the plan table (0–17). */
   part: number;
   title: string;
   layer: 'narrative' | 'product' | 'both';
-  /** 1–7 for product chapters. */
+  /** 1–8 for product chapters. */
   productIndex?: number;
   objective: string;
   /** Presenter target in seconds. */
@@ -55,6 +56,7 @@ export type SceneId =
   | 'why'
   | 'jtbd'
   | 'states'
+  | 'platform'
   | 'rollout'
   | 'horizon'
   | 'production'

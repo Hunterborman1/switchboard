@@ -8,7 +8,7 @@ const PAGES = ['/ops', '/ops/agents', '/ops/agents/agt_signal_loop', '/ops/usage
 for (const path of PAGES) {
   test(`tablet keeps the desktop layout without horizontal scroll: ${path}`, async ({ page }) => {
     await open(page, path);
-    await expect(page.getByTestId('console-sidebar')).toBeVisible();
+    await expect(page.getByRole('complementary', { name: 'Sidebar' })).toBeVisible();
     await noHorizontalScroll(page);
   });
 }

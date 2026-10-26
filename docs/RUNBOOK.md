@@ -29,12 +29,18 @@ Every alert in Agent Ops → Reliability has expected vs actual, this owner and 
 
 ## Model fallback
 
-Each model call tries the primary tier, retries once with the schema errors fed back, then falls back to the secondary tier. A high fallback rate means the primary tier is degraded or repriced.
+There are three tiers (see [ARCHITECTURE.md](ARCHITECTURE.md#models-three-tiers)):
 
-1. Confirm in Agent Ops → Trace that spans show `fallback` and the primary returns errors (for example 503).
-2. If the secondary tier is healthy, no action is needed beyond watching cost: fallback is automatic.
-3. If both tiers fail, flip live AI off (below) so runs replay instead of failing.
-4. Before making the secondary tier primary for good, run the eval suite with it as primary (`npm run eval`) and promote only if the gate holds.
+- **Extraction and theme naming** try the main model, retry once with the schema errors fed back, then fall back to the backup model.
+- **Triage and the second opinion** run on the decision model, with a 4s timeout, and fall back to the main model, never the backup.
+
+A high fallback rate means a tier is degraded or repriced. Spans and `ai_calls` rows show which model was actually called.
+
+1. Confirm in Agent Ops → Trace that spans show `fallback`, and which model returns errors (for example 503 or a timeout).
+2. **Decision model down:** no action needed beyond watching cost. Triage and the second opinion move to the main model automatically, at about three times the cost per call. To pin decisions to the main model, set `MODEL_DECISION` to `MODEL_PRIMARY` and redeploy.
+3. **Main model down:** extraction falls back to the backup model, and decision fallbacks have nowhere to go. Triage then reads "Triage unavailable" and holds every insight for review. A failed second opinion changes nothing. The run still completes.
+4. **Every tier down:** flip live AI off (below) so runs replay instead of failing.
+5. **Before changing a model for good,** run the eval suite with it in place (`npm run eval`) and promote only if the gate holds. For the decision model, also rerun `node --env-file=.env scripts/decision-speed-test.ts` and update [reports/decision-models.md](reports/decision-models.md).
 
 ## Budget kill switch
 

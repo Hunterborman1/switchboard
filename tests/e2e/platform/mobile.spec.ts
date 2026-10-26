@@ -15,7 +15,7 @@ for (const path of PAGES) {
 test('mobile: drawer navigation works and secondary columns are hidden', async ({ page }) => {
   await open(page, '/ops');
   await page.getByRole('button', { name: 'Open navigation' }).click();
-  await page.getByRole('dialog', { name: 'Primary navigation' }).getByRole('link', { name: 'Agent registry' }).click();
+  await page.getByRole('dialog', { name: 'Navigation' }).getByRole('link', { name: 'Agent registry' }).click();
   await expect(page).toHaveURL(/\/ops\/agents/);
   await expect(anchor(page, 'ops.registry').getByRole('columnheader', { name: /AI cost, 30 days/ })).toBeHidden();
   await anchor(page, 'ops.registry.signal').getByRole('link', { name: 'Signal Loop' }).click();
