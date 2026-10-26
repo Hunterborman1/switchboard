@@ -303,7 +303,7 @@ export function executiveSummary(s: SummaryInput): string[] {
       adoption_drop: ['adoption drop', 'adoption drops'],
     };
     const parts = [...counts.entries()].map(([k, n]) => `${n} ${(words[k] ?? [k, k])[n === 1 ? 0 : 1]}`);
-    out.push(`${s.attention.length} items need attention: ${parts.join(', ')}; each has a named owner and a linked runbook.`);
+    out.push(`${s.attention.length} items need attention: ${parts.join(', ')}; each has a named owner and a runbook.`);
   } else {
     out.push('No agent has an overdue review, SLO breach or standard gap this period.');
   }
