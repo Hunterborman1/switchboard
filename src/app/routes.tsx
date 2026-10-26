@@ -27,6 +27,7 @@ const Connections = lazy(() => import('./pages/Connections'));
 const ConnectionDetail = lazy(() => import('./pages/ConnectionDetail'));
 const People = lazy(() => import('./pages/People'));
 const Analyses = lazy(() => import('./pages/Analyses'));
+const Claude = lazy(() => import('./pages/Claude'));
 
 export const appChildRoutes: RouteObject[] = [
   { index: true, element: <Navigate to="/app/overview" replace /> },
@@ -35,6 +36,7 @@ export const appChildRoutes: RouteObject[] = [
   { path: 'connections/:id', element: <ConnectionDetail /> },
   { path: 'people', element: <People /> },
   { path: 'analyses', element: <Analyses /> },
+  { path: 'claude', element: <Claude /> },
   { path: 'new', element: <NewCall /> },
   { path: 'runs', element: <Runs /> },
   { path: 'runs/:id', element: <RunView /> },

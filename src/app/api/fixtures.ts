@@ -1160,6 +1160,7 @@ function platformFixture(method: string, path: string, seg: string[], q: URLSear
       return { person: next, reassignedRules: reassigned };
     }
   }
+  if (method === 'POST' && path === '/mcp/token') return { token: 'swb_fixture-token.not-valid', jti: 'fixture', expiresAt: iso(now + 7 * day), url: `${window.location.origin}/repo/invoca/mcp` };
   if (method === 'GET' && path === '/me') return fxActor();
   if (method === 'PUT' && path === '/me') {
     actorId = (body as { personId: string }).personId;

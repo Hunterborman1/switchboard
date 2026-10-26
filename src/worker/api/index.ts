@@ -27,6 +27,7 @@ import { newSpanId, newTraceId, signalReporter } from '../telemetry.ts';
 import { themesView } from '../themes.ts';
 import { body, fail, issues, ok, viewerOf as actorOf, type AppEnv, type C } from './respond.ts';
 import { switchboardApi } from './switchboard.ts';
+import { issueMcpToken } from '../mcp/token.ts';
 
 /** The gated JSON API, mounted under /repo/invoca/api. */
 export const api = new Hono<AppEnv>().basePath('/repo/invoca/api');
@@ -81,6 +82,22 @@ api.get('/session', async (c) => {
     actor,
   };
   return ok(c, session);
+});
+
+// A bearer token for Claude (or any MCP client) to use this workspace for 7 days, never past
+// the viewer's own access. A token can't mint another token.
+const MCP_TOKEN_DAYS = 7;
+api.post('/mcp/token', async (c) => {
+  const secret = c.env.LINK_SIGNING_SECRET;
+  if (!secret) return fail(c, 503, 'unavailable', 'MCP is not configured on this deployment');
+  if (c.env.ACCESS.via === 'mcp') return fail(c, 403, 'forbidden', 'Create tokens from the app, not over MCP');
+  const linkExp = c.env.ACCESS.linkExpiresAt ? Date.parse(c.env.ACCESS.linkExpiresAt) : Number.POSITIVE_INFINITY;
+  const exp = Math.min(Date.now() + MCP_TOKEN_DAYS * 86_400_000, linkExp);
+  const jti = crypto.randomUUID();
+  const token = await issueMcpToken({ ws: c.get('ws'), exp, jti }, secret);
+  const u = new URL(c.req.url);
+  const origin = u.hostname === 'localhost' || u.hostname === '127.0.0.1' ? u.origin : `https://${u.host}`;
+  return ok(c, { token, jti, expiresAt: new Date(exp).toISOString(), url: `${origin}/repo/invoca/mcp` }, 201);
 });
 
 // The workspace's directory: seed people with this workspace's edits (inactive ones flagged).

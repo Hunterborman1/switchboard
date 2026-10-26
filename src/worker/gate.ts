@@ -31,18 +31,18 @@ const enc = new TextEncoder();
 function hex(buf: ArrayBuffer): string {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
-function b64url(bytes: Uint8Array): string {
+export function b64url(bytes: Uint8Array): string {
   let s = '';
   for (const b of bytes) s += String.fromCharCode(b);
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
-function fromB64url(s: string): Uint8Array {
+export function fromB64url(s: string): Uint8Array {
   const pad = s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4);
   const bin = atob(pad);
   return Uint8Array.from(bin, (c) => c.charCodeAt(0));
 }
 
-async function hmac(keyMaterial: string, message: string): Promise<ArrayBuffer> {
+export async function hmac(keyMaterial: string, message: string): Promise<ArrayBuffer> {
   const key = await crypto.subtle.importKey('raw', enc.encode(keyMaterial), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return crypto.subtle.sign('HMAC', key, enc.encode(message));
 }
@@ -144,7 +144,8 @@ export async function ownerCookie(ownerToken: string): Promise<string> {
 // ------------------------------------------------------------------ the decision
 
 export type GateEnv = { INVOCA_PASSWORD?: string; LINK_SIGNING_SECRET?: string; OWNER_TOKEN?: string };
-export type Access = { ok: false; reason?: LinkFailure } | { ok: true; via: 'password' | 'link' | 'owner'; linkExpiresAt: string | null };
+/** How a request got in. 'mcp' is a workspace-scoped bearer token (src/worker/mcp/token.ts). */
+export type Access = { ok: false; reason?: LinkFailure } | { ok: true; via: 'password' | 'link' | 'owner' | 'mcp'; linkExpiresAt: string | null };
 
 export async function checkAccess(cookieHeader: string, env: GateEnv, isRevoked?: (jti: string) => Promise<boolean>): Promise<Access> {
   const owner = readCookie(cookieHeader, OWNER_COOKIE);

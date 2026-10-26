@@ -8,6 +8,7 @@
  *   /repo/invoca/?owner=…       OWNER_TOKEN → hb_invoca_owner cookie → 302 with owner stripped
  *   /repo/invoca/api/*          gated JSON API (src/worker/api)
  *   /repo/invoca/walkthrough.md gated Markdown walkthrough (docs/WALKTHROUGH.md, bundled)
+ *   /repo/invoca/mcp            remote MCP server, bearer-token auth (src/worker/mcp)
  *   /repo/invoca/*              gated SPA assets (dist/), prefix stripped
  *
  * Every other app under repos.hunterborman.com/repo/* shares this origin, so state-changing
@@ -18,6 +19,7 @@ import { checkAccess, clearCookies, isOwnerToken, linkCookie, ownerCookie, passw
 import { clientIp, html, json, NOTICES, noticeFor, redirect, sameOrigin, secure, writeGuard, type NoticeCode } from './http';
 import { loginPage } from './login';
 import { api } from './api';
+import { handleMcp } from './mcp/server';
 import type { Env } from './env';
 // Bundled as a string at build time (wrangler.jsonc "rules": Text for *.md).
 import WALKTHROUGH_MD from '../../docs/WALKTHROUGH.md';
@@ -100,6 +102,9 @@ export default {
       }
       return secure(res, 'public, max-age=3600');
     }
+
+    // ---- MCP: its own bearer-token auth (src/worker/mcp), so it sits before the cookie gate
+    if (path === `${PREFIX}/mcp`) return handleMcp(req, env, ctx, (jti) => isRevoked(env, jti));
 
     // ---- owner token (?owner=…): same shape as a signed link, for the owner only
     const ownerParam = url.searchParams.get('owner');
