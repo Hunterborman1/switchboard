@@ -21,11 +21,11 @@ test.describe('presentation state, exits and the Guide', () => {
   });
 
   test('deep link to a scene, then refresh restores it', async ({ page }) => {
-    await go(page, '/walkthrough/why?tour=why&path=messy');
-    await expect(page.getByTestId('scene-why')).toBeVisible();
+    await go(page, '/walkthrough/built?tour=built&path=messy');
+    await expect(page.getByTestId('scene-built')).toBeVisible();
     await page.reload();
-    await expect(page.getByTestId('scene-why')).toBeVisible();
-    await expectStep(page, 'why');
+    await expect(page.getByTestId('scene-built')).toBeVisible();
+    await expectStep(page, 'built');
     await expect(page).toHaveURL(/path=messy/);
   });
 
@@ -38,20 +38,20 @@ test.describe('presentation state, exits and the Guide', () => {
   });
 
   test('the chapter navigator jumps anywhere (rail on wide screens, menu on narrow)', async ({ page }) => {
-    await go(page, '/walkthrough/why');
-    await expect(page.getByTestId('scene-why')).toBeVisible();
+    await go(page, '/walkthrough/built');
+    await expect(page.getByTestId('scene-built')).toBeVisible();
     if (wide(page)) {
       const rail = page.getByTestId('chapter-rail');
       await expect(rail).toBeVisible();
-      await expect(rail.locator('[aria-current="step"]')).toContainText('Why this option');
-      await rail.getByRole('button', { name: /Making it real/ }).click();
+      await expect(rail.locator('[aria-current="step"]')).toContainText('What I built, and why');
+      await rail.getByRole('button', { name: /Earning trust/ }).click();
     } else {
       await page.getByTestId('scene-chapters').click();
       const drawer = page.getByTestId('chapter-drawer');
       await expect(drawer).toBeVisible();
-      await drawer.getByRole('button', { name: /Making it real/ }).click();
+      await drawer.getByRole('button', { name: /Earning trust/ }).click();
     }
-    await expectStep(page, 'production');
+    await expectStep(page, 'trust');
   });
 
   test('the Guide’s chapter picker lists every chapter and jumps into a product chapter', async ({ page }) => {
@@ -61,11 +61,12 @@ test.describe('presentation state, exits and the Guide', () => {
     await guide(page).getByTestId('guide-chapters').click();
     const picker = page.getByTestId('chapter-picker');
     await expect(picker).toBeVisible();
-    await expect(picker.getByRole('button')).toHaveCount(10);
+    await expect(picker.locator('button[data-state]')).toHaveCount(10);
+    await expect(picker.getByTestId('chapter-jumps').getByRole('button')).toHaveCount(4);
     await expect(picker.locator('[aria-current="step"]')).toContainText('Human in the loop');
-    await picker.getByRole('button', { name: /Prove it, then operate it/ }).click();
-    await expectStep(page, 'operate.metrics');
-    await expect(page).toHaveURL(/\/app\/evals/);
+    await picker.getByRole('button', { name: /right owner, right channel/i }).click();
+    await expectStep(page, 'routing.rule');
+    await expect(page).toHaveURL(/\/app\/routing/);
   });
 
   test('explore on your own, a nudge on two screens, then resume at the same step', async ({ page }) => {
@@ -136,8 +137,8 @@ test.describe('presentation state, exits and the Guide', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     for (const [part, scene] of [
       ['signal', 'signal'],
-      ['why', 'why'],
-      ['production', 'production'],
+      ['built', 'built'],
+      ['trust', 'trust'],
     ]) {
       await go(page, `/walkthrough/${part}`);
       await expect(page.getByTestId(`scene-${scene}`)).toBeVisible();
@@ -164,10 +165,10 @@ test.describe('presentation state, exits and the Guide', () => {
   });
 
   test('a deep-linked scene can still go back', async ({ page }) => {
-    await go(page, '/walkthrough/why');
-    await expect(page.getByTestId('scene-why')).toBeVisible();
-    await page.getByTestId('scene-why').getByRole('button', { name: 'Back' }).click();
-    await expectStep(page, 'real');
+    await go(page, '/walkthrough/built');
+    await expect(page.getByTestId('scene-built')).toBeVisible();
+    await page.getByTestId('scene-built').getByRole('button', { name: 'Back' }).click();
+    await expectStep(page, 'jobs');
   });
 
   test('a missing target never dead-ends', async ({ page }) => {
@@ -178,6 +179,6 @@ test.describe('presentation state, exits and the Guide', () => {
     const btn = guide(page).getByRole('button', { name: /^Next/ });
     await expect(btn.first()).toBeVisible({ timeout: 15_000 });
     await btn.first().click();
-    await expect.poll(() => currentStep(page)).toBe('production');
+    await expect.poll(() => currentStep(page)).toBe('trust');
   });
 });

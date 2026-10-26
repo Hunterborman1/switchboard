@@ -23,7 +23,7 @@ describe('ten chapters', () => {
       ['The platform', 5],
       ['Closing', 2],
     ]);
-    expect(CHAPTERS.map((c) => c.id)).toEqual(['signal', 'real', 'why', 'call', 'review', 'routing', 'patterns', 'operate', 'production', 'scorecard']);
+    expect(CHAPTERS.map((c) => c.id)).toEqual(['signal', 'jobs', 'built', 'call', 'review', 'routing', 'patterns', 'operate', 'trust', 'future']);
   });
 
   it('numbers every chapter in one sequence, in order, and groups each exactly once', () => {
@@ -45,7 +45,7 @@ describe('ten chapters', () => {
   it('the platform chapter opens on the platform scene, then the product', () => {
     expect(chapterSteps('call').slice(0, 2)).toEqual(['call.platform', 'call.intro']);
     expect(STEP_BY_ID['call.platform']?.kind).toBe('scene');
-    expect(STEP_BY_ID['why']?.next).toBe('call.platform');
+    expect(STEP_BY_ID['built']?.next).toBe('call.platform');
   });
 
   it('step ids name their chapter', () => {

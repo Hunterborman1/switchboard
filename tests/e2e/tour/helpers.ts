@@ -97,7 +97,14 @@ export async function advanceUntil(page: Page, until: RegExp, opts: { seen?: str
     if (!seen.includes(step)) seen.push(step);
     if (until.test(step)) return seen;
     const g = guide(page);
-    await g.waitFor({ state: 'visible', timeout: 15_000 });
+    // A scene step has no Guide: its own Next button moves on.
+    const sceneNext = page.getByTestId('scene-next');
+    await page.locator('[data-testid="guide"], [data-testid="scene-next"]').first().waitFor({ state: 'visible', timeout: 15_000 });
+    if (await sceneNext.isVisible().catch(() => false)) {
+      await sceneNext.click();
+      await expect.poll(() => currentStep(page), { timeout: 15_000 }).not.toBe(step).catch(() => {});
+      continue;
+    }
     const next = g.getByRole('button', { name: /^Next/ });
     const skip = g.getByRole('button', { name: /^Skip/ });
     // Bounded: a button re-rendered between the check and the click must not hang the test; the loop re-reads the step.

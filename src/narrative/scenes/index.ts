@@ -1,10 +1,12 @@
 import type { ComponentType } from 'react';
 import type { SceneId } from '../../tour/engine/types';
 import { Signal } from './Signal';
-import { Real } from './Real';
-import { Why } from './Why';
+import { Jobs } from './Jobs';
+import { Built } from './Built';
 import { Platform } from './Platform';
-import { Production } from './Production';
+import { Hood } from './Hood';
+import { Trust } from './Trust';
+import { Future } from './Future';
 import { ScorecardScene } from './Scorecard';
 
 export type SceneDef = {
@@ -17,9 +19,11 @@ export type SceneDef = {
 
 export const SCENES: Record<SceneId, SceneDef> = {
   signal: { component: Signal },
-  real: { component: Real },
-  why: { component: Why },
+  jobs: { component: Jobs },
+  built: { component: Built },
   platform: { component: Platform, exitLabel: 'Open the product' },
-  production: { component: Production, exitLabel: 'Scorecard' },
+  hood: { component: Hood },
+  trust: { component: Trust },
+  future: { component: Future, exitLabel: 'Scorecard' },
   scorecard: { component: ScorecardScene, bare: true },
 };

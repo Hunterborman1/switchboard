@@ -16,7 +16,7 @@ export const PATH_LABELS: Record<TourPath, string> = {
 };
 
 /** The ten chapters: three to set up, five in the real product, two to close. */
-export type ChapterId = 'signal' | 'real' | 'why' | 'call' | 'review' | 'routing' | 'patterns' | 'operate' | 'production' | 'scorecard';
+export type ChapterId = 'signal' | 'jobs' | 'built' | 'call' | 'review' | 'routing' | 'patterns' | 'operate' | 'trust' | 'future';
 
 export type Chapter = {
   id: ChapterId;
@@ -30,7 +30,7 @@ export type Chapter = {
   targetSec: number;
 };
 
-export type SceneId = 'signal' | 'real' | 'why' | 'platform' | 'production' | 'scorecard';
+export type SceneId = 'signal' | 'jobs' | 'built' | 'platform' | 'hood' | 'trust' | 'future' | 'scorecard';
 
 export type Counters = {
   approvals: number;

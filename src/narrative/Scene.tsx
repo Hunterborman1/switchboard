@@ -57,7 +57,7 @@ export function SceneTopBar({ label, group, index, total }: { label?: string; gr
       <span className="n-topbar__spacer" />
       {index != null && total != null ? (
         <span className="n-topbar__count" aria-label={`Chapter ${index} of ${total}`}>
-          {index} of {total}
+          Chapter {index} of {total}
         </span>
       ) : null}
       <SceneToolsSlot />
