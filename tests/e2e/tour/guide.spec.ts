@@ -11,15 +11,30 @@ async function box(l: Locator) {
 }
 
 test.describe('the docked Guide', () => {
-  test('sits along the bottom of the content column, never over the sidebar', async ({ page }) => {
+  test('spans the full width at the bottom, and the sidebar ends above it', async ({ page }) => {
     test.skip(phone(page), 'phones use the bottom sheet');
     await go(page, '/app/overview');
     const g = await box(guide(page));
     const vp = page.viewportSize()!;
-    const main = await box(page.locator('#main-content'));
+    expect(Math.round(g.x)).toBe(0);
+    expect(Math.round(g.width)).toBe(vp.width);
     expect(Math.round(g.y + g.height)).toBe(vp.height);
-    expect(Math.round(g.x)).toBe(Math.round(main.x));
-    expect(Math.round(g.x + g.width)).toBe(vp.width);
+    const side = await box(page.locator('.ds-sidebar'));
+    expect(side.y + side.height).toBeLessThanOrEqual(g.y + 1);
+    await expect(page.getByTestId('guide-tag')).toBeVisible();
+  });
+
+  test('the target ring is green and animated, and the control keeps no second outline', async ({ page }) => {
+    await go(page, '/app/review?tour=review.approve');
+    await expectGuideOn(page, 'review.approve');
+    const ring = page.getByTestId('guide-ring');
+    await expect(ring).toBeVisible();
+    const border = await ring.evaluate((el) => getComputedStyle(el).borderTopColor);
+    expect(border).toBe('rgb(0, 132, 99)');
+    const pulse = await ring.evaluate((el) => getComputedStyle(el, '::after').animationName);
+    expect(pulse).toBe('t-ring-pulse');
+    const outline = await page.locator('[data-tour="review.approve"]').first().evaluate((el) => getComputedStyle(el).outlineStyle);
+    expect(outline).toBe('none');
   });
 
   test('the review decision bar rides above it, fully visible', async ({ page }) => {
