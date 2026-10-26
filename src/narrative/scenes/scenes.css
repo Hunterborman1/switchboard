@@ -1194,3 +1194,312 @@
     grid-column: 2;
   }
 }
+
+/* ---------------------------------------------------------------- jobs to be done (chapter 2) */
+.sc-jobs {
+  gap: clamp(16px, 2.4vh, 24px);
+}
+.sc-jobs__people {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-jobs__person {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.sc-jobs__person p {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 19px;
+  color: var(--text-secondary);
+}
+.sc-jobs__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.sc-jobs__who b {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  color: var(--text);
+}
+.sc-jobs__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
+.sc-jobs__core {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  font-size: var(--text-md);
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+.sc-jobs__core b {
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+.sc-jobs__flows {
+  display: grid;
+  gap: var(--space-3);
+}
+.sc-jobs__flow {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.sc-jobs__flow[data-tone='tomorrow'] {
+  border-color: var(--accent-line);
+}
+.sc-jobs__flowlabel {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+}
+.sc-jobs__flow[data-tone='tomorrow'] .sc-jobs__flowlabel {
+  color: var(--accent-text);
+}
+.sc-jobs__steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-jobs__steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.sc-jobs__step {
+  padding: 6px var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text);
+}
+.sc-jobs__flow[data-tone='tomorrow'] .sc-jobs__step {
+  border-color: var(--accent-line);
+  background: var(--accent-subtle);
+}
+.sc-jobs__flow[data-tone='today'] li[data-last='true'] .sc-jobs__step {
+  border-color: transparent;
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+.sc-jobs__arrow {
+  flex: none;
+  color: var(--text-tertiary);
+}
+@container scene (max-width: 1000px) {
+  .sc-jobs__people {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container scene (max-width: 640px) {
+  .sc-jobs__people {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-jobs__flow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}
+
+/* ---------------------------------------------------------------- what I built (chapter 3) */
+.sc-built,
+.sc-hood,
+.sc-trust,
+.sc-future {
+  gap: clamp(20px, 3vh, 32px);
+}
+.sc-built__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(4, auto);
+  gap: 0 var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Subgrid: the four parts of every card line up across the row (the verdicts start together). */
+.sc-built__option {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.sc-built__option[data-chosen='true'] {
+  border-color: var(--accent);
+}
+.sc-built__ohead,
+.sc-built__cardhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.sc-built__onum {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+.sc-built__oname {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 22px;
+  color: var(--text);
+}
+.sc-built__verdict {
+  margin: var(--space-1) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-md);
+  line-height: 20px;
+  color: var(--text);
+}
+.sc-built__later {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text-tertiary);
+}
+.sc-built__option[data-chosen='true'] .sc-built__later {
+  color: var(--accent-text);
+  font-weight: var(--weight-medium);
+}
+/* A list of short checks, and a list of "name, then why" items: used by chapters 3, 8, 9 and 10. */
+.sc-built__checks {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-built__checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--text-md);
+  line-height: 20px;
+  color: var(--text);
+}
+.sc-built__checks .n-check {
+  flex: none;
+  margin-top: 2px;
+}
+.sc-built__how {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-built__how li {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border);
+}
+.sc-built__how li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.sc-built__how b {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  color: var(--text);
+}
+.sc-built__how span {
+  font-size: var(--text-sm);
+  line-height: 19px;
+  color: var(--text-secondary);
+}
+@container scene (max-width: 1000px) {
+  .sc-built__options {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    gap: var(--space-3);
+  }
+  .sc-built__option {
+    grid-row: auto;
+    grid-template-rows: none;
+  }
+}
+
+/* ---------------------------------------------------------------- under the hood, trust, the future (chapters 8 to 10) */
+.sc-hood__list {
+  gap: var(--space-2);
+}
+.sc-future__block {
+  display: grid;
+  gap: 4px;
+}
+.sc-future__block > b {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  color: var(--text);
+}
+.sc-future__cost {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  color: var(--accent-text);
+}
+
+/* Chapter 3 holds the most: tighter spacing keeps it on one screen at 1440×900. */
+.sc-built {
+  gap: var(--space-4);
+}
+.sc-built .sc-prod__col {
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+}
+.sc-built .sc-built__option {
+  padding: var(--space-3) var(--space-5);
+}
+.sc-built .sc-built__how li {
+  gap: 2px;
+  padding: var(--space-2) 0;
+}
+.sc-built .sc-built__checks {
+  gap: 4px;
+}

@@ -59,7 +59,6 @@ export function Built() {
             </ButtonLink>
           </>
         }
-        line="All of the AI is built and works. The connections and the data are simulated, and every screen says so."
       />
       <ol className="sc-built__options" data-testid="built-options">
         {OPTIONS.map((o, i) => (
