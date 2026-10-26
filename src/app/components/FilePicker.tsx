@@ -1,47 +1,68 @@
 /**
- * The file picker: a calm, OS-style "Open" dialog over the synthetic call library
- * (GET /library). Folders come from LibraryFile.folder ("Calls/Week 43"). Mess levels are
- * never shown here — the choice should feel real; the New call page reveals them after.
+ * The library picker: conversations from the workspace's connected tools (GET /library), in a
+ * two-pane dialog (folders, then files with a preview of the selected one). Folders come from
+ * LibraryFile.folder ("Calls/Week 43"); each file shows the tool it came from. Mess levels are
+ * never shown here, so the choice feels real; the New conversation page reveals them after.
  * The walkthrough's suggested file gets a quiet marker only while the tour is active.
  *
- * Keyboard: ↑/↓ move, Enter opens, Esc cancels, Tab is trapped in the dialog and focus
- * returns to the opener. Emits picker.opened / picker.closed / file.selected.
+ * Built on the design system's dialog (same scrim, panel, header and footer as Modal) with its
+ * own body. Keyboard: ↑/↓ move, Home/End jump, Enter opens, Esc cancels, Tab stays inside.
+ * Emits picker.opened / picker.closed / file.selected.
  */
+import { FloatingFocusManager, FloatingPortal, useDismiss, useFloating, useInteractions, useRole } from '@floating-ui/react';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { createPortal } from 'react-dom';
 import type { LibraryFile } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
+import { Badge, Button, ConnectorMark, cx, EmptyState, IconButton, KeyValue, SearchInput, Select, Skeleton, Tooltip } from '../../ds';
+import { IconAlertCircle, IconChevronRight, IconClock, IconFileText, IconFolder, IconRefresh, IconSearch, IconSparkle, IconX } from '../../ds/icons';
 import { useLibrary, useLibraryFile } from '../api/hooks';
-import { bytes } from '../lib/labels';
+import { bytes, dateShort, dateTime } from '../lib/labels';
+import { previewLines } from '../lib/preview';
+import { librarySource } from '../lib/source';
 import { useWorldIndex } from '../lib/world';
 import { useTourState } from '../state';
-import {
-  FileGlyph,
-  IconChevronRight,
-  IconClock,
-  IconFolder,
-  IconFolderOpen,
-  IconLibrary,
-  IconSearch,
-  IconSortAsc,
-  IconSortDesc,
-  IconSpark,
-  IconX,
-} from './icons';
+import { sourceLabel } from './domain';
 import styles from './FilePicker.module.css';
 
-type SortKey = 'name' | 'size' | 'modified';
+type SortKey = 'newest' | 'oldest' | 'name' | 'name_desc' | 'largest';
+const SORTS: { value: SortKey; label: string }[] = [
+  { value: 'newest', label: 'Newest first' },
+  { value: 'oldest', label: 'Oldest first' },
+  { value: 'name', label: 'Name, A to Z' },
+  { value: 'name_desc', label: 'Name, Z to A' },
+  { value: 'largest', label: 'Largest first' },
+];
 const RECENT = '__recent__';
-const KIND_LABEL: Record<string, string> = {
-  vtt: 'WebVTT transcript',
-  txt: 'Plain-text transcript',
-  md: 'Markdown notes',
-  eml: 'Email message',
-  chat: 'Chat export',
-};
+const ROOT_ORDER = ['Calls', 'Notes', 'Email', 'Slack exports', 'Exports'];
 
-type Tree = { root: string; children: { path: string; name: string; count: number }[]; count: number }[];
+/** What the file is, in a word or two. */
+export function libraryKind(f: Pick<LibraryFile, 'format' | 'folder'>): string {
+  switch (f.format) {
+    case 'vtt':
+    case 'srt':
+      return 'Transcript';
+    case 'md':
+      return 'Notes';
+    case 'eml':
+      return 'Email';
+    case 'chat':
+      return 'Chat export';
+    case 'doc':
+      return 'Document';
+    default:
+      return f.folder.startsWith('Notes') ? 'Notes' : 'Transcript';
+  }
+}
+
+/** "Transcript from Gong", "Email from Gmail", "Uploaded transcript". */
+export function libraryOrigin(f: Pick<LibraryFile, 'format' | 'folder' | 'filename'>): string {
+  const kind = libraryKind(f);
+  const src = librarySource(f);
+  return src === 'upload' ? `Uploaded ${kind.toLowerCase()}` : `${kind} from ${sourceLabel(src)}`;
+}
+
+type Tree = { root: string; count: number; children: { path: string; name: string; count: number }[] }[];
 
 function buildTree(files: LibraryFile[]): Tree {
   const roots = new Map<string, Map<string, number>>();
@@ -52,9 +73,9 @@ function buildTree(files: LibraryFile[]): Tree {
     m.set(sub, (m.get(sub) ?? 0) + 1);
     roots.set(root, m);
   }
-  const order = ['Calls', 'Notes', 'Email', 'Exports'];
+  const rank = (r: string) => (ROOT_ORDER.includes(r) ? ROOT_ORDER.indexOf(r) : 99);
   return [...roots.entries()]
-    .sort((a, b) => (order.indexOf(a[0]) + 99) % 99 - ((order.indexOf(b[0]) + 99) % 99) || a[0].localeCompare(b[0]))
+    .sort((a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]))
     .map(([root, subs]) => ({
       root,
       count: [...subs.values()].reduce((x, y) => x + y, 0),
@@ -65,9 +86,9 @@ function buildTree(files: LibraryFile[]): Tree {
     }));
 }
 
-function fmtModified(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+function portalRoot(): HTMLElement | null {
+  if (typeof document === 'undefined') return null;
+  return (document.querySelector('[data-ds-portal]') as HTMLElement | null) ?? document.body;
 }
 
 export function FilePicker({
@@ -86,9 +107,8 @@ export function FilePicker({
   const { tourActive } = useTourState();
   const world = useWorldIndex();
   const titleId = useId();
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const descId = useId();
   const listRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const recommended = useMemo(() => files?.find((f) => f.recommended) ?? null, [files]);
   const tree = useMemo(() => buildTree(files ?? []), [files]);
@@ -100,25 +120,9 @@ export function FilePicker({
 
   const [folder, setFolder] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState<{ key: SortKey; dir: 'asc' | 'desc' }>({ key: 'modified', dir: 'desc' });
+  const [sort, setSort] = useState<SortKey>('newest');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeFolder = folder ?? defaultFolder;
-
-  // open / close lifecycle
-  useEffect(() => {
-    if (!open) return;
-    emit({ name: 'picker.opened' });
-    setQuery('');
-    setFolder(null);
-    setSelectedId(null);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const t = window.setTimeout(() => listRef.current?.focus(), 30);
-    return () => {
-      window.clearTimeout(t);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [open]);
 
   const close = useCallback(
     (reason: 'cancel' | 'open') => {
@@ -129,24 +133,50 @@ export function FilePicker({
     [onClose, returnFocus],
   );
 
+  const { refs, context } = useFloating({ open, onOpenChange: (o) => !o && close('cancel') });
+  const dismiss = useDismiss(context, { outsidePress: false, escapeKey: true });
+  const role = useRole(context, { role: 'dialog' });
+  const { getFloatingProps } = useInteractions([dismiss, role]);
+
+  // open: announce, reset, lock the page behind
+  useEffect(() => {
+    if (!open) return;
+    emit({ name: 'picker.opened' });
+    setQuery('');
+    setFolder(null);
+    setSelectedId(null);
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.documentElement.style.overflow = prev;
+    };
+  }, [open]);
+
   const visible = useMemo(() => {
     const all = files ?? [];
     const q = query.trim().toLowerCase();
-    let list = q
-      ? all.filter((f) => `${f.filename} ${f.folder} ${world.accountName(f.accountId)} ${f.callType} ${f.callId} ${f.id}`.toLowerCase().includes(q))
+    const list = q
+      ? all.filter((f) => `${f.filename} ${f.folder} ${world.accountName(f.accountId)} ${f.callType} ${f.callId} ${f.id} ${libraryOrigin(f)}`.toLowerCase().includes(q))
       : activeFolder === RECENT
-        ? [...all].sort((a, b) => b.modifiedAt.localeCompare(a.modifiedAt)).slice(0, 10)
+        ? [...all].sort((a, b) => b.modifiedAt.localeCompare(a.modifiedAt)).slice(0, 12)
         : all.filter((f) => f.folder === activeFolder || f.folder.startsWith(`${activeFolder}/`));
-    const dir = sort.dir === 'asc' ? 1 : -1;
-    list = [...list].sort((a, b) => {
-      if (sort.key === 'name') return a.filename.localeCompare(b.filename) * dir;
-      if (sort.key === 'size') return (a.sizeBytes - b.sizeBytes) * dir;
-      return a.modifiedAt.localeCompare(b.modifiedAt) * dir;
+    return [...list].sort((a, b) => {
+      switch (sort) {
+        case 'oldest':
+          return a.modifiedAt.localeCompare(b.modifiedAt);
+        case 'name':
+          return a.filename.localeCompare(b.filename);
+        case 'name_desc':
+          return b.filename.localeCompare(a.filename);
+        case 'largest':
+          return b.sizeBytes - a.sizeBytes;
+        default:
+          return b.modifiedAt.localeCompare(a.modifiedAt);
+      }
     });
-    return list;
   }, [files, query, activeFolder, sort, world]);
 
-  const selected = useMemo(() => visible.find((f) => f.id === selectedId) ?? (files ?? []).find((f) => f.id === selectedId) ?? null, [visible, files, selectedId]);
+  const selected = useMemo(() => (files ?? []).find((f) => f.id === selectedId) ?? null, [files, selectedId]);
 
   const openFile = useCallback(
     (f: LibraryFile | null) => {
@@ -158,25 +188,9 @@ export function FilePicker({
     [onOpenFile, close],
   );
 
-  // Esc + focus trap
-  const onDialogKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      close('cancel');
-      return;
-    }
-    if (e.key !== 'Tab') return;
-    const nodes = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input, [tabindex="0"]') ?? []).filter((n) => n.offsetParent !== null);
-    const first = nodes[0];
-    const last = nodes[nodes.length - 1];
-    if (!first || !last) return;
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
+  const select = (f: LibraryFile) => {
+    setSelectedId(f.id);
+    listRef.current?.querySelector<HTMLElement>(`[data-file="${f.id}"]`)?.scrollIntoView({ block: 'nearest' });
   };
 
   const onListKey = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -185,83 +199,59 @@ export function FilePicker({
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       const next = e.key === 'ArrowDown' ? Math.min(visible.length - 1, idx + 1) : Math.max(0, idx < 0 ? 0 : idx - 1);
-      const f = visible[next]!;
-      setSelectedId(f.id);
-      listRef.current?.querySelector<HTMLElement>(`[data-file="${f.id}"]`)?.scrollIntoView({ block: 'nearest' });
+      select(visible[next]!);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      select(visible[0]!);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      select(visible[visible.length - 1]!);
     } else if (e.key === 'Enter' && selected) {
       e.preventDefault();
       openFile(selected);
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      setSelectedId(visible[0]!.id);
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      setSelectedId(visible[visible.length - 1]!.id);
     }
   };
 
-  const toggleSort = (key: SortKey) => setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: key === 'name' ? 'asc' : 'desc' }));
+  const goFolder = (path: string) => {
+    setQuery('');
+    setFolder(path);
+  };
 
   if (!open) return null;
 
-  const crumbs = query ? ['Library', `Search “${query}”`] : activeFolder === RECENT ? ['Library', 'Recent'] : ['Library', ...activeFolder.split('/')];
-  const sortIcon = (k: SortKey) => (sort.key === k ? sort.dir === 'asc' ? <IconSortAsc size={14} /> : <IconSortDesc size={14} /> : null);
+  const isActive = (path: string) => !query && activeFolder === path;
+  const location = query ? [`Results for “${query.trim()}”`] : activeFolder === RECENT ? ['Recent'] : activeFolder.split('/');
 
-  // Portal to the product root: the page column animates in with a transform, which would
-  // otherwise become the containing block for this fixed overlay and clip it to the column.
-  const host = (typeof document !== 'undefined' && document.querySelector<HTMLElement>('.sl-app')) || document.body;
-  return createPortal(
-    <div className={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && close('cancel')}>
-      <div
-        ref={dialogRef}
-        className={styles.dialog}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        onKeyDown={onDialogKey}
-        {...tourAnchor('picker.dialog')}
-      >
-        {/* title bar */}
-        <div className={styles.titlebar}>
-          <span className={styles.titleIcon} aria-hidden="true">
-            <IconFolderOpen size={16} />
-          </span>
-          <h2 id={titleId} className={styles.title}>
-            Open a call file
-          </h2>
-          <button type="button" className={styles.close} onClick={() => close('cancel')} aria-label="Cancel and close">
-            <IconX size={16} />
-          </button>
-        </div>
+  return (
+    <FloatingPortal root={portalRoot()}>
+      <div className="ds-scrim" onClick={() => close('cancel')} aria-hidden="true" />
+      <FloatingFocusManager context={context} initialFocus={listRef} returnFocus={false}>
+        <div
+          ref={refs.setFloating}
+          className={cx('ds-dialog', styles.dialog)}
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={descId}
+          {...tourAnchor('picker.dialog')}
+          {...getFloatingProps()}
+        >
+          <div className="ds-dialog__header">
+            <div className={styles.heading}>
+              <h2 id={titleId} className="ds-dialog__title">
+                Choose a conversation
+              </h2>
+              <p id={descId} className="ds-dialog__description">
+                Recorded calls, notes, email threads and chat exports from your connected tools.
+              </p>
+            </div>
+            <IconButton className="ds-dialog__close" size="sm" label="Close" icon={<IconX />} tooltip={false} onClick={() => close('cancel')} />
+          </div>
 
-        {/* toolbar: breadcrumb + search */}
-        <div className={styles.toolbar}>
-          <nav className={styles.crumbs} aria-label="Location">
-            <IconLibrary size={15} />
-            {crumbs.map((c, i) => (
-              <span key={`${c}-${i}`} className={styles.crumb}>
-                {i > 0 ? <IconChevronRight size={12} /> : null}
-                {i === 0 && (query || activeFolder !== RECENT) ? (
-                  <button type="button" className={styles.crumbBtn} onClick={() => { setQuery(''); setFolder(RECENT); }}>
-                    {c}
-                  </button>
-                ) : i > 0 && i < crumbs.length - 1 && !query ? (
-                  <button type="button" className={styles.crumbBtn} onClick={() => setFolder(crumbs.slice(1, i + 1).join('/'))}>
-                    {c}
-                  </button>
-                ) : (
-                  <span className={i === crumbs.length - 1 ? styles.crumbCurrent : undefined}>{c}</span>
-                )}
-              </span>
-            ))}
-          </nav>
-          <label className={styles.search}>
-            <IconSearch size={15} />
-            <span className="sl-sr-only">Search the library</span>
-            <input
-              ref={searchRef}
-              type="search"
-              placeholder="Search library"
+          <div className={styles.searchRow}>
+            <SearchInput
+              width="100%"
+              placeholder="Search by name, account or call ID"
+              aria-label="Search conversations"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -272,247 +262,210 @@ export function FilePicker({
                 }
               }}
             />
-          </label>
-        </div>
-
-        <div className={styles.body}>
-          {/* sidebar */}
-          <nav className={styles.sidebar} aria-label="Folders" {...tourAnchor('picker.folder')}>
-            <div className={styles.sideLabel}>Signal Loop library</div>
-            <button
-              type="button"
-              className={`${styles.folder} ${activeFolder === RECENT && !query ? styles.folderActive : ''}`}
-              onClick={() => { setQuery(''); setFolder(RECENT); }}
-              aria-current={activeFolder === RECENT && !query ? 'true' : undefined}
-            >
-              <IconClock size={15} />
-              <span className={styles.folderName}>Recent</span>
-            </button>
-            {tree.map((root) => (
-              <div key={root.root} className={styles.folderGroup}>
-                <button
-                  type="button"
-                  className={`${styles.folder} ${activeFolder === root.root && !query ? styles.folderActive : ''}`}
-                  onClick={() => { setQuery(''); setFolder(root.root); }}
-                  aria-current={activeFolder === root.root && !query ? 'true' : undefined}
-                >
-                  {activeFolder.startsWith(root.root) && !query ? <IconFolderOpen size={15} /> : <IconFolder size={15} />}
-                  <span className={styles.folderName}>{root.root}</span>
-                  <span className={styles.folderCount}>{root.count}</span>
-                </button>
-                {root.children.map((c) => (
-                  <button
-                    key={c.path}
-                    type="button"
-                    className={`${styles.folder} ${styles.folderChild} ${activeFolder === c.path && !query ? styles.folderActive : ''}`}
-                    onClick={() => { setQuery(''); setFolder(c.path); }}
-                    aria-current={activeFolder === c.path && !query ? 'true' : undefined}
-                  >
-                    {activeFolder === c.path && !query ? <IconFolderOpen size={15} /> : <IconFolder size={15} />}
-                    <span className={styles.folderName}>{c.name}</span>
-                    <span className={styles.folderCount}>{c.count}</span>
-                  </button>
-                ))}
-              </div>
-            ))}
-          </nav>
-
-          {/* list */}
-          <div className={styles.listPane}>
-            <div className={styles.listHead} role="presentation">
-              <button type="button" className={styles.colName} onClick={() => toggleSort('name')} aria-label={`Sort by name${sort.key === 'name' ? ` (${sort.dir}ending)` : ''}`}>
-                Name {sortIcon('name')}
-              </button>
-              <button type="button" className={styles.colSize} onClick={() => toggleSort('size')} aria-label={`Sort by size${sort.key === 'size' ? ` (${sort.dir}ending)` : ''}`}>
-                Size {sortIcon('size')}
-              </button>
-              <button type="button" className={styles.colDate} onClick={() => toggleSort('modified')} aria-label={`Sort by date modified${sort.key === 'modified' ? ` (${sort.dir}ending)` : ''}`}>
-                Modified {sortIcon('modified')}
-              </button>
-            </div>
-            <div
-              ref={listRef}
-              className={styles.list}
-              role="listbox"
-              aria-label={`Files in ${crumbs[crumbs.length - 1]}`}
-              aria-activedescendant={selectedId ? `pick-${selectedId}` : undefined}
-              tabIndex={0}
-              onKeyDown={onListKey}
-            >
-              {loading ? (
-                Array.from({ length: 7 }, (_, i) => (
-                  <div key={i} className={styles.skelRow} aria-hidden="true">
-                    <span className={styles.skelIcon} />
-                    <span className={styles.skelBar} style={{ width: `${60 - i * 4}%` }} />
-                  </div>
-                ))
-              ) : error ? (
-                <div className={styles.listEmpty} role="alert">
-                  <strong>Could not read the library.</strong>
-                  <span>{error.message}</span>
-                  <button type="button" className="sl-linkbtn" onClick={() => void refresh()}>
-                    Retry
-                  </button>
-                </div>
-              ) : visible.length === 0 ? (
-                <div className={styles.listEmpty} role="status">
-                  <strong>{query ? 'No files match' : 'This folder is empty'}</strong>
-                  <span>{query ? 'Try an account name, a call type or a date like 2026-10-21.' : 'Pick another folder on the left.'}</span>
-                </div>
-              ) : (
-                visible.map((f) => {
-                  const isSel = f.id === selectedId;
-                  const suggested = tourActive && f.recommended;
-                  return (
-                    <div
-                      key={f.id}
-                      id={`pick-${f.id}`}
-                      data-file={f.id}
-                      role="option"
-                      aria-selected={isSel}
-                      className={`${styles.row} ${isSel ? styles.rowSelected : ''} ${suggested ? styles.rowSuggested : ''}`}
-                      onClick={() => setSelectedId(f.id)}
-                      onDoubleClick={() => openFile(f)}
-                      {...(f.recommended ? tourAnchor('picker.recommended') : {})}
-                    >
-                      <span className={styles.cellName}>
-                        <FileGlyph format={f.format} size={26} />
-                        <span className={styles.nameText}>
-                          <span className={styles.fileName}>{f.filename}</span>
-                          <span className={styles.fileMeta}>
-                            {query ? `${f.folder} · ` : ''}
-                            {KIND_LABEL[f.format] ?? f.format}
-                            {f.edgeKind === 'duplicate' ? <b className={styles.dupTag}> · Re-upload (same call)</b> : null}
-                            <span className={styles.metaMobile}> · {bytes(f.sizeBytes)} · {fmtModified(f.modifiedAt)}</span>
-                          </span>
-                          {suggested ? (
-                            <span className={styles.suggest}>
-                              <IconSpark size={12} /> Suggested for the walkthrough
-                            </span>
-                          ) : null}
-                        </span>
-                      </span>
-                      <span className={styles.cellSize}>{bytes(f.sizeBytes)}</span>
-                      <span className={styles.cellDate}>{fmtModified(f.modifiedAt)}</span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            <div className={styles.statusbar} aria-live="polite">
-              {loading ? 'Reading library…' : `${visible.length} item${visible.length === 1 ? '' : 's'}${selected ? ' · 1 selected' : ''}`}
-            </div>
           </div>
 
-          {/* preview */}
-          <Preview file={selected} accountName={selected ? world.accountName(selected.accountId) : ''} />
-        </div>
+          <div className={styles.body}>
+            <nav className={styles.folders} aria-label="Folders" {...tourAnchor('picker.folder')}>
+              <button type="button" className={styles.folder} aria-current={isActive(RECENT) ? 'true' : undefined} onClick={() => goFolder(RECENT)}>
+                <IconClock size={16} />
+                <span className={styles.folderName}>Recent</span>
+              </button>
+              {tree.map((root) => (
+                <div key={root.root} className={styles.folderGroup}>
+                  <button type="button" className={styles.folder} aria-current={isActive(root.root) ? 'true' : undefined} onClick={() => goFolder(root.root)}>
+                    <IconFolder size={16} />
+                    <span className={styles.folderName}>{root.root}</span>
+                    <span className={styles.folderCount}>{root.count}</span>
+                  </button>
+                  {root.children.map((c) => (
+                    <button
+                      key={c.path}
+                      type="button"
+                      className={cx(styles.folder, styles.folderChild)}
+                      aria-current={isActive(c.path) ? 'true' : undefined}
+                      onClick={() => goFolder(c.path)}
+                    >
+                      <span className={styles.folderName}>{c.name}</span>
+                      <span className={styles.folderCount}>{c.count}</span>
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </nav>
 
-        {/* footer */}
-        <div className={styles.footer}>
-          <label className={styles.fileField}>
-            <span className={styles.fileFieldLabel}>File name</span>
-            <input readOnly value={selected?.filename ?? ''} placeholder="Select a file" aria-label="Selected file name" tabIndex={-1} />
-          </label>
-          <span className={styles.typeFilter} aria-hidden="true">
-            Call files (.vtt .txt .md .eml .chat)
-          </span>
-          <div className={styles.footerBtns}>
-            <button type="button" className={styles.btnSecondary} onClick={() => close('cancel')}>
+            <div className={styles.listPane}>
+              <div className={styles.listHead}>
+                <nav className={styles.location} aria-label="Location">
+                  {location.map((c, i) => (
+                    <span key={`${c}-${i}`} className={styles.crumb}>
+                      {i > 0 ? <IconChevronRight size={14} className={styles.crumbSep} /> : null}
+                      {i < location.length - 1 ? (
+                        <button type="button" className={styles.crumbButton} onClick={() => goFolder(location.slice(0, i + 1).join('/'))}>
+                          {c}
+                        </button>
+                      ) : (
+                        <span className={styles.crumbCurrent}>{c}</span>
+                      )}
+                    </span>
+                  ))}
+                </nav>
+                <Select selectSize="sm" aria-label="Sort" className={styles.sort} value={sort} onChange={(e) => setSort(e.target.value as SortKey)} options={SORTS} />
+              </div>
+              <div
+                ref={listRef}
+                className={styles.list}
+                role="listbox"
+                aria-label={query ? 'Search results' : `Conversations in ${location[location.length - 1]}`}
+                aria-activedescendant={selectedId && visible.some((f) => f.id === selectedId) ? `pick-${selectedId}` : undefined}
+                aria-busy={loading || undefined}
+                tabIndex={0}
+                onKeyDown={onListKey}
+              >
+                {loading ? (
+                  Array.from({ length: 7 }, (_, i) => (
+                    <div key={i} className={styles.skelRow} aria-hidden="true">
+                      <Skeleton width={24} height={24} radius={6} />
+                      <span className={styles.skelText}>
+                        <Skeleton width={`${72 - i * 5}%`} height={10} />
+                        <Skeleton width="38%" height={8} />
+                      </span>
+                    </div>
+                  ))
+                ) : error ? (
+                  <EmptyState
+                    compact
+                    icon={<IconAlertCircle />}
+                    title="Couldn’t load the library"
+                    description={error.message}
+                    actions={
+                      <Button size="sm" icon={<IconRefresh size={14} />} onClick={() => void refresh()}>
+                        Try again
+                      </Button>
+                    }
+                  />
+                ) : visible.length === 0 ? (
+                  <EmptyState
+                    compact
+                    icon={query ? <IconSearch /> : <IconFolder />}
+                    title={query ? 'No conversations match' : 'This folder is empty'}
+                    description={query ? 'Try an account name, a call type or a call ID like C-1042.' : 'Choose another folder.'}
+                  />
+                ) : (
+                  visible.map((f) => {
+                    const isSel = f.id === selectedId;
+                    const suggested = tourActive && f.recommended;
+                    return (
+                      <div
+                        key={f.id}
+                        id={`pick-${f.id}`}
+                        data-file={f.id}
+                        role="option"
+                        aria-selected={isSel}
+                        className={styles.row}
+                        onClick={() => setSelectedId(f.id)}
+                        onDoubleClick={() => openFile(f)}
+                        {...(f.recommended ? tourAnchor('picker.recommended') : {})}
+                      >
+                        <ConnectorMark id={librarySource(f)} size={24} />
+                        <span className={styles.rowText}>
+                          <span className={styles.rowName} title={f.filename}>
+                            {f.filename}
+                          </span>
+                          <span className={styles.rowMeta}>
+                            <span className={styles.rowOrigin}>{libraryOrigin(f)}</span>
+                            {f.edgeKind === 'duplicate' ? <Badge>Re-upload</Badge> : null}
+                            {suggested ? (
+                              <Badge tone="accent">
+                                <IconSparkle size={12} />
+                                Suggested for the walkthrough
+                              </Badge>
+                            ) : null}
+                          </span>
+                        </span>
+                        <span className={styles.rowDate}>{dateShort(f.modifiedAt)}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <Preview file={selected} accountName={selected?.accountId ? world.accountName(selected.accountId) : null} />
+          </div>
+
+          <div className="ds-dialog__footer">
+            <span className="ds-dialog__footer-start" aria-live="polite">
+              {loading ? 'Loading the library' : `${visible.length} conversation${visible.length === 1 ? '' : 's'}`}
+            </span>
+            <Button variant="ghost" onClick={() => close('cancel')}>
               Cancel
-            </button>
-            <button
-              type="button"
-              className={styles.btnPrimary}
-              disabled={!selected}
-              title={selected ? `Open ${selected.filename}` : 'Select a file first'}
-              aria-describedby={!selected ? `${titleId}-why` : undefined}
-              onClick={() => openFile(selected)}
-              {...tourAnchor('picker.open')}
-            >
-              Open
-            </button>
+            </Button>
+            <Tooltip label="Select a conversation first" disabled={!!selected}>
+              <span className={styles.openWrap} tabIndex={selected ? undefined : 0}>
+                <Button variant="primary" disabled={!selected} aria-describedby={selected ? undefined : `${titleId}-why`} onClick={() => openFile(selected)} {...tourAnchor('picker.open')}>
+                  Open
+                </Button>
+              </span>
+            </Tooltip>
             {!selected ? (
-              <span id={`${titleId}-why`} className="sl-sr-only">
-                Disabled until a file is selected
+              <span id={`${titleId}-why`} className="ds-sr-only">
+                Disabled until a conversation is selected
               </span>
             ) : null}
           </div>
         </div>
-      </div>
-    </div>,
-    host,
+      </FloatingFocusManager>
+    </FloatingPortal>
   );
 }
 
-function Preview({ file, accountName }: { file: LibraryFile | null; accountName: string }) {
+function Preview({ file, accountName }: { file: LibraryFile | null; accountName: string | null }) {
   const { data, loading, error } = useLibraryFile(file?.id ?? null);
-  const lines = useMemo(() => (data?.content ?? '').replace(/\r\n/g, '\n').split('\n').slice(0, 40), [data]);
+  const text = useMemo(() => previewLines(data?.content ?? '', 30, 4000), [data]);
   return (
     <aside className={styles.preview} aria-label="Preview" {...tourAnchor('picker.preview')}>
       {!file ? (
         <div className={styles.previewEmpty}>
-          <IconEyeOff />
-          <span>Select a file to preview its first lines.</span>
+          <span className={styles.previewEmptyIcon}>
+            <IconFileText size={20} />
+          </span>
+          <span>Select a conversation to preview it</span>
         </div>
       ) : (
         <>
           <div className={styles.previewHead}>
-            <FileGlyph format={file.format} size={34} />
-            <div style={{ minWidth: 0 }}>
-              <div className={styles.previewName} title={file.filename}>
-                {file.filename}
-              </div>
-              <div className={styles.previewMeta}>
-                {KIND_LABEL[file.format] ?? file.format} · {bytes(file.sizeBytes)}
-                {file.edgeKind === 'duplicate' ? ' · re-upload of the same call (a duplicate-detection test)' : ''}
-              </div>
+            <ConnectorMark id={librarySource(file)} size={32} />
+            <div className={styles.previewTitle}>
+              <span className={styles.previewName} title={file.filename}>{file.filename}</span>
+              <span className={styles.previewOrigin}>{libraryOrigin(file)}</span>
             </div>
           </div>
-          <dl className={styles.previewFacts}>
-            <dt>Account</dt>
-            <dd>{file.accountId ? accountName : 'Not linked'}</dd>
-            <dt>Call</dt>
-            <dd>
-              <span className="sl-mono">{file.callId}</span> · {file.callType}
-            </dd>
-            <dt>Modified</dt>
-            <dd>{fmtModified(file.modifiedAt)}</dd>
-          </dl>
+          <KeyValue
+            className={styles.previewFacts}
+            items={[
+              { label: 'Account', value: accountName ?? <span className="ds-subtle">Not linked</span> },
+              { label: 'Call', value: <span className={styles.callRef}><span className="ds-mono">{file.callId}</span><span>{file.callType}</span></span> },
+              { label: 'Size', value: bytes(file.sizeBytes) },
+              { label: 'Modified', value: dateTime(file.modifiedAt) },
+              ...(file.edgeKind === 'duplicate' ? [{ label: 'Note', value: 'Re-upload of the same call' }] : []),
+            ]}
+          />
           <div className={styles.previewLabel}>First lines</div>
           <div className={styles.previewText} aria-busy={loading || undefined}>
             {loading ? (
               <div className={styles.previewSkel} aria-hidden="true">
-                {Array.from({ length: 9 }, (_, i) => (
-                  <span key={i} style={{ width: `${92 - ((i * 17) % 40)}%` }} />
+                {Array.from({ length: 8 }, (_, i) => (
+                  <Skeleton key={i} width={`${92 - ((i * 17) % 40)}%`} height={8} />
                 ))}
               </div>
             ) : error ? (
-              <span className={styles.previewErr}>Preview unavailable: {error.message}</span>
+              <span className={styles.previewError}>Preview unavailable: {error.message}</span>
             ) : (
-              <pre>
-                {lines.map((l, i) => (
-                  <span key={i} className={styles.previewLine}>
-                    <span className={styles.lineNo} aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    {l || ' '}
-                  </span>
-                ))}
-              </pre>
+              <p className={styles.previewBody}>{text}</p>
             )}
           </div>
         </>
       )}
     </aside>
-  );
-}
-
-function IconEyeOff() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" aria-hidden="true">
-      <path d="M7 3.5h7.5L19 8v12.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1z" />
-      <path d="M14.5 3.5V8H19M9 12.5h6M9 15.5h6M9 18.5h3.5" />
-    </svg>
   );
 }

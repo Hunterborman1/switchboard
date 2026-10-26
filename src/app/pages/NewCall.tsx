@@ -1,85 +1,121 @@
 /**
- * New call: bring a conversation in from the library (the file picker), paste text, or drop
- * a file. After a library pick the file card reveals its complexity (mess level 1–5) or edge
- * kind — never before, so the choice feels real. "Run pipeline" creates the run and opens
- * the Run view.
+ * New conversation: bring something into Switchboard one of three ways (a connected source,
+ * through the library picker; a file of any common type, converted to text in the browser; or
+ * pasted text), then process it. After a library pick the page reveals the file's complexity
+ * (mess level 1–5) or edge case, never before, so the choice feels real. "Process conversation"
+ * creates the run and opens it. The chosen way in lives in the URL (?via=upload|paste).
  */
-import { useCallback, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import type { EdgeKind, LibraryFile, MessLevel } from '../../shared/contracts';
-import { STEP_KEYS, STEP_LABELS } from '../../shared/contracts';
+import { useCallback, useEffect, useId, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import type { CreateRun, EdgeKind, LibraryFile, MessLevel } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { Textarea } from '../../system/components/forms/Textarea.jsx';
-import { Input } from '../../system/components/forms/Input.jsx';
-import { MonoId } from '../../uis/MonoId';
-import { Banner } from '../../uis/Banner';
+import { Badge, Button, Callout, Card, ConnectorMark, cx, IconButton, Input, KeyValue, Page, PageHeader, Skeleton, Spinner, Tabs, Textarea, Tooltip, useToast } from '../../ds';
+import { IconArrowRight, IconFolder, IconInfo, IconUpload, IconX } from '../../ds/icons';
 import { api, ApiError } from '../api/client';
-import { invalidate, keys, setCached, useLibrary, useSession } from '../api/hooks';
+import { invalidate, keys, setCached, useLibrary, useLibraryFile, useSession } from '../api/hooks';
+import { useDocumentTitle } from '../AppShell';
 import { FilePicker } from '../components/FilePicker';
-import { AppPageHeader, Panel, WhyDisabled, useToast } from '../components/ui';
-import { FileGlyph, IconDrop, IconLibrary, IconPaste, IconShield, IconUpload } from '../components/icons';
-import { bytes, dateTime, STEP_DETAIL, STEP_HELP } from '../lib/labels';
+import { sourceLabel, When } from '../components/domain';
+import { ACCEPT, convertFile, ConvertError, extOf, MAX_TEXT_CHARS, MIN_TEXT_CHARS, pagesLabel, type ConvertResult } from '../lib/convert';
+import { bytes, dateShort } from '../lib/labels';
+import { previewLines } from '../lib/preview';
+import { librarySource } from '../lib/source';
 import { useWorldIndex } from '../lib/world';
-import { usePrefersReducedMotion, useTourState } from '../state';
-import { RelativeTime } from '../../uis/RelativeTime';
+import { useTourState } from '../state';
 import { track } from '../telemetry';
 import styles from './NewCall.module.css';
 
-type Source = 'library' | 'paste' | 'drop';
+type Via = 'library' | 'upload' | 'paste';
+const VIAS: Via[] = ['library', 'upload', 'paste'];
+
+type Upload =
+  | { status: 'reading'; name: string; size: number }
+  | { status: 'ready'; name: string; size: number; result: ConvertResult }
+  | { status: 'error'; name: string; size: number; title: string; message: string };
 
 const LEVEL: Record<MessLevel, { name: string; line: string }> = {
-  1: { name: 'Clean notes', line: 'Structured CSM notes. The baseline: nothing to untangle.' },
-  2: { name: 'Tidy transcript', line: 'Speaker-labelled with timestamps; several insights in one call.' },
-  3: { name: 'Real conversation', line: 'Filler, tangents and small talk; insights span several turns.' },
-  4: { name: 'Messy speech-to-text', line: 'Raw machine transcription: misheard words (“in vocal”), swapped speakers, crosstalk, hedged complaints.' },
-  5: { name: 'Chaos', line: 'Slack shorthand, forwarded threads, partial transcripts; context has to be inferred.' },
+  1: { name: 'Clean notes', line: 'Structured CSM notes. Nothing to untangle.' },
+  2: { name: 'Tidy transcript', line: 'Speaker labels and timestamps, with several insights in one call.' },
+  3: { name: 'Real conversation', line: 'Filler, tangents and small talk. Insights span several turns.' },
+  4: { name: 'Messy speech-to-text', line: 'Misheard words (“in vocal”), swapped speakers, crosstalk and hedged complaints.' },
+  5: { name: 'Chaos', line: 'Slack shorthand, forwarded threads and partial transcripts. Context has to be inferred.' },
 };
 
 const EDGE: Record<EdgeKind, { name: string; line: string }> = {
-  nothing_actionable: { name: 'Nothing actionable', line: 'A friendly check-in. The right answer is zero insights, and the system should say so.' },
-  injection: { name: 'Attempt to manipulate the AI', line: 'Contains instructions aimed at an AI. Watch the screening step treat them as plain text, not commands.' },
-  phi_heavy: { name: 'Healthcare call full of patient details', line: 'Redaction replaces patient details with placeholders before any AI sees the text.' },
-  non_english: { name: 'Not in English', line: 'Screening detects the language; every quote is still checked against the conversation.' },
-  duplicate: { name: 'Duplicate upload', line: 'An exact copy of an earlier file. Signal Loop recognises it and does not process it twice.' },
+  nothing_actionable: { name: 'Nothing actionable', line: 'A friendly check-in. The right answer is no insights, and Switchboard should say so.' },
+  injection: { name: 'Attempt to manipulate the AI', line: 'Contains instructions aimed at an AI. Watch them get treated as plain text, not commands.' },
+  phi_heavy: { name: 'Full of patient details', line: 'Personal and health details are replaced with placeholders before any AI sees the text.' },
+  non_english: { name: 'Not in English', line: 'The language is detected, and every quote is still checked against the conversation.' },
+  duplicate: { name: 'Duplicate upload', line: 'An exact copy of an earlier file. Switchboard recognises it and doesn’t process it twice.' },
 };
 
-const ACCEPT = '.vtt,.txt,.md,.eml,.chat,text/plain,text/markdown,text/vtt,message/rfc822';
+const STEPS: { title: string; line: string }[] = [
+  { title: 'Works out what it is', line: 'Call, notes, email, chat or document' },
+  { title: 'Removes personal details', line: 'Before any AI model sees the text' },
+  { title: 'Runs Signal Loop', line: 'Finds feedback, bugs and churn risk' },
+  { title: 'Checks every quote', line: 'Drops anything not in the source' },
+  { title: 'Routes to the owners', line: 'Slack, Jira, Linear, email or review' },
+];
+
+const SOURCE_MARKS = ['gong', 'zoom', 'gmail', 'slack', 'google_drive'];
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+/** Keep the extension when a long name has to be cut to the contract's 160 characters. */
+function runFilename(name: string): string {
+  if (name.length <= 160) return name;
+  const ext = extOf(name);
+  return ext ? `${name.slice(0, 159 - ext.length)}.${ext}` : name.slice(0, 160);
+}
 
 export default function NewCallPage() {
+  useDocumentTitle('New conversation');
   const navigate = useNavigate();
   const toast = useToast();
   const world = useWorldIndex();
-  const reduced = usePrefersReducedMotion();
   const session = useSession();
   const library = useLibrary();
+  const { tourActive } = useTourState();
   const live = session.data?.budget.liveEnabled ?? true;
+  const pausedByOwner = session.data?.budget.reason === 'disabled_by_owner';
 
-  const [source, setSource] = useState<Source>('library');
+  const [params, setParams] = useSearchParams();
+  const rawVia = params.get('via') as Via | null;
+  const via: Via = rawVia && VIAS.includes(rawVia) ? rawVia : 'library';
+
   const [pickerOpen, setPickerOpen] = useState(false);
   const [file, setFile] = useState<LibraryFile | null>(null);
-  const [text, setText] = useState('');
-  const [filename, setFilename] = useState('pasted-notes.txt');
-  const [dropped, setDropped] = useState<{ name: string; size: number } | null>(null);
+  const [upload, setUpload] = useState<Upload | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [text, setText] = useState('');
+  const [name, setName] = useState('');
   const [running, setRunning] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
   /** This workspace already ran the chosen file: offer the earlier run or a fresh live run. */
   const [earlier, setEarlier] = useState<{ runId: string; createdAt: string | null; mode: 'live' | 'replay' } | null>(null);
-  const { tourActive } = useTourState();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const readSeq = useRef(0);
+  const statusId = useId();
 
   const textLen = text.trim().length;
-  const textOk = textLen >= 40 && textLen <= 60_000;
+
+  const setVia = (v: Via) => {
+    const next = new URLSearchParams(params);
+    if (v === 'library') next.delete('via');
+    else next.set('via', v);
+    setParams(next, { replace: true });
+    setEarlier(null);
+    setRunError(null);
+  };
+
+  const focusRun = () => window.setTimeout(() => document.querySelector<HTMLElement>('[data-tour="new.run"]')?.focus(), 60);
 
   const openEarlier = useCallback(
     (runId: string, mode: 'live' | 'replay') => {
-      emit({ name: 'run.started', runId, fileId: source === 'library' ? file?.id ?? null : null, mode, reused: true });
+      emit({ name: 'run.started', runId, fileId: via === 'library' ? (file?.id ?? null) : null, mode, reused: true });
       navigate(`/app/runs/${runId}?earlier=1`);
     },
-    [source, file, navigate],
+    [via, file, navigate],
   );
 
   /**
@@ -87,311 +123,336 @@ export default function NewCallPage() {
    * (still budget- and rate-limited). The walkthrough always reruns, so a restarted tour runs live
    * again instead of silently reopening the rehearsal.
    */
-  const startRun = useCallback(async (rerun = false) => {
-    setRunError(null);
-    setEarlier(null);
-    setRunning(true);
-    try {
-      const forced = rerun || tourActive;
-      const body =
-        source === 'library' && file
-          ? { fileId: file.id, mode: 'auto' as const, ...(forced ? { rerun: true } : {}) }
-          : { text: text.trim(), filename: (filename || 'pasted-notes.txt').slice(0, 120), mode: 'auto' as const, ...(forced ? { rerun: true } : {}) };
-      const res = await api.createRun(body);
-      if (res.data.duplicate && res.data.duplicateScope === 'workspace' && !forced) {
-        setEarlier({ runId: res.data.runId, createdAt: res.data.duplicateCreatedAt ?? null, mode: res.data.mode });
+  const startRun = useCallback(
+    async (rerun = false) => {
+      setRunError(null);
+      setEarlier(null);
+      setRunning(true);
+      const fileId = via === 'library' ? (file?.id ?? null) : null;
+      try {
+        const forced = rerun || tourActive;
+        const extra = forced ? { rerun: true } : {};
+        let body: CreateRun;
+        if (via === 'library' && file) body = { fileId: file.id, mode: 'auto', ...extra };
+        else if (via === 'upload' && upload?.status === 'ready') {
+          body = {
+            text: upload.result.text,
+            filename: runFilename(upload.name),
+            mode: 'auto',
+            formatHint: upload.result.formatHint,
+            sourceFormat: upload.result.sourceFormat,
+            source: 'upload',
+            ...extra,
+          };
+        } else body = { text: text.trim(), filename: runFilename(name.trim() || 'Pasted notes'), mode: 'auto', source: 'paste', ...extra };
+        const res = await api.createRun(body);
+        if (res.data.duplicate && res.data.duplicateScope === 'workspace' && !forced) {
+          setEarlier({ runId: res.data.runId, createdAt: res.data.duplicateCreatedAt ?? null, mode: res.data.mode });
+          setRunning(false);
+          return;
+        }
+        track('run_created', { runId: res.data.runId, fileId, source: via, mode: res.data.mode, tourPath: via === 'library' ? (file?.tourPath ?? null) : null, rerun: forced, duplicate: !!res.data.duplicate });
+        invalidate(keys.runs, keys.session);
+        // The page can stay mounted (cached route) and be shown again: never leave it busy.
         setRunning(false);
-        return;
+        if (res.data.duplicate) {
+          openEarlier(res.data.runId, res.data.mode);
+          return;
+        }
+        emit({ name: 'run.started', runId: res.data.runId, fileId, mode: res.data.mode });
+        navigate(`/app/runs/${res.data.runId}`);
+      } catch (err) {
+        const msg = err instanceof ApiError ? err.message : 'The run could not be started.';
+        setRunError(msg);
+        toast({ tone: 'danger', title: 'Conversation not processed', body: msg });
+        setRunning(false);
       }
-      track('run_created', { runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, source, mode: res.data.mode, tourPath: file?.tourPath ?? null, rerun: forced, duplicate: !!res.data.duplicate });
-      invalidate(keys.runs, keys.session);
-      // The page can stay mounted (cached route) and be shown again: never leave it busy.
-      setRunning(false);
-      if (res.data.duplicate) {
-        openEarlier(res.data.runId, res.data.mode);
-        return;
-      }
-      emit({ name: 'run.started', runId: res.data.runId, fileId: source === 'library' ? file?.id ?? null : null, mode: res.data.mode });
-      navigate(`/app/runs/${res.data.runId}`);
-    } catch (err) {
-      const msg = err instanceof ApiError ? err.message : 'The run could not be started.';
-      setRunError(msg);
-      toast({ tone: 'danger', title: 'Run not started', body: msg });
-      setRunning(false);
-    }
-  }, [source, file, text, filename, navigate, toast, tourActive, openEarlier]);
-
-  const readFile = useCallback(
-    (f: File) => {
-      if (f.size > 600_000) {
-        toast({ tone: 'warning', title: 'File too large', body: `${f.name} is ${bytes(f.size)}; the limit is 600 KB of text.` });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const content = String(reader.result ?? '');
-        setText(content);
-        setFilename(f.name.slice(0, 120));
-        setDropped({ name: f.name, size: f.size });
-      };
-      reader.readAsText(f);
     },
-    [toast],
+    [via, file, upload, text, name, navigate, toast, tourActive, openEarlier],
   );
+
+  const handleFile = useCallback(async (f: File) => {
+    const seq = ++readSeq.current;
+    setEarlier(null);
+    setRunError(null);
+    setUpload({ status: 'reading', name: f.name, size: f.size });
+    try {
+      const result = await convertFile(f);
+      if (seq !== readSeq.current) return;
+      setUpload({ status: 'ready', name: f.name, size: f.size, result });
+      focusRun();
+    } catch (err) {
+      if (seq !== readSeq.current) return;
+      const e = err instanceof ConvertError ? err : null;
+      setUpload({
+        status: 'error',
+        name: f.name,
+        size: f.size,
+        title: e?.title ?? 'This file can’t be read',
+        message: e?.message ?? (err instanceof Error ? err.message : 'Try another file.'),
+      });
+    }
+  }, []);
+
+  const clearUpload = () => {
+    readSeq.current++;
+    setUpload(null);
+    setEarlier(null);
+    setRunError(null);
+  };
+
+  const chooseFile = () => inputRef.current?.click();
+
+  // A file dropped beside the drop zone would make the browser open it and leave the page.
+  useEffect(() => {
+    if (via !== 'upload') return;
+    const stop = (e: Event) => e.preventDefault();
+    window.addEventListener('dragover', stop);
+    window.addEventListener('drop', stop);
+    return () => {
+      window.removeEventListener('dragover', stop);
+      window.removeEventListener('drop', stop);
+    };
+  }, [via]);
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragOver(false);
+    if (!live) return;
     const f = e.dataTransfer.files?.[0];
-    if (f) readFile(f);
+    if (f) void handleFile(f);
   };
 
-  const account = file ? world.account(file.accountId) : null;
-  const canRunCustom = live;
-  const runDisabledReason =
-    source === 'library'
-      ? !file
-        ? 'Choose a file from the library first'
-        : null
-      : !canRunCustom
-        ? 'Live AI budget reached: custom text is paused. Library files still replay recorded live runs.'
-        : source === 'drop' && !dropped
-          ? 'Drop or choose a file first'
-          : !textOk
-            ? textLen < 40
-              ? `Paste at least 40 characters (${textLen} so far)`
-              : 'Text is over the 60,000 character limit'
-            : null;
+  const blockedCustom = live ? null : pausedByOwner ? 'Live AI is turned off, so uploads and pasted text can’t run right now' : 'The live AI budget is used up, so uploads and pasted text can’t run right now';
+  const reason: string | null =
+    via === 'library'
+      ? file
+        ? null
+        : 'Choose a conversation to continue'
+      : blockedCustom
+        ? blockedCustom
+        : via === 'upload'
+          ? !upload
+            ? 'Choose a file to continue'
+            : upload.status === 'reading'
+              ? 'Reading the file'
+              : upload.status === 'error'
+                ? 'Choose a file Switchboard can read'
+                : null
+          : textLen < MIN_TEXT_CHARS
+            ? `Paste at least ${MIN_TEXT_CHARS} characters (${textLen} so far)`
+            : textLen > MAX_TEXT_CHARS
+              ? `Text is over the ${fmt(MAX_TEXT_CHARS)} character limit`
+              : null;
+  const longText = via === 'upload' && upload?.status === 'ready' && upload.result.text.length > 40_000;
+  const readyLine =
+    via === 'library' && !live
+      ? 'Replays a recorded live run at real speed'
+      : longText
+        ? 'Runs live on the AI models. Long documents take a little longer.'
+        : 'Runs live on the AI models in about 3 seconds';
 
   const libCount = library.data?.length ?? null;
 
-  const options: { key: Source; title: string; sub: string; icon: ReactNode }[] = useMemo(
-    () => [
-      { key: 'library', title: 'From the library', sub: libCount != null ? `${libCount} recorded calls, notes and emails` : 'Recorded calls, notes and emails', icon: <IconLibrary size={20} /> },
-      { key: 'paste', title: 'Paste text', sub: 'Meeting notes or a transcript', icon: <IconPaste size={20} /> },
-      { key: 'drop', title: 'Upload a file', sub: 'Transcript, notes, email or chat export', icon: <IconDrop size={20} /> },
-    ],
-    [libCount],
-  );
-
   return (
-    <div className="sl-page">
-      <AppPageHeader title="New call" subtitle="Turn one customer conversation into routed, evidence-backed insight" dataAsOf={library.dataAsOf ?? session.dataAsOf} />
+    <Page>
+      <PageHeader title="New conversation" description="Switchboard reads any conversation or document and routes what matters to its owner." />
+
+      {!live ? (
+        <Callout tone="warning" title={pausedByOwner ? 'Live AI is turned off' : 'Live AI budget used up'}>
+          Uploads and pasted text are paused. Conversations from a connected source still run, as a replay of a recorded live run.
+        </Callout>
+      ) : null}
 
       <div className={styles.layout}>
-        <div className={styles.main}>
-          <Panel
-            title="Bring in a conversation"
-            sub="Choose a recorded call, paste notes, or upload a file."
-          >
-            <div className={styles.sources} role="tablist" aria-label="Source">
-              {options.map((o) => (
-                <button
-                  key={o.key}
-                  type="button"
-                  role="tab"
-                  id={`src-${o.key}`}
-                  aria-selected={source === o.key}
-                  aria-controls={`panel-${o.key}`}
-                  className={`${styles.source} ${source === o.key ? styles.sourceActive : ''}`}
-                  onClick={() => { setSource(o.key); setEarlier(null); }}
-                >
-                  <span className={styles.sourceIcon}>{o.icon}</span>
-                  <span className={styles.sourceText}>
-                    <span className={styles.sourceTitle}>{o.title}</span>
-                    <span className={styles.sourceSub}>{o.sub}</span>
-                  </span>
-                </button>
-              ))}
+        <Card
+          flush
+          className={styles.intake}
+          footer={
+            <div className={styles.footer}>
+              <p id={statusId} className={styles.status} aria-live="polite">
+                {reason ? <IconInfo size={16} className={styles.statusIcon} /> : <span className={live || via !== 'library' ? styles.liveDot : styles.replayDot} aria-hidden="true" />}
+                <span>{reason ?? readyLine}</span>
+              </p>
+              <Tooltip label={reason ?? ''} disabled={!reason}>
+                <span className={styles.runWrap} tabIndex={reason ? 0 : undefined}>
+                  <Button
+                    variant="primary"
+                    iconRight={<IconArrowRight />}
+                    loading={running}
+                    disabled={!!reason || running}
+                    aria-describedby={statusId}
+                    onClick={() => void startRun(false)}
+                    className={styles.runButton}
+                    {...tourAnchor('new.run')}
+                  >
+                    Process conversation
+                  </Button>
+                </span>
+              </Tooltip>
             </div>
+          }
+        >
+          <div className={styles.tabbar}>
+            <Tabs<Via>
+              label="How to bring it in"
+              value={via}
+              onChange={setVia}
+              items={[
+                { value: 'library', label: <TabLabel long="From a connected source" short="Connected source" />, attrs: { id: 'via-library', 'aria-controls': 'via-panel' } },
+                { value: 'upload', label: <TabLabel long="Upload a file" short="Upload" />, attrs: { id: 'via-upload', 'aria-controls': 'via-panel' } },
+                { value: 'paste', label: <TabLabel long="Paste text" short="Paste" />, attrs: { id: 'via-paste', 'aria-controls': 'via-panel' } },
+              ]}
+            />
+          </div>
 
-            <div className={styles.sourceBody} role="tabpanel" id={`panel-${source}`} aria-labelledby={`src-${source}`}>
-              {source === 'library' ? (
-                <AnimatePresence mode="wait" initial={false}>
-                  {!file ? (
-                    <motion.div
-                      key="empty"
-                      className={styles.pickZone}
-                      initial={reduced ? false : { opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={reduced ? undefined : { opacity: 0 }}
-                      transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+          <div className={styles.panel} role="tabpanel" id="via-panel" aria-labelledby={`via-${via}`}>
+            {via === 'library' ? (
+              file ? (
+                <LibraryChoice file={file} accountName={file.accountId ? world.accountName(file.accountId) : null} onChange={() => setPickerOpen(true)} />
+              ) : (
+                <div className={styles.empty}>
+                  <span className={styles.marks} aria-hidden="true">
+                    {SOURCE_MARKS.map((id) => (
+                      <ConnectorMark key={id} id={id} size={28} />
+                    ))}
+                  </span>
+                  <p className={styles.emptyTitle}>Choose a conversation</p>
+                  <p className={styles.emptyText}>
+                    {libCount ? `${libCount} recorded calls, notes, email threads and chat exports from your connected tools.` : 'Recorded calls, notes, email threads and chat exports from your connected tools.'}
+                  </p>
+                  <Button variant="secondary" icon={<IconFolder />} onClick={() => setPickerOpen(true)} {...tourAnchor('new.upload')}>
+                    Browse conversations
+                  </Button>
+                </div>
+              )
+            ) : via === 'upload' ? (
+              <>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept={ACCEPT}
+                  hidden
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    e.target.value = '';
+                    if (f) void handleFile(f);
+                  }}
+                />
+                {upload && upload.status !== 'error' ? (
+                  <UploadChoice upload={upload} onReplace={chooseFile} onRemove={clearUpload} />
+                ) : (
+                  <div className={styles.uploadStack}>
+                    {upload?.status === 'error' ? (
+                      <Callout tone="danger" title={upload.title}>
+                        <span className={styles.errorFile}>{upload.name}</span>
+                        {upload.message}
+                      </Callout>
+                    ) : null}
+                    <div
+                      className={cx(styles.dropzone, dragOver && styles.dropzoneOver, !live && styles.dropzoneOff)}
+                      onClick={(e) => {
+                        if (live && !(e.target as HTMLElement).closest('button')) chooseFile();
+                      }}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        if (live) setDragOver(true);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = live ? 'copy' : 'none';
+                      }}
+                      onDragLeave={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDragOver(false);
+                      }}
+                      onDrop={onDrop}
                     >
-                      <div className={styles.pickArt} aria-hidden="true">
-                        <IconLibrary size={20} />
-                      </div>
-                      <p className={styles.pickTitle}>Choose a call from the library</p>
-                      <p className={styles.pickSub}>Sample QBRs, renewals, escalations, CSM notes and forwarded emails, from tidy to very messy.</p>
-                      <Button
-                        variant="primary"
-                        size="md"
-                        iconLeft="plus"
-                        onClick={() => setPickerOpen(true)}
-                        {...tourAnchor('new.upload')}
-                      >
-                        Upload from library…
+                      <span className={styles.dropIcon} aria-hidden="true">
+                        <IconUpload size={20} />
+                      </span>
+                      <p className={styles.emptyTitle}>{dragOver ? 'Drop to upload' : 'Drop a file here'}</p>
+                      <p className={styles.emptyText}>PDF, Word, PowerPoint, Excel, transcripts, email and chat exports, CSV or text.</p>
+                      <Button variant="secondary" disabled={!live} onClick={chooseFile}>
+                        Choose file
                       </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key={file.id}
-                      initial={reduced ? false : { opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={reduced ? undefined : { opacity: 0 }}
-                      transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
-                    >
-                      <FileCard file={file} accountName={account?.name ?? (file.accountId ? file.accountId : 'Not linked to an account')} accountMeta={account ? `${account.tier} · ${account.vertical.replace('_', ' ')}` : null} reduced={reduced} onChange={() => setPickerOpen(true)} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              ) : source === 'paste' ? (
-                <div className={styles.pasteWrap}>
-                  {!canRunCustom ? (
-                    <Banner tone="warning" title="Live AI budget reached">
-                      Custom text needs a live model call, and the $15 viewer budget is used up. Library files still run by replaying a recorded live run.
-                    </Banner>
-                  ) : null}
-                  <label className={styles.fieldLabel} htmlFor="paste-name">
-                    File name
+                      <p className={styles.dropNote}>Read in your browser. Up to {fmt(MAX_TEXT_CHARS)} characters.</p>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className={styles.paste}>
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="paste-name">
+                    Name <span className={styles.optional}>(optional)</span>
                   </label>
-                  <Input id="paste-name" value={filename} onChange={(e) => setFilename(e.target.value)} maxLength={120} style={{ maxWidth: 360 }} />
-                  <label className={styles.fieldLabel} htmlFor="paste-text">
-                    Notes or transcript
+                  <Input id="paste-name" className={styles.nameInput} value={name} placeholder="Pasted notes" maxLength={160} disabled={!live} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="paste-text">
+                    Conversation or document
                   </label>
                   <Textarea
                     id="paste-text"
                     rows={10}
                     value={text}
+                    disabled={!live}
+                    aria-invalid={textLen > MAX_TEXT_CHARS || undefined}
+                    placeholder={'[00:01:12] Dana (Brightline): Our offline conversions land in Google Ads two days late.\n[00:01:30] Marcus (Invoca): Got it. Which campaigns?'}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder={'[00:01:12] Dana (Brightline): Our offline conversions land in Google Ads two days late…\n[00:01:30] Marcus (Invoca): Got it, which campaigns?'}
-                    mono
-                    disabled={!canRunCustom}
                   />
-                  <div className={styles.counter}>
-                    <span className={textOk ? undefined : styles.counterBad}>{textLen.toLocaleString()}</span> of 60,000 characters (at least 40). Names, phone numbers, emails and patient details are removed before any AI sees the text.
+                  <div className={styles.pasteMeta}>
+                    <span>Personal details are removed before any AI sees the text.</span>
+                    <span className={cx(styles.count, textLen > MAX_TEXT_CHARS && styles.countOver)}>
+                      {fmt(textLen)} / {fmt(MAX_TEXT_CHARS)}
+                    </span>
                   </div>
                 </div>
-              ) : (
-                <div
-                  className={`${styles.dropZone} ${dragOver ? styles.dropOver : ''} ${!canRunCustom ? styles.dropDisabled : ''}`}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    if (canRunCustom) setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => (canRunCustom ? onDrop(e) : e.preventDefault())}
-                >
-                  <span className={styles.dropIcon}><IconUpload size={20} /></span>
-                  {dropped ? (
-                    <>
-                      <p className={styles.pickTitle}>{dropped.name}</p>
-                      <p className={styles.pickSub}>
-                        {bytes(dropped.size)} · {textLen.toLocaleString()} characters read · ready to run
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className={styles.pickTitle}>Drag a file here</p>
-                      <p className={styles.pickSub}>A transcript, text or Markdown notes, an email or a chat export. Only redacted text is sent to AI.</p>
-                    </>
-                  )}
-                  <input ref={fileInputRef} type="file" accept={ACCEPT} hidden onChange={(e) => e.target.files?.[0] && readFile(e.target.files[0])} />
-                  <Button variant="secondary" onClick={() => fileInputRef.current?.click()} disabled={!canRunCustom}>
-                    {dropped ? 'Choose a different file' : 'Browse your computer…'}
-                  </Button>
-                  {!canRunCustom ? <WhyDisabled reason="Live AI budget reached: custom files are paused." /> : null}
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            <div className={styles.runBar}>
-              <div className={styles.runInfo}>
-                <span className={`${styles.modeDot} ${live ? styles.modeLive : styles.modeReplay}`} aria-hidden="true" />
-                <span>
-                  {live ? (
-                    <>
-                      Runs <strong>live</strong> on the main model, with a backup model as a second opinion
-                    </>
-                  ) : (
-                    <>
-                      <strong>Replay mode</strong>: plays back a recorded live run at real speed
-                    </>
-                  )}
-                </span>
-              </div>
-              <div className={styles.runAction}>
-                {runDisabledReason ? <WhyDisabled reason={runDisabledReason} /> : null}
-                <Button
-                  variant="primary"
-                  size="md"
-                  iconLeft="play"
-                  loading={running}
-                  disabled={!!runDisabledReason || running}
-                  onClick={() => void startRun(false)}
-                  title={runDisabledReason ?? 'Process this conversation in ten steps'}
-                  {...tourAnchor('new.run')}
-                >
-                  Run pipeline
-                </Button>
-              </div>
-            </div>
             {earlier ? (
-              <div style={{ marginTop: 'var(--sp-3)' }} data-testid="earlier-run-choice">
-                <Banner
-                  tone="info"
-                  title="You already ran this file"
-                  action={
-                    <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
-                      <Button variant="secondary" size="sm" onClick={() => openEarlier(earlier.runId, earlier.mode)}>
-                        Open your earlier run
-                      </Button>
-                      <Button variant="primary" size="sm" iconLeft="play" onClick={() => void startRun(true)}>
-                        Run again live
-                      </Button>
-                    </div>
-                  }
-                >
-                  It is identical to your run <MonoId value={earlier.runId} keep={6} />
-                  {earlier.createdAt ? (
-                    <>
-                      {' '}from <RelativeTime value={earlier.createdAt} />
-                    </>
-                  ) : null}
-                  . Open it to see the result, or run it again live (this uses some of the shared AI budget).
-                </Banner>
-              </div>
+              <Callout
+                tone="info"
+                title="You already ran this file"
+                attrs={{ 'data-testid': 'earlier-run-choice' }}
+                actions={
+                  <>
+                    <Button size="sm" onClick={() => openEarlier(earlier.runId, earlier.mode)}>
+                      Open your earlier run
+                    </Button>
+                    <Button size="sm" variant="primary" onClick={() => void startRun(true)}>
+                      Run again live
+                    </Button>
+                  </>
+                }
+              >
+                It matches your run from {earlier.createdAt ? <When value={earlier.createdAt} /> : 'earlier'}. Open it, or run it again live (this uses some of the shared AI budget).
+              </Callout>
             ) : null}
             {runError ? (
-              <div style={{ marginTop: 'var(--sp-3)' }}>
-                <Banner tone="danger" title="The run did not start">
-                  {runError}
-                </Banner>
-              </div>
+              <Callout tone="danger" title="The conversation wasn’t processed">
+                {runError}
+              </Callout>
             ) : null}
-          </Panel>
-        </div>
-
-        <aside className={styles.side}>
-          <Panel title="What happens next" sub="Ten steps, each saved as it finishes. If one fails, the run picks up where it left off.">
-            <ol className={styles.steps}>
-              {STEP_KEYS.map((k, i) => (
-                <li key={k} className={styles.step} title={STEP_DETAIL[k]}>
-                  <span className={styles.stepNum}>{i + 1}</span>
-                  <span>
-                    <span className={styles.stepName}>{STEP_LABELS[k]}</span>
-                    <span className={styles.stepHelp}>{STEP_HELP[k]}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </Panel>
-          <div className={styles.trust}>
-            <IconShield size={18} />
-            <span>
-              <strong>No quote, no insight.</strong> Every insight carries the customer’s exact words, and Signal Loop checks they really appear in the conversation. Anything it cannot find is dropped and counted.
-            </span>
           </div>
-        </aside>
+        </Card>
+
+        <Card title="What Switchboard does with it" className={styles.aside}>
+          <ol className={styles.steps}>
+            {STEPS.map((s, i) => (
+              <li key={s.title} className={styles.step}>
+                <span className={styles.stepNum} aria-hidden="true">
+                  {i + 1}
+                </span>
+                <span className={styles.stepText}>
+                  <span className={styles.stepTitle}>{s.title}</span>
+                  <span className={styles.stepLine}>{s.line}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </Card>
       </div>
 
       <FilePicker
@@ -401,96 +462,161 @@ export default function NewCallPage() {
         onOpenFile={(f) => {
           setFile(f);
           setEarlier(null);
-          setSource('library');
+          setRunError(null);
           setCached(keys.libraryFile(f.id), (prev) => prev);
-          window.setTimeout(() => document.querySelector<HTMLElement>('[data-tour="new.run"]')?.focus(), 60);
+          focusRun();
         }}
       />
+    </Page>
+  );
+}
+
+function TabLabel({ long, short }: { long: string; short: string }) {
+  return (
+    <>
+      <span className={styles.tabLong}>{long}</span>
+      <span className={styles.tabShort}>
+        {short}
+      </span>
+    </>
+  );
+}
+
+/** The first lines of the text, as it will be read. */
+function TextPreview({ text, aside }: { text: string | null; aside?: ReactNode }) {
+  const lines = text === null ? null : previewLines(text);
+  return (
+    <div className={styles.preview}>
+      <div className={styles.previewHead}>
+        <span className={styles.previewLabel}>Preview</span>
+        {aside ? <span className={styles.previewAside}>{aside}</span> : null}
+      </div>
+      {lines === null ? (
+        <div className={styles.previewSkel} aria-hidden="true">
+          {[94, 82, 88, 64].map((w) => (
+            <Skeleton key={w} width={`${w}%`} height={8} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.previewBox}>
+          <p className={styles.previewText}>{lines}</p>
+        </div>
+      )}
     </div>
   );
 }
 
-function FileCard({
-  file,
-  accountName,
-  accountMeta,
-  reduced,
-  onChange,
-}: {
-  file: LibraryFile;
-  accountName: string;
-  accountMeta: string | null;
-  reduced: boolean;
-  onChange: () => void;
-}) {
+function LibraryChoice({ file, accountName, onChange }: { file: LibraryFile; accountName: string | null; onChange: () => void }) {
+  const content = useLibraryFile(file.id);
+  const source = librarySource(file);
+  const edge = file.edgeKind ? EDGE[file.edgeKind] : null;
   const level = file.messLevel;
-  const edge = file.edgeKind;
-  const reveal = edge ? EDGE[edge] : level ? LEVEL[level] : null;
+  const reveal = edge ?? (level ? LEVEL[level] : null);
   return (
-    <div className={styles.fileCard}>
-      <div className={styles.fileTop}>
-        <FileGlyph format={file.format} size={44} />
-        <div className={styles.fileTitleWrap}>
-          <div className={styles.fileName} title={file.filename}>
+    <div className={styles.choice}>
+      <div className={styles.fileHead}>
+        <ConnectorMark id={source} size={36} />
+        <div className={styles.fileTitle}>
+          <span className={styles.fileName} title={file.filename}>
             {file.filename}
-          </div>
-          <div className={styles.fileSub}>
-            {accountName}
-            {accountMeta ? <span className="sl-subtle"> · {accountMeta}</span> : null}
-          </div>
+          </span>
+          <span className={styles.fileMeta}>
+            <span className={styles.metaItem}>{accountName ?? 'Not linked to an account'}</span>
+            <span className="ds-mono">{file.callId}</span>
+          </span>
         </div>
-        <Button variant="tertiary" size="sm" onClick={onChange} {...tourAnchor('new.upload')}>
-          Change file
+        <Button size="sm" onClick={onChange} className={styles.changeButton} {...tourAnchor('new.upload')}>
+          Change
         </Button>
       </div>
-      <dl className={styles.facts}>
-        <div>
-          <dt>Call</dt>
-          <dd>
-            <MonoId value={file.callId} keep={12} />
-          </dd>
-        </div>
-        <div>
-          <dt>Type</dt>
-          <dd>{file.callType}</dd>
-        </div>
-        <div>
-          <dt>Size</dt>
-          <dd className="sl-num">{bytes(file.sizeBytes)}</dd>
-        </div>
-        <div>
-          <dt>Modified</dt>
-          <dd>{dateTime(file.modifiedAt)}</dd>
-        </div>
-      </dl>
-      {reveal ? (
-        <motion.div
-          className={`${styles.reveal} ${edge ? styles.revealEdge : ''}`}
-          initial={reduced ? false : { opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: reduced ? 0 : 0.15, duration: 0.24, ease: [0.2, 0, 0, 1] }}
-        >
-          <div className={styles.revealHead}>
-            <span className={styles.revealEyebrow}>{edge ? 'Edge case revealed' : 'Complexity revealed'}</span>
-            {level && !edge ? (
-              <span className={styles.meter} role="img" aria-label={`Complexity ${level} of 5`}>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <motion.i
-                    key={n}
-                    className={n <= level ? styles.meterOn : undefined}
-                    initial={reduced ? false : { opacity: 0.3 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: reduced ? 0 : 0.2 + n * 0.05, duration: 0.18 }}
-                  />
-                ))}
-                <span className={styles.meterLabel}>{level} of 5</span>
+
+      <KeyValue
+        stacked
+        className={styles.facts}
+        items={[
+          {
+            label: 'Source',
+            value: (
+              <span className={styles.sourceValue}>
+                <ConnectorMark id={source} size={16} />
+                {sourceLabel(source)}
               </span>
+            ),
+          },
+          { label: 'Call type', value: file.callType },
+          { label: 'Size', value: <span className="ds-num">{bytes(file.sizeBytes)}</span> },
+          { label: 'Modified', value: dateShort(file.modifiedAt) },
+        ]}
+      />
+
+      {reveal ? (
+        <div className={styles.reveal}>
+          <div className={styles.revealHead}>
+            {edge ? (
+              <Badge tone="warning">Edge case</Badge>
+            ) : level ? (
+              <>
+                <span className={styles.revealLabel}>Complexity</span>
+                <span className={styles.levels} role="img" aria-label={`Complexity ${level} of 5`}>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <span key={n} className={n <= level ? styles.levelOn : styles.level} />
+                  ))}
+                </span>
+                <span className={styles.levelText}>{level} of 5</span>
+              </>
             ) : null}
           </div>
-          <div className={styles.revealName}>{reveal.name}</div>
+          <p className={styles.revealName}>{reveal.name}</p>
           <p className={styles.revealLine}>{reveal.line}</p>
-        </motion.div>
+        </div>
       ) : null}
+
+      {content.error ? null : <TextPreview text={content.data?.content ?? null} />}
+    </div>
+  );
+}
+
+function UploadChoice({ upload, onReplace, onRemove }: { upload: Exclude<Upload, { status: 'error' }>; onReplace: () => void; onRemove: () => void }) {
+  const ext = extOf(upload.name).toUpperCase().slice(0, 4);
+  const ready = upload.status === 'ready' ? upload.result : null;
+  const pages = ready ? pagesLabel(ready) : null;
+  return (
+    <div className={styles.choice}>
+      <div className={styles.fileHead}>
+        <span className={styles.fileTile} aria-hidden="true">
+          {ready ? ext || 'TXT' : <Spinner />}
+        </span>
+        <div className={styles.fileTitle}>
+          <span className={styles.fileName} title={upload.name}>
+            {upload.name}
+          </span>
+          <span className={styles.fileMeta}>
+            {ready ? (
+              <>
+                <span className={styles.metaItem}>{ready.label}</span>
+                {pages ? <span>{pages}</span> : null}
+                <span className="ds-num">{bytes(upload.size)}</span>
+              </>
+            ) : (
+              <span>Reading the file</span>
+            )}
+          </span>
+        </div>
+        <span className={styles.fileAction}>
+          <Button size="sm" onClick={onReplace}>
+            Replace
+          </Button>
+          <IconButton size="sm" label="Remove file" icon={<IconX />} onClick={onRemove} />
+        </span>
+      </div>
+
+      {ready?.warnings.map((w) => (
+        <Callout key={w} tone="warning">
+          {w}
+        </Callout>
+      ))}
+
+      <TextPreview text={ready ? ready.text : null} aside={ready ? `${fmt(ready.text.length)} characters` : undefined} />
     </div>
   );
 }

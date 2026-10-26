@@ -1,46 +1,100 @@
-import { useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+/**
+ * Close the loop: the CSM's side. Every insight a CSM sent in comes back to them as it is
+ * routed, acknowledged and shipped; a shipped one carries a drafted note for the customer.
+ * The person filter, the kind filter and the open notification live in the URL.
+ */
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { Notification } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { Select } from '../../system/components/forms/Select.jsx';
-import { Callout } from '../../system/components/blocks/Callout.jsx';
-import { Avatar } from '../../system/components/primitives/Avatar.jsx';
-import { EmptyState } from '../../uis/EmptyState';
-import { RelativeTime } from '../../uis/RelativeTime';
-import { SegmentedControl } from '../../uis/SegmentedControl';
-import { KpiStrip } from '../../uis/StatTile';
-import { ListSkeleton, PageHeaderSkeleton, SkeletonSurface, TilesSkeleton } from '../../uis/Skeleton';
-import { StatusChip, type StatusTone } from '../../uis/StatusChip';
-import { useInsightDetail, useNotifications } from '../api/hooks';
-import { AppPageHeader, ErrorState, Panel, SeverityTag, TypeTag, useCopy } from '../components/ui';
-import { IconCopy, IconCheck, IconMail } from '../components/icons';
-import { useWorldIndex } from '../lib/world';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  Card,
+  EmptyState,
+  Field,
+  KeyValue,
+  Page,
+  PageHeader,
+  PersonChip,
+  Quote,
+  Segmented,
+  Select,
+  Skeleton,
+  Stats,
+  Textarea,
+  Toolbar,
+  Tooltip,
+  useToast,
+  type Tone,
+} from '../../ds';
+import { IconCopy, IconInbox, IconInfo, IconMail } from '../../ds/icons';
+import { useInsightDetail, useMe, useNotifications, usePeople, useSession } from '../api/hooks';
+import { useDocumentTitle } from '../AppShell';
+import { ErrorState, SeverityBadge, TypeLabel, When } from '../components/domain';
 import { dateShort } from '../lib/labels';
+import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
+import { RedactedText } from './run/Transcript';
 import styles from './loop/Loop.module.css';
 
 type Kind = Notification['kind'];
 type KindFilter = 'all' | Kind;
+const KINDS: Kind[] = ['routed', 'acknowledged', 'shipped'];
 const KIND_LABEL: Record<Kind, string> = { routed: 'Routed', acknowledged: 'Acknowledged', shipped: 'Shipped' };
-const KIND_TONE: Record<Kind, StatusTone> = { routed: 'info', acknowledged: 'warning', shipped: 'success' };
-const KIND_HELP: Record<Kind, string> = {
-  routed: 'Your insight reached its owner. Acknowledging is not resolving: it stays open until the owner acts.',
-  acknowledged: 'The owner picked it up and said so.',
-  shipped: 'The change shipped. A note to the customer is drafted for you.',
-};
+const KIND_TONE: Record<Kind, Tone> = { routed: 'neutral', acknowledged: 'info', shipped: 'success' };
 const WEEK_MS = 7 * 86_400_000;
 const MINUTES_PER_ITEM = 15;
+const PAGE = 30;
+const PAGE_STACKED = 8;
+const ALL = 'all';
+
+/** "45 min" under two hours, then hours ("16 hours"). */
+const savedTime = (min: number) => (min < 120 ? { value: min, unit: 'min' } : { value: Number.isInteger(min / 60) ? min / 60 : (min / 60).toFixed(1), unit: 'hours' });
+
+/** True while the media query matches; follows resizes. */
+function useMedia(query: string): boolean {
+  const [match, setMatch] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const on = () => setMatch(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, [query]);
+  return match;
+}
 
 export default function LoopPage() {
+  useDocumentTitle('Close the loop');
   const world = useWorldIndex();
+  const me = useMe();
+  const session = useSession();
+  const people = usePeople();
   const [params, setParams] = useSearchParams();
-  const csmId = params.get('csm') ?? 'ppl_marcus';
-  const kindParam = params.get('kind');
-  const kind: KindFilter = kindParam === 'routed' || kindParam === 'acknowledged' || kindParam === 'shipped' ? kindParam : 'all';
-  const notifications = useNotifications(csmId);
   const [opened, setOpened] = useState<Set<string>>(() => new Set());
+  const [extra, setExtra] = useState(0);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const narrow = useMedia('(max-width: 640px)');
+  // Side by side, the inbox scrolls in its own column; stacked, it shows a few at a time instead.
+  const stacked = useMedia('(max-width: 1099px)');
+  const page = stacked ? PAGE_STACKED : PAGE;
+
+  // Default to the acting user when they are a CSM; anyone else sees every CSM.
+  const directory = people.data ?? world.people;
+  const csms = directory.filter((p) => p.role === 'csm' && p.active !== false).sort((a, b) => a.name.localeCompare(b.name));
+  const actor = me.data ?? session.data?.actor ?? null;
+  const actorCsm = actor && csms.some((p) => p.id === actor.personId) ? actor.personId : null;
+  const actorKnown = !me.loading || !!session.data?.actor;
+  const csmParam = params.get('csm');
+  const csmId = csmParam === ALL ? null : (csmParam ?? actorCsm);
+  const csm = world.person(csmId) ?? csms.find((p) => p.id === csmId) ?? null;
+
+  const notifications = useNotifications(csmId);
+  const kindParam = params.get('kind');
+  const kind: KindFilter = KINDS.includes(kindParam as Kind) ? (kindParam as Kind) : 'all';
 
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(params);
@@ -51,151 +105,170 @@ export default function LoopPage() {
 
   const all = useMemo(() => [...(notifications.data ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [notifications.data]);
   const visible = kind === 'all' ? all : all.filter((n) => n.kind === kind);
-  const defaultId = all.find((n) => n.kind === 'shipped')?.id ?? all[0]?.id ?? null;
-  const selectedId = params.get('n') && all.some((n) => n.id === params.get('n')) ? params.get('n') : defaultId;
-  const selected = all.find((n) => n.id === selectedId) ?? null;
+  const newestShipped = visible.find((n) => n.kind === 'shipped') ?? null;
+  const nParam = params.get('n');
+  const selected = (nParam ? all.find((n) => n.id === nParam) : null) ?? newestShipped ?? visible[0] ?? null;
+
+  useEffect(() => setExtra(0), [csmId, kind]);
+  const limit = page + extra;
+  // The update on screen counts as read (the opened event is only for a deliberate click).
+  const selectedId = selected?.id ?? null;
+  useEffect(() => {
+    if (selectedId) setOpened((cur) => (cur.has(selectedId) ? cur : new Set(cur).add(selectedId)));
+  }, [selectedId]);
 
   const stats = useMemo(() => {
     const since = Date.now() - WEEK_MS;
     const week = all.filter((n) => new Date(n.createdAt).getTime() >= since);
-    const landed = new Set(week.filter((n) => n.kind === 'routed' || n.kind === 'acknowledged').map((n) => n.insightId));
-    const shipped = new Set(week.filter((n) => n.kind === 'shipped').map((n) => n.insightId));
-    const acknowledged = new Set(week.filter((n) => n.kind === 'acknowledged').map((n) => n.insightId));
-    const unread = all.filter((n) => !n.read && !opened.has(n.id)).length;
-    return { landed: landed.size, shipped: shipped.size, acknowledged: acknowledged.size, unread, total: all.length };
+    const ids = (k: Kind[]) => new Set(week.filter((n) => k.includes(n.kind)).map((n) => n.insightId)).size;
+    return {
+      landed: ids(['routed', 'acknowledged']),
+      acknowledged: ids(['acknowledged']),
+      shipped: ids(['shipped']),
+      unread: all.filter((n) => !n.read && !opened.has(n.id)).length,
+    };
   }, [all, opened]);
 
   const open = (n: Notification) => {
     setParam('n', n.id);
     setOpened((cur) => new Set(cur).add(n.id));
     emit({ name: 'notification.opened', notificationId: n.id });
-    track('notification_opened', { notificationId: n.id, kind: n.kind, csmId });
+    track('notification_opened', { notificationId: n.id, kind: n.kind, csmId: n.csmId });
+    if (window.matchMedia('(max-width: 1099px)').matches) window.setTimeout(() => detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
   };
 
-  const csms = world.people.filter((p) => p.role === 'csm');
-  const csm = world.person(csmId);
+  const count = (k: KindFilter) => (k === 'all' ? all.length : all.filter((n) => n.kind === k).length);
+  const shown = visible.slice(0, limit);
+  const first = (name: string | undefined) => name?.split(' ')[0];
 
-  if (notifications.loading || !world.ready) {
+  const header = <PageHeader title="Close the loop" description="What happened to the feedback CSMs sent in, and a note for the customer when it ships." />;
+
+  if (notifications.loading || !actorKnown || !world.ready) {
     return (
-      <SkeletonSurface label="Loading the CSM loop">
-        <PageHeaderSkeleton />
-        <div className="sl-stack-lg">
-          <TilesSkeleton count={4} />
-          <div className="sl-grid-2">
-            <ListSkeleton lines={6} />
-            <ListSkeleton lines={4} />
-          </div>
-        </div>
-      </SkeletonSurface>
+      <Page>
+        {header}
+        <LoopSkeleton />
+      </Page>
     );
   }
 
   return (
-    <div className="sl-page">
-      <AppPageHeader
-        title="CSM loop"
-        subtitle="What happened to the feedback each CSM sent in"
-        dataAsOf={notifications.dataAsOf}
-        actions={
-          <label className={styles.csmPicker}>
-            <span className={styles.csmLabel}>CSM</span>
-            <Select
-              size="sm"
-              aria-label="Choose a CSM"
-              value={csmId}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                const next = new URLSearchParams(params);
-                next.set('csm', e.target.value);
-                next.delete('n');
-                setParams(next, { replace: true });
-              }}
-              options={csms.map((p) => ({ value: p.id, label: p.name }))}
-            />
-          </label>
+    <Page>
+      {header}
+
+      <Toolbar
+        start={
+          <Select
+            aria-label="Choose a CSM"
+            value={csmId ?? ALL}
+            onChange={(e) => {
+              const next = new URLSearchParams(params);
+              next.set('csm', e.target.value);
+              next.delete('n');
+              setParams(next, { replace: true });
+            }}
+            options={[{ value: ALL, label: 'All CSMs' }, ...csms.map((p) => ({ value: p.id, label: p.id === actor?.personId ? `${p.name} (you)` : p.name }))]}
+            style={{ width: 220 }}
+          />
+        }
+        end={
+          <Segmented<KindFilter>
+            label="Filter updates"
+            size={narrow ? 'sm' : 'md'}
+            value={kind}
+            onChange={(v) => {
+              const next = new URLSearchParams(params);
+              if (v === 'all') next.delete('kind');
+              else next.set('kind', v);
+              next.delete('n');
+              setParams(next, { replace: true });
+            }}
+            options={(['all', ...KINDS] as KindFilter[]).map((k) => ({ value: k, label: k === 'all' ? 'All' : KIND_LABEL[k], count: count(k) }))}
+          />
         }
       />
 
       {notifications.error && !notifications.data ? (
-        <ErrorState error={notifications.error} onRetry={() => void notifications.refresh()} what="notifications" />
+        <Card>
+          <ErrorState error={notifications.error} onRetry={() => void notifications.refresh()} what="updates" />
+        </Card>
       ) : (
         <>
-          <section className={styles.hero} aria-label="This week">
-            <Avatar initials={csm?.initials ?? '?'} size="lg" />
-            <div className={styles.heroText}>
-              <span className={styles.heroMeta}>{csm?.name ?? 'CSM'} · last 7 days</span>
-              <p className={styles.headline}>
-                <strong className="sl-num">{stats.landed}</strong> of your insights landed this week ·{' '}
-                <strong className="sl-num">{stats.shipped}</strong> shipped
-              </p>
-              <p className={styles.heroSub}>Every item you send comes back to you with its status. You stay the customer’s advocate; Signal Loop does the chasing.</p>
-            </div>
-          </section>
-
-          <div>
-            <KpiStrip
-              label="CSM loop metrics"
-              items={[
-                { label: 'Reached an owner', value: stats.landed, unit: stats.landed === 1 ? 'insight' : 'insights', sub: 'Sent to an owner in the last 7 days' },
-                { label: 'Acknowledged', value: `${stats.acknowledged} of ${stats.landed}`, sub: 'Owners who replied' },
-                { label: 'Shipped', value: stats.shipped, unit: stats.shipped === 1 ? 'change' : 'changes', sub: 'A customer note is drafted for each' },
-                { label: 'Follow-up time saved', value: `about ${(stats.landed + stats.shipped) * MINUTES_PER_ITEM}`, unit: 'min', sub: `Estimate, at ${MINUTES_PER_ITEM} minutes per item` },
-              ]}
-            />
-          </div>
-          <Callout tone="neutral" title="Time saved is an estimate">
-            It assumes {MINUTES_PER_ITEM} minutes per item to write it up, find the right owner and chase its status. A time study in the first week replaces this with measured numbers
-            before anyone reports it.
-          </Callout>
+          <Stats
+            items={[
+              { label: 'Reached an owner', value: stats.landed, unit: stats.landed === 1 ? 'insight' : 'insights', sub: 'In the last 7 days' },
+              { label: 'Acknowledged', value: stats.acknowledged, unit: `of ${stats.landed}`, sub: 'Owners who replied' },
+              { label: 'Shipped', value: stats.shipped, unit: stats.shipped === 1 ? 'change' : 'changes', sub: 'Each comes with a customer note' },
+              {
+                label: 'Follow-up time saved',
+                info: (
+                  <Tooltip label={`An estimate: ${MINUTES_PER_ITEM} minutes per item to write it up, find the owner and chase its status. A time study replaces it with measured numbers.`}>
+                    <span tabIndex={0} className={styles.info} aria-label="How this is estimated">
+                      <IconInfo size={14} />
+                    </span>
+                  </Tooltip>
+                ),
+                ...savedTime((stats.landed + stats.shipped) * MINUTES_PER_ITEM),
+                sub: `Estimate at ${MINUTES_PER_ITEM} minutes per item`,
+              },
+            ]}
+          />
 
           <div className={styles.split}>
-            <Panel
+            <Card
               title="Inbox"
-              sub={`${stats.unread} unread of ${stats.total}`}
+              description={all.length ? `${stats.unread} unread of ${all.length}` : undefined}
               flush
-              anchor={tourAnchor('loop.inbox')}
-              actions={
-                <SegmentedControl<KindFilter>
-                  ariaLabel="Filter notifications"
-                  size="sm"
-                  value={kind}
-                  options={[
-                    { value: 'all', label: `All · ${all.length}` },
-                    { value: 'routed', label: `Routed · ${all.filter((n) => n.kind === 'routed').length}` },
-                    { value: 'acknowledged', label: `Acknowledged · ${all.filter((n) => n.kind === 'acknowledged').length}` },
-                    { value: 'shipped', label: `Shipped · ${all.filter((n) => n.kind === 'shipped').length}` },
-                  ]}
-                  onChange={(v) => setParam('kind', v === 'all' ? null : v)}
-                />
+              attrs={tourAnchor('loop.inbox')}
+              footer={
+                visible.length > shown.length ? (
+                  <>
+                    <span>
+                      Showing {shown.length} of {visible.length}
+                    </span>
+                    <Button size="sm" variant="ghost" onClick={() => setExtra((x) => x + page)}>
+                      Show more
+                    </Button>
+                  </>
+                ) : undefined
               }
             >
               {visible.length === 0 ? (
-                <div className={styles.emptyPad}>
-                  <EmptyState
-                    variant="no-data"
-                    title={all.length === 0 ? 'No updates yet' : 'Nothing in this filter'}
-                    description={all.length === 0 ? `When an insight from ${csm?.name.split(' ')[0] ?? 'this CSM'}'s calls is routed, acknowledged or shipped, it shows up here.` : 'Try another filter.'}
-                  />
-                </div>
+                <EmptyState
+                  compact
+                  icon={<IconInbox />}
+                  title={all.length === 0 ? 'No updates yet' : 'Nothing in this filter'}
+                  description={
+                    all.length === 0 ? `When feedback ${csm ? `from ${first(csm.name)}’s` : 'from a CSM’s'} conversations is routed, acknowledged or shipped, it shows up here.` : 'Try another filter.'
+                  }
+                  actions={
+                    all.length > 0 ? (
+                      <Button size="sm" onClick={() => setParam('kind', null)}>
+                        Show all updates
+                      </Button>
+                    ) : undefined
+                  }
+                />
               ) : (
-                <ul className={styles.list}>
-                  {visible.map((n) => {
+                <ul className={styles.list} aria-label="Updates">
+                  {shown.map((n) => {
                     const unread = !n.read && !opened.has(n.id);
                     const active = n.id === selected?.id;
                     return (
-                      <li key={n.id} data-tour={n === visible.find((x) => x.kind === 'shipped') ? 'loop.shipped' : undefined}>
+                      <li key={n.id} className={styles.listItem} {...(n === newestShipped ? tourAnchor('loop.shipped') : {})}>
                         <button type="button" className={`${styles.item}${active ? ` ${styles.itemActive}` : ''}`} onClick={() => open(n)} aria-current={active ? 'true' : undefined}>
-                          <span className={`${styles.unread}${unread ? ` ${styles.unreadOn}` : ''}`} aria-label={unread ? 'Unread' : undefined} />
+                          <span className={`${styles.dot}${unread ? ` ${styles.dotUnread}` : ''}`} aria-hidden="true" />
                           <span className={styles.itemBody}>
                             <span className={styles.itemTop}>
-                              <StatusChip tone={KIND_TONE[n.kind]} size="sm">
-                                {KIND_LABEL[n.kind]}
-                              </StatusChip>
-                              <span className="sl-caption">
-                                <RelativeTime value={n.createdAt} />
+                              <Badge tone={KIND_TONE[n.kind]}>{KIND_LABEL[n.kind]}</Badge>
+                              {!csmId ? <span className={styles.itemWho}>{world.personName(n.csmId)}</span> : null}
+                              <span className={styles.itemTime}>
+                                <When value={n.createdAt} />
                               </span>
                             </span>
                             <span className={`${styles.itemTitle}${unread ? ` ${styles.itemTitleUnread}` : ''}`}>{n.title}</span>
                             <span className={styles.itemSnippet}>{n.body}</span>
+                            {unread ? <span className="ds-sr-only">Unread</span> : null}
                           </span>
                         </button>
                       </li>
@@ -203,97 +276,186 @@ export default function LoopPage() {
                   })}
                 </ul>
               )}
-            </Panel>
+            </Card>
 
-            <NotificationDetail n={selected} />
+            <div ref={detailRef} className={styles.detailCol}>
+              {selected ? (
+                <NotificationDetail key={selected.id} n={selected} showCsm={!csmId} />
+              ) : (
+                <Card title="Update" attrs={tourAnchor('loop.note')}>
+                  <EmptyState compact icon={<IconMail />} title="Pick an update" description="Open an update to see what happened and the note drafted for the customer." />
+                </Card>
+              )}
+            </div>
           </div>
         </>
       )}
-    </div>
+    </Page>
   );
 }
 
-function NotificationDetail({ n }: { n: Notification | null }) {
-  const detail = useInsightDetail(n?.insightId ?? null);
-  const world = useWorldIndex();
-  const [copied, copy] = useCopy();
+/** Enough rows to show the drafted note without scrolling, within reason. */
+const noteRows = (text: string) => Math.min(14, Math.max(5, text.split(/\n/).reduce((a, line) => a + Math.max(1, Math.ceil(line.length / 78)), 0) + 1));
 
-  if (!n) {
-    return (
-      <Panel title="Update">
-        <EmptyState variant="no-data" title="Pick an update" description="Open a notification to see what happened and the drafted note to your customer." />
-      </Panel>
-    );
-  }
-  const ins = detail.data?.insight;
+function NotificationDetail({ n, showCsm }: { n: Notification; showCsm: boolean }) {
+  const detail = useInsightDetail(n.insightId);
+  const world = useWorldIndex();
+  const toast = useToast();
+  const original = n.draftCustomerNote ?? '';
+  const [note, setNote] = useState(original);
+
+  const ins = detail.data?.insight ?? null;
+  const delivery = detail.data?.deliveries.find((d) => d.receipt) ?? detail.data?.deliveries[0] ?? null;
+  const owner = delivery ? world.person(delivery.ownerId) : null;
   const acct = world.account(ins?.accountId);
-  const quote = ins?.evidence.find((e) => e.method !== 'failed')?.matchedText ?? ins?.evidence[0]?.quote;
+  const evidence = ins?.evidence.find((e) => e.method !== 'failed') ?? ins?.evidence[0] ?? null;
+  const quote = evidence ? (evidence.matchedText ?? evidence.quote) : null;
+  const csm = world.person(n.csmId);
+  const contact = acct?.name ?? 'the customer';
+
+  const happened =
+    n.kind === 'shipped' && owner
+      ? `${owner.name} moved ${delivery?.receipt ?? 'the ticket'} to Shipped.`
+      : n.kind === 'acknowledged' && owner
+        ? `${owner.name} picked it up.`
+        : n.kind === 'routed' && owner
+          ? `Sent to ${owner.name}.`
+          : n.body.split(/(?<=\.)\s/)[0];
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(note);
+      toast({ tone: 'success', title: 'Note copied', body: 'Paste it into your email to the customer.' });
+    } catch {
+      toast({ tone: 'danger', title: 'Couldn’t copy the note', body: 'Select the text and copy it instead.' });
+    }
+  };
+  const saveToGmail = () => {
+    toast({ tone: 'success', title: 'Draft saved to Gmail', body: `Simulated: in production this opens a Gmail draft to ${contact}. Nothing was sent.` });
+  };
+
+  const facts: { label: string; value: ReactNode }[] = [
+    owner
+      ? {
+          label: 'Owner',
+          value: (
+            <span className={styles.chipWrap}>
+              <PersonChip name={owner.name} sub={owner.title} size="sm" />
+            </span>
+          ),
+        }
+      : null,
+    delivery?.receipt ? { label: 'Ticket', value: <span className={styles.receipt}>{delivery.receipt}</span> } : null,
+    acct ? { label: 'Account', value: `${acct.name}, ${acct.tier}, renews ${dateShort(acct.renewalDate)}` } : null,
+    showCsm && csm ? { label: 'CSM', value: csm.name } : null,
+  ].filter((x) => x != null);
+
   return (
-    <Panel
+    <Card
       title={n.title}
-      sub={
-        <span className="sl-row">
-          <StatusChip tone={KIND_TONE[n.kind]} size="sm">
-            {KIND_LABEL[n.kind]}
-          </StatusChip>
-          <span>{KIND_HELP[n.kind]}</span>
+      description={
+        <span className={styles.detailMeta}>
+          <Badge tone={KIND_TONE[n.kind]}>{KIND_LABEL[n.kind]}</Badge>
+          <When value={n.createdAt} />
         </span>
       }
+      actions={
+        ins ? (
+          <ButtonLink to={`/app/insights/${ins.id}`} variant="ghost" size="sm">
+            Open insight
+          </ButtonLink>
+        ) : undefined
+      }
     >
-      <div className="sl-stack-lg">
-        <p className="sl-body">{n.body}</p>
+      <div className={styles.detailBody}>
+        <section className={styles.block} aria-label="What happened">
+          <h3 className={styles.blockTitle}>What happened</h3>
+          <p className={styles.happened}>{happened}</p>
+          {facts.length ? <KeyValue items={facts} /> : detail.loading ? <Skeleton width="60%" /> : null}
+        </section>
 
-        {ins ? (
-          <div className={styles.insightBox}>
-            <div className="sl-spread">
-              <span className="sl-row">
-                <TypeTag type={ins.type} />
-                <SeverityTag severity={ins.severity} />
+        <section className={styles.insight} aria-label="The insight">
+          {ins ? (
+            <>
+              <span className={styles.insightTags}>
+                <TypeLabel type={ins.type} />
+                <SeverityBadge severity={ins.severity} />
               </span>
-              <Link to={`/app/insights/${ins.id}`} className="sl-caption">
-                Open insight
-              </Link>
+              <p className={styles.insightSummary}>{ins.summary}</p>
+              {quote ? <Quote cite={acct ? `${acct.name}, in the conversation` : 'From the conversation'}>
+                  <RedactedText text={quote} />
+                </Quote> : null}
+            </>
+          ) : detail.loading ? (
+            <div className="ds-stack" style={{ gap: 10 }}>
+              <Skeleton width={160} />
+              <Skeleton width="90%" />
+              <Skeleton width="70%" />
             </div>
-            <p className={styles.insightSummary}>{ins.summary}</p>
-            {quote ? <blockquote className="sl-quote">{quote}</blockquote> : null}
-            {acct ? (
-              <span className="sl-meta">
-                {acct.name} · {acct.tier} · renews {dateShort(acct.renewalDate)}
-              </span>
-            ) : null}
-          </div>
-        ) : detail.loading ? (
-          <ListSkeleton lines={3} />
-        ) : null}
+          ) : (
+            <p className={styles.muted}>The insight behind this update is no longer in this workspace.</p>
+          )}
+        </section>
 
-        <div {...tourAnchor('loop.note')} className={styles.noteWrap}>
+        <section className={styles.block} {...tourAnchor('loop.note')} aria-label="Draft note to the customer">
           {n.draftCustomerNote ? (
-            <article className={styles.note} aria-label="Draft note to the customer">
-              <header className={styles.noteHead}>
-                <span className={styles.noteIcon} aria-hidden="true">
-                  <IconMail size={16} />
-                </span>
-                <span className={styles.noteMeta}>
-                  <span className="sl-strong">Draft note to the customer</span>
-                  <span className="sl-caption">Drafted from the shipped ticket. Edit it before sending; nothing is sent automatically.</span>
-                </span>
-                <Button size="sm" variant={copied ? 'secondary' : 'primary'} onClick={() => copy(n.draftCustomerNote ?? '')} aria-live="polite">
-                  <span className="sl-row-nowrap" style={{ gap: 6 }}>
-                    {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
-                    {copied ? 'Copied' : 'Copy note'}
-                  </span>
+            <>
+              <Field label="Draft note to the customer" hint="Drafted from the shipped ticket. Edit it before it goes anywhere; nothing is sent automatically." htmlFor={`note-${n.id}`}>
+                <Textarea id={`note-${n.id}`} value={note} onChange={(e) => setNote(e.target.value)} rows={noteRows(original)} />
+              </Field>
+              <div className={styles.noteActions}>
+                {note !== original ? (
+                  <Button size="sm" variant="ghost" onClick={() => setNote(original)} className={styles.revert}>
+                    Undo my edits
+                  </Button>
+                ) : null}
+                <Button icon={<IconCopy size={14} />} onClick={() => void copy()}>
+                  Copy
                 </Button>
-              </header>
-              <p className={styles.noteBody}>{n.draftCustomerNote}</p>
-            </article>
+                <Tooltip label="Simulated: saves a draft in Gmail for you to send. Nothing is sent from here.">
+                  <Button variant="primary" icon={<IconMail size={14} />} onClick={saveToGmail} disabled={!note.trim()}>
+                    Send from Gmail
+                  </Button>
+                </Tooltip>
+              </div>
+            </>
           ) : (
             <div className={styles.noNote}>
               <IconMail size={16} />
-              <span>No customer note for this update. Notes are drafted when an item ships, so you can close the loop with the customer in one click.</span>
+              <span>A note to the customer is drafted when this ships, so the CSM can close the loop in one step.</span>
             </div>
           )}
+        </section>
+      </div>
+    </Card>
+  );
+}
+
+function LoopSkeleton() {
+  return (
+    <div className="ds-stack" style={{ gap: 24 }} aria-busy="true" aria-label="Loading updates">
+      <div className="ds-row" style={{ justifyContent: 'space-between', gap: 12 }}>
+        <Skeleton width={220} height={32} radius={6} />
+        <Skeleton width={360} height={32} radius={6} />
+      </div>
+      <Skeleton height={96} radius={8} />
+      <div className={styles.split}>
+        <div className="ds-card">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="ds-stack" style={{ gap: 8, padding: '16px 20px', borderBottom: i < 5 ? '1px solid var(--border-row)' : 0 }}>
+              <Skeleton width={90} height={10} />
+              <Skeleton width="85%" height={10} />
+              <Skeleton width="60%" height={10} />
+            </div>
+          ))}
+        </div>
+        <div className="ds-card ds-stack" style={{ gap: 14, padding: 20 }}>
+          <Skeleton width="70%" height={14} />
+          <Skeleton width="40%" height={10} />
+          <Skeleton height={120} radius={8} />
+          <Skeleton height={180} radius={6} />
         </div>
       </div>
-    </Panel>
+    </div>
   );
 }

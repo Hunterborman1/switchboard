@@ -1,11 +1,15 @@
 /**
- * Scene: a presentation page in the product's own language. A still top bar (mark, chapter,
- * "4 of 17"), the 1120 px content column, and a still bottom bar (progress line, key hints,
- * Back / Next). Only the content between the bars changes from scene to scene.
- * Clicking empty stage advances (anything interactive opts out via data-no-advance).
+ * Scene: a presentation page of the product. The same 52px top bar as Switchboard (the mark
+ * and name, the chapter, "4 of 18", the chapter menu), the 1120px content column, and a bottom
+ * bar with one muted keyboard hint, Back / Next, and one thin progress line along its top edge.
+ * Only the content between the bars changes from scene to scene. Clicking empty stage advances
+ * (anything interactive opts out via data-no-advance).
  */
 import type { MouseEvent, ReactNode } from 'react';
-import { Arrow, Beats, Button, Mark } from './components';
+import { Button, Kbd } from '../ds';
+import { IconArrowLeft, IconArrowRight } from '../ds/icons';
+import { SceneToolsSlot } from '../tour/hud/sceneSlot';
+import { Brand } from './components';
 
 export type SceneProps = {
   /** Chapter title, e.g. "Where feedback gets lost". */
@@ -32,17 +36,37 @@ export type SceneProps = {
 export function SceneTopBar({ label, group, index, total }: { label?: string; group?: string; index?: number; total?: number }) {
   return (
     <header className="n-topbar">
-      <Mark href={`${import.meta.env.BASE_URL}`} />
-      <span className="n-topbar__chapter">
-        {group && <span className="n-topbar__group">{group} /</span>}
-        {label && <span>{label}</span>}
-      </span>
-      <span className="n-topbar__right">{index != null && total != null && <span className="n-topbar__count">{index} of {total}</span>}</span>
+      <Brand href={import.meta.env.BASE_URL} />
+      {label ? (
+        <span className="n-topbar__crumb">
+          <span className="n-topbar__slash" aria-hidden="true">
+            /
+          </span>
+          {group ? (
+            <>
+              <span className="n-topbar__group">{group}</span>
+              <span className="n-topbar__slash n-topbar__slash--inner" aria-hidden="true">
+                /
+              </span>
+            </>
+          ) : null}
+          <span className="n-topbar__chapter" aria-current="page">
+            {label}
+          </span>
+        </span>
+      ) : null}
+      <span className="n-topbar__spacer" />
+      {index != null && total != null ? (
+        <span className="n-topbar__count" aria-label={`Part ${index} of ${total}`}>
+          {index} of {total}
+        </span>
+      ) : null}
+      <SceneToolsSlot />
     </header>
   );
 }
 
-export function Scene({ label, group, index, total, beat, beats, progress = 0, onNext, onBack, nextLabel = 'Next', children, bare, className, testId }: SceneProps) {
+export function Scene({ label, group, index, total, beat, progress = 0, onNext, onBack, nextLabel = 'Next', children, bare, className, testId }: SceneProps) {
   const onStageClick = (e: MouseEvent<HTMLElement>) => {
     if (!onNext) return;
     const t = e.target as HTMLElement;
@@ -50,6 +74,7 @@ export function Scene({ label, group, index, total, beat, beats, progress = 0, o
     if (window.getSelection()?.toString()) return;
     onNext();
   };
+  const pct = Math.round(Math.max(0, Math.min(1, progress)) * 1000) / 10;
   return (
     <section className={`n-scene ${className ?? ''}`} aria-roledescription="scene" aria-label={label} data-testid={testId ?? 'scene'} data-beat={beat}>
       <SceneTopBar label={label} group={group} index={index} total={total} />
@@ -58,24 +83,35 @@ export function Scene({ label, group, index, total, beat, beats, progress = 0, o
       </div>
       {!bare && (
         <footer className="n-bottombar">
-          <span className="n-bottombar__progress" aria-hidden="true">
-            <i style={{ width: `${Math.round(Math.max(0, Math.min(1, progress)) * 1000) / 10}%` }} />
+          <span className="n-bottombar__progress" role="progressbar" aria-label="Walkthrough progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>
+            <i style={{ width: `${pct}%` }} />
           </span>
-          <div className="n-bottombar__inner">
-            <span className="n-bottombar__hints">→ or Space for next · ← for back · Esc for the menu</span>
-            <span className="n-bottombar__actions">
-              <Beats count={beats} current={beat} />
+          <div className="n-bottombar__in">
+            <p className="n-bottombar__hint">
+              <span>Press</span>
+              <Kbd>
+                <IconArrowRight size={12} aria-label="Right arrow" />
+              </Kbd>
+              <span>for next,</span>
+              <Kbd>
+                <IconArrowLeft size={12} aria-label="Left arrow" />
+              </Kbd>
+              <span>for back,</span>
+              <Kbd>Esc</Kbd>
+              <span>for the menu</span>
+            </p>
+            <div className="n-bottombar__actions">
               {onBack && (
-                <Button variant="ghost" size="sm" onClick={onBack} aria-label="Back">
-                  <Arrow dir="left" /> Back
+                <Button variant="ghost" icon={<IconArrowLeft />} onClick={onBack} aria-label="Back">
+                  Back
                 </Button>
               )}
               {onNext && (
-                <Button size="sm" onClick={onNext} data-testid="scene-next">
-                  {nextLabel} <Arrow />
+                <Button variant="primary" iconRight={<IconArrowRight />} onClick={onNext} data-testid="scene-next">
+                  {nextLabel}
                 </Button>
               )}
-            </span>
+            </div>
           </div>
         </footer>
       )}

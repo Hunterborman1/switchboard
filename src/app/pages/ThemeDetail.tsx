@@ -1,57 +1,57 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import type { Account, Theme } from '../../shared/contracts';
+/**
+ * A theme: the pattern, what it is worth (ARR across distinct accounts), whether it is
+ * growing, the customers' own words, the accounts behind it and every insight in it.
+ * Clicking a week in the trend filters the insight list to that week.
+ */
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip as ChartTooltip, XAxis, YAxis } from 'recharts';
+import type { Account, Insight, Theme } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
-import { MetricStrip } from '../../system/components/blocks/MetricStrip.jsx';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { DataTable, type DataTableColumn } from '../../uis/DataTable';
-import { StatusChip } from '../../uis/StatusChip';
-import { EmptyState } from '../../uis/EmptyState';
-import { MonoId } from '../../uis/MonoId';
-import { LineageGraph, deriveNodes, layoutNodes, type LineageEdgeRow } from '../../uis';
-import { CardSkeleton, Skeleton, SkeletonSurface, TableSkeleton } from '../../uis/Skeleton';
+import { Badge, Button, Card, CellText, EmptyState, Page, PageHeader, PersonChip, Quote, Skeleton, Stats, Table, TableSkeleton, useCrumbs, useToast, type Tone } from '../../ds';
+import { IconArrowUp, IconLayers, IconX } from '../../ds/icons';
 import { useTheme } from '../api/hooks';
-import { AppPageHeader, ErrorState, Panel, TypeTag, WhyDisabled, useToast } from '../components/ui';
-import { AREA_LABEL, TYPE_LABEL, dateShort, money, renewalIn } from '../lib/labels';
+import { useDocumentTitle } from '../AppShell';
+import { ErrorState, InsightStatusBadge, SeverityBadge, TypeLabel, When } from '../components/domain';
+import { AREA_LABEL, dateShort, money, renewalIn } from '../lib/labels';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
-import { THEME_STATUS_LABEL, THEME_STATUS_TONE } from './Themes';
+import { ThemeStatusBadge } from './Themes';
+import { isoWeekOf, weekStart } from './themes/weeks';
+import { RedactedText } from './run/Transcript';
 import styles from './themes/themes.module.css';
 
-const HEALTH_TONE = { healthy: 'success', watch: 'warning', at_risk: 'danger' } as const;
-const HEALTH_LABEL = { healthy: 'Healthy', watch: 'Watch', at_risk: 'At risk' } as const;
+const INSIGHTS_PAGE = 20;
 
-function weekLabel(week: string): string {
-  const m = week.match(/W(\d+)/);
-  return m ? `W${m[1]}` : week;
-}
+const HEALTH: Record<Account['health'], { label: string; tone: Tone }> = {
+  healthy: { label: 'Healthy', tone: 'success' },
+  watch: { label: 'Watch', tone: 'warning' },
+  at_risk: { label: 'At risk', tone: 'danger' },
+};
 
-function DetailSkeleton() {
-  return (
-    <SkeletonSurface label="Loading theme">
-      <div className="sl-stack-lg">
-        <Skeleton width="45%" height={26} />
-        <Skeleton width="70%" height={13} />
-        <Skeleton height={78} />
-        <div className={styles.detailGrid}>
-          <CardSkeleton lines={5} />
-          <CardSkeleton lines={5} />
-        </div>
-        <TableSkeleton rows={5} columns={6} />
-      </div>
-    </SkeletonSurface>
-  );
+function trendSummary(weekly: Theme['weekly']): string {
+  if (!weekly.length) return 'No weekly history yet.';
+  const total = weekly.reduce((s, w) => s + w.count, 0);
+  const peak = weekly.reduce((a, b) => (b.count > a.count ? b : a));
+  const half = Math.floor(weekly.length / 2);
+  const recent = weekly.slice(half).reduce((s, w) => s + w.count, 0);
+  const earlier = weekly.slice(0, half).reduce((s, w) => s + w.count, 0);
+  const dir = recent > earlier ? 'Growing' : recent < earlier ? 'Fading' : 'Steady';
+  return `${dir}: ${recent} in the last ${weekly.length - half} weeks against ${earlier} in the ${half} before. ${total} in ${weekly.length} weeks, most in the week of ${weekStart(peak.week)} (${peak.count}).`;
 }
 
 export default function ThemeDetailPage() {
   const { id = '' } = useParams();
-  const { data, dataAsOf, error, loading, refresh } = useTheme(id);
+  const themeQ = useTheme(id);
   const world = useWorldIndex();
   const toast = useToast();
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
   const [promoted, setPromoted] = useState(false);
+  const [limit, setLimit] = useState(INSIGHTS_PAGE);
+  const insightsRef = useRef<HTMLElement | null>(null);
+  const week = params.get('week');
 
   useEffect(() => {
     if (!id) return;
@@ -59,217 +59,345 @@ export default function ThemeDetailPage() {
     track('theme_opened', { themeId: id });
   }, [id]);
 
-  const theme: Theme | undefined = data?.theme ? { ...data.theme, status: promoted && data.theme.status !== 'shipped' ? 'on_roadmap' : data.theme.status } : undefined;
+  const data = themeQ.data;
+  const theme: Theme | undefined = data?.theme
+    ? {
+        ...data.theme,
+        status: promoted && data.theme.status !== 'shipped' ? 'on_roadmap' : data.theme.status,
+      }
+    : undefined;
+  useDocumentTitle(theme?.name ?? 'Theme');
+  useCrumbs(theme ? [{ label: theme.name }] : null, [theme?.name]);
 
   const accounts = useMemo(() => [...(data?.accounts ?? [])].sort((a, b) => b.arrUsd - a.arrUsd), [data]);
-  const insights = data?.insights ?? [];
+  const insights = useMemo(() => [...(data?.insights ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [data]);
+  const perAccount = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const i of insights) if (i.accountId) m.set(i.accountId, (m.get(i.accountId) ?? 0) + 1);
+    return m;
+  }, [insights]);
+  const shownInsights = week ? insights.filter((i) => isoWeekOf(i.createdAt) === week) : insights;
 
-  const lineage: LineageEdgeRow[] = useMemo(() => {
-    if (!theme) return [];
-    const themeRef = { externalIdentity: `theme:${theme.id}`, nodeKind: 'theme', displayLabel: theme.name, href: null, meta: `${theme.insightCount} insights` };
-    const edges: LineageEdgeRow[] = [];
-    const shown = insights.slice(0, 10);
-    for (const ins of shown) {
-      const acct = world.account(ins.accountId);
-      const insRef = { externalIdentity: `insight:${ins.id}`, nodeKind: 'insight', displayLabel: ins.summary.length > 46 ? `${ins.summary.slice(0, 44)}…` : ins.summary, href: `/app/insights/${ins.id}`, meta: TYPE_LABEL[ins.type] };
-      if (acct) {
-        edges.push({
-          lineageEdgeId: `a-${ins.id}`,
-          fromNode: { externalIdentity: `account:${acct.id}`, nodeKind: 'account', displayLabel: acct.name, href: `/app/insights?account=${acct.id}`, meta: money(acct.arrUsd, { compact: true }) },
-          toNode: insRef,
-          relationshipKind: 'said',
-          generationSource: 'account',
-          active: true,
-        });
-      }
-      edges.push({ lineageEdgeId: `m-${ins.id}`, fromNode: insRef, toNode: themeRef, relationshipKind: 'member_of', generationSource: 'membership', active: ins.status !== 'rejected' });
-    }
-    return edges;
-  }, [theme, insights, world]);
+  const pickWeek = (w: string) => {
+    const next = new URLSearchParams(params);
+    next.set('week', w);
+    setParams(next, { replace: true });
+    window.requestAnimationFrame(() =>
+      insightsRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      }),
+    );
+  };
+  const clearWeek = () => {
+    const next = new URLSearchParams(params);
+    next.delete('week');
+    setParams(next, { replace: true });
+  };
 
-  if (error && !data) return (
-    <div className="sl-page">
-      <AppPageHeader title="Theme" dataAsOf={dataAsOf} breadcrumbs={[{ label: 'Themes', href: '/app/themes' }]} />
-      <ErrorState error={error} onRetry={refresh} what="this theme" />
-    </div>
-  );
+  if (themeQ.error && !data) {
+    return (
+      <Page>
+        <PageHeader title="Theme" />
+        <Card>
+          <ErrorState error={themeQ.error} onRetry={() => void themeQ.refresh()} what="this theme" />
+        </Card>
+      </Page>
+    );
+  }
 
-  if (loading || !theme) return (
-    <div className="sl-page">
-      <AppPageHeader title="Theme" dataAsOf={dataAsOf} breadcrumbs={[{ label: 'Themes', href: '/app/themes' }]} />
-      <DetailSkeleton />
-    </div>
-  );
+  if (!theme) return <DetailSkeleton />;
 
   const owner = world.person(theme.ownerId);
   const canPromote = theme.status === 'candidate' || theme.status === 'active';
-  const totalWeekly = theme.weekly.reduce((a, w) => a + w.count, 0);
-
-  const columns: DataTableColumn<Account>[] = [
-    {
-      key: 'name',
-      header: 'Account',
-      sortable: true,
-      sortValue: (a) => a.name,
-      render: (a) => (
-        <div>
-          <Link className="sl-quietlink sl-cell-title" to={`/app/insights?account=${a.id}`}>{a.name}</Link>
-          <div className="sl-cell-sub">{a.tier} · {a.vertical.replace('_', ' ')}</div>
-        </div>
-      ),
-    },
-    { key: 'arr', header: 'ARR', sortable: true, sortValue: (a) => a.arrUsd, render: (a) => <span className="sl-num">{money(a.arrUsd)}</span> },
-    { key: 'renewal', header: 'Renewal', sortable: true, sortValue: (a) => a.renewalDate, render: (a) => <span className="sl-num">{renewalIn(a.renewalDate)}</span> },
-    { key: 'health', header: 'Health', sortable: true, sortValue: (a) => ({ at_risk: 0, watch: 1, healthy: 2 })[a.health], render: (a) => <StatusChip tone={HEALTH_TONE[a.health]}>{HEALTH_LABEL[a.health]}</StatusChip> },
-    { key: 'csm', header: 'CSM', sortable: true, sortValue: (a) => world.personName(a.csmId), render: (a) => world.personName(a.csmId) },
-    { key: 'insights', header: 'Insights here', sortable: true, sortValue: (a) => insights.filter((i) => i.accountId === a.id).length, render: (a) => <span className="sl-num">{insights.filter((i) => i.accountId === a.id).length}</span> },
-  ];
-
-  const shownArr = accounts.reduce((s, a) => s + a.arrUsd, 0);
+  const weekly = theme.weekly;
+  const last = weekly.length - 1;
 
   return (
-    <div className="sl-page">
-      <AppPageHeader
+    <Page>
+      <PageHeader
         title={theme.name}
-        subtitle={`${AREA_LABEL[theme.productArea]} theme`}
-        dataAsOf={dataAsOf}
-        breadcrumbs={[{ label: 'Themes', href: '/app/themes' }, { label: theme.name }]}
+        badge={<ThemeStatusBadge status={theme.status} />}
+        description={theme.summary}
+        meta={
+          <>
+            <TypeLabel type={theme.type} />
+            <span>{AREA_LABEL[theme.productArea]}</span>
+            {owner ? (
+              <span className={styles.owner}>
+                <span>Owner</span>
+                <PersonChip name={owner.name} initials={owner.initials} sub={owner.title} size="sm" />
+              </span>
+            ) : (
+              <span className="ds-subtle">No owner yet</span>
+            )}
+          </>
+        }
+        actions={
+          <>
+            {!canPromote ? <span className={styles.why}>{theme.status === 'shipped' ? 'Already shipped' : 'Already on the roadmap'}</span> : null}
+            <Button
+              variant="primary"
+              icon={<IconArrowUp />}
+              disabled={!canPromote}
+              onClick={() => {
+                setPromoted(true);
+                toast({
+                  tone: 'success',
+                  title: 'Promoted to roadmap in your workspace',
+                  body: `${theme.name} now reads “On roadmap” for ${owner?.name ?? 'its owner'}.`,
+                });
+              }}
+            >
+              Promote to roadmap
+            </Button>
+          </>
+        }
       />
 
-      <div className={styles.headerRow}>
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div className="sl-row" style={{ marginBottom: 8 }}>
-            <TypeTag type={theme.type} />
-            <StatusChip tone={THEME_STATUS_TONE[theme.status]}>{THEME_STATUS_LABEL[theme.status]}</StatusChip>
-            <span className="sl-caption" title="Theme ID"><MonoId value={theme.id} /></span>
-          </div>
-          <p className={styles.lede}>{theme.summary}</p>
-          <p className="sl-meta" style={{ margin: '8px 0 0' }}>
-            Owner: <span className="sl-strong">{owner ? `${owner.name} · ${owner.title}` : 'Unassigned'}</span>
-          </p>
-        </div>
-        <div className={`sl-stack-sm ${styles.headerAction}`}>
-          <Button
-            variant="primary"
-            iconLeft="arrowUpRight"
-            disabled={!canPromote}
-            onClick={() => {
-              setPromoted(true);
-              toast({ tone: 'success', title: 'Promoted to roadmap in your workspace', body: `${theme.name} now reads "On roadmap" for ${owner?.name ?? 'its owner'}.` });
-            }}
-          >
-            Promote to roadmap
-          </Button>
-          {!canPromote ? <WhyDisabled reason={theme.status === 'shipped' ? 'Already shipped' : 'Already on the roadmap'} /> : null}
-        </div>
-      </div>
-
-      <MetricStrip
-        minItemWidth={170}
+      <Stats
         items={[
-          { label: 'Insights', value: theme.insightCount.toLocaleString(), sub: `${totalWeekly.toLocaleString()} in the last 8 weeks` },
-          { label: 'Accounts', value: theme.accountCount.toLocaleString(), sub: `${accounts.length} listed below` },
+          {
+            label: 'Insights',
+            value: theme.insightCount.toLocaleString(),
+            sub: `${weekly.reduce((s, w) => s + w.count, 0).toLocaleString()} in the last ${weekly.length} weeks`,
+          },
+          {
+            label: 'Accounts',
+            value: theme.accountCount.toLocaleString(),
+            sub: 'Each counted once',
+          },
           {
             label: 'ARR at stake',
-            value: <span {...tourAnchor('theme.arr')}>{money(theme.arrUsd, { compact: true })}</span>,
+            value: money(theme.arrUsd, { compact: true }),
             sub: 'Combined ARR of the accounts affected',
+            attrs: tourAnchor('theme.arr'),
           },
-          { label: 'First seen', value: <span style={{ fontSize: 'var(--fs-title-lg)' }}>{dateShort(theme.firstSeen)}</span>, sub: `Last seen ${dateShort(theme.lastSeen)}` },
+          {
+            label: 'First seen',
+            value: dateShort(theme.firstSeen),
+            sub: `Last seen ${dateShort(theme.lastSeen)}`,
+          },
         ]}
       />
 
       <div className={styles.detailGrid}>
-        <Panel
-          title="Trend"
-          sub="New insights in this theme each week. Click a bar to see them."
-          anchor={tourAnchor('theme.trend')}
-        >
-          {theme.weekly.length === 0 ? (
-            <EmptyState variant="not-yet-collected" title="No weekly history yet" />
+        <Card title="Trend" description="New insights each week. Select a week to see its insights." attrs={tourAnchor('theme.trend')} className={styles.fillCard} bodyClassName={styles.fillBody}>
+          {weekly.length === 0 ? (
+            <EmptyState icon={<IconLayers />} title="No weekly history yet" compact />
           ) : (
-            <div className={styles.chart} role="img" aria-label={`Weekly insights: ${theme.weekly.map((w) => `${w.week} ${w.count}`).join(', ')}`}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={theme.weekly.map((w) => ({ ...w, label: weekLabel(w.week) }))} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
-                  <CartesianGrid vertical={false} stroke="var(--cn-grid)" />
-                  <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: 'var(--cn-border)' }} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} />
-                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} width={44} />
-                  <Tooltip
-                    cursor={{ fill: 'var(--bg-subtle)' }}
-                    contentStyle={{ borderRadius: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-2)', fontSize: 12 }}
-                    formatter={(v) => [`${String(v)} insights`, 'Joined']}
-                    labelFormatter={(l) => `Week ${String(l)}`}
-                  />
-                  <Bar
-                    dataKey="count"
-                    radius={[3, 3, 0, 0]}
-                    maxBarSize={44}
-                    cursor="pointer"
-                    isAnimationActive
-                    onClick={() => navigate(`/app/insights?q=${encodeURIComponent(theme.name.split(' ').slice(0, 2).join(' '))}`)}
+            <div className={styles.trendBody}>
+              <div className={styles.chart} role="img" aria-label={`Insights per week: ${weekly.map((w) => `week of ${weekStart(w.week)} ${w.count}`).join(', ')}`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={weekly.map((w) => ({
+                      ...w,
+                      label: weekStart(w.week),
+                    }))}
+                    margin={{ top: 8, right: 4, bottom: 0, left: 0 }}
                   >
-                    {theme.weekly.map((w, i) => (
-                      <Cell key={w.week} fill={i === theme.weekly.length - 1 ? 'var(--chart-1)' : 'var(--accent-subtle)'} stroke={i === theme.weekly.length - 1 ? 'none' : 'var(--chart-1)'} strokeOpacity={0.35} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                    <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
+                    <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: 'var(--border)' }} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} interval="preserveStartEnd" minTickGap={8} />
+                    <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--text-tertiary)' }} width={28} />
+                    <ChartTooltip
+                      cursor={{ fill: 'var(--bg-muted)' }}
+                      contentStyle={{
+                        borderRadius: 6,
+                        border: '1px solid var(--border)',
+                        boxShadow: 'var(--shadow-2)',
+                        fontSize: 12,
+                        padding: '6px 10px',
+                      }}
+                      labelStyle={{
+                        color: 'var(--text-secondary)',
+                        marginBottom: 2,
+                      }}
+                      itemStyle={{ color: 'var(--text)', padding: 0 }}
+                      formatter={(v) => [`${String(v)} insight${v === 1 ? '' : 's'}`, 'New']}
+                      labelFormatter={(l) => `Week of ${String(l)}`}
+                    />
+                    <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={40} cursor="pointer" isAnimationActive={false} onClick={(_, i) => weekly[i] && pickWeek(weekly[i]!.week)}>
+                      {weekly.map((w, i) => (
+                        <Cell key={w.week} fill={week ? (w.week === week ? 'var(--chart-1)' : 'var(--accent-line)') : i === last ? 'var(--chart-1)' : 'var(--accent-line)'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <p className={styles.chartSummary}>{trendSummary(weekly)}</p>
             </div>
           )}
-          <p className="sl-caption" style={{ margin: '10px 0 0' }}>
-            The solid bar is the current week. <Link className="sl-linkbtn" to={`/app/insights?q=${encodeURIComponent(theme.name.split(' ').slice(0, 2).join(' '))}`}>Open these insights</Link>
-          </p>
-        </Panel>
+        </Card>
 
-        <Panel title="What customers said" sub="The clearest verified quotes in this theme" anchor={tourAnchor('theme.quotes')}>
+        <Card title="What customers said" description="Representative quotes, each traced to the conversation it came from." attrs={tourAnchor('theme.quotes')}>
           {theme.topQuotes.length === 0 ? (
-            <EmptyState variant="no-data" title="No quotes yet" description="Quotes appear once an insight in this theme has a verified quote." />
+            <EmptyState title="No quotes yet" description="Quotes appear once an insight in this theme has a verified quote." compact />
           ) : (
             <ul className={styles.quotes}>
-              {theme.topQuotes.map((q) => (
-                <li key={q.insightId} className={styles.quoteItem}>
-                  <blockquote className="sl-quote">{q.quote}</blockquote>
-                  <div className={styles.quoteMeta}>
-                    <span>{world.accountName(q.accountId)}</span>
-                    <Link className="sl-linkbtn" to={`/app/insights/${q.insightId}`}>Open insight</Link>
-                  </div>
+              {theme.topQuotes.slice(0, 4).map((q) => (
+                <li key={q.insightId}>
+                  <Quote
+                    cite={
+                      <span className={styles.cite}>
+                        <span className="ds-truncate">{world.accountName(q.accountId)}</span>
+                        <Link to={`/app/insights/${q.insightId}`}>Open insight</Link>
+                      </span>
+                    }
+                  >
+                    <RedactedText text={q.quote} />
+                  </Quote>
                 </li>
               ))}
             </ul>
           )}
-        </Panel>
+        </Card>
       </div>
 
-      <Panel
+      <Card
         title="Accounts affected"
-        sub={`${accounts.length} accounts · ${money(shownArr)} combined ARR`}
+        description={`${accounts.length} account${accounts.length === 1 ? '' : 's'}, ${money(
+          accounts.reduce((s, a) => s + a.arrUsd, 0),
+          { compact: true },
+        )} combined ARR.`}
         flush
       >
-        <DataTable
-          columns={columns}
-          rows={accounts}
-          getRowKey={(a) => a.id}
-          pagination="when-needed"
-          initialSort={{ key: 'arr', direction: 'desc' }}
-          rowTone={(a) => (a.health === 'at_risk' ? 'red' : null)}
-          empty={<EmptyState variant="no-data" title="No accounts linked" />}
-        />
-      </Panel>
-
-      <Panel title="How it connects" sub="Which accounts raised which insights in this theme. Use a node’s Open link to see the record." flush>
-        {lineage.length === 0 ? (
-          <div className="sl-panel-body">
-            <EmptyState variant="not-yet-collected" title="No linked insights yet" />
-          </div>
+        {accounts.length === 0 ? (
+          <EmptyState title="No accounts linked" compact />
         ) : (
-          <div className={styles.lineage}>
-            <LineageGraph nodes={layoutFor(lineage)} edges={lineage} rootIdentity={`theme:${theme.id}`} focusIdentity={null} />
-          </div>
+          <Table label="Accounts affected" minWidth={760}>
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th className="is-num">ARR</th>
+                <th>Renewal</th>
+                <th>Health</th>
+                <th>CSM</th>
+                <th className="is-num">Insights here</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accounts.map((a) => (
+                <tr key={a.id} className="is-clickable has-row-link" onClick={() => navigate(`/app/insights?account=${a.id}`)}>
+                  <td>
+                    <Link to={`/app/insights?account=${a.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
+                      <CellText primary={a.name} secondary={`${a.tier}, ${a.vertical.replace(/_/g, ' ')}`} />
+                    </Link>
+                  </td>
+                  <td className="is-num">{money(a.arrUsd)}</td>
+                  <td className="is-nowrap">
+                    <CellText primary={dateShort(a.renewalDate)} secondary={renewalIn(a.renewalDate).split(' · ')[1] ?? undefined} />
+                  </td>
+                  <td>
+                    <Badge tone={HEALTH[a.health].tone} dot>
+                      {HEALTH[a.health].label}
+                    </Badge>
+                  </td>
+                  <td className="is-nowrap">{world.personName(a.csmId)}</td>
+                  <td className="is-num">{perAccount.get(a.id) ?? 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         )}
-      </Panel>
-    </div>
+      </Card>
+
+      <section ref={insightsRef} className={styles.anchorTarget}>
+        <Card
+          title="Insights in this theme"
+          description={week ? `${shownInsights.length} from the week of ${weekStart(week)}.` : `${insights.length} insight${insights.length === 1 ? '' : 's'}, newest first.`}
+          actions={
+            week ? (
+              <Button size="sm" variant="ghost" icon={<IconX size={14} />} onClick={clearWeek}>
+                Show all weeks
+              </Button>
+            ) : null
+          }
+          flush
+          footer={
+            shownInsights.length > INSIGHTS_PAGE ? (
+              <>
+                <span>
+                  Showing {Math.min(limit, shownInsights.length)} of {shownInsights.length}
+                </span>
+                {limit < shownInsights.length ? (
+                  <Button size="sm" variant="ghost" onClick={() => setLimit((l) => l + INSIGHTS_PAGE)}>
+                    Show more
+                  </Button>
+                ) : null}
+              </>
+            ) : undefined
+          }
+        >
+          {shownInsights.length === 0 ? (
+            <EmptyState title={week ? 'No insights that week' : 'No insights yet'} compact />
+          ) : (
+            <InsightsTable insights={shownInsights.slice(0, limit)} accountName={world.accountName} onOpen={(i) => navigate(`/app/insights/${i.id}`)} />
+          )}
+        </Card>
+      </section>
+    </Page>
   );
 }
 
-function layoutFor(edges: LineageEdgeRow[]) {
-  return layoutNodes(deriveNodes(edges), edges);
+function InsightsTable({ insights, accountName, onOpen }: { insights: Insight[]; accountName: (id: string | null) => string; onOpen: (i: Insight) => void }) {
+  return (
+    <Table label="Insights in this theme" minWidth={860}>
+      <colgroup>
+        <col />
+        <col style={{ width: 200 }} />
+        <col style={{ width: 104 }} />
+        <col style={{ width: 150 }} />
+        <col style={{ width: 104 }} />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Insight</th>
+          <th>Account</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th className="is-num">Received</th>
+        </tr>
+      </thead>
+      <tbody>
+        {insights.map((i) => (
+          <tr key={i.id} className="is-clickable has-row-link" onClick={() => onOpen(i)}>
+            <td style={{ maxWidth: 0 }}>
+              <Link to={`/app/insights/${i.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()} title={i.summary}>
+                <CellText primary={i.summary} />
+              </Link>
+            </td>
+            <td className="ds-truncate" style={{ maxWidth: 0 }}>
+              {i.accountId ? accountName(i.accountId) : <span className="ds-subtle">No account</span>}
+            </td>
+            <td>
+              <SeverityBadge severity={i.severity} />
+            </td>
+            <td>
+              <InsightStatusBadge status={i.status} />
+            </td>
+            <td className="is-num ds-muted">
+              <When value={i.createdAt} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+}
+
+function DetailSkeleton() {
+  return (
+    <Page>
+      <div className="ds-stack" style={{ gap: 10 }} aria-busy="true" aria-label="Loading theme">
+        <Skeleton width={360} height={24} />
+        <Skeleton width={520} height={12} />
+      </div>
+      <Skeleton height={96} radius={8} />
+      <div className={styles.detailGrid}>
+        <Skeleton height={300} radius={8} />
+        <Skeleton height={300} radius={8} />
+      </div>
+      <TableSkeleton rows={5} cols={6} />
+    </Page>
+  );
 }

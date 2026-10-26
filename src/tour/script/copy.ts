@@ -28,16 +28,16 @@ export function introFor(ctx: Pick<TourCtx, 'path' | 'fileFormat'>): { title: st
   const f = ctx.fileFormat ?? null;
   const noun = f === 'eml' ? 'email thread' : f === 'chat' ? 'Slack export' : f === 'md' ? 'set of notes' : 'transcript';
   const p: TourPath = ctx.path;
-  if (p === 'main') return { title: 'Run the pipeline', body: 'A real QBR: thirteen minutes of conversation with product signals buried in it. Press Run.' };
-  if (p === 'clean') return { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones. Press Run.' };
+  if (p === 'main') return { title: 'Run the pipeline', body: 'A real QBR: thirteen minutes of conversation with product signals buried in it. Press Process conversation.' };
+  if (p === 'clean') return { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones. Press Process conversation.' };
   if (p === 'messy') {
-    if (f === 'chat') return { title: 'A Slack export. Good test.', body: 'Handles instead of speakers, threads, shorthand and half-sentences. Let’s see if it stays honest. Press Run.' };
-    if (f === 'eml') return { title: 'A forwarded email thread. Good test.', body: 'Quoted replies, signatures and three people talking past each other. Let’s see if it stays honest. Press Run.' };
-    return { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest. Press Run.' };
+    if (f === 'chat') return { title: 'A Slack export. Good test.', body: 'Handles instead of speakers, threads, shorthand and half-sentences. Let’s see if it stays honest. Press Process conversation.' };
+    if (f === 'eml') return { title: 'A forwarded email thread. Good test.', body: 'Quoted replies, signatures and three people talking past each other. Let’s see if it stays honest. Press Process conversation.' };
+    return { title: 'Raw speech-to-text. Good test.', body: '“In vocal”, “call rail”, crosstalk, sarcasm. Let’s see if it stays honest. Press Process conversation.' };
   }
-  if (p === 'security') return { title: 'This one is hostile', body: `Somebody planted an instruction in this ${noun}. Watch what the system does with it. Press Run.` };
-  if (p === 'negative') return { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing. Press Run.' };
-  return { title: f === 'eml' ? 'A healthcare email, full of PHI' : 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model. Press Run.' };
+  if (p === 'security') return { title: 'This one is hostile', body: `Somebody planted an instruction in this ${noun}. Watch what the system does with it. Press Process conversation.` };
+  if (p === 'negative') return { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing. Press Process conversation.' };
+  return { title: f === 'eml' ? 'A healthcare email, full of PHI' : 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model. Press Process conversation.' };
 }
 
 export const runSettled = (run: RunDetail | null) => !!run && ['completed', 'failed', 'awaiting_review'].includes(run.run.status);
@@ -49,7 +49,7 @@ function allEvidence(run: RunDetail): Evidence[] {
 /** ch2.intro: "real execution" is only true live; a replay says what it is. */
 export function introCopy(ctx: TourCtx): string {
   if (ctx.runReused) {
-    return 'This file was already run, so this is that earlier run, revealed again from its saved steps. Nothing new is executing; New call → Run again live starts a fresh one.';
+    return 'This file was already run, so this is that earlier run, revealed again from its saved steps. Nothing new is executing; New conversation, then Run again live, starts a fresh one.';
   }
   if (ctx.run?.run.mode === 'replay') {
     return 'This is a recorded real execution, replayed at real speed and labelled as a replay. Each step writes a row as it runs.';
@@ -60,7 +60,7 @@ export function introCopy(ctx: TourCtx): string {
 /** ch3.edit: once the edit form is open, say what saving needs. */
 export function editCopy(): string {
   const formOpen = typeof document !== 'undefined' && !!document.querySelector('[data-tour="review.editform"]');
-  if (formOpen) return 'Change the type, area or severity, then Save edit & route. The fix is saved as labelled data with a before/after diff.';
+  if (formOpen) return 'Change the type, area or severity, then Save and send. The fix is saved as labelled data with a before/after diff.';
   return 'Press E or click Edit. Your fix is saved as labelled data, with a before/after audit diff.';
 }
 
@@ -73,20 +73,31 @@ export function redactCopy(ctx: TourCtx): string {
   return `${plural(n, 'value')} redacted (${kinds}) before any model saw the text.`;
 }
 
+const LANGUAGE: Record<string, string> = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', pt: 'Portuguese', it: 'Italian', nl: 'Dutch' };
+const KIND: Record<string, string> = {
+  call_transcript: 'A call transcript', meeting_notes: 'Meeting notes', email_thread: 'An email thread', chat_thread: 'A chat thread',
+  support_ticket: 'A support ticket', survey_response: 'A survey response', document: 'A document', other: 'A conversation',
+};
+
+/** ch2.screen: the decision model's triage, read from the run. Honest generic text before it lands. */
 export function screenCopy(ctx: TourCtx): { title: string; body: string } {
   const s = ctx.run?.screen;
   if (ctx.path === 'security' || s?.injection_suspected) {
     return {
       title: 'Injection flagged, and kept inert',
-      body: 'The planted instruction is treated as data. Output stays schema-only, and an audit row is written.',
+      body: 'Caught by the decision model and a code check. Treated as data: output stays schema-only, with an audit row.',
     };
   }
   if (ctx.path === 'negative' || s?.actionable === false) {
-    return { title: 'A cheap check first', body: 'Screen says: friendly, nothing actionable. The expensive step still runs, and it must agree.' };
+    return { title: 'Read first, by a fast model', body: 'Friendly, nothing for the product team. The main pass that started alongside is discarded, so nothing gets invented.' };
   }
+  if (!s) return { title: 'Read first, by a fast model', body: 'What is it, what language, which analyses apply, is anyone steering the AI? One quick call answers.' };
+  const kind = KIND[s.doc_kind ?? ''] ?? 'A conversation';
+  const lang = LANGUAGE[s.language] ?? s.language.toUpperCase();
+  const others = (s.analyses ?? []).filter((a) => a !== 'product_feedback').length;
   return {
-    title: 'A cheap check before the expensive one',
-    body: s ? `Actionable, language “${s.language}”, no injection suspected. Fast model, a few hundred tokens.` : 'Is it actionable? What language? Is someone trying to steer the model? One fast call answers all three.',
+    title: 'Read first, by a fast model',
+    body: `${kind} in ${lang}, with product feedback, so Signal Loop runs.${others ? ` ${plural(others, 'roadmap analysis', 'roadmap analyses')} would apply too.` : ''} No added time.`,
   };
 }
 
@@ -96,12 +107,11 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
   if (ctx.path === 'negative' || n === 0) {
     return { title: 'Nothing actionable, and that’s the right answer', body: 'Zero insights. A calm empty state. It doesn’t invent work to look busy.' };
   }
-  // On the main path the screen beat is folded in here: half a line on the cheap check, then the result.
-  const screened = ctx.path !== 'security' && !!ctx.run?.screen;
-  const found = n != null ? `${plural(n, 'candidate insight')}, each with a verbatim quote and a turn ID.` : 'every candidate carries a verbatim quote and a turn ID.';
+  const chunks = Number(run?.steps.find((x) => x.key === 'extract')?.detail?.chunks ?? 1);
+  const found = n != null ? `${plural(n, 'candidate insight')}, each with a verbatim quote.` : 'Every candidate carries a verbatim quote.';
   return {
     title: 'Structured, quoted, typed',
-    body: screened ? `A cheap screen said it’s worth reading. Then the main pass: ${found} No quote, no insight.` : `${found.charAt(0).toUpperCase()}${found.slice(1)} No quote, no insight.`,
+    body: `${found.charAt(0).toUpperCase()}${found.slice(1)}${chunks > 1 ? ` Read in ${chunks} parts at once.` : ''} No quote, no insight.`,
   };
 }
 
@@ -152,7 +162,10 @@ export function gateCopy(ctx: TourCtx): string {
   const auto = live.filter((i) => i.gate === 'auto_route').length;
   const review = live.filter((i) => i.gate === 'review').length;
   const held = live.filter((i) => i.gate === 'held').length;
-  return `${auto} route${auto === 1 ? 's' : ''} automatically, ${review} go${review === 1 ? 'es' : ''} to a person${held ? `, ${held} held` : ''}. Sev-1 bugs and churn risk are always reviewed.`;
+  const so = live.filter((i) => i.secondOpinion);
+  const moved = so.filter((i) => i.secondOpinion?.effect !== 'none').length;
+  const opinion = so.length ? (moved ? ` A second model checked each one and moved ${moved}.` : ` A second model checked each one and agreed.`) : '';
+  return `${auto} route${auto === 1 ? 's' : ''} automatically, ${review} go${review === 1 ? 'es' : ''} to a person${held ? `, ${held} held` : ''}.${opinion} High stakes are always reviewed.`;
 }
 
 export function traceCopy(ctx: TourCtx): string {

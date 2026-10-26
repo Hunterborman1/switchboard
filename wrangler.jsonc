@@ -49,6 +49,8 @@
   "vars": {
     "MODEL_PRIMARY": "deepseek/deepseek-v4.1-flash",
     "MODEL_SECONDARY": "anthropic/claude-haiku-5.5",
+    // Triage and the second opinion at the gate (docs/reports/decision-models.md).
+    "MODEL_DECISION": "z-ai/glm-5.3-flash",
     "BUDGET_LIMIT_USD": "15"
   },
 

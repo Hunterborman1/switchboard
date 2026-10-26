@@ -1,6 +1,9 @@
 import type { Channel, Gate, InsightStatus, InsightType, ProductArea, Severity, StepKey } from '../../shared/contracts';
-import type { StatusTone } from '../../uis/StatusChip';
+import type { Tone } from '../../ds';
 import { durationText, pctText, usdPrecise } from '../../shared/format';
+
+/** Status tones, on the design system's badge vocabulary. */
+type StatusTone = Exclude<Tone, 'accent'>;
 
 export const TYPE_LABEL: Record<InsightType, string> = {
   feature_request: 'Feature request',
@@ -13,12 +16,12 @@ export const TYPE_LABEL: Record<InsightType, string> = {
 
 /** Categorical identity per insight type (Invoca chart ramp). Identity is also always in words. */
 export const TYPE_COLOR: Record<InsightType, string> = {
-  feature_request: 'var(--cn-chart-1)',
-  bug: 'var(--cn-chart-3)',
-  pricing_objection: 'var(--cn-chart-5)',
-  competitor_mention: 'var(--cn-chart-4)',
-  churn_risk: 'var(--cn-chart-6)',
-  praise: 'var(--cn-chart-2)',
+  feature_request: 'var(--chart-1)',
+  bug: 'var(--chart-3)',
+  pricing_objection: 'var(--chart-5)',
+  competitor_mention: 'var(--chart-4)',
+  churn_risk: 'var(--chart-6)',
+  praise: 'var(--chart-2)',
 };
 
 export const AREA_LABEL: Record<ProductArea, string> = {
@@ -77,9 +80,13 @@ export const STATUS_TONE: Record<InsightStatus, StatusTone> = {
 
 export const CHANNEL_LABEL: Record<Channel, string> = {
   slack: 'Slack',
+  teams: 'Teams',
   jira: 'Jira',
   linear: 'Linear',
+  salesforce: 'Salesforce',
+  email: 'Email',
   email_digest: 'Email digest',
+  google_drive: 'Google Drive',
   triage: 'Triage queue',
 };
 

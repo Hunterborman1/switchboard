@@ -1,7 +1,7 @@
-import { Hono, type Context } from 'hono';
+import { Hono } from 'hono';
 import { z } from 'zod';
 import {
-  CreateRun, ReviewAction, RoutingRule, THRESHOLDS, type ArrBand, type CreateRunResult, type Delivery, type Envelope, type EvalRun, type Insight, type LibraryFile, type Session,
+  CreateRun, ReviewAction, RoutingRule, THRESHOLDS, type ArrBand, type CreateRunResult, type Delivery, type EvalRun, type Insight, type LibraryFile, type Session,
 } from '../../shared/contracts.ts';
 import { TelemetryBatch } from '../../shared/platform-contracts.ts';
 import { platformApi } from '../platform/api.ts';
@@ -12,51 +12,24 @@ import { enrichDelivery } from '../../pipeline/deliver.ts';
 import { percentile } from '../../pipeline/util.ts';
 import { getBudget, setLive } from '../budget.ts';
 import {
-  audit, getAccounts, getInsight, getLibraryFile, getPeople, getRawContent, getRules, getRunRow, getSetting, j, nowIso, publicRun, putSetting, queryDeliveries, queryInsights,
+  audit, getAccounts, getInsight, getLibraryFile, getRawContent, getRules, getRunRow, getSetting, j, nowIso, publicRun, putSetting, queryDeliveries, queryInsights,
   queryNotifications, queryReviews, rowToRun, SEED,
 } from '../db.ts';
+import { getConnectionStates } from '../connections.ts';
+import { getActor, getEffectivePeople } from '../directory.ts';
 import { EMBED_MODEL } from '../deps.ts';
 import type { ApiEnv } from '../env.ts';
 import { runDetail } from '../replay.ts';
 import { applyReview, changeTicket } from '../review.ts';
 import { createRun, maybeFallback } from '../runs.ts';
 import { newWorkspaceId, readCookie, verifyWorkspace, workspaceCookie, WS_COOKIE } from '../gate.ts';
-import { newSpanId, newTraceId, signalReporter, type TraceCtx } from '../telemetry.ts';
+import { newSpanId, newTraceId, signalReporter } from '../telemetry.ts';
 import { themesView } from '../themes.ts';
-
-type Vars = { ws: string; trace: TraceCtx };
-type C = Context<{ Bindings: ApiEnv; Variables: Vars }>;
+import { body, fail, issues, ok, viewerOf as actorOf, type AppEnv, type C } from './respond.ts';
+import { switchboardApi } from './switchboard.ts';
 
 /** The gated JSON API, mounted under /repo/invoca/api. */
-export const api = new Hono<{ Bindings: ApiEnv; Variables: Vars }>().basePath('/repo/invoca/api');
-
-
-function ok<T>(c: C, data: T, status: 200 | 201 = 200): Response {
-  const body: Envelope<T> = { data, dataAsOf: nowIso() };
-  return c.json(body, status);
-}
-
-function fail(c: C, status: 400 | 403 | 404 | 409 | 429 | 500 | 503, code: string, message: string): Response {
-  return c.json({ error: { code, message } }, status);
-}
-
-function issues(err: z.ZodError): string {
-  return err.issues.slice(0, 5).map((i) => `${i.path.join('.') || 'body'}: ${i.message}`).join('; ');
-}
-
-async function body<T>(c: C, schema: z.ZodType<T>): Promise<{ ok: true; data: T } | { ok: false; res: Response }> {
-  let raw: unknown;
-  try {
-    raw = await c.req.json();
-  } catch {
-    return { ok: false, res: fail(c, 400, 'invalid_request', 'Body must be JSON') };
-  }
-  const parsed = schema.safeParse(raw);
-  if (!parsed.success) return { ok: false, res: fail(c, 400, 'invalid_request', issues(parsed.error)) };
-  return { ok: true, data: parsed.data };
-}
-
-const actorOf = (c: C) => (c.env.ACCESS.via === 'owner' ? 'owner' : `viewer:${c.get('ws').replace(/^ws_/, '').slice(0, 6)}`);
+export const api = new Hono<AppEnv>().basePath('/repo/invoca/api');
 
 // ------------------------------------------------------------------ middleware: trace + workspace
 
@@ -97,18 +70,21 @@ api.use('*', async (c, next) => {
 api.get('/ping', (c) => ok(c, { ok: true, via: c.env.ACCESS.via }));
 
 api.get('/session', async (c) => {
+  const [budget, promptVersion, actor] = await Promise.all([getBudget(c.env), getSetting<string>(c.env.DB, 'prompt_version', PROMPT_VERSION), getActor(c.env.DB, c.get('ws'))]);
   const session: Session = {
     workspaceId: c.get('ws'),
     isOwner: c.env.ACCESS.via === 'owner',
-    budget: await getBudget(c.env),
-    models: { primary: c.env.MODEL_PRIMARY, secondary: c.env.MODEL_SECONDARY },
-    promptVersion: await getSetting<string>(c.env.DB, 'prompt_version', PROMPT_VERSION),
+    budget,
+    models: { primary: c.env.MODEL_PRIMARY, secondary: c.env.MODEL_SECONDARY, decision: c.env.MODEL_DECISION || c.env.MODEL_PRIMARY },
+    promptVersion,
     linkExpiresAt: c.env.ACCESS.linkExpiresAt,
+    actor,
   };
   return ok(c, session);
 });
 
-api.get('/world', async (c) => ok(c, { accounts: await getAccounts(c.env.DB), people: await getPeople(c.env.DB) }));
+// The workspace's directory: seed people with this workspace's edits (inactive ones flagged).
+api.get('/world', async (c) => ok(c, { accounts: await getAccounts(c.env.DB), people: await getEffectivePeople(c.env.DB, c.get('ws')) }));
 
 api.get('/library', async (c) => {
   const { results } = await c.env.DB.prepare('SELECT data FROM library_files WHERE featured = 1 ORDER BY sort_key').all<{ data: string }>();
@@ -259,7 +235,9 @@ api.post('/review/:insightId', async (c) => {
   if (!b.ok) return b.res;
   const ws = c.get('ws');
   const t = c.get('trace');
-  const r = await applyReview(c.env, ws, c.req.param('insightId'), b.data, actorOf(c), t);
+  // The review records who the viewer is acting as (GET /me).
+  const actor = await getActor(c.env.DB, ws);
+  const r = await applyReview(c.env, ws, c.req.param('insightId'), b.data, actor.name, t);
   if (!r.ok) return fail(c, r.status, r.code, r.message);
   if (!r.replayed) {
     const humanMinutes = Math.round(((b.data.dwellMs ?? 0) / 60_000) * 100) / 100;
@@ -313,13 +291,17 @@ api.post('/routing/preview', async (c) => {
   const b = await body(c, z.array(RoutingRule).max(200));
   if (!b.ok) return b.res;
   const ws = c.get('ws');
-  const [insights, accounts, people] = await Promise.all([queryInsights(c.env.DB, ws, "status NOT IN ('dropped_ungrounded', 'rejected')", [], 1000), getAccounts(c.env.DB), getPeople(c.env.DB)]);
+  const [insights, accounts, people, connections] = await Promise.all([
+    queryInsights(c.env.DB, ws, "status NOT IN ('dropped_ungrounded', 'rejected')", [], 1000), getAccounts(c.env.DB), getEffectivePeople(c.env.DB, ws), getConnectionStates(c.env.DB, ws),
+  ]);
   const band = new Map<string, ArrBand>(accounts.map((a) => [a.id, a.arrBand]));
   const subjects = visible(insights)
     .filter((i) => i.status !== 'dropped_ungrounded' && i.status !== 'rejected')
     .map((i) => ({ type: i.type, productArea: i.productArea, severity: i.severity, arrBand: i.accountId ? band.get(i.accountId) ?? null : null }));
   const rules = [...b.data].sort((a, x) => a.priority - x.priority || a.id.localeCompare(x.id));
-  return ok(c, { flows: previewFlows(subjects, rules, people), insights: subjects.length });
+  // Rules whose connector is disconnected (or whose owner left) flow to triage, as live runs do.
+  const connected = new Set(connections.filter((x) => x.status === 'connected').map((x) => x.id));
+  return ok(c, { flows: previewFlows(subjects, rules, people, { connected }), insights: subjects.length });
 });
 
 // ------------------------------------------------------------------ deliveries & notifications
@@ -337,7 +319,7 @@ async function withPreviewFields(db: D1Database, ws: string, rows: Delivery[], k
   if (!stale.length) return rows;
   const byId = new Map(known.map((i) => [i.id, i]));
   if (stale.some((d) => !byId.has(d.insightId))) for (const i of await queryInsights(db, ws, '1=1', [], 5000)) byId.set(i.id, i);
-  const [accounts, people] = await Promise.all([getAccounts(db), getPeople(db)]);
+  const [accounts, people] = await Promise.all([getAccounts(db), getEffectivePeople(db, ws)]);
   const acc = new Map(accounts.map((a) => [a.id, a]));
   const ppl = new Map(people.map((p) => [p.id, p]));
   return rows.map((d) => {
@@ -420,7 +402,7 @@ async function settingsView(c: C) {
     thresholds: await getSetting(c.env.DB, 'thresholds', { ...THRESHOLDS }),
     promptVersion: await getSetting<string>(c.env.DB, 'prompt_version', PROMPT_VERSION),
     candidatePromptVersion: CANDIDATE_PROMPT_VERSION,
-    models: { primary: c.env.MODEL_PRIMARY, secondary: c.env.MODEL_SECONDARY, embeddings: EMBED_MODEL },
+    models: { primary: c.env.MODEL_PRIMARY, secondary: c.env.MODEL_SECONDARY, decision: c.env.MODEL_DECISION || c.env.MODEL_PRIMARY, embeddings: EMBED_MODEL },
     budget: await getBudget(c.env),
     runCostEstimateUsd: RUN_COST_ESTIMATE_USD,
     liveFallbackMs: Number(c.env.LIVE_FALLBACK_MS ?? '') || LIVE_FALLBACK_AFTER_MS,
@@ -472,7 +454,9 @@ api.post('/workspace/reset', async (c) => {
     const q = chunk.map(() => '?').join(',');
     for (const t of ['run_steps', 'transcripts', 'redaction_vault']) stmts.push(db.prepare(`DELETE FROM ${t} WHERE run_id IN (${q})`).bind(...chunk));
   }
-  for (const t of ['runs', 'insights', 'themes', 'deliveries', 'notifications', 'reviews', 'overlays', 'routing_rules', 'dlq']) stmts.push(db.prepare(`DELETE FROM ${t} WHERE workspace_id = ?`).bind(ws));
+  for (const t of ['runs', 'insights', 'themes', 'deliveries', 'notifications', 'reviews', 'overlays', 'routing_rules', 'dlq', 'connections', 'connection_activity', 'workspace_people', 'workspace_prefs']) {
+    stmts.push(db.prepare(`DELETE FROM ${t} WHERE workspace_id = ?`).bind(ws));
+  }
   await db.batch(stmts);
   await audit(db, { workspaceId: ws, actor: actorOf(c), action: 'workspace.reset', target: ws, before: { runs: runIds.length } });
   return ok(c, {});
@@ -498,6 +482,7 @@ api.post('/telemetry', async (c) => {
 });
 
 api.route('/platform', platformApi); // Agent Ops (src/worker/platform/api.ts)
+api.route('/', switchboardApi); // Switchboard: connections, people, me, analyses, overview (src/worker/api/switchboard.ts)
 
 api.notFound((c) => c.json({ error: { code: 'not_found', message: 'No such endpoint' } }, 404));
 api.onError((err, c) => {

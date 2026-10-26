@@ -5,9 +5,10 @@
  * Reload button.
  */
 import { useEffect } from 'react';
-import { Link, isRouteErrorResponse, useRouteError } from 'react-router-dom';
-import { Display, Lede } from '../narrative/components';
-import { SceneTopBar } from '../narrative/Scene';
+import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import { Button, ButtonLink } from '../ds';
+import { IconAlertTriangle, IconRefresh } from '../ds/icons';
+import { SiteBar } from '../narrative/components';
 
 const RELOAD_KEY = 'sl-chunk-reload';
 
@@ -42,39 +43,42 @@ export function RouteError({ variant = 'narrative' }: { variant?: 'narrative' | 
     ? 'This page was built before the latest update. Reload to pick it up; nothing you did is lost.'
     : 'This view hit an error. Reloading usually clears it; your walkthrough progress is saved.';
 
+  const actions = (
+    <>
+      <Button variant="primary" icon={<IconRefresh size={16} />} onClick={() => window.location.reload()}>
+        Reload
+      </Button>
+      <ButtonLink variant="secondary" to="/">
+        Back to the start
+      </ButtonLink>
+    </>
+  );
+
+  // Inside a product shell: a card in the content area, so the sidebar and top bar stay put.
   if (variant === 'product') {
     return (
-      <div className="sl-page" role="alert" data-testid="route-error">
-        <div className="sl-route-error">
-          <h1>{title}</h1>
-          <p>{body}</p>
-          <div className="sl-row">
-            <button type="button" className="sl-route-error__btn" onClick={() => window.location.reload()}>
-              Reload
-            </button>
-            <Link to="/">Back to the start</Link>
-          </div>
+      <div className="ds-page ds-page--narrow" role="alert" data-testid="route-error">
+        <div className="route-error">
+          <span className="route-error__icon" aria-hidden="true">
+            <IconAlertTriangle size={20} />
+          </span>
+          <h1 className="route-error__title">{title}</h1>
+          <p className="route-error__text">{body}</p>
+          <div className="route-error__actions">{actions}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="sl-n n-page nf" role="alert" data-testid="route-error">
-      <SceneTopBar />
+    <main className="ds-app sl-n n-page nf" role="alert" data-testid="route-error">
+      <SiteBar />
       <div className="nf__body">
         <div className="nf__card">
-          <span className="n-label">{chunk ? 'Update available' : 'Error'}</span>
-          <Display size="md">{title}</Display>
-          <Lede>{body}</Lede>
-          <div className="nf__actions">
-            <button type="button" className="n-btn n-btn--primary" onClick={() => window.location.reload()}>
-              Reload
-            </button>
-            <Link className="n-btn" to="/">
-              Back to the start
-            </Link>
-          </div>
+          <span className="nf__code">{chunk ? 'Update available' : status ? String(status) : 'Error'}</span>
+          <h1 className="nf__title">{title}</h1>
+          <p className="nf__text">{body}</p>
+          <div className="nf__actions">{actions}</div>
         </div>
       </div>
     </main>

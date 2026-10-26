@@ -22,9 +22,19 @@ const Evals = lazy(() => import('./pages/Evals'));
 const Health = lazy(() => import('./pages/Health'));
 const Settings = lazy(() => import('./pages/Settings'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Overview = lazy(() => import('./pages/Overview'));
+const Connections = lazy(() => import('./pages/Connections'));
+const ConnectionDetail = lazy(() => import('./pages/ConnectionDetail'));
+const People = lazy(() => import('./pages/People'));
+const Analyses = lazy(() => import('./pages/Analyses'));
 
 export const appChildRoutes: RouteObject[] = [
-  { index: true, element: <Navigate to="/app/new" replace /> },
+  { index: true, element: <Navigate to="/app/overview" replace /> },
+  { path: 'overview', element: <Overview /> },
+  { path: 'connections', element: <Connections /> },
+  { path: 'connections/:id', element: <ConnectionDetail /> },
+  { path: 'people', element: <People /> },
+  { path: 'analyses', element: <Analyses /> },
   { path: 'new', element: <NewCall /> },
   { path: 'runs', element: <Runs /> },
   { path: 'runs/:id', element: <RunView /> },

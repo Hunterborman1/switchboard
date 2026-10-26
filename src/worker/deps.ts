@@ -146,6 +146,7 @@ export function runLlm(env: Env, o: { workspaceId: string; trace: TraceCtx; ledg
     apiKey: env.OPENROUTER_API_KEY ?? '',
     primary: env.MODEL_PRIMARY,
     secondary: env.MODEL_SECONDARY,
+    ...(env.MODEL_DECISION ? { decision: env.MODEL_DECISION } : {}),
     ...(env.OPENROUTER_BASE_URL ? { baseURL: env.OPENROUTER_BASE_URL } : {}),
     ...(o.signal ? { signal: o.signal } : {}),
     onCall: (row: LlmCallRow) => {

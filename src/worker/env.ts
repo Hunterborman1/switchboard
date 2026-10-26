@@ -18,6 +18,8 @@ export interface Env {
 
   MODEL_PRIMARY: string;
   MODEL_SECONDARY: string;
+  /** Small fast model for triage and the second opinion; falls back to MODEL_PRIMARY. */
+  MODEL_DECISION?: string;
   BUDGET_LIMIT_USD: string;
 
   INVOCA_PASSWORD?: string;

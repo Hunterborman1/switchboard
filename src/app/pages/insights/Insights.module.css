@@ -1,133 +1,36 @@
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--sp-3);
+/* Insights table: filters in the toolbar, rows open the insight drawer. */
+
+.filter {
+  width: 168px;
+  max-width: 100%;
 }
-.tile {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: var(--sp-3) var(--sp-4) !important;
-  background: var(--cn-white) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius-lg) !important;
-  text-align: left;
+.count {
+  font-variant-numeric: tabular-nums;
+}
+.insightCell {
+  width: 40%;
+  max-width: 0;
+  min-width: 280px;
+}
+.ownerCell {
+  max-width: 180px;
+}
+.owner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
   min-width: 0;
-  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  vertical-align: middle;
 }
-.tile:hover {
-  background: var(--bg-subtle) !important;
-}
-.tileOn,
-.tileOn:hover {
-  background: var(--accent-subtle) !important;
-  border-color: var(--accent) !important;
-}
-.tileLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-.tileLabel::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 2px;
-  background: var(--text-tertiary);
-}
-.tile[data-tone='warning'] .tileLabel::before { background: var(--cn-warning); }
-.tile[data-tone='success'] .tileLabel::before { background: var(--success); }
-.tile[data-tone='danger'] .tileLabel::before { background: var(--danger); }
-.tileValue {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  margin-top: 2px;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  line-height: 32px;
-  font-variant-numeric: tabular-nums;
-}
-.tileDen {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-}
-.tileHelp {
-  font-size: 12px;
-  color: var(--text-tertiary);
-}
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-/* the DataTable draws its own card frame; inside our panel drop it */
-.toolbar + div > div,
-.toolbar + div {
-  border: none !important;
-  border-radius: 0 !important;
-}
-.rowBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  width: 100%;
-  min-width: 220px;
-  max-width: 520px;
-  border-radius: var(--radius-sm);
-  white-space: normal;
-}
-.rowBtn > span:first-child {
-  font-weight: 500;
-}
-.rowBtn:hover > span:first-child {
-  color: var(--accent-text);
-}
-.conf {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
+.ownerName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
-.confTrack {
-  position: relative;
-  width: 48px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--bg-muted);
-  overflow: hidden;
-}
-.confTrack i {
-  position: absolute;
-  inset: 0 auto 0 0;
-  border-radius: inherit;
-}
-@media (max-width: 1100px) {
-  .tiles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  .tiles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .tileHelp {
-    display: none;
-  }
-  .toolbar :global(.sl-filters) > * {
-    flex: 1 1 100%;
-  }
+/* A new filter is loading: the previous rows stay, quieter, until it lands. */
+.pending {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-enter);
 }

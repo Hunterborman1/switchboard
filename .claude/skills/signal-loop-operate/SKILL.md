@@ -39,7 +39,7 @@ node scripts/deploy.ts --no-secrets   # same, without re-pushing secrets
 ## Budget and kill switch
 
 - Viewers share a $15 cap (`wrangler.jsonc` → `BUDGET_LIMIT_USD`); each live run reserves its worst case first (`src/shared/scoring.ts` → `estimateRunCostUsd`); at most 8 unsettled reservations (`MAX_UNSETTLED_RESERVATIONS`). The provider key has its own hard limit.
-- **Check (read-only):** Health page gauge, or `GET /repo/invoca/api/health` while signed in.
+- **Check (read-only):** the budget gauge on Usage and health (`/app/health`), or `GET /repo/invoca/api/health` while signed in.
 - **Flip live AI off by hand** (provider incident, abuse). D1 is authoritative, KV is the fast path; set both. Values are JSON-encoded (`src/worker/db.ts` → `putSetting`):
   - `npx wrangler d1 execute invoca-signal-loop --remote --command "INSERT INTO settings (key, value, updated_at) VALUES ('live_enabled','false',datetime('now')),('live_disabled_reason','\"manual\"',datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at"`
   - `npx wrangler kv key put live_enabled false --binding KV --remote`

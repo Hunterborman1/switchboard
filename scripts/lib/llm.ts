@@ -11,6 +11,8 @@ import { ROOT } from './data.ts';
 
 export const MODEL_PRIMARY = 'deepseek/deepseek-v4.1-flash';
 export const MODEL_SECONDARY = 'anthropic/claude-haiku-5.5';
+/** wrangler.jsonc MODEL_DECISION (chosen by scripts/decision-speed-test.ts). */
+export const MODEL_DECISION = 'z-ai/glm-5.3-flash';
 const LEDGER = join(ROOT, '.wrangler', 'build-spend.jsonl');
 const CAP = Number(process.env.BUILD_SPEND_CAP_USD ?? 5);
 
@@ -27,7 +29,7 @@ export function buildSpend(): number {
 
 export class SpendCapReached extends Error {}
 
-export function buildLlm(opts: { tag: string; onCall?: (row: LlmCallRow) => void; primary?: string; secondary?: string }): LlmClient & { spent(): number } {
+export function buildLlm(opts: { tag: string; onCall?: (row: LlmCallRow) => void; primary?: string; secondary?: string; decision?: string | null }): LlmClient & { spent(): number } {
   const key = process.env.OPENROUTER_BUILD_KEY;
   if (!key) throw new Error('OPENROUTER_BUILD_KEY missing (run with node --env-file=.env)');
   mkdirSync(join(ROOT, '.wrangler'), { recursive: true });
@@ -36,6 +38,7 @@ export function buildLlm(opts: { tag: string; onCall?: (row: LlmCallRow) => void
     apiKey: key,
     primary: opts.primary ?? MODEL_PRIMARY,
     secondary: opts.secondary ?? MODEL_SECONDARY,
+    ...(opts.decision === null ? {} : { decision: opts.decision ?? MODEL_DECISION }),
     appName: 'Signal Loop (build)',
     primaryTimeoutMs: 30_000,
     secondaryTimeoutMs: 45_000,

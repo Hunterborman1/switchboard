@@ -1,25 +1,29 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { EmptyState } from '../../uis/EmptyState';
-import { AppPageHeader } from '../components/ui';
+/** Any /app path that doesn't match a page: a designed dead end with the two ways back. */
+import { ButtonLink, Card, EmptyState, Page } from '../../ds';
+import { IconHome, IconInbox, IconSearch } from '../../ds/icons';
+import { useDocumentTitle } from '../AppShell';
 
 export default function NotFoundPage() {
-  const navigate = useNavigate();
+  useDocumentTitle('Page not found');
   return (
-    <div className="sl-page">
-      <AppPageHeader title="Page not found" subtitle="This link does not match a page" dataAsOf={null} />
-      <EmptyState
-        variant="no-data"
-        size="lg"
-        icon="404"
-        title="There is nothing at this address"
-        description="The link may come from an older version of the walkthrough. Every page is in the sidebar."
-        action={
-          <Button size="sm" iconLeft="arrowRight" onClick={() => navigate('/app/new')}>
-            Go to New call
-          </Button>
-        }
-      />
-    </div>
+    <Page width="narrow">
+      <Card>
+        <EmptyState
+          icon={<IconSearch />}
+          title="Page not found"
+          description="There’s nothing at this address. The link may be from an older version of the walkthrough."
+          actions={
+            <>
+              <ButtonLink to="/app/overview" variant="primary" size="sm" icon={<IconHome size={14} />}>
+                Go to Overview
+              </ButtonLink>
+              <ButtonLink to="/app/runs" size="sm" icon={<IconInbox size={14} />}>
+                Open Conversations
+              </ButtonLink>
+            </>
+          }
+        />
+      </Card>
+    </Page>
   );
 }

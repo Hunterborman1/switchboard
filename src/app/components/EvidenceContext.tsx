@@ -1,12 +1,13 @@
 /**
- * Evidence in context: the turns around an insight's grounded quote, with the matched
- * span highlighted. Reads GET /runs/:runId; when the run is not retained (seed history)
- * it falls back to the quote alone and says so.
+ * Evidence in context: the customer's words (the `Quote` treatment, matched span marked) inside
+ * a few surrounding lines of the conversation. Reads GET /runs/:runId; when the conversation is
+ * not stored (older sample history) it shows the verified quote on its own and says so.
  */
 import type { Insight, Turn } from '../../shared/contracts';
+import { Quote, Skeleton } from '../../ds';
 import { api } from '../api/client';
 import { keys, useQuery } from '../api/hooks';
-import { Skeleton } from '../../uis/Skeleton';
+import { RedactedText, redactedPlain } from '../pages/run/Transcript';
 import styles from './EvidenceContext.module.css';
 
 function findTurnIndex(turns: Turn[], text: string | null, turnId: string | null): number {
@@ -20,15 +21,26 @@ function findTurnIndex(turns: Turn[], text: string | null, turnId: string | null
 }
 
 function Highlighted({ text, span }: { text: string; span: string | null }) {
-  if (!span) return <>{text}</>;
+  if (!span) return <RedactedText text={text} />;
   const i = text.toLowerCase().indexOf(span.toLowerCase());
-  if (i < 0) return <>{text}</>;
+  if (i < 0) return <RedactedText text={text} />;
   return (
     <>
-      {text.slice(0, i)}
-      <mark className={styles.mark}>{text.slice(i, i + span.length)}</mark>
-      {text.slice(i + span.length)}
+      <RedactedText text={text.slice(0, i)} />
+      <mark className={styles.mark}>
+        <RedactedText text={text.slice(i, i + span.length)} />
+      </mark>
+      <RedactedText text={text.slice(i + span.length)} />
     </>
+  );
+}
+
+function Speaker({ turn }: { turn: Turn }) {
+  return (
+    <span className={styles.who}>
+      <span className={styles.speaker}>{redactedPlain(turn.speaker)}</span>
+      {turn.ts ? <span className={styles.ts}>{turn.ts}</span> : null}
+    </span>
   );
 }
 
@@ -41,10 +53,10 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
 
   if (run.loading) {
     return (
-      <div className={styles.wrap} aria-busy="true">
+      <div className={styles.wrap} aria-busy="true" aria-label="Loading the conversation">
         {[0, 1, 2].map((i) => (
-          <div key={i} className={styles.turn}>
-            <Skeleton width={110} height={10} />
+          <div key={i} className={styles.skelLine}>
+            <Skeleton width={96} height={10} />
             <Skeleton width={i === 1 ? '92%' : '70%'} height={12} />
           </div>
         ))}
@@ -55,11 +67,9 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
   if (idx < 0) {
     return (
       <div className={styles.wrap}>
-        <blockquote className="sl-quote">{span ?? 'No quote recorded.'}</blockquote>
+        <Quote>{span ? <RedactedText text={span} /> : 'No quote recorded.'}</Quote>
         <p className={styles.note}>
-          {run.error
-            ? 'The full conversation is not stored for this older insight, so only the verified quote is shown.'
-            : 'The quote could not be matched to a single line of the conversation, so it is shown on its own.'}
+          {run.error ? 'The full conversation isn’t stored for this older insight, so only the verified quote is shown.' : 'Shown on its own: the quote spans more than one line of the conversation.'}
         </p>
       </div>
     );
@@ -67,23 +77,37 @@ export function EvidenceContext({ insight, radius = 2 }: { insight: Insight; rad
 
   const from = Math.max(0, idx - radius);
   const to = Math.min(turns.length, idx + radius + 1);
+  const hit = turns[idx]!;
   return (
-    <ol className={styles.wrap} aria-label="Surrounding conversation">
-      {from > 0 ? <li className={styles.more}>… {from} earlier line{from === 1 ? '' : 's'}</li> : null}
-      {turns.slice(from, to).map((t, i) => {
-        const hit = from + i === idx;
-        return (
-          <li key={t.id} className={`${styles.turn} ${hit ? styles.hit : ''}`} data-role={t.role}>
-            <div className={styles.who}>
-              <span className={styles.speaker}>{t.speaker}</span>
-              {t.ts ? <span className={styles.ts}>{t.ts}</span> : null}
-              <span className={styles.tid} title="Line reference">{t.id}</span>
-            </div>
-            <p className={styles.text}>{hit ? <Highlighted text={t.text} span={span} /> : t.text}</p>
-          </li>
-        );
-      })}
-      {to < turns.length ? <li className={styles.more}>… {turns.length - to} later line{turns.length - to === 1 ? '' : 's'}</li> : null}
-    </ol>
+    <div className={styles.wrap} role="list" aria-label="The quote in the conversation">
+      {turns.slice(from, idx).map((t) => (
+        <div key={t.id} role="listitem" className={styles.line}>
+          <Speaker turn={t} />
+          <p className={styles.text}>
+            <RedactedText text={t.text} />
+          </p>
+        </div>
+      ))}
+      <div role="listitem" className={styles.hit}>
+        <Quote
+          cite={
+            <>
+              {redactedPlain(hit.speaker)}
+              {hit.ts ? `, ${hit.ts}` : ''}
+            </>
+          }
+        >
+          <Highlighted text={hit.text} span={span} />
+        </Quote>
+      </div>
+      {turns.slice(idx + 1, to).map((t) => (
+        <div key={t.id} role="listitem" className={styles.line}>
+          <Speaker turn={t} />
+          <p className={styles.text}>
+            <RedactedText text={t.text} />
+          </p>
+        </div>
+      ))}
+    </div>
   );
 }

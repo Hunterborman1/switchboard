@@ -161,7 +161,20 @@ export const keys = {
   notifications: (csmId: string | null) => `notifications?${csmId ?? ''}`,
   evals: 'evals',
   health: 'health',
+  connections: 'connections',
+  connection: (id: string) => `connections/${id}`,
+  people: 'people',
+  me: 'me',
+  analyses: 'analyses',
+  overview: (days: number) => `overview?${days}`,
 };
+
+export const useConnections = () => useQuery(keys.connections, api.connections, { staleMs: 5000 });
+export const useConnection = (id: string | null) => useQuery(id ? keys.connection(id) : null, () => api.connection(id!), { pollMs: 15_000 });
+export const usePeople = () => useQuery(keys.people, api.people, { staleMs: 10_000 });
+export const useMe = () => useQuery(keys.me, api.me, { staleMs: 30_000 });
+export const useAnalyses = () => useQuery(keys.analyses, api.analyses, { staleMs: 60_000 });
+export const useOverview = (days = 30) => useQuery(keys.overview(days), () => api.overview(days), { pollMs: 30_000 });
 
 export const useSession = () => useQuery(keys.session, api.session, { pollMs: 30_000, staleMs: 10_000 });
 export const useWorld = () => useQuery(keys.world, api.world, { staleMs: 300_000 });

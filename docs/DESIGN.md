@@ -1,83 +1,108 @@
-# Signal Loop design direction (v2: professional SaaS)
+# Design system (v3: Switchboard)
 
-One visual language for everything a viewer sees: the hub, the narrative scenes, the walkthrough
-overlay, the Signal Loop product, Agent Ops, the write-up and the login page. It should read like a
-mature B2B SaaS product (think Linear, Stripe Dashboard, Vercel), not a landing-page demo.
+One visual language for everything a viewer sees: the Switchboard product (Signal Loop is one
+analysis inside it), Agent Ops, the walkthrough overlay, the narrative scenes, the hub, the
+write-up and the login page. It should read like a mature B2B SaaS product, not a demo.
+
+The code is the source of truth: tokens in `src/ds/tokens.css`, components in `src/ds/`
+(`import { … } from '../ds'`), the frame in `src/ds/shell/Shell.tsx`. This page explains the
+intent and the rules the code cannot enforce.
+
+## Product structure
+
+- **Switchboard** reads any conversation or document, decides what it is, runs the analyses
+  that apply, and sends the result to the right people in the tools they already use.
+- **Signal Loop** is the one analysis built out: product feedback → evidence-backed insight →
+  the owner. Other analyses are listed in the catalog and marked "Not built".
+- **Agent Ops** is a separate product (switcher, top-left) for operating every agent.
+- Connectors are simulated: connecting one records a workspace connection; deliveries render as
+  in-app previews with receipts. Say so where it matters, never pretend otherwise.
 
 ## Rules
 
-1. **No gradients, glows or blurs.** No `linear-gradient`, `radial-gradient`, `conic-gradient`,
-   `box-shadow` glows, `filter: blur`, `backdrop-filter`, text gradients, noise or vignettes.
-   Flat fills only. The one allowed shadow is the elevation scale below.
-2. **One light theme everywhere.** White page, neutral greys, one accent (Invoca green). The
-   narrative scenes are no longer a dark-green world; they are presentation pages in the same
-   design as the product.
-3. **One typeface: Inter** (self-hosted `Inter Variable`). No serif, no italic accent words.
-   Headings are sentence case, semibold, tight tracking (-0.01em to -0.02em on large sizes).
-   **Monospace only for things a person would copy**: IDs, file names, code, keys. Never for
-   labels, eyebrows, prices, timestamps or metrics. Numbers use `font-variant-numeric: tabular-nums`.
-4. **No letter-spaced uppercase eyebrows.** Section labels are sentence case, 13px, medium,
-   secondary grey. Table headers may be 12px medium secondary grey, sentence case.
-5. **Human-readable copy.** Write for a VP of Customer Success, not an engineer. Replace jargon on
-   the surface (SHA-256, Zod schema, Σ, "pooled gate level", "fast tier", "durable Workflow",
-   "turn IDs", "fuzzy ≥ 0.90", "×", "~321×"). Keep precise detail one click away (tooltip, drawer,
-   Settings, trace page). Use plain units: "3.8 seconds", "$0.0014 per call", "18 minutes saved".
-   Model tiers read "Main model" and "Backup model" (exact ids still only on /app/settings).
-6. **Animation is functional and short.** Only animate to show a change of state or progression.
-   - Durations: 120ms (hover, press), 180ms (enter/exit, tab change), 240ms (larger layout
-     moves), never more than 320ms for UI; data reveals (bars, counters, stepper) may run up to
-     600ms once.
-   - Easing: `cubic-bezier(0.2, 0, 0, 1)` for enter, `cubic-bezier(0.4, 0, 1, 1)` for exit.
-   - Properties: opacity and transform (translateY 4–8px max, scale 0.98–1). No bounce, spring
-     overshoot, particles, pulsing, shimmer loops, infinite animations (except an honest
-     in-progress spinner/progress bar while something is actually running).
-   - Scene changes: 180ms cross-fade of content; chrome never moves.
-   - `prefers-reduced-motion`: no transforms, opacity only, final frame drawn.
-7. **Layout.** 4px grid. Page max width 1280px for content pages; generous whitespace; cards
-   are white with a 1px `--border` and 8px radius; no nested cards inside cards where a divider
-   works. Buttons 6px radius (not pills). Badges 4px radius, subtle tinted fill, no borders-plus-dots
-   clutter.
+1. **Flat and light.** White page, quiet greys, one accent (Invoca green `--accent`). No
+   gradients, glows, blurs, noise or text effects. Shadows only for things that float
+   (`--shadow-2`: menus, dialogs, drawers, toasts, the walkthrough callout); `--shadow-1` on
+   secondary buttons and the selected nav item only.
+2. **One typeface: Inter.** Sentence case everywhere. No uppercase or letter-spaced labels.
+   Monospace only for things a person would copy: IDs, receipts, hashes, code. File names are
+   not monospace. Numbers in tables and stats use tabular figures (`.ds-num`, `is-num`).
+3. **Colour means something.** Status colours for status only; the accent for the primary
+   action, focus, selection and links. Insight types use the chart ramp with a text label
+   (`TypeLabel`), never colour alone. Connector tiles use each tool's colour.
+4. **Write for a VP of Customer Success.** Lead with the outcome, then the next action. Plain
+   words ("Needs review", "AI cost", "Took"), no jargon on the surface (no "SHA-256", "Zod",
+   "turn IDs", "fuzzy ≥ 0.90", "Σ"). Precise detail lives one hover, drawer or settings page
+   away. No `→` in link or button text; no "A · B · C" meta strings where separate elements
+   work; buttons say exactly what happens ("Connect Jira", "Approve and send").
+5. **Every state is designed.** Loading uses a skeleton the shape of the content
+   (`TableSkeleton`, `PageSkeleton`), never bare "Loading…". Empty states invite the next
+   action. Errors say what failed and offer "Try again". Disabled controls say why (tooltip).
+6. **Motion is functional and short.** 120ms hover/press, 180ms enter/exit, 240ms drawers.
+   `cubic-bezier(0.2, 0, 0, 1)` in, `(0.4, 0, 1, 1)` out. Opacity and ≤ 8px translate only. No
+   bounce, pulse, shimmer or infinite loops (an honest spinner while work runs is fine).
+   `prefers-reduced-motion` zeroes durations.
+7. **Nothing overlaps, nothing clips.** Every row that can hold long text has `min-width: 0`
+   and truncates with an ellipsis (title attribute for the full value). Tables scroll inside
+   their card, never the page. Pages work at 1440, 1024 and 390 wide with no horizontal page
+   scroll.
 
-## Tokens (light, flat)
+## Tokens (src/ds/tokens.css)
 
-| Token | Value | Use |
-|---|---|---|
-| `--bg` | `#FFFFFF` | page |
-| `--bg-subtle` | `#F7F8F7` | sidebar, table header, inset areas |
-| `--bg-muted` | `#EFF1EF` | hover, selected row |
-| `--border` | `#E3E6E3` | card and table borders |
-| `--border-strong` | `#CDD2CD` | inputs |
-| `--text` | `#111614` | primary text |
-| `--text-secondary` | `#525C57` | secondary text (7.1:1 on white) |
-| `--text-tertiary` | `#6B756F` | captions, placeholders (4.8:1) |
-| `--accent` | `#008463` | primary buttons, focus, links-on-hover, active nav marker |
-| `--accent-text` | `#006B51` | accent-coloured text on white |
-| `--accent-subtle` | `#E8F4EF` | selected nav item, accent badge fill |
-| `--success` / `-subtle` | `#0F7B48` / `#E7F4EC` | |
-| `--warning` / `-subtle` | `#9A5B00` / `#FBF1DE` | |
-| `--danger` / `-subtle` | `#B42318` / `#FDECEA` | real failures only |
-| `--info` / `-subtle` | `#2F5DB8` / `#EAF0FB` | |
-| `--shadow-1` | `0 1px 2px rgba(16,24,20,.06)` | cards (optional) |
-| `--shadow-2` | `0 4px 12px rgba(16,24,20,.08), 0 1px 3px rgba(16,24,20,.06)` | popovers, dialogs, walkthrough callout |
+| Group | Tokens |
+|---|---|
+| Surface | `--bg` #FFF · `--bg-subtle` #F7F8F7 (sidebar, table head, footers) · `--bg-muted` #EFF1EF (hover) · `--bg-emphasis` · `--bg-inverse` (tooltips) |
+| Line | `--border` #E3E6E3 (cards) · `--border-row` #ECEEEC (table rows) · `--border-strong` #CDD2CD (inputs) |
+| Text | `--text` #111614 · `--text-secondary` #525C57 · `--text-tertiary` #6B756F · `--text-disabled` |
+| Accent | `--accent` #008463 · `--accent-hover` · `--accent-text` #006B51 · `--accent-subtle` #E8F4EF · `--accent-line` |
+| Status | `--success` `--warning` (`--warning-mark` for bars) `--danger` `--info`, each with `-subtle` |
+| Charts | `--chart-1…6`: #008463 #2F5DB8 #C2780C #7A4FB5 #3E8E9E #B5475A |
+| Type | 12 / 13 / 14 (body) / 16 / 20 / 24 / 32. Weights 400 / 500 / 600. |
+| Space | 4px grid: `--space-1` 4 … `--space-16` 64 |
+| Radius | 4 badges · 6 buttons and inputs · 8 cards and popovers · 12 dialogs · full for avatars, dots, switches |
+| Size | controls 28 / 32 / 36 · table rows 44 (compact 36) · sidebar 248 · top bar 52 · page max 1280, gutter 32 (16 on phones) |
 
-Chart series (flat, distinguishable, colour-blind-safe order): `#008463`, `#2F5DB8`, `#C2780C`,
-`#7A4FB5`, `#3E8E9E`, `#B5475A`. Never red/green as the only signal.
+## Layout
 
-Type scale (Inter): 12 / 13 / 14 (body) / 16 / 20 / 24 / 32 / 44 (narrative headline max 56).
-Weights 400, 500, 600. Line-height 1.5 body, 1.2 headings.
+- **Shell** (`Shell`): sidebar on `--bg-subtle` with the product switcher, the primary create
+  action, nav groups (Overview and Conversations; Signal Loop; Workspace) and a footer (walkthrough
+  pill, Agent Ops, the user menu). The selected nav item is a white raised row with an accent
+  icon. A 52px top bar holds the breadcrumb and the "Live AI" status. Below 900px the sidebar is
+  a drawer opened from the top bar.
+- **Page** (`Page` → `PageHeader` → optional `Toolbar` → content). Title 24/600; one short
+  description line; the page's primary action on the right. Sections are 24px apart.
+- **Cards** (`Card`): white, 1px border, 8px radius. Header 16/20px padding with a 14/600 title
+  and an optional 13px description; `flush` for tables and lists. Do not nest cards; use a
+  divider or a `--bg-subtle` inset instead.
+- **Tables** (`Table`, `SortTh`, `CellText`): header 12/500 secondary on `--bg-subtle`, rows
+  44px, 13px text, first and last cells 20px in. A row that opens something is clickable as a
+  whole and also has a real link in its first cell.
+- **Detail views**: a page for things with their own URL (a conversation, a theme, a
+  connection); a `Drawer` for a quick look from a list (an insight, a person).
 
-## Shells
+## Components (src/ds)
 
-- **Signal Loop and Agent Ops share one shell**: light sidebar (`--bg-subtle`, 1px right border),
-  product name + small mark at top, nav items 14px/500 with 16px icons, selected item uses
-  `--accent-subtle` fill and `--accent-text`. Section labels sentence case. A product switcher
-  ("Signal Loop" / "Agent Ops") replaces the two different sidebars (dark green vs navy).
-- **Top bar**: page title (20px/600), optional short subtitle, right side: live-AI budget as plain
-  text ("Live AI · $0.07 of $15 used"), time-zone as a small select, not a three-button toggle.
-- **Narrative scenes**: white page, same top bar style (product mark, chapter name, progress
-  "4 of 17"), content centred in a 1120px column, headline 44–56px/600, one supporting line,
-  then one clear diagram or set of cards. Bottom bar: Back / Next buttons and a thin progress
-  bar. Keyboard hints in a single muted line.
-- **Walkthrough callout**: white card, `--shadow-2`, 1px border, 8px radius, step count
-  "Step 3 of 7", title 16px/600, body 14px, primary button "Next". Spotlight dims the page with a
-  flat `rgba(17,22,20,.45)` overlay, no blur.
+Button (primary, secondary, ghost, danger, link; sm 28 / md 32 / lg 36) · ButtonLink ·
+IconButton (always labelled, tooltip) · Badge (neutral, accent, success, warning, danger, info;
+optional dot) · DotLabel · Kbd · Avatar · PersonChip · CopyText · Card · Page · PageHeader ·
+Section · Toolbar · Grid · Field · Input · SearchInput · Textarea · Select · Switch · Checkbox ·
+Segmented · Tabs · TabLinks · Table · SortTh · CellText · Stats · KeyValue · Meter · Quote ·
+Callout · EmptyState · Skeleton · TableSkeleton · PageSkeleton · Tooltip · Menu · Popover ·
+Modal · Drawer · ToastProvider/useToast · ProductMark · ConnectorMark · icons (`src/ds/icons`).
+
+Domain vocabulary on top (`src/app/components/domain.tsx`): TypeLabel, SeverityBadge,
+GateBadge (reasons on hover), InsightStatusBadge, RunStatusBadge, ModeBadge, SourceLabel,
+ErrorState. Use these instead of restyling the concept on each page.
+
+**The one distinctive treatment** is the customer's own words: `Quote` (a 2px accent rule, the
+quote in body text, a quiet citation). Every place evidence appears uses it.
+
+## Walkthrough and narrative
+
+- Scenes are presentation pages in the same system: white page, the same top bar style
+  (product mark, chapter, "4 of 17"), content in a 1120px column, headline 40–48px/600, one
+  supporting line, then one diagram or set of cards. Bottom bar: Back / Next and a thin progress
+  bar.
+- The walkthrough callout is a white card with `--shadow-2`, 8px radius, "Step 3 of 7", a 16/600
+  title, 14px body and one primary button. The spotlight dims the page with a flat `--scrim`, no
+  blur, and never covers its own target.

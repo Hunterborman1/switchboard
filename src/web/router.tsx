@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { RootLayout } from './RootLayout';
 import { Hub } from './pages/Hub';
 import { Walkthrough } from './pages/Walkthrough';
@@ -7,31 +7,31 @@ import { WriteUp } from './pages/WriteUp';
 import { BackupPage } from '../narrative/backup/BackupPage';
 import { AppMount, OpsMount } from './mounts';
 import { appRoutes, platformRoutes } from './bridge';
-import { Display, Lede } from '../narrative/components';
-import { SceneTopBar } from '../narrative/Scene';
+import { ButtonLink } from '../ds';
+import { SiteBar } from '../narrative/components';
 import { RouteError } from './RouteError';
 
 export const BASENAME = '/repo/invoca';
 
 function NotFound() {
   return (
-    <main className="sl-n n-page nf">
-      <SceneTopBar />
+    <main className="ds-app sl-n n-page nf" data-testid="not-found">
+      <SiteBar />
       <div className="nf__body">
         <div className="nf__card">
-          <span className="n-label">Page not found</span>
-          <Display size="md">There’s nothing here.</Display>
-          <Lede>That page doesn’t exist. Pick up from one of these instead.</Lede>
+          <span className="nf__code">404</span>
+          <h1 className="nf__title">There’s nothing here.</h1>
+          <p className="nf__text">That page doesn’t exist. Pick up from one of these instead.</p>
           <div className="nf__actions">
-            <Link className="n-btn n-btn--primary" to="/">
+            <ButtonLink variant="primary" to="/">
               Back to the start
-            </Link>
-            <Link className="n-btn" to="/walkthrough">
+            </ButtonLink>
+            <ButtonLink variant="secondary" to="/walkthrough">
               Start the walkthrough
-            </Link>
-            <Link className="n-btn" to="/write-up">
+            </ButtonLink>
+            <ButtonLink variant="secondary" to="/write-up">
               Read the write-up
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       </div>

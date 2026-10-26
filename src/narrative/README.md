@@ -1,57 +1,55 @@
-# Signal Loop Narrative
+# Narrative layer
 
-The presentation layer: the hub, the walkthrough scenes, the walkthrough overlay, the
-presenter view, the write-up and the Q&A pages. It follows `docs/DESIGN.md`: one light, flat
-theme, Inter only, no gradients, glows or blur, short functional motion. Everything here is
-`--n-*` tokens and `n-*` classes, declared on `.sl-n` (pages) and `.sl-n-portal` (walkthrough UI
-portalled over the product), so it never collides with the product's own tokens.
+The presentation pages of Switchboard: the hub, the walkthrough scenes, the walkthrough overlay,
+the presenter view, the write-up and the Q&A pages. They are pages of the same product and follow
+`docs/DESIGN.md`: the design system in `src/ds` for tokens and components (Button, Badge, Callout,
+Kbd, ProductMark, ConnectorMark, TabLinks…), one light flat theme, Inter only, short functional
+motion.
 
 ## Tokens (`tokens.css`)
 
-| Group | Tokens |
-|---|---|
-| Colour | `--n-bg #FFF` · `--n-bg-subtle` · `--n-bg-muted` · `--n-border` · `--n-border-strong` · `--n-text` · `--n-text-2` · `--n-text-3` · `--n-accent #008463` (+ `-hover`, `-text`, `-subtle`) · `--n-success` / `--n-warning` / `--n-danger` / `--n-info` (+ `-subtle`) · `--n-scrim` rgba(17,22,20,.45) |
-| Type | `--n-font-body` Inter Variable (also `--n-font-display`) · `--n-font-mono` only for IDs and code · `--n-text-xs…3xl` (12–32) · `--n-display-sm/md/lg` (headlines up to 56) |
-| Space | `--n-s-1…9` (4px grid) · `--n-gutter` · `--n-column` 1120px |
-| Radius | `--n-r-xs 4` (badges) · `--n-r-sm 6` (buttons) · `--n-r-md 8` (cards) |
-| Elevation | `--n-shadow-1` (cards, optional) · `--n-shadow-2` (popovers, callout, menus) |
-| Motion | `--n-ease` cubic-bezier(0.2,0,0,1) · `--n-ease-exit` · `--n-d-press 120` · `--n-d-ui 180` · `--n-d-layout 240` · `--n-d-data 600`. All collapse to 0 under `prefers-reduced-motion`. |
-| Layers | `--n-z-overlay 9000` · `callout 9010` · `hud 9020` · `menu 9030` |
+Every `--n-*` token is an alias of a token in `src/ds/tokens.css`, so values change in one place.
+New CSS reads the ds tokens directly (`var(--text-secondary)`, `var(--space-4)`). The only values
+defined here are the ones the system has no token for: the 1120px presentation column
+(`--n-column`), the headline size (`--n-display`, 32 → 48px), the data-reveal duration
+(`--n-d-data`, 600ms, zero under reduced motion) and the overlay layers (`--n-z-*`).
 
-`motion.ts` mirrors these for Motion (`EASE`, `DUR`, `reveal` fade-up 6px and its reduced
-twin). Nothing loops except an honest spinner while something is running.
+Page roots are `ds-app sl-n n-page` (they get the system's base styles); walkthrough UI portalled
+over the product is `sl-n-portal`.
 
-## Components (`components.tsx`, `Scene.tsx`)
+## Frame and components
 
-- **Scene**: still top bar (mark, part / chapter, "4 of 17"), the 1120px column, still bottom bar
-  (progress line, key hints, Back / Next). Clicking empty stage advances; interactive children
-  opt out with `data-no-advance`. Only the stage cross-fades between scenes (180 ms).
-- **SceneHead**: one headline and one supporting line; cross-fades when its key changes.
-- **Display / Lede / Eyebrow**: sentence-case Inter headings and secondary text.
-- **Reveal / Reveal.Item**: short fade-up sequence.
-- **Stat**: tabular number that counts up once (600 ms).
-- **Card / Callout** (`assumption`, `danger`) / **Chip** / **Button** (primary, ghost, quiet) /
-  **Progress / Beats / Key / KeyHint / Mark / LoopGlyph / Check**.
-- **PersonaCard**: the job on the front; click or Enter reveals struggles and success (180 ms
-  crossfade, no flip).
+- **Scene** (`Scene.tsx`): the product's 52px top bar (mark and "Switchboard", the chapter crumb,
+  "4 of 18", and a slot the HUD docks the chapter menu into, `tour/hud/sceneSlot.tsx`), the 1120px
+  column, and a bottom bar with one muted key hint, Back / Next and one thin progress line.
+  Clicking empty stage advances; interactive children opt out with `data-no-advance`.
+- **SiteBar**: the same 52px bar for the hub, write-up, Q&A, presenter and not-found pages.
+- **SceneHead**: one headline and one supporting line per beat. All beats share one grid cell, so
+  the head is as tall as its longest version and nothing moves when the beat changes.
+- **Appear**: a part of a scene that arrives on a beat. It keeps its space from the start and is
+  invisible (and out of the accessibility tree) until shown, so labels never appear before their
+  content and nothing jumps.
+- **Stat** (count-up, 600ms once), **PersonaCard** (click or Enter reveals struggles and success),
+  **Check**, **Arrow**, **Label**, **Display**, **Lede**.
 
-Hooks (`hooks.ts`): `useCalm()` (reduced motion, or `?motion=reduced`), `useCountUp`,
-`useSize`, `useMediaQuery`.
+Hooks (`hooks.ts`): `useCalm()` (reduced motion, or `?motion=reduced`), `useCountUp`, `useSize`,
+`useMediaQuery`. Motion constants are in `motion.ts`.
 
 ## Scenes (`scenes/`)
 
-Each scene is `({ beat, beats }) => JSX`, registered in `scenes/index.ts`. Every scene is a head
-plus one visual, renders its final frame at once under reduced motion, and stacks to one
-column at 390px.
+Each scene is `({ beat, beats }) => JSX`, registered in `scenes/index.ts`, with a head and one
+visual, its final frame at once under reduced motion, and one column at 390px. Every beat fits
+between the bars at 1440×900 and 1024×768.
 
-| Scene | Steps |
+| Scene | Beats |
 |---|---|
-| ColdOpen | a recorded 13-minute QBR with the 06:00 quote highlighted → "Every call is a signal." and what that sentence becomes |
-| BlackHole | where feedback comes from → 100 pieces through three handoffs, losses shown at each → total and the labelled assumption |
-| Why | Invoca Signal AI row → the same shape for Signal Loop → four reasons |
+| ColdOpen | the recorded QBR with the 06:00 quote → "Every call is a signal." and what the sentence becomes |
+| BlackHole | where feedback comes from and the starting 100 → the handoffs and what each loses → the total and the assumption |
+| Why | Invoca Signal AI row → the same shape for Signal Loop → four reasons and where it generalises |
 | Jtbd | four persona cards (open each) → the emotional job as the headline |
-| States | swimlane relay → leaks appear one by one → Signal Loop seals them → the loop closes |
-| Rollout | four phases → what is measured and reported → the operating loop and how it's run |
+| States | the relay → leaks one by one → Signal Loop seals them → the loop closes up the right edge |
+| Platform | In (any conversation) → Decide (the decision model) → Analyse (Signal Loop built, the rest not built) → Out (the right people, by handle) |
+| Rollout | four phases → what is measured and reported → the operating loop |
 | Horizon | six milestones over 18 months → what doesn't change |
 | Production | today's stack → the production column fills in row by row |
 | Scorecard | real numbers from the viewer's workspace and Agent Ops |

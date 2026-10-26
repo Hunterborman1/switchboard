@@ -1,6 +1,6 @@
 /**
- * One SVG mask cutout that moves between targets: a flat rgba(17,22,20,.45) dim with a
- * rounded hole and a 2px accent ring. Click-through only inside the cutout when the step
+ * One SVG mask cutout that moves between targets: a flat --scrim dim with a rounded hole and a
+ * 2px accent ring drawn just outside the target, so neither ever covers what it points at. Click-through only inside the cutout when the step
  * waits on a user action; everything else is blocked (and nudges the callout).
  */
 import { motion } from 'motion/react';
@@ -52,7 +52,7 @@ export function Spotlight({ box, interact, hint, onBlocked, highlights }: Props)
             ))}
           </mask>
         </defs>
-        <rect x="0" y="0" width="100%" height="100%" fill="rgb(17 22 20 / 0.45)" mask="url(#t-mask)" />
+        <rect x="0" y="0" width="100%" height="100%" className="t-spot__dim" mask="url(#t-mask)" />
         {box && (
           <motion.rect
             className="t-spot__ring"
@@ -60,11 +60,10 @@ export function Spotlight({ box, interact, hint, onBlocked, highlights }: Props)
             animate={{ x: b.x, y: b.y, width: b.w, height: b.h, rx: r, strokeWidth: hint ? 3 : 2 }}
             transition={t}
             fill="none"
-            stroke="#008463"
           />
         )}
         {highlights.map((h, i) => (
-          <rect key={`h${i}`} x={h.x} y={h.y} width={h.w} height={h.h} rx={8} fill="none" stroke="#008463" strokeWidth={2} strokeDasharray="4 3" className="t-spot__ring" />
+          <rect key={`h${i}`} x={h.x} y={h.y} width={h.w} height={h.h} rx={8} fill="none" strokeWidth={2} strokeDasharray="4 3" className="t-spot__ring t-spot__ring--soft" />
         ))}
       </svg>
       {blockers.map((s, i) => (

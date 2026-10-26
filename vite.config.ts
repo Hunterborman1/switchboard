@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+const WORKER = `http://127.0.0.1:${process.env.WORKER_PORT ?? 8797}`;
+
 export default defineConfig({
   base: '/repo/invoca/',
   plugins: [react()],
   publicDir: 'static',
   build: { outDir: 'dist', emptyOutDir: true, sourcemap: false, chunkSizeWarningLimit: 900 },
-  server: { port: 5178, proxy: { '/repo/invoca/api': workerProxy('http://127.0.0.1:8797'), '/repo/invoca/login': workerProxy('http://127.0.0.1:8797') } },
+  server: { port: Number(process.env.VITE_PORT ?? 5178), proxy: { '/repo/invoca/api': workerProxy(WORKER), '/repo/invoca/login': workerProxy(WORKER) } },
 });
 
 /**

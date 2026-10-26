@@ -144,6 +144,27 @@ describe('runPipeline', () => {
     expect(r.steps.find((s) => s.key === 'theme')!.summary).toMatch(/Joined 1 existing theme/);
   });
 
+  it('embeds once per run: theme reuses the lookups started alongside the second opinion', async () => {
+    let embeds = 0;
+    let queries = 0;
+    const { d } = deps({
+      embed: async (texts) => {
+        embeds++;
+        return { vectors: texts.map((x) => hashEmbed(x)), model: 'hash' };
+      },
+      vectorQuery: async (): Promise<ThemeCandidate[]> => {
+        queries++;
+        return [];
+      },
+    });
+    const r = await runPipeline(input(), d);
+    expect(r.error).toBeNull();
+    const kept = r.insights.filter((i) => i.gate !== 'dropped').length;
+    expect(embeds).toBe(1);
+    expect(queries).toBe(kept);
+    expect(r.insights.filter((i) => i.gate !== 'dropped').every((i) => i.themeId)).toBe(true);
+  });
+
   it('an embedding outage warns and leaves themes unassigned', async () => {
     const { d } = deps({ embed: async () => { throw new Error('ai down'); } });
     const r = await runPipeline(input(), d);

@@ -12,7 +12,7 @@ import { WriteQueue } from './writeQueue.ts';
 
 export type { PipelineParams };
 
-const LLM_STEPS = new Set<string>(['screen', 'extract', 'theme']);
+const LLM_STEPS = new Set<string>(['screen', 'extract', 'score', 'theme']);
 
 function stepConfig(key: string): WorkflowStepConfig {
   return LLM_STEPS.has(key)

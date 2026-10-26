@@ -1,7 +1,8 @@
 /* =========================================================================
-   Walkthrough chrome: spotlight, callout, HUD, rail, pause menu, checkpoint.
-   Same light, flat language as the product (docs/DESIGN.md): white cards,
-   1px border, 8px radius, shadow-2, a flat dim, no blur.
+   Walkthrough chrome: spotlight, callout, HUD, chapters, pause menu,
+   checkpoint and the start/resume control. The product's own language
+   (docs/DESIGN.md): white cards with a 1px border, 8px radius and
+   --shadow-2 because they float; a flat --scrim; ds tokens only.
    ========================================================================= */
 
 .t-spot {
@@ -10,8 +11,25 @@
   z-index: var(--n-z-overlay, 9000);
   pointer-events: none;
 }
-.t-spot__svg { position: absolute; inset: 0; pointer-events: none; }
-.t-spot__block { position: absolute; pointer-events: auto; cursor: default; }
+.t-spot__svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t-spot__dim {
+  fill: var(--scrim);
+}
+.t-spot__ring {
+  stroke: var(--accent);
+}
+.t-spot__ring--soft {
+  stroke: var(--accent-line);
+}
+.t-spot__block {
+  position: absolute;
+  pointer-events: auto;
+  cursor: default;
+}
 
 /* ---------------------------------------------------------------- callout */
 .t-callout {
@@ -21,349 +39,681 @@
   outline: none;
 }
 .t-callout--center {
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  left: 50%;
   width: min(420px, calc(100vw - 32px));
+  transform: translate(-50%, -50%);
 }
-.t-callout--float { max-height: calc(100dvh - 32px); display: grid; }
+.t-callout--float {
+  display: grid;
+  max-height: calc(100dvh - 32px);
+}
 .t-callout--sheet {
-  left: 12px;
   right: 12px;
   bottom: 12px;
+  left: 12px;
+  display: grid;
   width: auto;
   max-height: calc(100dvh - 120px);
-  display: grid;
 }
 .t-callout__card {
   position: relative;
+  display: grid;
+  gap: var(--space-2);
   max-height: inherit;
+  padding: var(--space-4) var(--space-5) var(--space-4);
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 16px;
-  display: grid;
-  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
+  color: var(--text);
 }
-.t-callout__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: -4px -6px 2px 0; }
-.t-callout__eyebrow {
-  display: inline-flex;
+.t-callout__arrow path {
+  fill: var(--bg);
+  stroke: var(--border);
+}
+.t-callout__head {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  min-width: 0;
-  font-size: var(--n-text-xs);
-  font-weight: 500;
-  color: var(--n-text-3);
-  white-space: nowrap;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: -2px -8px 0 0;
 }
-.t-callout__num { color: var(--n-accent-text); font-variant-numeric: tabular-nums; }
-.t-callout__sep { color: var(--n-border-strong); }
-.t-callout__chapter { overflow: hidden; text-overflow: ellipsis; }
+.t-callout__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: var(--text-xs);
+  line-height: 16px;
+  white-space: nowrap;
+}
+.t-callout__num {
+  flex: none;
+  font-weight: var(--weight-semibold);
+  color: var(--accent-text);
+  font-variant-numeric: tabular-nums;
+}
+.t-callout__chapter {
+  min-width: 0;
+  padding-left: var(--space-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 1px solid var(--border);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+.t-callout__pause {
+  flex: none;
+  color: var(--text-tertiary);
+}
 .t-callout__title {
   margin: 0;
-  font-size: var(--n-text-lg);
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 22px;
   letter-spacing: -0.01em;
-  color: var(--n-text);
+  color: var(--text);
   text-wrap: balance;
 }
-.t-callout--center .t-callout__title { font-size: var(--n-text-xl); }
-.t-callout__body { margin: 0; font-size: var(--n-text-md); line-height: 1.5; color: var(--n-text-2); text-wrap: pretty; }
-.t-callout__missing { margin: 0; font-size: var(--n-text-sm); line-height: 1.45; color: var(--n-text-3); }
-.t-callout__more { display: grid; gap: 6px; margin-top: 2px; }
+.t-callout__body {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 20px;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+.t-callout__missing {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text-tertiary);
+}
+.t-callout__more {
+  display: grid;
+  gap: var(--space-2);
+}
 .t-callout__moretext {
   margin: 0;
   overflow: hidden;
-  font-size: var(--n-text-sm);
-  line-height: 1.55;
-  color: var(--n-text-2);
-  padding: 8px 10px;
-  border-radius: var(--n-r-sm);
-  background: var(--n-bg-subtle);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-size: var(--text-sm);
+  line-height: 20px;
+  color: var(--text-secondary);
 }
 .t-more-btn {
+  display: inline-flex;
+  align-items: center;
   justify-self: start;
-  padding: 0;
+  gap: 4px;
+  margin-left: -2px;
+  padding: 2px;
   border: 0;
+  border-radius: var(--radius-xs);
   background: none;
-  color: var(--n-accent-text);
-  font: 500 var(--n-text-sm) / 1.4 var(--n-font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 18px;
+  color: var(--accent-text);
   cursor: pointer;
 }
-.t-more-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.t-more-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.t-more-btn__chev {
+  transition: transform var(--dur-base) var(--ease-enter);
+}
+.t-more-btn__chev[data-open='true'] {
+  transform: rotate(90deg);
+}
 .t-callout__foot {
   /* One row, always: Back on the left, the step's actions on the right. */
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
-  margin-top: 10px;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-row);
 }
-.t-callout__actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; min-width: 0; }
-.t-callout__actions .n-btn { flex: none; white-space: nowrap; }
-.t-callout__back { flex: none; white-space: nowrap; margin-left: -10px; }
-.t-callout__key { display: inline-flex; }
-@media (max-width: 720px) { .t-callout__key { display: none; } }
-
+.t-callout__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.t-callout__actions .ds-btn {
+  flex: none;
+}
+.t-callout__back {
+  flex: none;
+  margin-left: -10px;
+}
+.t-callout__key {
+  display: inline-flex;
+}
+@media (max-width: 720px) {
+  .t-callout__key {
+    display: none;
+  }
+}
 .t-wait {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-width: 0;
-  font: 500 var(--n-text-sm) / 1.25 var(--n-font-body);
-  color: var(--n-text-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 18px;
+  color: var(--text-secondary);
 }
 .t-wait__dot {
   flex: none;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
-  background: var(--n-accent);
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
-.t-spinner {
-  flex: none;
+.t-wait__spin {
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  border: 1.5px solid var(--n-border);
-  border-top-color: var(--n-accent);
-  animation: n-spin 0.9s linear infinite;
+  color: var(--accent);
 }
-@media (prefers-reduced-motion: reduce) {
-  .t-spinner { animation: none; }
-}
-
-.t-icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--n-r-sm);
-  border: 0;
-  background: transparent;
-  color: var(--n-text-3);
-  cursor: pointer;
-  flex: none;
-  transition: color var(--n-d-press) var(--n-ease), background var(--n-d-press) var(--n-ease);
-}
-.t-icon-btn:hover { color: var(--n-text); background: var(--n-bg-muted); }
 
 /* ---------------------------------------------------------------- HUD */
 .t-hud {
   position: fixed;
-  top: 12px;
-  right: 12px;
   z-index: var(--n-z-hud, 9020);
-  width: 300px;
-  padding: 10px 12px 12px;
-  display: grid;
-  gap: 8px;
-  border-radius: var(--n-r-md);
-  background: var(--n-bg);
-  border: 1px solid var(--n-border);
-  box-shadow: var(--n-shadow-2);
-  color: var(--n-text);
-  transition: opacity var(--n-d-ui) var(--n-ease);
+  color: var(--text);
+  transition: opacity var(--dur-base) var(--ease-enter);
 }
-/* Scenes: a compact control sitting in the top bar's right edge. */
+/* Scenes: in flow inside the scene's top bar (sceneSlot.tsx). */
 .t-hud--scene {
-  top: 10px;
-  right: var(--n-gutter, 24px);
-  width: auto;
-  height: 36px;
-  padding: 0 4px;
+  position: static;
   display: flex;
   align-items: center;
-  gap: 4px;
-  box-shadow: none;
+  gap: var(--space-2);
 }
-.t-hud--scene .t-timer { padding: 0 8px; border-right: 1px solid var(--n-border); }
-html[data-sl-hud='scene'] .n-topbar__right { --n-hud-room: 52px; }
-html[data-sl-hud='scene-timer'] .n-topbar__right { --n-hud-room: 160px; }
-/* Product steps: one fixed corner (bottom-right). Never jumps; fades when the spotlight sits under it. */
-.t-hud--product, .t-hud--pill { top: auto; bottom: 12px; }
-/* The spotlight is under the control: step out of the way so the target stays clickable (Esc still opens the menu). */
-.t-hud--faded { opacity: 0.2; pointer-events: none; }
-/* A product dialog is open (the file picker): step aside entirely so its footer buttons stay clear. Esc still opens the menu. */
-.t-hud--away { opacity: 0; pointer-events: none; }
-/* Phones: sits over the space its slot reserves in the sticky top bar (Hud.tsx sets top/right). */
-.t-hud--pill.t-hud--docked { left: auto; bottom: auto; box-shadow: none; }
+/* Product steps: a small control in one fixed corner (bottom-right). */
 .t-hud--pill {
-  width: auto;
-  height: 40px;
-  padding: 0 4px;
+  right: 16px;
+  bottom: 16px;
   display: flex;
   align-items: center;
   gap: 2px;
+  height: 36px;
+  padding: 0 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
 }
 .t-hud__pillbtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 10px;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-2);
   border: 0;
-  border-radius: var(--n-r-sm);
+  border-radius: var(--radius-sm);
   background: none;
-  color: var(--n-text);
-  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-enter);
 }
-.t-hud__pillbtn:hover { background: var(--n-bg-muted); }
-.t-hud--pill .t-timer { padding: 0 6px; }
-/* While the tour runs on a product page: room at the bottom for the control, and toasts stack above it. */
-html[data-sl-tour='product'] #main-content { padding-bottom: 96px; }
-html[data-sl-tour='product'] .sl-toasts { bottom: 72px; }
-.t-hud__row { display: flex; align-items: center; gap: 6px; min-width: 0; }
-.t-hud__chapter { font-size: var(--n-text-sm); font-weight: 500; color: var(--n-text); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.t-hud__spacer { flex: 1; }
-.t-hud__objective { margin: 0; font-size: var(--n-text-sm); line-height: 1.45; color: var(--n-text); }
-.t-hud__k { font-weight: 500; color: var(--n-text-3); margin-right: 4px; }
-.t-hud__meta { display: flex; align-items: center; justify-content: space-between; font-size: var(--n-text-xs); color: var(--n-text-3); }
-.t-hud__meta b { color: var(--n-text); font-weight: 600; }
-.t-hud__dots { display: inline-flex; gap: 4px; }
-.t-hud__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--n-bg-muted); box-shadow: inset 0 0 0 1px var(--n-border-strong); }
-.t-hud__dots i[data-on='true'] { background: var(--n-accent); box-shadow: none; }
+.t-hud__pillbtn:hover {
+  background: var(--bg-muted);
+}
+.t-hud__dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+}
+.t-hud__sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 2px;
+  background: var(--border);
+}
+/* Phones: docked over the slot it reserves in the product's top bar, at the 28px height of the
+   "Live AI" control beside it (Hud.tsx sets top/right). */
+.t-hud--pill.t-hud--docked {
+  bottom: auto;
+  left: auto;
+  height: 28px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+.t-hud--docked .t-hud__pillbtn {
+  height: 26px;
+  padding: 0 var(--space-2) 0 10px;
+}
+.t-hud--docked .t-hud__sep {
+  margin: 0;
+  height: 100%;
+}
+.t-hud--docked .ds-btn--icon {
+  --btn-h: 26px;
+}
+/* The spotlight is under the control: step out of the way so the target stays clickable (Esc still opens the menu). */
+.t-hud--faded {
+  opacity: 0.2;
+  pointer-events: none;
+}
+/* A product dialog is open (the file picker): step aside entirely so its footer buttons stay clear. */
+.t-hud--away {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Expanded: a small panel in the same corner. */
+.t-hud--panel {
+  right: 16px;
+  bottom: 16px;
+  display: grid;
+  gap: var(--space-2);
+  width: 288px;
+  padding: var(--space-2) var(--space-2) var(--space-3) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
+}
+.t-hud__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.t-hud__chapter {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.t-hud__spacer {
+  flex: 1;
+}
+.t-hud__objective {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding-right: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text);
+}
+.t-hud__k {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+.t-hud__progress {
+  display: block;
+  height: 4px;
+  margin-right: var(--space-2);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--bg-muted);
+}
+.t-hud__progress i {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  transition: width var(--dur-slow) var(--ease-enter);
+}
+.t-hud__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+.t-hud__meta b {
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+.t-hud__dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.t-hud__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-muted);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+.t-hud__dots i[data-on='true'] {
+  background: var(--accent);
+  box-shadow: none;
+}
 .t-timer {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-end;
-  font-size: var(--n-text-xs);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--n-text);
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  line-height: 14px;
   font-variant-numeric: tabular-nums;
 }
-.t-timer__part { font-size: 11px; font-weight: 500; color: var(--n-text-3); }
-.t-timer--amber .t-timer__part { color: var(--n-warning); }
-.t-timer--red .t-timer__part { color: var(--n-danger); }
-
-@media (max-width: 720px) {
-  .t-hud { left: 8px; right: 8px; top: 8px; width: auto; padding: 8px 10px; gap: 6px; }
-  .t-hud--scene { left: auto; right: 12px; top: 10px; padding: 0 4px; }
-  /* Phones: the callout is a bottom sheet, so the control lives top-right. */
-  .t-hud--product { top: 8px; bottom: auto; }
-  .t-hud--pill { left: auto; top: 8px; bottom: auto; padding: 0 2px; }
-  html[data-sl-tour='product'] #main-content { padding-bottom: 24px; }
-  html[data-sl-tour='product'] .sl-toasts { bottom: 16px; }
+.t-timer__total {
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+.t-timer__part {
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+.t-timer--amber .t-timer__part {
+  color: var(--warning);
+}
+.t-timer--red .t-timer__part {
+  color: var(--danger);
+}
+.t-hud--scene .t-timer {
+  padding-right: var(--space-3);
+  border-right: 1px solid var(--border);
+}
+.t-hud--docked .t-timer {
+  display: none;
 }
 
-/* ---------------------------------------------------------------- rail */
-.t-rail-scrim, .t-menu-scrim {
+/* While the tour runs on a product page: room at the bottom for the control, and toasts stack above it. */
+html[data-sl-tour='product'] #main-content {
+  padding-bottom: 88px;
+}
+html[data-sl-tour='product'] .ds-toasts,
+html[data-sl-tour='product'] .sl-toasts {
+  bottom: 68px;
+}
+@media (max-width: 900px) {
+  html[data-sl-tour='product'] #main-content {
+    padding-bottom: 24px;
+  }
+  html[data-sl-tour='product'] .ds-toasts,
+  html[data-sl-tour='product'] .sl-toasts {
+    bottom: 16px;
+  }
+}
+@media (max-width: 720px) {
+  /* Phones: the callout is a bottom sheet, so the controls live at the top. */
+  .t-hud--panel {
+    top: 8px;
+    right: 8px;
+    bottom: auto;
+    left: 8px;
+    width: auto;
+  }
+  .t-hud--pill:not(.t-hud--docked) {
+    top: 8px;
+    bottom: auto;
+  }
+}
+
+/* ---------------------------------------------------------------- chapters drawer */
+.t-rail-scrim,
+.t-menu-scrim {
   position: fixed;
   inset: 0;
   z-index: var(--n-z-menu, 9030);
-  background: var(--n-scrim, rgb(17 22 20 / 0.45));
+  background: var(--scrim);
 }
 .t-rail {
   position: absolute;
   top: 8px;
   bottom: 8px;
   left: 8px;
-  width: min(320px, calc(100vw - 16px));
   display: grid;
   grid-template-rows: auto 1fr auto;
+  width: min(328px, calc(100vw - 16px));
   overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
 }
-.t-rail__head, .t-rail__foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 12px 16px; gap: 8px; }
-.t-rail__head { border-bottom: 1px solid var(--n-border); }
-.t-rail__h { font-size: var(--n-text-md); font-weight: 600; }
-.t-rail__foot { border-top: 1px solid var(--n-border); }
-.t-rail__scroll { overflow: auto; padding: 4px 8px 12px; }
-.t-rail__group { padding: 10px 0 2px; }
-.t-rail__group ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
-.t-rail__glabel { display: block; padding: 0 8px 4px; font-size: var(--n-text-xs); font-weight: 500; color: var(--n-text-3); }
-.t-rail__item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 24px 1fr auto;
+.t-rail__head,
+.t-rail__foot {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 8px;
-  border-radius: var(--n-r-sm);
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+}
+.t-rail__head {
+  border-bottom: 1px solid var(--border);
+}
+.t-rail__h {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+.t-rail__foot {
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.t-rail__scroll {
+  overflow: auto;
+  padding: var(--space-1) var(--space-2) var(--space-3);
+}
+.t-rail__group {
+  padding-top: var(--space-3);
+}
+.t-rail__group ol {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.t-rail__glabel {
+  display: block;
+  padding: 0 var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+.t-rail__item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 32px;
+  padding: 0 var(--space-2);
   border: 0;
+  border-radius: var(--radius-sm);
   background: none;
-  color: var(--n-text-2);
-  font: 400 var(--n-text-md) / 1.3 var(--n-font-body);
+  font-size: var(--text-md);
+  line-height: 18px;
   text-align: left;
+  color: var(--text-secondary);
   cursor: pointer;
 }
-.t-rail__item:hover { background: var(--n-bg-muted); color: var(--n-text); }
-.t-rail__item[data-state='current'] { background: var(--n-accent-subtle); color: var(--n-accent-text); font-weight: 500; }
-.t-rail__item[data-state='done'] { color: var(--n-text); }
-.t-rail__item[data-state='done'] .t-rail__num { color: var(--n-accent-text); }
-.t-rail__num { font-size: var(--n-text-xs); color: var(--n-text-3); font-variant-numeric: tabular-nums; text-align: right; }
-.t-rail__time { font-size: var(--n-text-xs); color: var(--n-text-3); font-variant-numeric: tabular-nums; }
+.t-rail__item:hover {
+  background: var(--bg-muted);
+  color: var(--text);
+}
+.t-rail__item[data-state='current'] {
+  background: var(--accent-subtle);
+  font-weight: var(--weight-medium);
+  color: var(--accent-text);
+}
+.t-rail__item[data-state='done'] {
+  color: var(--text);
+}
+.t-rail__num {
+  font-size: var(--text-xs);
+  text-align: right;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.t-rail__item[data-state='done'] .t-rail__num,
+.t-rail__item[data-state='current'] .t-rail__num {
+  color: var(--accent-text);
+}
+.t-rail__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.t-rail__time {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
 
-/* ---------------------------------------------------------------- menu */
-.t-menu-scrim { display: grid; place-items: center; padding: 16px; }
-.t-menu { width: min(380px, 100%); padding: 20px; }
-.t-menu__title { margin: 4px 0 16px; font-size: var(--n-text-xl); font-weight: 600; letter-spacing: -0.01em; }
-.t-menu__list { display: grid; gap: 8px; }
-.t-menu__list .n-btn { width: 100%; justify-content: flex-start; }
+/* ---------------------------------------------------------------- pause menu */
+.t-menu-scrim {
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+.t-menu {
+  display: grid;
+  gap: var(--space-4);
+  width: min(360px, 100%);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
+}
+.t-menu__head {
+  display: grid;
+  gap: 2px;
+}
+.t-menu__k {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.t-menu__title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  line-height: 26px;
+  letter-spacing: -0.01em;
+}
+.t-menu__list {
+  display: grid;
+  gap: var(--space-2);
+}
+.t-menu__list .ds-btn {
+  justify-content: flex-start;
+}
+.t-menu__note {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: 16px;
+  color: var(--text-tertiary);
+}
 
 /* ---------------------------------------------------------------- checkpoint */
 .t-checkpoint {
   position: fixed;
-  left: 50%;
   bottom: 24px;
-  translate: -50% 0;
+  left: 50%;
   z-index: var(--n-z-menu, 9030);
   display: grid;
   justify-items: center;
   gap: 4px;
   min-width: 260px;
-  padding: 14px 24px;
-  cursor: pointer;
+  padding: var(--space-4) var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  box-shadow: var(--shadow-2);
   text-align: center;
-  font: inherit;
+  cursor: pointer;
+  translate: -50% 0;
 }
-.t-checkpoint .n-stat { justify-items: center; }
-.t-checkpoint__tag { font-size: var(--n-text-xs); font-weight: 500; color: var(--n-accent-text); }
+.t-checkpoint .n-stat {
+  justify-items: center;
+}
+.t-checkpoint .n-stat__value {
+  justify-content: center;
+}
+.t-checkpoint__tag {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--accent-text);
+}
+.t-checkpoint__sub {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
 
 /* ---------------------------------------------------------------- start / resume control */
-.t-pill {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: var(--n-z-hud, 9020);
+/* Docked into product chrome (pillSlot.tsx): in flow, never over page content. */
+.t-pill-slot:empty {
+  display: none;
+}
+.t-pill-slot--rail {
+  display: flex;
+}
+.t-pill-slot--rail.is-compact {
+  justify-content: center;
+}
+.t-pill-slot--bar {
+  display: inline-flex;
+}
+/* Sidebar footer: a ds secondary button, full width (the classes come from ds.css). */
+.t-pill--rail {
+  justify-content: flex-start;
+}
+.t-pill--rail .t-pill__icon {
+  color: var(--accent-text);
+}
+.t-pill__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Mobile top bar: the same 28px control as "Live AI" beside it. */
+.t-pill--bar {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 14px 0 12px;
-  border-radius: var(--n-r-sm);
-  border: 1px solid var(--n-accent);
-  background: var(--n-accent);
-  color: #fff;
-  font: 500 var(--n-text-sm) / 1 var(--n-font-body);
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-secondary);
   cursor: pointer;
-  box-shadow: var(--n-shadow-1);
-  transition: background var(--n-d-press) var(--n-ease);
+  transition:
+    background-color var(--dur-fast) var(--ease-enter),
+    color var(--dur-fast) var(--ease-enter);
 }
-.t-pill:hover { background: var(--n-accent-hover); }
-.t-pill__icon { flex: none; }
-
-/* Docked into product chrome (pillSlot.tsx): in flow, never over page content. */
-.t-pill-slot:empty { display: none; }
-.t-pill-slot--rail { display: flex; }
-.t-pill-slot--rail.is-compact { justify-content: center; }
-.t-pill-slot--bar { display: inline-flex; margin-left: 8px; }
-/* Docked, it is a quiet secondary control (same in Signal Loop and Agent Ops): the product's
-   own primary action keeps the only green button on the page. */
-.t-pill--docked {
-  position: static;
-  z-index: auto;
-  max-width: 100%;
-  box-shadow: none;
-  border-color: var(--n-border-strong);
-  background: var(--n-bg);
-  color: var(--n-text);
+.t-pill--bar:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
 }
-.t-pill--docked:hover { background: var(--n-bg-muted); }
-.t-pill--docked .t-pill__icon { color: var(--n-accent-text); }
-.t-pill--docked .t-pill__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.t-pill--rail { width: 100%; height: 36px; justify-content: flex-start; }
-.t-pill--rail.is-compact { width: 36px; height: 36px; padding: 0; justify-content: center; }
-.t-pill--bar { min-height: 36px; height: 36px; gap: 6px; padding: 0 10px 0 8px; font-size: var(--n-text-sm); }
+.t-pill--bar:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.t-pill--bar .t-pill__icon {
+  color: var(--accent-text);
+}

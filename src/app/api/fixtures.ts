@@ -34,6 +34,24 @@ import {
   type Turn,
 } from '../../shared/contracts';
 import { ApiError, type Fetched } from './client';
+import {
+  ANALYSES,
+  CHANNEL_CONNECTOR,
+  CONNECTORS,
+  connectorById,
+  DEFAULT_ACTOR_ID,
+  SEED_CONNECTED,
+  type Actor,
+  type Connection,
+  type ConnectionActivity,
+  type ConnectionTestResult,
+  type ConnectorId,
+  type DocKind,
+  type PersonInput,
+  type PlatformOverview,
+  type SourceId,
+  type UpdateConnection,
+} from '../../shared/platform';
 import { ACCOUNTS, FILES, PEOPLE, SEED_INSIGHTS, THEMES, type FixtureFile, type PlannedInsight } from './fixtures-data';
 import type { EvalsData, HealthData, InsightDetail, ReviewPostBody, RoutingFlow, RunDetail, ThemeDetail } from './types';
 
@@ -1052,5 +1070,122 @@ export async function fixtureRequest<T>(method: string, fullPath: string, body: 
     return r({});
   }
   if (method === 'POST' && path === '/telemetry') return r({});
+  const platform = platformFixture(method, path ?? "", seg, q, body, now);
+  if (platform !== undefined) return r(platform);
   throw new ApiError(404, 'not_found', `Fixture has no handler for ${method} ${path}`);
+}
+
+// ---------------------------------------------------------------- Switchboard platform (fixture mode)
+
+const connectionState = new Map<ConnectorId, Connection>();
+const connectionActivity: ConnectionActivity[] = [];
+const personEdits = new Map<string, Person>();
+let actorId = DEFAULT_ACTOR_ID;
+
+function fxConnection(id: ConnectorId): Connection {
+  const cur = connectionState.get(id);
+  if (cur) return cur;
+  const def = connectorById(id)!;
+  const on = SEED_CONNECTED.includes(id);
+  const out = [...deliveries.values()].filter((d) => d.channel !== 'triage' && CHANNEL_CONNECTOR[d.channel as keyof typeof CHANNEL_CONNECTOR] === id);
+  return {
+    id,
+    status: on ? 'connected' : 'disconnected',
+    account: on ? def.defaultAccount : null,
+    config: {},
+    connectedAt: on ? iso(NOW0 - 40 * day) : null,
+    connectedBy: on ? DEFAULT_ACTOR_ID : null,
+    lastActivityAt: out[0]?.createdAt ?? null,
+    activityCount: out.length,
+  };
+}
+
+function fxPeople(): Person[] {
+  const base = [...people];
+  const merged = base.map((p) => personEdits.get(p.id) ?? p);
+  for (const [id, p] of personEdits) if (!base.some((b) => b.id === id)) merged.push(p);
+  return merged;
+}
+
+function fxActor(): Actor {
+  const p = fxPeople().find((x) => x.id === actorId) ?? fxPeople()[0]!;
+  return { personId: p.id, name: p.name, title: p.title, initials: p.initials, isAdmin: p.id === DEFAULT_ACTOR_ID };
+}
+
+function platformFixture(method: string, path: string, seg: string[], q: URLSearchParams, body: unknown, now: number): unknown {
+  if (method === 'GET' && path === '/connections') return CONNECTORS.map((c) => fxConnection(c.id));
+  if (seg[0] === 'connections' && seg[1]) {
+    const id = seg[1] as ConnectorId;
+    if (!connectorById(id)) notFound();
+    if (method === 'GET' && !seg[2]) return { connection: fxConnection(id), activity: connectionActivity.filter((a) => a.connectorId === id) };
+    if (method === 'POST' && seg[2] === 'test') {
+      const res: ConnectionTestResult = { ok: fxConnection(id).status === 'connected', ms: 180, receipt: `test-${Math.round(now / 1000)}`, message: 'Test message delivered' };
+      connectionActivity.unshift({ id: rid('act'), connectorId: id, direction: 'out', at: iso(now), title: 'Test message', detail: res.message, runId: null, insightId: null, status: 'test' });
+      return res;
+    }
+    if (method === 'PUT') {
+      const b = body as UpdateConnection;
+      const cur = fxConnection(id);
+      const def = connectorById(id)!;
+      const next: Connection =
+        b.action === 'disconnect'
+          ? { ...cur, status: 'disconnected', account: null, connectedAt: null, connectedBy: null }
+          : b.action === 'connect'
+            ? { ...cur, status: 'connected', account: b.account ?? def.defaultAccount, config: { ...cur.config, ...(b.config ?? {}) }, connectedAt: iso(now), connectedBy: actorId }
+            : { ...cur, config: { ...cur.config, ...b.config } };
+      connectionState.set(id, next);
+      return next;
+    }
+  }
+  if (method === 'GET' && path === '/people') return fxPeople();
+  if (method === 'POST' && path === '/people') {
+    const b = body as PersonInput;
+    const p: Person = { id: rid('ppl'), name: b.name, title: b.title, role: b.role, productArea: (b.productArea as Person['productArea']) ?? null, email: b.email, slackHandle: b.identities?.slack ?? `@${b.email.split('@')[0]}`, initials: b.name.split(/\s+/).map((x) => x[0]).join('').slice(0, 2).toUpperCase(), identities: b.identities ?? {}, active: true, custom: true };
+    personEdits.set(p.id, p);
+    return p;
+  }
+  if (seg[0] === 'people' && seg[1]) {
+    const cur = fxPeople().find((p) => p.id === seg[1]);
+    if (!cur) notFound();
+    if (method === 'PUT') {
+      const b = body as Partial<PersonInput> & { active?: boolean };
+      const next: Person = { ...cur, ...(b.name ? { name: b.name } : {}), ...(b.title ? { title: b.title } : {}), ...(b.role ? { role: b.role } : {}), ...(b.email ? { email: b.email } : {}), ...(b.identities ? { identities: { ...cur.identities, ...b.identities } } : {}), ...(b.active !== undefined ? { active: b.active } : {}) };
+      personEdits.set(next.id, next);
+      return next;
+    }
+    if (method === 'DELETE') {
+      const next = { ...cur, active: false };
+      personEdits.set(next.id, next);
+      const reassigned = effectiveRules().filter((r) => r.ownerId === cur.id).map((r) => r.id);
+      return { person: next, reassignedRules: reassigned };
+    }
+  }
+  if (method === 'GET' && path === '/me') return fxActor();
+  if (method === 'PUT' && path === '/me') {
+    actorId = (body as { personId: string }).personId;
+    return fxActor();
+  }
+  if (method === 'GET' && path === '/analyses') return ANALYSES.map((a) => ({ ...a, runs: a.availability === 'built' ? runs.size : 0 }));
+  if (method === 'GET' && path === '/overview') {
+    const days = Number(q.get('days') ?? 30);
+    const list = [...runs.values()].map((s) => snapshot(s, now).run);
+    const by = <K extends string>(xs: K[]) => [...xs.reduce((m, k) => m.set(k, (m.get(k) ?? 0) + 1), new Map<K, number>())].map(([k, count]) => ({ k, count })).sort((a, b) => b.count - a.count);
+    const dl = [...deliveries.values()];
+    const o: PlatformOverview = {
+      window: { from: iso(now - days * day), to: iso(now), days },
+      conversations: list.length,
+      conversationsPrev: Math.round(list.length * 0.8),
+      byKind: by(list.map((r) => (r.docKind ?? 'call_transcript') as DocKind)).map(({ k, count }) => ({ kind: k, count })),
+      bySource: by(list.map((r) => (r.source ?? 'upload') as SourceId)).map(({ k, count }) => ({ source: k, count })),
+      analysesRun: [{ id: 'product_feedback', count: list.length }],
+      deliveries: dl.length,
+      byConnector: by(dl.map((d) => (d.channel === 'triage' ? 'triage' : CHANNEL_CONNECTOR[d.channel as keyof typeof CHANNEL_CONNECTOR] ?? 'triage') as ConnectorId | 'triage')).map(({ k, count }) => ({ connectorId: k, count })),
+      peopleTagged: new Set(dl.map((d) => d.ownerId)).size,
+      awaitingReview: [...insights.values()].filter((i) => i.status === 'pending_review').length,
+      medianMinutesToOwner: 4,
+      connectedCount: CONNECTORS.filter((c) => fxConnection(c.id).status === 'connected').length,
+    };
+    return o;
+  }
+  return undefined;
 }

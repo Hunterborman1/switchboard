@@ -7,6 +7,9 @@ import { MotionConfig } from 'motion/react';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 import '@fontsource-variable/inter/wght.css';
 
+// The design system: tokens first, so every later layer can alias them.
+import '../ds/tokens.css';
+import '../ds/ds.css';
 import '../narrative/narrative.css';
 import '../narrative/scenes/scenes.css';
 import '../tour/tour.css';

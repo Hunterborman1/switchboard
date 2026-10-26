@@ -1,210 +1,401 @@
 /**
- * Run view building blocks: insight card + confidence gauge, the dropped-quote card, the
- * screen card (with the injection callout) and the trace panel.
+ * Conversation page building blocks: the triage card, insight rows (with the score, the gate,
+ * the decision model's second opinion and where it went), the dropped-quote card and the trace
+ * table. All on the design system; walkthrough anchors live on the same elements as before.
  */
-import { motion } from 'motion/react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { THRESHOLDS, STEP_KEYS, STEP_LABELS, type Delivery, type Insight, type RunStep, type ScreenOutput } from '../../../shared/contracts';
+import { THRESHOLDS, type Delivery, type Insight, type ScreenOutput } from '../../../shared/contracts';
 import { SIGNAL_LOOP_AGENT_ID } from '../../../shared/platform-contracts';
+import { ANALYSES, CHANNEL_CONNECTOR, CHANNEL_LABEL } from '../../../shared/platform';
 import { tourAnchor } from '../../../tour/anchors';
-import { TimelineLanes, type TimelineLane } from '../../../uis/TimelineLanes';
-import { MonoId } from '../../../uis/MonoId';
-import { StatusChip } from '../../../uis/StatusChip';
-import { Hint } from '../../components/Hint';
-import { GateChip, SeverityTag, TypeTag } from '../../components/ui';
-import { IconArrowUpRight, IconChannels, IconMail, IconQuote, IconShieldAlert, IconTheme, IconTicket, IconHash, IconInbox } from '../../components/icons';
-import { AREA_LABEL, CHANNEL_LABEL, money, ms } from '../../lib/labels';
-import { useModelLabels } from '../../lib/models';
+import { Badge, ButtonLink, Callout, Card, ConnectorMark, CopyText, cx, KeyValue, Meter, Quote, Skeleton, Spinner, Table, Tooltip } from '../../../ds';
+import { IconExternal, IconInbox } from '../../../ds/icons';
+import { GateBadge, SeverityBadge, TypeLabel } from '../../components/domain';
+import { AREA_LABEL, money, ms } from '../../lib/labels';
 import { INSTANT_STEP_HELP } from '../../../shared/format';
 import type { DisplayStep } from './useReveal';
-import { friendlyModel } from './modelName';
+import { RedactedText, redactedPlain } from './Transcript';
+import { languageName, STEP_NAME } from './stepText';
 import styles from './RunParts.module.css';
 
-// ---------------------------------------------------------------- confidence gauge
+// ---------------------------------------------------------------- triage
 
-export function ConfidenceGauge({
-  insight,
-  ready,
-  reduced,
-}: {
-  insight: Pick<Insight, 'confidenceFinal' | 'confidenceModel' | 'groundingScore' | 'gate'>;
-  ready: boolean;
-  reduced: boolean;
-}) {
-  const v = Math.max(0, Math.min(1, insight.confidenceFinal));
-  const zone = v >= THRESHOLDS.autoRoute ? 'auto' : v >= THRESHOLDS.review ? 'review' : 'held';
-  const label = ready
-    ? `Confidence ${v.toFixed(2)}: ${zone === 'auto' ? 'high enough to send automatically (0.80 or more)' : zone === 'review' ? 'between 0.55 and 0.80, so a person checks it first' : 'below 0.55, so it is held'}`
-    : 'Confidence score pending the quote check';
+/** The meeting type, for calls and meetings only (email and notes already say what they are). */
+const CALL_KIND: Record<string, string> = { qbr: 'QBR', check_in: 'Check-in', renewal: 'Renewal', escalation: 'Escalation', onboarding: 'Onboarding' };
+const COMPLEXITY: Record<string, string> = { clean: 'Clean', noisy: 'Noisy', very_noisy: 'Very noisy' };
+
+function AnalysisChips({ ids }: { ids: string[] }) {
   return (
-    <div className={styles.gauge} role="img" aria-label={label}>
-      <div className={styles.gaugeTrack}>
-        <span className={styles.zoneHeld} style={{ width: `${THRESHOLDS.review * 100}%` }} />
-        <span className={styles.zoneReview} style={{ left: `${THRESHOLDS.review * 100}%`, width: `${(THRESHOLDS.autoRoute - THRESHOLDS.review) * 100}%` }} />
-        <span className={styles.zoneAuto} style={{ left: `${THRESHOLDS.autoRoute * 100}%`, right: 0 }} />
-        {ready ? (
-          <motion.span
-            className={`${styles.gaugeFill} ${styles[`fill_${zone}`]}`}
-            initial={reduced ? { width: `${v * 100}%` } : { width: '0%' }}
-            animate={{ width: `${v * 100}%` }}
-            transition={{ duration: reduced ? 0 : 0.6, ease: [0.2, 0, 0, 1] }}
-          />
+    <span className={styles.chips}>
+      {ids.map((id) => {
+        const def = ANALYSES.find((a) => a.id === id);
+        if (!def) return null;
+        return def.availability === 'built' ? (
+          <Badge key={id} tone="accent" dot>
+            {def.name}
+          </Badge>
         ) : (
-          <span className={styles.gaugePending} />
-        )}
-        <i className={styles.mark} style={{ left: `${THRESHOLDS.review * 100}%` }} />
-        <i className={styles.mark} style={{ left: `${THRESHOLDS.autoRoute * 100}%` }} />
-      </div>
-      <div className={styles.gaugeScale} aria-hidden="true">
-        <span style={{ left: `${THRESHOLDS.review * 100}%` }}>Review</span>
-        <span style={{ left: `${THRESHOLDS.autoRoute * 100}%` }}>Auto-send</span>
-      </div>
-      <div className={styles.gaugeReadout}>
-        {ready ? (
-          <Hint
-            label={
-              <>
-                Combines the AI’s own confidence ({insight.confidenceModel.toFixed(2)}), how exactly the quote matched the conversation ({insight.groundingScore.toFixed(2)}), the insight type and the account.
-                <br />
-                0.80 or more is sent automatically, 0.55 to 0.80 goes to a person, below 0.55 is held. Churn risk and critical bugs are always checked by a person.
-              </>
-            }
-          >
-            <span className={styles.readout} tabIndex={0}>
-              <motion.strong initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduced ? 0 : 0.3, duration: 0.18 }}>
-                {v.toFixed(2)}
-              </motion.strong>
-              <span className="sl-subtle"> confidence score</span>
+          <Tooltip key={id} label={`${def.name} would run here. It isn’t built yet.`}>
+            <span tabIndex={0} className={styles.chipWrap}>
+              <Badge outline>
+                {def.name}
+                <span className={styles.notBuilt}>Not built</span>
+              </Badge>
             </span>
-          </Hint>
-        ) : (
-          <span className={styles.readout}>
-            <span className="sl-subtle">AI confidence {insight.confidenceModel.toFixed(2)} · checking the quote</span>
-          </span>
-        )}
-      </div>
-    </div>
+          </Tooltip>
+        );
+      })}
+    </span>
   );
 }
 
-// ---------------------------------------------------------------- insight card
+export function TriageCard({
+  screen,
+  pending,
+  notRun,
+  running,
+  model,
+  took,
+  docKind,
+}: {
+  screen: ScreenOutput | null;
+  pending: boolean;
+  /** The run stopped before triage. */
+  notRun: boolean;
+  running: boolean;
+  model: string | null;
+  took: number | null;
+  docKind: string | null;
+}) {
+  const meta = pending ? (
+    running ? (
+      <span className={styles.cardMeta}>
+        <Spinner /> Deciding
+      </span>
+    ) : (
+      <span className={styles.cardMeta}>Waiting</span>
+    )
+  ) : (
+    <span className={styles.cardMeta}>
+      <span>{model ?? 'No AI'}</span>
+      <span className="ds-num">{ms(took)}</span>
+    </span>
+  );
 
-export function ChannelIcon({ channel, size = 14 }: { channel: Delivery['channel'] | null; size?: number }) {
-  if (channel === 'slack') return <IconHash size={size} />;
-  if (channel === 'jira') return <IconTicket size={size} />;
-  if (channel === 'linear') return <IconChannels size={size} />;
-  if (channel === 'email_digest') return <IconMail size={size} />;
-  return <IconInbox size={size} />;
+  if (notRun) {
+    return (
+      <Card title="Triage" description="What this is and what runs on it." actions={<span className={styles.cardMeta}>Not run</span>} attrs={{ ...tourAnchor('run.screen'), 'aria-label': 'Triage' }}>
+        <p className={styles.notRun}>The run stopped before triage, so nothing was decided.</p>
+      </Card>
+    );
+  }
+
+  if (pending || !screen) {
+    return (
+      <Card title="Triage" description="What this is and what runs on it." actions={meta} attrs={{ ...tourAnchor('run.screen'), 'aria-label': 'Triage' }}>
+        <KeyValue
+          className={styles.triageKv}
+          items={['What it is', 'Language', 'Product feedback', 'Hidden instructions', 'Analyses'].map((label, i) => ({
+            label,
+            value: <Skeleton width={[120, 72, 40, 88, 96][i]} height={10} style={{ marginTop: 4 }} />,
+          }))}
+        />
+      </Card>
+    );
+  }
+
+  const analyses = screen.analyses?.length ? screen.analyses : screen.actionable ? ['product_feedback'] : [];
+  const complexity = screen.complexity ?? null;
+  const kind = CALL_KIND[screen.call_kind] ?? null;
+  const items: { label: ReactNode; value: ReactNode }[] = [
+    {
+      label: 'What it is',
+      value: (
+        <span className={styles.inline}>
+          <span>{docKind ?? 'Conversation'}</span>
+          {kind ? <span className="ds-subtle">{kind}</span> : null}
+        </span>
+      ),
+    },
+    { label: 'Language', value: languageName(screen.language) },
+    {
+      label: 'Product feedback',
+      value: screen.actionable ? (
+        <Badge tone="success">Yes</Badge>
+      ) : (
+        <span className={styles.inline}>
+          <Badge>No</Badge>
+          <span className="ds-subtle">Nothing to extract</span>
+        </span>
+      ),
+    },
+  ];
+  if (complexity) {
+    items.push({
+      label: 'Noise',
+      value: COMPLEXITY[complexity] ?? complexity,
+    });
+  }
+  items.push(
+    { label: 'Hidden instructions', value: screen.injection_suspected ? <Badge tone="danger">Found</Badge> : <span className={styles.ok}>None found</span> },
+    { label: 'Analyses', value: analyses.length ? <AnalysisChips ids={analyses} /> : <span className="ds-subtle">None apply</span> },
+  );
+  if (screen.reason)
+    items.push({
+      label: 'Why',
+      value: (
+        <span className="ds-muted">
+          <RedactedText text={screen.reason} />
+        </span>
+      ),
+    });
+
+  return (
+    <Card title="Triage" description="What this is and what runs on it." actions={meta} attrs={{ ...tourAnchor('run.screen'), 'aria-label': 'Triage' }}>
+      <div className={styles.triage}>
+        <KeyValue className={styles.triageKv} items={items} />
+        {screen.injection_suspected ? (
+          <Callout tone="warning" title="Prompt injection caught and ignored">
+            <p className={styles.calloutText}>The file contains instructions aimed at an AI. They were read as plain text, nothing acted on them, and the attempt was logged.</p>
+            {screen.injection_excerpt ? (
+              <figure className={styles.inert}>
+                <figcaption className={styles.inertCaption}>Quoted from the file, not acted on</figcaption>
+                <pre className={styles.inertText}>{screen.injection_excerpt}</pre>
+              </figure>
+            ) : null}
+          </Callout>
+        ) : null}
+      </div>
+    </Card>
+  );
 }
+
+// ---------------------------------------------------------------- insights
 
 export type CardStage = { grounded: boolean; scored: boolean; themed: boolean; routed: boolean; delivered: boolean };
 
-export function InsightCard({
+function matchWords(ev: Insight['evidence'][number]): string {
+  if (ev.method === 'fuzzy') return `Close match, ${Math.round(ev.score * 100)}% similar`;
+  if (ev.method === 'normalized') return 'Found in the conversation';
+  return 'Found word for word';
+}
+
+function scoreTone(v: number): 'accent' | 'warning' {
+  return v >= THRESHOLDS.autoRoute ? 'accent' : 'warning';
+}
+
+function Mentions({ mentions }: { mentions: NonNullable<Delivery['mentions']> }) {
+  const order = { owner: 0, csm: 1, watcher: 2 } as const;
+  const sorted = [...mentions].sort((a, b) => order[a.role] - order[b.role]);
+  const lead = sorted.filter((m) => m.role === 'owner');
+  const cc = sorted.filter((m) => m.role !== 'owner');
+  return (
+    <span className={styles.mentions}>
+      {lead.map((m) => m.handle).join(', ')}
+      {cc.length ? (
+        <>
+          {lead.length ? ', ' : ''}
+          <span className="ds-subtle">cc </span>
+          {cc.map((m) => m.handle).join(', ')}
+        </>
+      ) : null}
+    </span>
+  );
+}
+
+/** A matching rule that couldn't deliver, so the insight went to the triage queue instead. */
+export type Diversion = { why: 'not_connected' | 'owner_inactive'; channel: string } | null;
+
+function diversionText(d: NonNullable<Diversion>): string {
+  if (d.why === 'owner_inactive') return 'The owner is no longer in the directory, so it went to the triage queue.';
+  const name = (CHANNEL_LABEL as Record<string, string>)[d.channel] ?? d.channel;
+  return `${name} isn’t connected, so it went to the triage queue.`;
+}
+
+export function InsightRow({
   insight,
   stage,
+  inProgress,
   themeName,
   ownerName,
   delivery,
+  diversion,
   selected,
   onFocus,
   anchorGate,
-  reduced,
-  index,
+  opinionModel,
 }: {
   insight: Insight;
   stage: CardStage;
+  inProgress: boolean;
   themeName: string | null;
   ownerName: string | null;
   delivery: Delivery | null;
+  diversion: Diversion;
   selected: boolean;
   onFocus: () => void;
   anchorGate: boolean;
-  reduced: boolean;
-  index: number;
+  opinionModel: string | null;
 }) {
-  const ev = insight.evidence[0];
-  const method = ev?.method;
-  return (
-    <motion.article
-      layout={!reduced}
-      id={`insight-${insight.id}`}
-      className={`${styles.card} ${selected ? styles.cardSelected : ''}`}
-      initial={reduced ? false : { opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.24, delay: reduced ? 0 : index * 0.06, ease: [0.2, 0, 0, 1] }}
-      aria-label={`${insight.type.replace('_', ' ')}: ${insight.summary}`}
-    >
-      <div className={styles.cardTop}>
-        <TypeTag type={insight.type} />
-        <SeverityTag severity={insight.severity} />
-        <span className={styles.area}>{AREA_LABEL[insight.productArea]}</span>
-        <span className={styles.cardTopEnd}>
-          {stage.scored ? <GateChip insight={insight} /> : <StatusChip tone="neutral" size="sm">{stage.grounded ? 'Scoring…' : 'Checking quote…'}</StatusChip>}
-        </span>
-      </div>
-      <p className={styles.summary}>{insight.summary}</p>
-      {ev ? (
-        <button type="button" className={`${styles.quoteBtn} ${stage.grounded ? styles.quoteGrounded : ''}`} onClick={onFocus} aria-label={`Show this quote in the transcript: ${ev.matchedText ?? ev.quote}`}>
-          <IconQuote size={14} />
-          <span className={styles.quoteText}>{stage.grounded ? ev.matchedText ?? ev.quote : ev.quote}</span>
-          <span className={styles.quoteMeta}>
-            {stage.grounded && method && method !== 'failed' ? (
-              <>
-                <span className={styles.method} title={method === 'fuzzy' ? `Close match, similarity ${ev.score.toFixed(2)}` : 'Word-for-word match'}>{method === 'fuzzy' ? 'Close match' : 'Exact match'}</span>
-                <span className={styles.locate} title={ev.turnId ? `Line ${ev.turnId}` : undefined}>
-                  Show in transcript <IconArrowUpRight size={11} />
-                </span>
-              </>
-            ) : (
-              <span className={styles.methodPending}>Finding it in the transcript…</span>
-            )}
+  const ev = insight.evidence.find((e) => e.method !== 'failed') ?? insight.evidence[0];
+  const quote = ev ? (stage.grounded ? (ev.matchedText ?? ev.quote) : ev.quote) : null;
+  const v = Math.max(0, Math.min(1, insight.confidenceFinal));
+  const op = insight.secondOpinion ?? null;
+
+  const routeFacts: { label: ReactNode; value: ReactNode }[] = [];
+  if (stage.themed) {
+    routeFacts.push({
+      label: 'Theme',
+      value: insight.themeId ? (
+        <Link to={`/app/themes/${insight.themeId}`} className={styles.link}>
+          {themeName ?? 'Open theme'}
+        </Link>
+      ) : (
+        <span className="ds-muted">Started a new theme</span>
+      ),
+    });
+  } else if (inProgress) {
+    routeFacts.push({ label: 'Theme', value: <Skeleton width={160} height={10} style={{ marginTop: 4 }} /> });
+  }
+  if (stage.routed) {
+    if (insight.gate === 'review') {
+      routeFacts.push({
+        label: 'Owner',
+        value: (
+          <span className={styles.inline}>
+            <Link to={`/app/review/${insight.id}`} className={styles.link}>
+              Waiting for review
+            </Link>
+            {ownerName ? <span className="ds-subtle">then {ownerName}</span> : null}
           </span>
-        </button>
-      ) : null}
-      <div {...(anchorGate ? tourAnchor('run.gate') : {})} className={styles.gaugeWrap}>
-        <ConfidenceGauge insight={insight} ready={stage.scored} reduced={reduced} />
+        ),
+      });
+    } else if (insight.gate === 'held') {
+      routeFacts.push({ label: 'Owner', value: <span className="ds-muted">Held: kept here, not sent</span> });
+    } else {
+      routeFacts.push({ label: 'Owner', value: ownerName ?? 'Unassigned' });
+    }
+    const channel = delivery?.channel ?? insight.channel;
+    if (channel && insight.gate === 'auto_route') {
+      const connector = CHANNEL_CONNECTOR[channel];
+      routeFacts.push({
+        label: 'Sent to',
+        value: (
+          <span className={styles.inline}>
+            <span className={styles.sentTo}>
+              {connector ? <ConnectorMark id={connector} size={16} /> : <IconInbox size={16} />}
+              <span>{CHANNEL_LABEL[channel]}</span>
+            </span>
+            {delivery?.destination ? (
+              <span className={cx('ds-muted', styles.destination)} title={delivery.destination}>
+                {delivery.destination}
+              </span>
+            ) : null}
+            {stage.delivered && delivery?.receipt ? <CopyText value={delivery.receipt} label="Copy receipt" /> : null}
+          </span>
+        ),
+      });
+    }
+    if (diversion) routeFacts.push({ label: 'Rerouted', value: <span className="ds-muted">{diversionText(diversion)}</span> });
+    if (stage.delivered && delivery?.mentions?.length) routeFacts.push({ label: 'Tagged', value: <Mentions mentions={delivery.mentions} /> });
+  } else if (inProgress) {
+    routeFacts.push({ label: 'Owner', value: <Skeleton width={120} height={10} style={{ marginTop: 4 }} /> });
+  }
+
+  return (
+    <article id={`insight-${insight.id}`} className={cx(styles.insight, selected && styles.insightSelected)} aria-label={redactedPlain(insight.summary)}>
+      <div className={styles.insightTop}>
+        <TypeLabel type={insight.type} />
+        <SeverityBadge severity={insight.severity} />
+        <span className={styles.area}>{AREA_LABEL[insight.productArea]}</span>
       </div>
-      {stage.themed || stage.routed ? (
-        <div className={styles.cardFoot}>
-          {stage.themed ? (
-            <motion.span className={styles.footItem} initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18 }}>
-              <IconTheme size={14} />
-              {insight.themeId ? (
-                <>
-                  Joined <Link to={`/app/themes/${insight.themeId}`} className="sl-quietlink sl-strong">{themeName ?? insight.themeId}</Link>
-                </>
-              ) : (
-                <span>Started a new candidate theme</span>
-              )}
-            </motion.span>
-          ) : null}
-          {stage.routed ? (
-            <motion.span className={styles.footItem} initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18, delay: reduced ? 0 : 0.08 }}>
-              <ChannelIcon channel={insight.channel} />
-              {insight.gate === 'auto_route' ? (
-                <span>
-                  Routed to <strong className="sl-strong">{ownerName ?? insight.ownerId}</strong>
-                  {insight.channel ? <span className="sl-subtle"> · {CHANNEL_LABEL[insight.channel]}</span> : null}
-                  {stage.delivered && delivery?.receipt ? (
-                    <span className={styles.receipt}>
-                      {' '}
-                      · <MonoId value={delivery.receipt} keep={10} />
-                    </span>
-                  ) : null}
-                </span>
-              ) : insight.gate === 'review' ? (
-                <span>
-                  Waiting for a human in the <Link to={`/app/review/${insight.id}`} className="sl-quietlink sl-strong">review queue</Link>
-                  {ownerName ? <span className="sl-subtle"> · then {ownerName}</span> : null}
-                </span>
-              ) : (
-                <span>Held: kept and visible, not sent</span>
-              )}
-            </motion.span>
-          ) : null}
+      <p className={styles.summary}>
+        <RedactedText text={insight.summary} />
+      </p>
+
+      {quote ? (
+        <div className={styles.quote} onClick={onFocus}>
+          <Quote
+            cite={
+              <span className={styles.cite}>
+                {stage.grounded && ev && ev.method !== 'failed' ? <span>{matchWords(ev)}</span> : <span>Checking it against the conversation</span>}
+                <button
+                  type="button"
+                  className={cx('ds-link-button', styles.citeLink)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onFocus();
+                  }}
+                  aria-label={`Show this quote in the transcript: ${redactedPlain(quote)}`}
+                >
+                  Show in transcript
+                </button>
+              </span>
+            }
+          >
+            <RedactedText text={quote} />
+          </Quote>
         </div>
       ) : null}
-    </motion.article>
+
+      <div className={styles.decision} {...(anchorGate ? tourAnchor('run.gate') : {})}>
+        <div className={styles.decisionRow}>
+          <span className={styles.scoreLabel}>Score</span>
+          {stage.scored ? (
+            <Tooltip
+              label={`Combines the AI’s own confidence (${insight.confidenceModel.toFixed(2)}) with how exactly the quote matched (${insight.groundingScore.toFixed(2)}). 0.80 or more is sent automatically, 0.55 to 0.80 goes to a person, below 0.55 is held.`}
+            >
+              <span className={styles.score} tabIndex={0}>
+                <span className={styles.scoreValue}>{v.toFixed(2)}</span>
+                <Meter value={v} tone={scoreTone(v)} label={`Score ${v.toFixed(2)}`} className={styles.scoreMeter} />
+              </span>
+            </Tooltip>
+          ) : (
+            <span className={styles.score}>
+              <Skeleton width={28} height={10} />
+              <Skeleton width={88} height={6} radius={999} />
+            </span>
+          )}
+          <span className={styles.gate}>{stage.scored ? <GateBadge insight={insight} /> : <Badge>{stage.grounded ? 'Scoring' : 'Checking quote'}</Badge>}</span>
+        </div>
+        {stage.scored && op ? (
+          <div className={styles.opinion}>
+            <span className={styles.opinionHead}>
+              <span>
+                {opinionModel ?? 'Decision model'} {op.agree ? 'agreed' : 'disagreed'}
+              </span>
+              <span className="ds-subtle ds-num">{op.confidence.toFixed(2)} confidence</span>
+              {op.effect === 'promoted' ? <Badge tone="success">Sent straight to the owner</Badge> : op.effect === 'demoted' ? <Badge tone="warning">Held for review</Badge> : null}
+            </span>
+            {op.note ? <span className={styles.opinionNote}>{op.note}</span> : null}
+          </div>
+        ) : null}
+      </div>
+
+      {routeFacts.length ? <KeyValue className={styles.routeKv} items={routeFacts} /> : null}
+    </article>
+  );
+}
+
+export function InsightSkeletons({ count = 3 }: { count?: number }) {
+  return (
+    <div aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} className={styles.insight}>
+          <div className={styles.insightTop}>
+            <Skeleton width={110} height={10} />
+            <Skeleton width={48} height={10} />
+          </div>
+          <Skeleton width={`${86 - i * 9}%`} height={12} />
+          <div className={styles.quoteSkeleton}>
+            <Skeleton width="92%" height={10} />
+            <Skeleton width="64%" height={10} />
+          </div>
+          <Skeleton width="100%" height={36} radius={6} />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -212,252 +403,152 @@ export function InsightCard({
 
 export type DroppedItem = { id: string; summary: string | null; type: Insight['type'] | null; quote: string; bestMatch: string | null; score: number };
 
-export function DroppedCard({ items, onFocus, reduced }: { items: DroppedItem[]; onFocus: (id: string) => void; reduced: boolean }) {
+export function DroppedCard({ items, onFocus }: { items: DroppedItem[]; onFocus: (id: string) => void }) {
+  const need = Math.round(THRESHOLDS.grounding * 100);
   return (
-    <section className={styles.dropped} {...tourAnchor('run.dropped')} aria-label="Quotes that could not be found">
-      <header className={styles.droppedHead}>
-        <span className={styles.droppedIcon} aria-hidden="true">
-          <IconShieldAlert size={18} />
-        </span>
-        <div>
-          <h3 className={styles.droppedTitle}>
-            {items.length} quote{items.length === 1 ? '' : 's'} not found in the conversation, dropped
-          </h3>
-          <p className={styles.droppedSub}>No quote, no insight. The AI’s quote isn’t in the conversation, so the insight is counted as made up and never sent.</p>
-        </div>
-      </header>
-      {items.map((d, i) => (
-        <motion.div key={d.id} className={styles.droppedItem} initial={reduced ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, delay: reduced ? 0 : 0.1 + i * 0.06 }}>
-          {d.summary ? (
-            <div className={styles.droppedClaim}>
-              {d.type ? <TypeTag type={d.type} /> : null}
-              <span>{d.summary}</span>
+    <Card
+      title={`${items.length} quote${items.length === 1 ? '' : 's'} not found in the conversation`}
+      description="No quote, no insight: dropped, counted, never sent."
+      flush
+      attrs={{ ...tourAnchor('run.dropped'), 'aria-label': 'Quotes that could not be found' }}
+    >
+      {items.map((d) => {
+        const pct = Math.round(d.score * 100);
+        return (
+          <div key={d.id} className={styles.dropped}>
+            {d.summary ? (
+              <div className={styles.droppedClaim}>
+                {d.type ? <TypeLabel type={d.type} /> : null}
+                <span className={styles.droppedSummary}>
+                  <RedactedText text={d.summary} />
+                </span>
+              </div>
+            ) : null}
+            <div className={styles.droppedBlock}>
+              <span className={styles.droppedLabel}>The AI quoted</span>
+              <Quote variant="failed">
+                <RedactedText text={d.quote} />
+              </Quote>
             </div>
-          ) : null}
-          <div className={styles.compare}>
-            <div className={styles.compareCol}>
-              <span className={styles.compareLabel}>The AI quoted</span>
-              <q className={styles.compareModel}>{d.quote}</q>
-            </div>
-            <div className={styles.compareCol}>
-              <span className={styles.compareLabel}>Closest text in the conversation</span>
+            <div className={styles.droppedBlock}>
+              <span className={styles.droppedLabel}>Closest text in the conversation</span>
               {d.bestMatch ? (
-                <button type="button" className={styles.compareBest} onClick={() => onFocus(d.id)} title="Show it in the transcript">
-                  “{d.bestMatch}”
-                </button>
+                <div className={styles.quote} onClick={() => onFocus(d.id)}>
+                  <Quote
+                    variant="muted"
+                    cite={
+                      <button
+                        type="button"
+                        className={cx('ds-link-button', styles.citeLink)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onFocus(d.id);
+                        }}
+                      >
+                        Show in transcript
+                      </button>
+                    }
+                  >
+                    <RedactedText text={d.bestMatch} />
+                  </Quote>
+                </div>
               ) : (
-                <span className="sl-subtle">No similar passage found</span>
+                <span className="ds-subtle">Nothing similar was found.</span>
               )}
             </div>
-          </div>
-          <div className={styles.sim}>
-            <span className={styles.simLabel}>Similarity</span>
-            <span className={styles.simTrack} role="img" aria-label={`Similarity ${(d.score * 100).toFixed(0)}%, needs ${(THRESHOLDS.grounding * 100).toFixed(0)}%`}>
-              <motion.span className={styles.simFill} initial={reduced ? { width: `${d.score * 100}%` } : { width: 0 }} animate={{ width: `${d.score * 100}%` }} transition={{ duration: reduced ? 0 : 0.6, delay: reduced ? 0 : 0.2, ease: [0.2, 0, 0, 1] }} />
-              <i className={styles.simMark} style={{ left: `${THRESHOLDS.grounding * 100}%` }} />
-            </span>
-            <span className={styles.simValue}>
-              <strong>{(d.score * 100).toFixed(0)}%</strong> <span className="sl-subtle">· needs {(THRESHOLDS.grounding * 100).toFixed(0)}% or more</span>
-            </span>
-          </div>
-        </motion.div>
-      ))}
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------- screen
-
-const LANG: Record<string, string> = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', pt: 'Portuguese' };
-const CALL_KIND: Record<string, string> = { qbr: 'QBR', check_in: 'Check-in', renewal: 'Renewal', escalation: 'Escalation', onboarding: 'Onboarding', notes: 'CSM notes', email: 'Email', other: 'Other' };
-
-export function ScreenCard({ screen, pending, model, ms: took }: { screen: ScreenOutput | null; pending: boolean; model: string | null; ms: number | null }) {
-  return (
-    <section className={`${styles.screen} ${screen?.injection_suspected ? styles.screenAlert : ''}`} {...tourAnchor('run.screen')} aria-label="Screen result">
-      <header className={styles.screenHead}>
-        <h3 className={styles.screenTitle}>Screening</h3>
-        <span className={styles.screenMeta}>{pending ? 'Quick AI check…' : `${model ?? 'Main model'} · ${ms(took)}`}</span>
-      </header>
-      {pending || !screen ? (
-        <div className={styles.screenFacts} aria-hidden="true">
-          {['Actionable', 'Language', 'Call type', 'Manipulation attempt'].map((l) => (
-            <div key={l} className={styles.fact}>
-              <span className={styles.factLabel}>{l}</span>
-              <span className={styles.factSkel} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className={styles.screenFacts}>
-            <div className={styles.fact}>
-              <span className={styles.factLabel}>Actionable</span>
-              <StatusChip tone={screen.actionable ? 'success' : 'neutral'} size="sm">
-                {screen.actionable ? 'Yes' : 'No'}
-              </StatusChip>
-            </div>
-            <div className={styles.fact}>
-              <span className={styles.factLabel}>Language</span>
-              <span className={styles.factValue}>
-                {LANG[screen.language] ?? screen.language}
-              </span>
-            </div>
-            <div className={styles.fact}>
-              <span className={styles.factLabel}>Call type</span>
-              <span className={styles.factValue}>{CALL_KIND[screen.call_kind] ?? screen.call_kind}</span>
-            </div>
-            <div className={styles.fact}>
-              <span className={styles.factLabel}>Manipulation attempt</span>
-              <StatusChip tone={screen.injection_suspected ? 'danger' : 'success'} size="sm">
-                {screen.injection_suspected ? 'Suspected' : 'None found'}
-              </StatusChip>
+            <div className={styles.similarity}>
+              <span className={styles.droppedLabel}>Similarity</span>
+              <Meter value={d.score} tone="danger" label={`Similarity ${pct}%, needs ${need}%`} className={styles.similarityMeter} />
+              <span className="ds-num">{pct}%</span>
+              <span className="ds-subtle">needs {need}%</span>
             </div>
           </div>
-          <p className={styles.screenReason}>{screen.reason}</p>
-          {screen.injection_suspected ? (
-            <div className={styles.injection} role="note">
-              <div className={styles.injectionHead}>
-                <IconShieldAlert size={18} />
-                <strong>Prompt injection caught: hidden instructions to the AI were ignored</strong>
-              </div>
-              <p className={styles.injectionText}>
-                The file contains instructions aimed at an AI. Signal Loop treated them as <em>plain text</em>, not commands: the AI can only fill in a fixed form and has no ability to take actions. The attempt was logged.
-              </p>
-              {screen.injection_excerpt ? (
-                <figure className={styles.inert}>
-                  <figcaption>Quoted from the file (not acted on)</figcaption>
-                  <code>{screen.injection_excerpt}</code>
-                </figure>
-              ) : null}
-            </div>
-          ) : null}
-        </>
-      )}
-    </section>
+        );
+      })}
+    </Card>
   );
 }
 
 // ---------------------------------------------------------------- trace
 
-export function TracePanel({ runId, steps, totalCost, totalMs }: { runId: string; steps: DisplayStep[]; totalCost: number; totalMs: number | null }) {
-  const models = useModelLabels();
-  const modelLabel = (id: string | null | undefined) => friendlyModel(models.label(id));
-  const shown = steps.filter((s) => s.display !== 'pending');
-  const starts = shown.map((s) => s.startedAt).filter((x): x is string => !!x).sort();
-  const ends = shown.map((s) => s.finishedAt ?? new Date().toISOString()).sort();
-  const windowStart = starts[0] ?? new Date().toISOString();
-  const windowEnd = ends[ends.length - 1] ?? windowStart;
-  const lanes: TimelineLane[] = STEP_KEYS.map((key) => {
-    const s = steps.find((x) => x.key === key)!;
-    const visible = s.display !== 'pending' && s.startedAt;
-    return {
-      id: key,
-      label: STEP_LABELS[key],
-      segments: visible
-        ? [
-            {
-              id: `${key}-seg`,
-              detail: `${STEP_LABELS[key]} · ${s.display} · ${ms(s.durationMs)}${s.model ? ` · ${modelLabel(s.model)}` : ''}`,
-              startedAt: s.startedAt!,
-              finishedAt: s.display === 'running' ? null : s.finishedAt,
-              severity: s.display === 'failed' ? 'red' : s.display === 'warned' ? 'yellow' : s.display === 'skipped' || s.display === 'running' ? 'neutral' : 'green',
-            },
-          ]
-        : [],
-    };
-  });
+export function TraceCard({
+  runId,
+  steps,
+  modelLabel,
+  totalCost,
+  totalMs,
+}: {
+  runId: string;
+  steps: DisplayStep[];
+  modelLabel: (id: string | null | undefined) => string | null;
+  totalCost: number;
+  totalMs: number | null;
+}) {
+  const shown = steps.filter((s) => s.display !== 'pending' && s.display !== 'running');
   const tokensIn = shown.reduce((a, s) => a + (s.tokensIn ?? 0), 0);
   const tokensOut = shown.reduce((a, s) => a + (s.tokensOut ?? 0), 0);
   return (
-    <section className="sl-panel" {...tourAnchor('run.trace')} aria-label="Trace">
-      <header className="sl-panel-head">
-        <div>
-          <h2 className="sl-panel-title">Trace</h2>
-          <p className="sl-panel-sub">Time, AI model and cost for each step of this run.</p>
-        </div>
-        <div className={styles.traceTotals}>
-          <span>
-            <span className={styles.totalLabel}>AI cost</span>
-            <strong>{money(totalCost, { precise: true })}</strong>
-          </span>
-          <span>
-            <span className={styles.totalLabel}>Tokens</span>
-            <strong>
-              {tokensIn.toLocaleString()} in · {tokensOut.toLocaleString()} out
-            </strong>
-          </span>
-          <span>
-            <span className={styles.totalLabel}>Total time</span>
-            <strong>{ms(totalMs)}</strong>
-          </span>
-          <Link to={`/ops/traces/${runId}`} className={styles.opsLink}>
-            Open trace in Agent Ops <IconArrowUpRight size={13} />
-          </Link>
-        </div>
-      </header>
-      <div className={styles.traceBody}>
-        <div className={styles.lanes}>
-          {shown.length ? <TimelineLanes lanes={lanes} windowStart={windowStart} windowEnd={windowEnd} rowHeight={26} /> : <p className="sl-meta">The waterfall fills in as steps run.</p>}
-        </div>
-        <div className="sl-scroll-x">
-          <table className={styles.traceTable}>
-            <thead>
-              <tr>
-                <th scope="col">Step</th>
-                <th scope="col">Status</th>
-                <th scope="col">Model</th>
-                <th scope="col" className={styles.num}>Tokens in</th>
-                <th scope="col" className={styles.num}>Tokens out</th>
-                <th scope="col" className={styles.num}>Cost</th>
-                <th scope="col" className={styles.num}>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {steps.map((s) => (
-                <tr key={s.key} data-status={s.display}>
-                  <th scope="row">{STEP_LABELS[s.key]}</th>
-                  <td>
-                    <StepStatus status={s.display} />
-                  </td>
-                  <td className={styles.model}>{s.display === 'pending' || s.display === 'running' ? '—' : modelLabel(s.model) ?? <span className="sl-subtle">No AI</span>}</td>
-                  <td className={styles.num}>{s.tokensIn != null && s.display !== 'pending' ? s.tokensIn.toLocaleString() : '—'}</td>
-                  <td className={styles.num}>{s.tokensOut != null && s.display !== 'pending' ? s.tokensOut.toLocaleString() : '—'}</td>
-                  <td className={styles.num}>{s.costUsd != null && s.display !== 'pending' ? money(s.costUsd, { precise: true }) : '—'}</td>
-                  <td className={styles.num} title={s.display !== 'pending' && s.display !== 'running' && s.durationMs != null && s.durationMs < 1 ? (s.key === 'deliver' ? 'Delivery goes to in-app Slack and Jira simulators here, so it takes under a millisecond. Real webhooks would not.' : INSTANT_STEP_HELP) : undefined}>
-                    {s.display === 'pending' || s.display === 'running' ? '—' : ms(s.durationMs)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th scope="row">Total</th>
-                <td />
-                <td className={styles.model}>
-                  <Link to={`/ops/logs?agentId=${SIGNAL_LOOP_AGENT_ID}&runId=${runId}`} className="sl-quietlink">
-                    Logs for this run ↗
-                  </Link>
+    <Card
+      title="Trace"
+      description="Model, tokens, cost and time for each step."
+      flush
+      actions={
+        <ButtonLink to={`/ops/logs?agentId=${SIGNAL_LOOP_AGENT_ID}&runId=${runId}`} size="sm" variant="ghost" iconRight={<IconExternal size={13} />}>
+          Logs
+        </ButtonLink>
+      }
+      attrs={{ ...tourAnchor('run.trace'), 'aria-label': 'Trace' }}
+    >
+      <Table compact label="Trace by step" minWidth={440}>
+        <thead>
+          <tr>
+            <th scope="col">Step</th>
+            <th scope="col">Model</th>
+            <th scope="col" className="is-num" title="Tokens in / out">
+              Tokens
+            </th>
+            <th scope="col" className="is-num">
+              AI cost
+            </th>
+            <th scope="col" className="is-num">
+              Time
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {steps.map((s) => {
+            const done = s.display !== 'pending' && s.display !== 'running';
+            return (
+              <tr key={s.key}>
+                <td className="is-nowrap">
+                  <span className={s.display === 'failed' ? styles.traceFailed : undefined}>{STEP_NAME[s.key]}</span>
                 </td>
-                <td className={styles.num}>{tokensIn.toLocaleString()}</td>
-                <td className={styles.num}>{tokensOut.toLocaleString()}</td>
-                <td className={styles.num}>
-                  <strong>{money(totalCost, { precise: true })}</strong>
+                <td className="is-nowrap">{!done ? <span className="ds-subtle">—</span> : s.model ? (modelLabel(s.model) ?? 'Other model') : <span className="ds-subtle">No AI</span>}</td>
+                <td className="is-num" title={done && s.tokensIn != null ? `${s.tokensIn.toLocaleString()} in, ${(s.tokensOut ?? 0).toLocaleString()} out` : undefined}>
+                  {done && s.tokensIn != null ? `${s.tokensIn.toLocaleString()} / ${(s.tokensOut ?? 0).toLocaleString()}` : <span className="ds-subtle">—</span>}
                 </td>
-                <td className={styles.num}>{ms(totalMs)}</td>
+                <td className="is-num">{done && s.costUsd != null ? money(s.costUsd, { precise: true }) : <span className="ds-subtle">—</span>}</td>
+                <td className="is-num" title={done && s.durationMs != null && s.durationMs < 1 ? INSTANT_STEP_HELP : undefined}>
+                  {s.display === 'failed' ? (
+                    <span className={styles.traceFailed}>Failed</span>
+                  ) : done && s.display !== 'skipped' ? (
+                    ms(s.durationMs)
+                  ) : (
+                    <span className="ds-subtle">{s.display === 'skipped' ? 'Skipped' : s.display === 'running' ? 'Running' : '—'}</span>
+                  )}
+                </td>
               </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StepStatus({ status }: { status: RunStep['status'] }) {
-  const tone = status === 'passed' ? 'success' : status === 'warned' ? 'warning' : status === 'failed' ? 'danger' : status === 'running' ? 'info' : 'neutral';
-  return (
-    <StatusChip tone={tone} size="sm">
-      {status === 'warned' ? 'Warning' : status.charAt(0).toUpperCase() + status.slice(1)}
-    </StatusChip>
+            );
+          })}
+          <tr>
+            <td className={styles.totalCell}>Total</td>
+            <td className={styles.totalCell} />
+            <td className={cx('is-num', styles.totalCell)}>{`${tokensIn.toLocaleString()} / ${tokensOut.toLocaleString()}`}</td>
+            <td className={cx('is-num', styles.totalCell)}>{money(totalCost, { precise: true })}</td>
+            <td className={cx('is-num', styles.totalCell)}>{ms(totalMs)}</td>
+          </tr>
+        </tbody>
+      </Table>
+    </Card>
   );
 }

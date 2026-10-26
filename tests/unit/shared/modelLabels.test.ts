@@ -8,6 +8,12 @@ describe('modelLabels', () => {
     expect(modelLabel('acme/judge-2', cfg)).toBe('Backup model');
   });
 
+  it('labels the decision model as its own role', () => {
+    expect(modelLabel('acme/quick-0', { primary: 'acme/fast-1', secondary: 'acme/judge-2', decision: 'acme/quick-0' })).toBe('Decision model');
+    expect(modelLabel('z-ai/glm-5.3-flash')).toBe('Decision model');
+    expect(rewriteModelIds('screen via z-ai/glm-5.3-flash (412ms)')).toBe('screen via Decision model (412ms)');
+  });
+
   it('falls back to the known deployment and simulated-agent ids', () => {
     expect(modelLabel('deepseek/deepseek-v4.1-flash')).toBe('Main model');
     expect(modelLabel('anthropic/claude-haiku-5.5')).toBe('Backup model');

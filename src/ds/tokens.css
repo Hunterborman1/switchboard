@@ -1,0 +1,145 @@
+/* =========================================================================
+   Switchboard design system · tokens (docs/DESIGN.md is the spec)
+
+   The one source of truth for colour, type, space, radius, elevation and
+   motion. Every other token layer in the repo (--cn-*, --uis-*, --n-*,
+   --ao-*) aliases these, so a value changes here and nowhere else.
+
+   Declared on :root and again on .ds-app (the product root): a value set on
+   the element beats one inherited from a legacy :root block, so inside the
+   product these always win even though older layers load later.
+
+   Light and flat: white page, quiet greys, one accent (Invoca green).
+   No gradients, glows or blurs. Two shadows, for things that float.
+   ========================================================================= */
+
+:root,
+.ds-app {
+  /* ---------- surface ---------- */
+  --bg: #ffffff;
+  --bg-subtle: #f7f8f7; /* sidebar, table header, inset areas */
+  --bg-muted: #eff1ef; /* hover, selected row */
+  --bg-emphasis: #e6e9e6; /* pressed, selected-and-hovered */
+  --bg-inverse: #1c2420; /* tooltips */
+
+  /* ---------- line ---------- */
+  --border: #e3e6e3;
+  --border-row: #eceeec; /* table row rules: lighter than the card edge */
+  --border-strong: #cdd2cd; /* inputs */
+
+  /* ---------- text ---------- */
+  --text: #111614;
+  --text-secondary: #525c57; /* 7.1:1 on white */
+  --text-tertiary: #6b756f; /* 4.8:1 on white */
+  --text-disabled: #9aa39e;
+  --text-inverse: #ffffff;
+
+  /* ---------- accent (Invoca green, darkened to pass AA with white) ---------- */
+  --accent: #008463; /* 4.69:1 with white */
+  --accent-hover: #00704f;
+  --accent-pressed: #005f45;
+  --accent-text: #006b51;
+  --accent-subtle: #e8f4ef;
+  --accent-line: #b7dccb;
+
+  /* ---------- status (meaning only, never decoration) ---------- */
+  --success: #0f7b48;
+  --success-subtle: #e7f4ec;
+  --warning: #9a5b00;
+  --warning-mark: #c2780c; /* bars, dots: not for text */
+  --warning-subtle: #fbf1de;
+  --danger: #b42318;
+  --danger-hover: #912018;
+  --danger-subtle: #fdecea;
+  --info: #2f5db8;
+  --info-subtle: #eaf0fb;
+
+  /* ---------- charts (flat, colour-blind-safe order) ---------- */
+  --chart-1: #008463;
+  --chart-2: #2f5db8;
+  --chart-3: #c2780c;
+  --chart-4: #7a4fb5;
+  --chart-5: #3e8e9e;
+  --chart-6: #b5475a;
+  --chart-grid: rgb(17 22 20 / 0.07);
+  --chart-track: #eff1ef;
+
+  /* ---------- focus ---------- */
+  --focus: #008463;
+
+  /* ---------- elevation: two rungs ---------- */
+  --shadow-1: 0 1px 2px rgb(16 24 20 / 0.06);
+  --shadow-2: 0 4px 12px rgb(16 24 20 / 0.08), 0 1px 3px rgb(16 24 20 / 0.06);
+  --scrim: rgb(17 22 20 / 0.45);
+
+  /* ---------- type: Inter for everything, mono only for things you copy ---------- */
+  --font-sans: 'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px; /* body */
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --leading-tight: 1.25;
+  --leading: 1.5;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ---------- space: 4px grid ---------- */
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---------- radius ---------- */
+  --radius-xs: 4px; /* badges, kbd */
+  --radius-sm: 6px; /* buttons, inputs */
+  --radius-md: 8px; /* cards, popovers */
+  --radius-lg: 12px; /* dialogs */
+  --radius-full: 999px; /* avatars, dots, switches only */
+
+  /* ---------- sizing ---------- */
+  --control-sm: 28px;
+  --control-md: 32px;
+  --control-lg: 36px;
+  --row-h: 44px;
+  --row-h-compact: 36px;
+  --sidebar-w: 248px;
+  --topbar-h: 52px;
+  --page-max: 1280px;
+  --page-gutter: 32px;
+
+  /* ---------- motion: functional and short ---------- */
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 240ms;
+}
+
+@media (max-width: 760px) {
+  :root,
+  .ds-app {
+    --page-gutter: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .ds-app {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}

@@ -13,7 +13,8 @@ Design authority: `docs/DESIGN.md`. Tour engine: `src/tour/engine/` (types in `t
 - Sentence case. Plain English for a VP of Customer Success; keep jargon behind "How this works" (`more`).
 - Callout `body` is 20 words or fewer and says why; detail goes in `more`.
 - Motion only shows a change of state: 120–240 ms for UI, data reveals up to 600 ms once, no bounce or loops; reduced motion draws the final frame.
-- "Main model" and "Backup model" on screen; exact model ids only on `/app/settings`.
+- "Decision model", "Main model" and "Backup model" on screen; exact model ids only on `/app/settings`.
+- Product UI is built only from `src/ds` (tokens, components, Shell) and `src/app/components/domain.tsx`; see `docs/DESIGN.md`.
 - Every number on screen is either read from real data or labelled as an assumption or simulated.
 
 ## Add a spotlight anchor

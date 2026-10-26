@@ -1,75 +1,103 @@
 /**
- * Insight drawer: one insight's full provenance — transcript → quote span → insight →
- * theme → delivery — with evidence, confidence, gate reasons, review history (before →
- * after) and the delivery receipt with its attempt timeline. A modal dialog: focus moves
- * in on open, Tab stays inside, Esc closes, and the caller returns focus to the row.
+ * Insight drawer: a quick look at one insight from a list. The customer's words, where it went
+ * (owner, channel, rule, receipt), how sure the AI was (with the decision model's second
+ * opinion), the account, its theme and who reviewed it. Opened at /app/insights/:id; the caller
+ * returns focus to the row on close.
  */
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { ReviewRecord } from '../../shared/contracts';
+import type { Delivery, Evidence, Insight, InsightStatus, ReviewRecord } from '../../shared/contracts';
 import { emit } from '../../shared/events';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { DeliveryTimeline, deriveDeliveryTimeline } from '../../uis/DeliveryTimeline';
-import { MonoId } from '../../uis/MonoId';
-import { ProvenanceFlow, type ProvenanceNode } from '../../uis/ProvenanceFlow';
-import { RelativeTime } from '../../uis/RelativeTime';
-import { Skeleton } from '../../uis/Skeleton';
-import { StatusChip } from '../../uis/StatusChip';
-import { useInsightDetail } from '../api/hooks';
-import { AREA_LABEL, CHANNEL_LABEL, STATUS_LABEL, STATUS_TONE, money, renewalIn } from '../lib/labels';
+import { Avatar, Badge, ButtonLink, ConnectorMark, CopyText, cx, Drawer, initialsOf, KeyValue, PersonChip, Quote, Skeleton, type Tone } from '../../ds';
+import { IconAlertTriangle, IconCheckCircle, IconLayers } from '../../ds/icons';
+import { useInsightDetail, useRules } from '../api/hooks';
+import { AREA_LABEL, dateShort, money, SEVERITY_LABEL, STATUS_LABEL, TYPE_LABEL } from '../lib/labels';
 import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { track } from '../telemetry';
-import { EvidenceContext } from './EvidenceContext';
-import { ErrorState, GateChip, SeverityTag, TypeTag } from './ui';
+import { ErrorState, InsightStatusBadge, SeverityBadge, TypeLabel, When } from './domain';
+import { channelConnector, placeText, routeText } from './insightRoute';
+import { RedactedText } from '../pages/run/Transcript';
 import styles from './InsightDrawer.module.css';
-import type { Gate, InsightStatus } from '../../shared/contracts';
 
-/** The gate each status merely restates (so only one chip is shown). */
-const STATUS_DUPLICATES_GATE: Partial<Record<InsightStatus, Gate>> = {
-  pending_review: 'review',
-  held: 'held',
-  dropped_ungrounded: 'dropped',
-  routed: 'auto_route',
-};
+const EDITABLE: { key: 'type' | 'productArea' | 'severity' | 'summary'; label: string }[] = [
+  { key: 'type', label: 'Type' },
+  { key: 'productArea', label: 'Product area' },
+  { key: 'severity', label: 'Severity' },
+  { key: 'summary', label: 'Summary' },
+];
 
-function fmt(v: unknown): string {
-  if (v == null || v === '') return '—';
-  if (typeof v === 'string') return v.replace(/_/g, ' ');
-  return JSON.stringify(v);
+function editValue(key: string, v: unknown): string {
+  if (v == null || v === '') return 'None';
+  const s = String(v);
+  if (key === 'type') return TYPE_LABEL[s as Insight['type']] ?? s;
+  if (key === 'productArea') return AREA_LABEL[s as Insight['productArea']] ?? s;
+  if (key === 'severity') return SEVERITY_LABEL[s as Insight['severity']] ?? s;
+  return s;
 }
 
-function ReviewDiff({ r }: { r: ReviewRecord }) {
-  const keys = [...new Set([...Object.keys(r.before ?? {}), ...Object.keys(r.after ?? {})])].filter((k) => fmt(r.before?.[k]) !== fmt(r.after?.[k]));
+const ACTION_VERB: Record<ReviewRecord['action'], string> = { approve: 'approved and sent it', edit: 'edited and sent it', reject: 'rejected it' };
+
+const DELIVERY_TONE: Record<Delivery['status'], Tone> = { delivered: 'success', queued: 'neutral', retrying: 'warning', failed: 'danger' };
+const DELIVERY_LABEL: Record<Delivery['status'], string> = { delivered: 'Delivered', queued: 'Queued', retrying: 'Retrying', failed: 'Failed' };
+const TICKET_LABEL: Record<NonNullable<Delivery['ticketState']>, string> = { open: 'Open', in_progress: 'In progress', shipped: 'Shipped', wont_do: 'Won’t do' };
+
+const NOT_SENT: Record<InsightStatus, string> = {
+  pending_review: 'Not sent yet. It is waiting for a person to review it.',
+  rejected: 'Rejected in review. Nothing was sent.',
+  held: 'Held. The score was too low to send.',
+  dropped_ungrounded: 'Dropped. The quote wasn’t found in the conversation.',
+  routed: 'No delivery recorded yet.',
+};
+
+function quoteCite(ev: Evidence): string {
+  if (ev.method === 'failed') return 'Not found in the conversation';
+  if (ev.method === 'fuzzy') return `Close match, ${Math.round(ev.score * 100)}%`;
+  return 'Found word for word';
+}
+
+function Section({ title, aside, children, first }: { title: string; aside?: ReactNode; children: ReactNode; first?: boolean }) {
+  return (
+    <section className={cx(styles.section, !first && styles.divided)}>
+      <div className={styles.sectionHead}>
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        {aside ? <span className={styles.sectionAside}>{aside}</span> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function ReviewItem({ r }: { r: ReviewRecord }) {
+  const changes = r.action === 'edit' ? EDITABLE.filter(({ key }) => key in (r.after ?? {}) && editValue(key, r.before?.[key]) !== editValue(key, r.after?.[key])) : [];
+  // Letters only, so "You (viewer)" reads "YV", not "Y(".
+  const initials = initialsOf(r.reviewer.replace(/[^\p{L}\s]/gu, ''));
   return (
     <li className={styles.review}>
-      <div className="sl-spread">
-        <span className="sl-row">
-          <StatusChip tone={r.action === 'reject' ? 'neutral' : r.action === 'edit' ? 'info' : 'success'} size="sm">
-            {r.action === 'approve' ? 'Approved' : r.action === 'edit' ? 'Edited' : 'Rejected'}
-          </StatusChip>
-          <span className="sl-meta">by {r.reviewer}</span>
-        </span>
-        <span className="sl-caption">
-          <RelativeTime value={r.createdAt} />
-        </span>
+      <Avatar name={r.reviewer} initials={initials} size="sm" />
+      <div className={styles.reviewBody}>
+        <div className={styles.reviewHead}>
+          <span className={styles.reviewWho}>
+            <span className={styles.reviewName}>{r.reviewer}</span> {ACTION_VERB[r.action]}
+          </span>
+          <span className={styles.reviewWhen}>
+            <When value={r.createdAt} />
+          </span>
+        </div>
+        {changes.length ? (
+          <ul className={styles.changes}>
+            {changes.map(({ key, label }) => (
+              <li key={key} className={styles.change}>
+                <span className={styles.changeLabel}>{label}</span>
+                <span className={styles.changeValue}>
+                  <del className={styles.before}>{editValue(key, r.before?.[key])}</del> to <ins className={styles.after}>{editValue(key, r.after?.[key])}</ins>
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {r.reason ? <p className={styles.reviewReason}>Reason: {r.reason}</p> : null}
       </div>
-      {keys.length ? (
-        <dl className={styles.diff}>
-          {keys.map((k) => (
-            <div key={k} className={styles.diffRow}>
-              <dt>{k}</dt>
-              <dd>
-                <del>{fmt(r.before?.[k])}</del>
-                <span aria-hidden="true"> → </span>
-                <ins>{fmt(r.after?.[k])}</ins>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-      {r.reason ? <p className={styles.reason}>“{r.reason}”</p> : null}
     </li>
   );
 }
@@ -77,39 +105,9 @@ function ReviewDiff({ r }: { r: ReviewRecord }) {
 export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const q = useInsightDetail(id);
   const world = useWorldIndex();
+  const rules = useRules();
   const { label: modelLabel } = useModelLabels();
-  const panelRef = useRef<HTMLDivElement>(null);
   const opened = useRef<string | null>(null);
-
-  useEffect(() => {
-    panelRef.current?.querySelector<HTMLButtonElement>('[data-drawer-close]')?.focus();
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-        return;
-      }
-      if (e.key !== 'Tab' || !panelRef.current) return;
-      const f = Array.from(panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"], input, select, textarea'));
-      const first = f[0];
-      const last = f[f.length - 1];
-      if (!first || !last) return;
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [onClose]);
 
   const d = q.data;
   useEffect(() => {
@@ -121,183 +119,213 @@ export function InsightDrawer({ id, onClose }: { id: string; onClose: () => void
   }, [d]);
 
   const ins = d?.insight;
-  const ev = ins?.evidence.find((e) => e.method !== 'failed') ?? ins?.evidence[0];
   const delivery = d?.deliveries[0] ?? null;
   const acct = world.account(ins?.accountId);
+  const rule = rules.data?.find((r) => r.id === ins?.ruleId) ?? null;
 
-  const nodes: ProvenanceNode[] = ins
-    ? [
-        { id: 'transcript', kind: 'Conversation', label: d?.run?.callId ?? d?.run?.filename ?? 'Source call', meta: d?.run ? undefined : 'not stored', href: d?.run ? `/app/runs/${d.run.id}` : undefined },
-        { id: 'quote', kind: 'Quote', label: ev ? (ev.method === 'exact' ? 'Found word for word' : ev.method === 'failed' ? 'Not found' : `Close match (${Math.round(ev.score * 100)}%)`) : 'quote', meta: ev?.turnId ? `line ${ev.turnId}` : undefined },
-        { id: 'insight', kind: 'Insight', label: ins.id },
-        ...(d?.theme ? [{ id: 'theme', kind: 'Theme', label: d.theme.name.length > 28 ? `${d.theme.name.slice(0, 27)}…` : d.theme.name, href: `/app/themes/${d.theme.id}` }] : [{ id: 'theme', kind: 'Theme', label: 'No theme yet', meta: 'new' }]),
-        ...(delivery
-          ? [{ id: 'delivery', kind: CHANNEL_LABEL[delivery.channel], label: delivery.receipt ?? delivery.destination, href: '/app/destinations' }]
-          : [{ id: 'delivery', kind: 'Delivery', label: ins.status === 'pending_review' ? 'Waiting for review' : ins.status === 'rejected' ? 'Not sent' : 'None', href: ins.status === 'pending_review' ? `/app/review/${ins.id}` : undefined }]),
-      ]
-    : [];
+  const footer = ins ? (
+    <>
+      {ins.runId ? (
+        <ButtonLink to={`/app/runs/${ins.runId}`} variant={ins.status === 'pending_review' ? 'secondary' : 'primary'}>
+          Open conversation
+        </ButtonLink>
+      ) : null}
+      {ins.status === 'pending_review' ? (
+        <ButtonLink to={`/app/review/${ins.id}`} variant="primary">
+          Review it
+        </ButtonLink>
+      ) : null}
+    </>
+  ) : undefined;
 
-  const host = (typeof document !== 'undefined' && document.querySelector('.sl-app')) || document.body;
-  return createPortal(
-    <div className={styles.overlay} data-testid="insight-drawer">
-      <button type="button" className={styles.backdrop} aria-label="Close insight" tabIndex={-1} onClick={onClose} />
-      <div ref={panelRef} className={styles.panel} role="dialog" aria-modal="true" aria-labelledby="insight-drawer-title">
-        <header className={styles.head}>
-          <div className="sl-grow sl-stack-sm">
-            <span className="sl-eyebrow">Insight</span>
-            {ins ? <MonoId value={ins.id} keep={14} /> : <Skeleton width={120} height={11} />}
-          </div>
-          <Button variant="ghost" size="sm" iconLeft="x" onClick={onClose} aria-label="Close (Esc)" data-drawer-close="" />
-        </header>
-        <div className={styles.body}>
-          {q.error && !d ? (
-            <ErrorState error={q.error} onRetry={() => void q.refresh()} what="this insight" />
-          ) : !ins ? (
-            <div className="sl-stack">
-              <Skeleton width="60%" height={14} />
-              <Skeleton width="95%" height={24} />
-              <Skeleton width="100%" height={44} />
-              <Skeleton width="100%" height={120} />
-            </div>
-          ) : (
-            <>
-              <div className="sl-row">
-                <TypeTag type={ins.type} />
-                <SeverityTag severity={ins.severity} />
-                {/* One status, not two: the gate chip (with its "why" popover) already says
-                    pending review / held / dropped / auto-routed; the status chip only adds
-                    something once a human has acted (routed after review, rejected). */}
-                {STATUS_DUPLICATES_GATE[ins.status] === ins.gate ? null : (
-                  <StatusChip tone={STATUS_TONE[ins.status]} size="sm">
-                    {STATUS_LABEL[ins.status]}
-                  </StatusChip>
-                )}
-                <GateChip insight={ins} />
-              </div>
-              <h2 id="insight-drawer-title" className={styles.title}>
-                {ins.summary}
-              </h2>
-              <p className="sl-meta">
-                {world.accountName(ins.accountId)}
-                {acct ? ` · ${money(acct.arrUsd, { compact: true })} ARR · renews ${renewalIn(acct.renewalDate)}` : ''} · {AREA_LABEL[ins.productArea]} · CSM {world.personName(ins.csmId)} · <RelativeTime value={ins.createdAt} />
-              </p>
-
-              <section className={styles.section}>
-                <h3 className={styles.h3}>Where it came from and where it went</h3>
-                <ProvenanceFlow nodes={nodes} layout="vertical" />
-              </section>
-
-              <section className={styles.section}>
-                <div className="sl-spread">
-                  <h3 className={styles.h3}>Evidence</h3>
-                  {ev ? (
-                    <span className="sl-caption sl-num" title={`Quote check: ${ev.method} match, similarity ${ev.score.toFixed(2)} (0.90 needed)`}>
-                      {ev.method === 'exact' ? 'Quote found word for word' : ev.method === 'failed' ? 'Quote not found in the call' : `Quote found (${Math.round(ev.score * 100)}% match)`}
-                    </span>
-                  ) : null}
-                </div>
-                {ev && ev.method === 'fuzzy' && ev.quote !== ev.matchedText ? (
-                  <p className="sl-caption">
-                    The AI quoted “{ev.quote}”; it matches the highlighted line below.
-                  </p>
-                ) : null}
-                <EvidenceContext insight={ins} radius={1} />
-              </section>
-
-              <section className={styles.section}>
-                <h3 className={styles.h3}>Confidence score</h3>
-                <dl className={styles.kv}>
-                  <div title="How sure the model said it was.">
-                    <dt>AI confidence</dt>
-                    <dd className="sl-num">{ins.confidenceModel.toFixed(2)}</dd>
-                  </div>
-                  <div title="How closely the quote matches the conversation.">
-                    <dt>Quote check</dt>
-                    <dd className="sl-num">{ins.groundingScore.toFixed(2)}</dd>
-                  </div>
-                  <div title="The combined score that decides where the insight goes.">
-                    <dt>Overall</dt>
-                    <dd className="sl-num sl-strong">{ins.confidenceFinal.toFixed(2)}</dd>
-                  </div>
-                  <div>
-                    <dt>Prompt version</dt>
-                    <dd className="sl-mono sl-ellipsis" title={`${ins.promptVersion} · ${modelLabel(ins.model) ?? 'no model'}`}>
-                      {ins.promptVersion}
-                    </dd>
-                  </div>
-                </dl>
-                {ins.rationale ? <p className="sl-p">{ins.rationale}</p> : null}
-              </section>
-
-              <section className={styles.section}>
-                <h3 className={styles.h3}>Delivery</h3>
-                {delivery ? (
-                  <div className={styles.delivery}>
-                    <div className="sl-spread">
-                      <span className="sl-row">
-                        <StatusChip tone={delivery.status === 'delivered' ? 'success' : delivery.status === 'failed' ? 'danger' : 'warning'} size="sm">
-                          {delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1)}
-                        </StatusChip>
-                        <span className="sl-meta">
-                          {CHANNEL_LABEL[delivery.channel]} · <span className="sl-mono">{delivery.destination}</span> → {world.personName(delivery.ownerId)}
-                        </span>
-                      </span>
-                      {delivery.receipt ? <MonoId value={delivery.receipt} keep={14} /> : null}
-                    </div>
-                    <DeliveryTimeline model={deriveDeliveryTimeline(delivery.attempts.map((a, i) => ({ id: `${delivery.id}-${i}`, at: a.at, ok: a.ok })))} height={58} />
-                    <ul className={styles.attempts}>
-                      {delivery.attempts.map((a, i) => (
-                        <li key={i}>
-                          <span className={a.ok ? styles.ok : styles.fail} aria-hidden="true" />
-                          <span className="sl-meta">
-                            Attempt {i + 1}: {a.note} · <span className="sl-num">{a.ms} ms</span>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    {delivery.ticketState ? (
-                      <p className="sl-caption">
-                        Ticket state: <span className="sl-strong">{delivery.ticketState.replace('_', ' ')}</span> ·{' '}
-                        <Link to="/app/destinations" className="sl-linkbtn">
-                          Open in Destinations
-                        </Link>
-                      </p>
-                    ) : null}
-                  </div>
-                ) : (
-                  <p className="sl-p">
-                    {ins.status === 'pending_review' ? (
-                      <>
-                        Not delivered yet: waiting for a reviewer. <Link to={`/app/review/${ins.id}`}>Review it</Link>
-                      </>
-                    ) : ins.status === 'rejected' ? (
-                      'Rejected in review; nothing was routed.'
-                    ) : ins.status === 'held' ? (
-                      'Held because the score was too low to send; it stays visible here.'
-                    ) : (
-                      'No delivery recorded.'
-                    )}
-                  </p>
-                )}
-              </section>
-
-              <section className={styles.section}>
-                <h3 className={styles.h3}>Review history</h3>
-                {d.reviews.length ? (
-                  <ul className={styles.reviews}>
-                    {d.reviews.map((r) => (
-                      <ReviewDiff key={r.id} r={r} />
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="sl-p">{ins.gate === 'auto_route' ? 'Sent automatically: the score was high enough that no review was needed.' : 'No review actions yet.'}</p>
-                )}
-              </section>
-            </>
-          )}
+  return (
+    <Drawer
+      open
+      onClose={onClose}
+      width={600}
+      title={ins ? ins.summary : q.error && !d ? 'Insight' : <Skeleton width={320} height={16} />}
+      description={
+        ins ? (
+          <span className={styles.badges}>
+            <TypeLabel type={ins.type} />
+            <SeverityBadge severity={ins.severity} />
+            <InsightStatusBadge status={ins.status} />
+          </span>
+        ) : undefined
+      }
+      footer={footer}
+      attrs={{ 'data-testid': 'insight-drawer' }}
+    >
+      {q.error && !d ? (
+        <ErrorState error={q.error} onRetry={() => void q.refresh()} what="this insight" />
+      ) : !ins || !d ? (
+        <div className={styles.loading} aria-busy="true" aria-label="Loading insight">
+          <Skeleton width="40%" height={12} />
+          <Skeleton width="100%" height={44} />
+          <Skeleton width="30%" height={12} />
+          <Skeleton width="100%" height={120} />
         </div>
+      ) : (
+        <>
+          <Section title="Evidence" first>
+            {ins.evidence.length ? (
+              <div className={styles.quotes}>
+                {ins.evidence.map((ev, i) => (
+                  <Quote key={i} variant={ev.method === 'failed' ? 'failed' : 'default'} cite={quoteCite(ev)}>
+                    <RedactedText text={ev.matchedText ?? ev.quote} />
+                  </Quote>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.empty}>No quote recorded.</p>
+            )}
+          </Section>
+
+          <Section
+            title="Routing"
+            aside={
+              delivery ? (
+                <>
+                  Sent <When value={delivery.createdAt} />
+                </>
+              ) : undefined
+            }
+          >
+            {delivery ? (
+              <KeyValue
+                items={[
+                  { label: 'Sent to', value: <PersonChip name={world.personName(delivery.ownerId)} sub={world.person(delivery.ownerId)?.title} size="sm" /> },
+                  {
+                    label: 'Channel',
+                    value: (
+                      <span className={styles.channel}>
+                        <ConnectorMark id={channelConnector(delivery.channel)} size={16} />
+                        <span className={styles.channelText}>{placeText(delivery.channel, delivery.destination)}</span>
+                      </span>
+                    ),
+                  },
+                  ...(rule ? [{ label: 'Rule', value: rule.name }] : []),
+                  {
+                    label: 'Status',
+                    value: (
+                      <span className={styles.inline}>
+                        <Badge tone={DELIVERY_TONE[delivery.status]} dot>
+                          {DELIVERY_LABEL[delivery.status]}
+                        </Badge>
+                        {delivery.ticketState ? <span className={styles.subtle}>Ticket {TICKET_LABEL[delivery.ticketState].toLowerCase()}</span> : null}
+                      </span>
+                    ),
+                  },
+                  ...(delivery.receipt ? [{ label: 'Receipt', value: <CopyText value={delivery.receipt} label="Copy receipt" /> }] : []),
+                  ...(delivery.mentions?.length ? [{ label: 'Tagged', value: delivery.mentions.map((m) => m.handle).join(', ') }] : []),
+                ]}
+              />
+            ) : (
+              <div className={styles.notSent}>
+                <p className={styles.notSentText}>{NOT_SENT[ins.status]}</p>
+                {ins.status === 'pending_review' && ins.ownerId ? (
+                  <p className={styles.notSentSub}>On approval it goes to {routeText(world.personName(ins.ownerId), ins.channel, rule?.destination)}.</p>
+                ) : null}
+              </div>
+            )}
+          </Section>
+
+          <Section title="Score">
+            <div className={styles.scores}>
+              <Score label="AI confidence" value={ins.confidenceModel} />
+              <Score label="Quote match" value={ins.groundingScore} />
+              <Score label="Final score" value={ins.confidenceFinal} strong />
+            </div>
+            {ins.secondOpinion ? <SecondOpinion opinion={ins.secondOpinion} /> : null}
+            {ins.rationale ? <p className={styles.rationale}>{ins.rationale}</p> : null}
+          </Section>
+
+          <Section title="Account">
+            <KeyValue
+              items={[
+                { label: 'Account', value: world.accountName(ins.accountId) },
+                ...(acct
+                  ? [
+                      { label: 'ARR', value: `${money(acct.arrUsd, { compact: true })}, ${acct.tier}` },
+                      { label: 'Renewal', value: dateShort(acct.renewalDate) },
+                    ]
+                  : []),
+                { label: 'CSM', value: world.personName(ins.csmId) },
+                { label: 'Product area', value: AREA_LABEL[ins.productArea] },
+              ]}
+            />
+          </Section>
+
+          <Section title="Theme">
+            {d.theme ? (
+              <Link to={`/app/themes/${d.theme.id}`} className={styles.theme}>
+                <span className={styles.themeIcon}>
+                  <IconLayers size={16} />
+                </span>
+                <span className={styles.themeText}>
+                  <span className={styles.themeName}>{d.theme.name}</span>
+                  <span className={styles.themeSub}>
+                    {d.theme.insightCount} insight{d.theme.insightCount === 1 ? '' : 's'} from {d.theme.accountCount} account{d.theme.accountCount === 1 ? '' : 's'}
+                  </span>
+                </span>
+              </Link>
+            ) : (
+              <p className={styles.empty}>Not part of a theme yet.</p>
+            )}
+          </Section>
+
+          <Section title="Review history">
+            {d.reviews.length ? (
+              <ul className={styles.reviews}>
+                {d.reviews.map((r) => (
+                  <ReviewItem key={r.id} r={r} />
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.empty}>
+                {ins.gate === 'auto_route' ? 'Sent automatically. The score was high enough that no review was needed.' : ins.status === 'pending_review' ? 'No one has reviewed it yet.' : 'No reviews.'}
+              </p>
+            )}
+          </Section>
+
+          <Section title="Details">
+            <KeyValue
+              items={[
+                { label: 'Insight ID', value: <CopyText value={ins.id} label="Copy insight ID" /> },
+                { label: 'Found', value: <When value={ins.createdAt} /> },
+                { label: 'Model', value: modelLabel(ins.model) ?? ins.model },
+                { label: 'Prompt version', value: <span className="ds-mono">{ins.promptVersion}</span> },
+              ]}
+            />
+          </Section>
+        </>
+      )}
+    </Drawer>
+  );
+}
+
+function Score({ label, value, strong }: { label: string; value: number; strong?: boolean }) {
+  return (
+    <div className={styles.score}>
+      <span className={styles.scoreLabel}>{label}</span>
+      <span className={cx(styles.scoreValue, strong && styles.scoreStrong)}>{value.toFixed(2)}</span>
+    </div>
+  );
+}
+
+/** The decision model's independent check at the gate: agreed or not, its confidence, its note and what it changed. */
+export function SecondOpinion({ opinion }: { opinion: NonNullable<Insight['secondOpinion']> }) {
+  const effect = opinion.effect === 'demoted' ? 'It held this item for a person to check.' : opinion.effect === 'promoted' ? 'It sent this straight to its owner.' : null;
+  return (
+    <div className={styles.opinion}>
+      <span className={cx(styles.opinionIcon, opinion.agree ? styles.opinionAgree : styles.opinionDisagree)}>{opinion.agree ? <IconCheckCircle size={16} /> : <IconAlertTriangle size={16} />}</span>
+      <div className={styles.opinionText}>
+        <span className={styles.opinionTitle}>
+          Second opinion {opinion.agree ? 'agreed' : 'disagreed'}, <span className="ds-num">{opinion.confidence.toFixed(2)}</span>
+        </span>
+        {opinion.note ? <span className={styles.opinionNote}>{opinion.note}</span> : null}
+        {effect ? <span className={styles.opinionMeta}>{effect}</span> : null}
       </div>
-    </div>,
-    host,
+    </div>
   );
 }

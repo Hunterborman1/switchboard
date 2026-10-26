@@ -1,83 +1,150 @@
-.scale {
-  padding-bottom: var(--sp-5);
-}
+/* Settings: cards of rows, label and description on the left, the value or control on the right. */
 
-.track {
-  display: flex;
-  height: 28px;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--cn-border);
-}
-
-.track > span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.zoneHeld {
-  background: var(--cn-neutral-soft);
-  color: var(--cn-ink-2);
-}
-
-.zoneReview {
-  background: var(--cn-warning-soft);
-  color: var(--cn-warning-txt);
-  border-left: 1px solid var(--cn-white);
-}
-
-.zoneAuto {
-  background: var(--cn-success-soft);
-  color: var(--cn-success-txt);
-  border-left: 1px solid var(--cn-white);
-}
-
-.ticks {
-  position: relative;
-  height: 0;
-}
-
-.ticks > span {
-  position: absolute;
-  top: 6px;
-  transform: translateX(-50%);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-tertiary);
-}
-
-.ticks > span:first-child {
-  transform: none;
-}
-
-.ticks > span:last-child {
-  transform: translateX(-100%);
-}
-
-.rule {
+.rows {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-15);
-  padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--cn-white);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  min-height: 64px;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-row);
+}
+.row:last-child {
+  border-bottom: 0;
+}
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rowLabel {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  line-height: 20px;
+  color: var(--text);
+}
+.rowDescription {
+  font-size: var(--text-sm);
+  line-height: 18px;
+  color: var(--text-secondary);
+  max-width: 60ch;
+}
+.rowControl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.value {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.copyValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: 100%;
+}
+.mono {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+.notSet {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  white-space: nowrap;
 }
 
-.ruleLabel {
-  font-size: 13px;
-  font-weight: 500;
+/* The confidence scale above the threshold rows. */
+.scaleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--border-row);
+}
+.track {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  min-width: 0;
+}
+.zone {
+  height: 100%;
+  min-width: 0;
+}
+.zoneHeld {
+  border-radius: var(--radius-full) 0 0 var(--radius-full);
+  background: var(--border-strong);
+}
+.zoneReview {
+  background: var(--warning-mark);
+}
+.zoneAuto {
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  background: var(--accent);
+}
+.ticks {
+  position: relative;
+  height: 16px;
+  font-size: var(--text-xs);
+  line-height: 16px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.tickStart {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.tickEnd {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.modalText {
+  font-size: var(--text-md);
+  line-height: 22px;
   color: var(--text-secondary);
 }
 
-.ruleValue {
-  font-size: 20px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--text);
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .rowControl {
+    justify-content: flex-start;
+    max-width: 100%;
+  }
 }

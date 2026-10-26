@@ -53,6 +53,8 @@ export function startMockOpenRouter(): Promise<{ url: string; requests: MockRequ
       if (user.includes('FORCE_LLM_ERROR')) return send(500, { error: { message: 'mock upstream failure', code: 500 } });
       if (user.includes('OUT_OF_CREDIT')) return send(402, { error: { message: 'Insufficient credits', code: 402 } });
       if (user.includes('PRIMARY_DOWN') && model.startsWith('deepseek/')) return send(503, { error: { message: 'mock primary unavailable', code: 503 } });
+      // Decision-tier calls are the only ones routed by latency.
+      if (user.includes('DECISION_DOWN') && (body.provider as { sort?: string } | undefined)?.sort === 'latency') return send(503, { error: { message: 'mock decision model unavailable', code: 503 } });
       if (user.includes('SLOW_MODEL')) await new Promise((r) => setTimeout(r, 8000));
       let content: string;
       const key = `${schema}:${user.length}`;

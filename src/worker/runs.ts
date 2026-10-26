@@ -2,15 +2,18 @@
  * Run lifecycle: create (idempotent by sha256, budget-gated, live or replay), the live → replay
  * fallback, and the context a pipeline run needs (account, people, effective rules, taxonomy).
  */
-import { THRESHOLDS, type Account, type LibraryFile, type Person, type RoutingRule } from '../shared/contracts.ts';
+import { THRESHOLDS, type Account, type FileFormat, type LibraryFile, type Person, type RoutingRule } from '../shared/contracts.ts';
+import { connectorById, SOURCE_IDS, sourceForLibraryFile, type SourceId } from '../shared/platform.ts';
 import { PROMPT_VERSION } from '../shared/prompts/extract.ts';
 import { coerceTaxonomy } from '../shared/prompts/taxonomy.ts';
 import { LIVE_FALLBACK_AFTER_MS } from '../shared/scoring.ts';
 import { effectiveRules } from '../pipeline/route.ts';
-import type { Taxonomy } from '../pipeline/types.ts';
+import type { ConnectionState, Taxonomy } from '../pipeline/types.ts';
 import { byteLength, randomId, sha256Hex } from '../pipeline/util.ts';
 import { reserve, runEstimate, settle } from './budget.ts';
-import { getAccounts, getLibraryFile, getPeople, getRawContent, getRules, getRunRow, getSetting, insertRun, insertRunStatement, nowIso, rowToRun, SEED, updateRunRow, type RunRow } from './db.ts';
+import { connectionStates, getConnectionStates } from './connections.ts';
+import { getAccounts, getLibraryFile, getRawContent, getRules, getRunRow, getSetting, insertRun, insertRunStatement, nowIso, rowToRun, SEED, updateRunRow, type RunRow } from './db.ts';
+import { getEffectivePeople } from './directory.ts';
 import { claimWorkflow, createClaimedWorkflow, fastPath, type PipelineParams } from './execute.ts';
 import type { Env } from './env.ts';
 import { getRecording, materializeReplay, replayRunFields } from './replay.ts';
@@ -21,18 +24,22 @@ export type Thresholds = { autoRoute: number; review: number; grounding: number 
 export type RunContext = {
   account: Account | null;
   accounts: Account[];
+  /** The workspace's directory (seed with this workspace's edits; inactive people included). */
   people: Person[];
   rules: RoutingRule[];
+  /** The workspace's connectors: routing skips channels that are not connected. */
+  connections: ConnectionState[];
   taxonomy: Taxonomy;
   promptVersion: string;
   thresholds: Thresholds;
 };
 
 export async function loadContext(env: Env, ws: string, accountId: string | null): Promise<RunContext> {
-  const [accounts, people, rules, taxonomyRaw, promptVersion, thresholds] = await Promise.all([
+  const [accounts, people, rules, connections, taxonomyRaw, promptVersion, thresholds] = await Promise.all([
     getAccounts(env.DB),
-    getPeople(env.DB),
+    getEffectivePeople(env.DB, ws),
     getRules(env.DB, ws),
+    getConnectionStates(env.DB, ws),
     getSetting<unknown>(env.DB, 'taxonomy', null),
     getSetting<string>(env.DB, 'prompt_version', PROMPT_VERSION),
     getSetting<Thresholds>(env.DB, 'thresholds', { ...THRESHOLDS }),
@@ -42,6 +49,7 @@ export async function loadContext(env: Env, ws: string, accountId: string | null
     accounts,
     people,
     rules: effectiveRules(rules.seed, rules.own),
+    connections: connectionStates(connections),
     taxonomy: coerceTaxonomy(taxonomyRaw),
     promptVersion,
     thresholds,
@@ -63,7 +71,7 @@ export type CreateResult =
   | { ok: true; runId: string; mode: 'live' | 'replay'; modeReason: string | null; duplicate: boolean; duplicateScope?: 'workspace' | 'seed'; duplicateCreatedAt?: string }
   | { ok: false; status: 400 | 404 | 409 | 429 | 503; code: string; message: string };
 
-type CreateInput = ({ fileId: string; mode: 'auto' | 'replay' } | { text: string; filename: string; mode: 'auto' }) & { rerun?: boolean };
+type CreateInput = ({ fileId: string; mode: 'auto' | 'replay' } | { text: string; filename: string; mode: 'auto'; formatHint?: FileFormat; sourceFormat?: string; source?: string }) & { rerun?: boolean };
 
 /**
  * The newest earlier run of the same bytes, in this workspace first, then seeded history.
@@ -80,12 +88,35 @@ async function existingRunBySha(env: Env, ws: string, sha: string, rerun: { file
   return r ? rowToRun(r) : null;
 }
 
-function baseRun(o: { id: string; ws: string; file: LibraryFile | null; filename: string; accountId: string | null; sha: string; promptVersion: string; mode: 'live' | 'replay'; modeReason: string | null; createdAt: string }): RunRow {
+function baseRun(o: {
+  id: string; ws: string; file: LibraryFile | null; filename: string; accountId: string | null; sha: string; promptVersion: string; mode: 'live' | 'replay'; modeReason: string | null; createdAt: string;
+  formatHint?: FileFormat | null; source: SourceId; sourceFormat?: string | null;
+}): RunRow {
   return {
     id: o.id, workspaceId: o.ws, fileId: o.file?.id ?? null, filename: o.filename, accountId: o.accountId, callId: o.file?.callId ?? null, status: 'queued', mode: o.mode,
     modeReason: o.modeReason, sha256: o.sha, createdAt: o.createdAt, finishedAt: null, durationMs: null, costUsd: 0, promptVersion: o.promptVersion, insightCount: 0, droppedCount: 0,
-    reviewCount: 0, injectionFlagged: false, actionable: null, replayOf: null, workflowId: null, error: null, format: o.file?.format ?? null, screen: null, keyScope: 'runtime',
+    reviewCount: 0, injectionFlagged: false, actionable: null, source: o.source, docKind: null, sourceFormat: o.sourceFormat ?? null, replayOf: null, workflowId: null, error: null,
+    // The format column doubles as the run's parser hint: a library file's format, or the browser converter's hint.
+    format: o.file?.format ?? o.formatHint ?? null, screen: null, keyScope: 'runtime',
   };
+}
+
+/**
+ * Where a new run came from. Library files: their source mapping (sourceForLibraryFile).
+ * Text: the declared source, which must be a known source and, when it is a connector, one that
+ * is connected in this workspace; else 'upload' for a converted file, 'paste' for pasted text.
+ */
+async function runSource(env: Env, ws: string, file: LibraryFile | null, input: CreateInput): Promise<{ ok: true; source: SourceId } | { ok: false; status: 400 | 409; code: string; message: string }> {
+  if (file) return { ok: true, source: sourceForLibraryFile(file.filename, file.format) };
+  const t = input as { source?: string; sourceFormat?: string };
+  if (!t.source) return { ok: true, source: t.sourceFormat ? 'upload' : 'paste' };
+  if (!(SOURCE_IDS as readonly string[]).includes(t.source)) return { ok: false, status: 400, code: 'invalid_request', message: `source: unknown source "${t.source}"` };
+  const def = connectorById(t.source);
+  if (def) {
+    const state = (await getConnectionStates(env.DB, ws)).find((c) => c.id === def.id);
+    if (state?.status !== 'connected') return { ok: false, status: 409, code: 'source_not_connected', message: `${def.name} isn't connected. Connect it first, or upload the file.` };
+  }
+  return { ok: true, source: t.source as SourceId };
 }
 
 export async function startReplay(env: Env, run: RunRow, fileId: string, reason: string, startMs = Date.now()): Promise<boolean> {
@@ -137,7 +168,10 @@ export async function createRun(env: Env, ws: string, input: CreateInput, rep: R
   }
 
   const createdAt = new Date(now).toISOString();
-  const base = baseRun({ id: runId, ws, file, filename, accountId, sha, promptVersion, mode: 'live', modeReason: null, createdAt });
+  const src = await runSource(env, ws, file, input);
+  if (!src.ok) return src;
+  const text = 'fileId' in input ? null : input;
+  const base = baseRun({ id: runId, ws, file, filename, accountId, sha, promptVersion, mode: 'live', modeReason: null, createdAt, formatHint: text?.formatHint ?? null, source: src.source, sourceFormat: text?.sourceFormat ?? null });
 
   if (file && input.mode === 'replay') {
     if (await startReplay(env, base, file.id, 'requested', now)) return { ok: true, runId, mode: 'replay', modeReason: 'requested', duplicate: false };

@@ -1,59 +1,43 @@
 /**
- * The Run view: one call moving through the real 10-step pipeline. Polls GET /runs/:id
- * (~600ms while running) and reveals steps with a human-followable dwell (useReveal).
- * Top: pipeline graph + lifecycle stepper. Left: transcript with redaction pills and
- * evidence highlights. Right: screen result, insight cards with confidence gauges and gate
- * results, the dropped-quote card. Bottom: trace (waterfall + per-step model/tokens/cost).
+ * A conversation: one file moving through the ten-step pipeline. Polls GET /runs/:id (~600ms
+ * while running) and reveals steps with a human-followable dwell (useReveal), so a fast run
+ * stays watchable. Top: the header and pipeline progress. Left: the transcript, with hidden
+ * personal details and the quotes behind each insight. Right: triage, insights (score, gate,
+ * second opinion, routing), any dropped quotes, and the per-step trace.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'motion/react';
-import { STEP_KEYS, STEP_LABELS, type Insight, type StepKey } from '../../shared/contracts';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { STEP_KEYS, type Insight, type StepKey } from '../../shared/contracts';
 import { emit } from '../../shared/events';
 import { tourAnchor } from '../../tour/anchors';
-import { Button } from '../../system/components/primitives/Button.jsx';
-import { MonoId } from '../../uis/MonoId';
-import { RunStateStepper, type StepperTerminal } from '../../uis/RunStateStepper';
-import { StatusChip } from '../../uis/StatusChip';
-import { EmptyState } from '../../uis/EmptyState';
-import { Banner } from '../../uis/Banner';
-import { RelativeTime } from '../../uis/RelativeTime';
+import { stepsCostUsd } from '../../shared/format';
+import { inferDocKind } from '../../shared/platform';
+import { Button, ButtonLink, Callout, Card, EmptyState, Page, PageHeader, Skeleton, useCrumbs, useToast } from '../../ds';
+import { IconBuilding, IconCheckCircle, IconExternal, IconInbox, IconPlus, IconRefresh } from '../../ds/icons';
 import { api, ApiError } from '../api/client';
 import { invalidate, keys, useRun, useThemes } from '../api/hooks';
-import { AppPageHeader, ErrorState, useToast } from '../components/ui';
-import { Hint } from '../components/Hint';
-import { FileGlyph, IconReplay } from '../components/icons';
-import { money, ms, STEP_HELP } from '../lib/labels';
-import { stepsCostUsd } from '../../shared/format';
+import { useDocumentTitle } from '../AppShell';
+import { docKindLabel, ErrorState, MODE_REASON, ModeBadge, RunStatusBadge, SourceLabel, When } from '../components/domain';
+import { money, ms } from '../lib/labels';
 import { useModelLabels } from '../lib/models';
 import { useWorldIndex } from '../lib/world';
 import { usePrefersReducedMotion, useTourState } from '../state';
 import { track } from '../telemetry';
-import { PipelineGraph } from './run/PipelineGraph';
-import { DroppedCard, InsightCard, ScreenCard, TracePanel, type DroppedItem } from './run/RunParts';
-import { Transcript, type Highlight } from './run/Transcript';
+import { PipelineProgress } from './run/PipelineGraph';
+import { DroppedCard, InsightRow, InsightSkeletons, TraceCard, TriageCard, type Diversion, type DroppedItem } from './run/RunParts';
+import { STEP_NAME, stepStory, tidySummary } from './run/stepText';
+import { redactedPlain, Transcript, type Highlight } from './run/Transcript';
 import { useReveal } from './run/useReveal';
-import { friendlyModel, plainSummary } from './run/modelName';
 import styles from './run/RunView.module.css';
 
-const MODE_REASON: Record<string, string> = {
-  budget_reached: 'The $15 live AI budget is used up, so this run plays back a recorded live run of the same file at real speed: the actual steps, results and timings.',
-  live_failed: 'The live AI call failed or was too slow, so Signal Loop played back a recorded live run of this file instead of failing.',
-  live_disabled: 'Live AI is switched off for this workspace, so this plays back a recorded live run of the same file at real speed.',
-  seed: 'Sample history: recorded from a live run during setup and played back from its saved steps.',
-};
-
-function formatFormat(filename: string): string {
-  const ext = filename.split('.').pop()?.toLowerCase() ?? 'txt';
-  return ['vtt', 'txt', 'md', 'eml', 'chat'].includes(ext) ? ext : 'txt';
-}
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 export default function RunViewPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
-  const { data, error, loading, dataAsOf, refresh } = useRun(id);
+  const { data, error, loading, refresh } = useRun(id);
   const [search] = useSearchParams();
-  /** Opened from New call as "your earlier run" (a duplicate): say so, and offer a fresh live run. */
+  /** Opened from New conversation as "your earlier run" (a duplicate): say so, and offer a fresh live run. */
   const earlier = search.get('earlier') === '1';
   const toast = useToast();
   const [rerunning, setRerunning] = useState(false);
@@ -63,14 +47,17 @@ export default function RunViewPage() {
   const themes = useThemes();
   const reveal = useReveal(data, pace, reduced);
   const models = useModelLabels();
-  const modelLabel = (id: string | null | undefined) => friendlyModel(models.label(id));
-  const rewriteModels = (text: string) => plainSummary(friendlyModel(models.rewrite(text))) ?? text;
 
   const [selected, setSelected] = useState<string | null>(null);
   const [focus, setFocus] = useState<{ insightId: string; n: number } | null>(null);
   const [mode, setMode] = useState<'after' | 'before'>('after');
   const [pickedStep, setPickedStep] = useState<StepKey | null>(null);
   const viewed = useRef<string | null>(null);
+
+  const run = data?.run;
+  const name = run?.filename ?? 'Conversation';
+  useDocumentTitle(name);
+  useCrumbs([{ label: name }], [name]);
 
   useEffect(() => {
     if (data && viewed.current !== data.run.id) {
@@ -79,12 +66,17 @@ export default function RunViewPage() {
     }
   }, [data]);
 
-  const run = data?.run;
-  const account = world.account(run?.accountId);
-  const themeName = useCallback((tid: string | null) => (tid ? themes.data?.find((t) => t.id === tid)?.name ?? null : null), [themes.data]);
+  // A different conversation (Run again, or a link) starts with nothing picked.
+  useEffect(() => {
+    setPickedStep(null);
+    setSelected(null);
+    setFocus(null);
+  }, [id]);
+
+  const themeName = useCallback((tid: string | null) => (tid ? (themes.data?.find((t) => t.id === tid)?.name ?? null) : null), [themes.data]);
 
   const groundDone = reveal.done('ground');
-  const insights = data?.insights ?? [];
+  const insights = useMemo(() => data?.insights ?? [], [data]);
   const kept = useMemo(() => insights.filter((i) => !(groundDone && i.gate === 'dropped')), [insights, groundDone]);
 
   const dropped: DroppedItem[] = useMemo(() => {
@@ -113,12 +105,28 @@ export default function RunViewPage() {
     for (const i of kept) {
       const ev = i.evidence.find((e) => e.method !== 'failed');
       if (!ev) continue;
-      hs.push({ insightId: i.id, turnId: ev.turnId, start: ev.start, end: ev.end, text: ev.matchedText ?? ev.quote, kind: ev.method === 'fuzzy' ? 'fuzzy' : 'grounded', label: `${i.type.replace('_', ' ')} · ${ev.method}${ev.method === 'fuzzy' ? ` ${ev.score.toFixed(2)}` : ''} · click to open` });
+      hs.push({
+        insightId: i.id,
+        turnId: ev.turnId,
+        start: ev.start,
+        end: ev.end,
+        text: ev.matchedText ?? ev.quote,
+        kind: ev.method === 'fuzzy' ? 'fuzzy' : 'grounded',
+        label: `Quote behind “${redactedPlain(i.summary)}”. Click to open it.`,
+      });
     }
     for (const d of dropped) {
       if (!d.bestMatch) continue;
       const src = insights.find((x) => x.id === d.id)?.evidence[0];
-      hs.push({ insightId: d.id, turnId: src?.turnId ?? null, start: src?.start ?? null, end: src?.end ?? null, text: d.bestMatch, kind: 'dropped', label: `Closest match for a dropped quote · ${(d.score * 100).toFixed(0)}% similar` });
+      hs.push({
+        insightId: d.id,
+        turnId: src?.turnId ?? null,
+        start: src?.start ?? null,
+        end: src?.end ?? null,
+        text: d.bestMatch,
+        kind: 'dropped',
+        label: `Closest text to a dropped quote, ${Math.round(d.score * 100)}% similar`,
+      });
     }
     return hs;
   }, [groundDone, kept, dropped, insights]);
@@ -139,21 +147,7 @@ export default function RunViewPage() {
     el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
   }, []);
 
-  if (error && !data) {
-    const notFound = error instanceof ApiError && error.status === 404;
-    return (
-      <div className="sl-page">
-        <AppPageHeader title="Run" dataAsOf={null} breadcrumbs={[{ label: 'Runs', href: '/app/runs' }, { label: id }]} />
-        {notFound ? (
-          <EmptyState variant="no-data" title="Run not found" description={`No run ${id} in your workspace or the seeded history.`} action={<Button variant="secondary" onClick={() => navigate('/app/new')}>Start a new call</Button>} />
-        ) : (
-          <ErrorState error={error} onRetry={() => void refresh()} what="this run" />
-        )}
-      </div>
-    );
-  }
-
-  const runAgainLive = async () => {
+  const runAgain = async () => {
     if (!run?.fileId) return;
     setRerunning(true);
     try {
@@ -163,165 +157,233 @@ export default function RunViewPage() {
       invalidate(keys.runs, keys.session);
       navigate(`/app/runs/${res.data.runId}`);
     } catch (err) {
-      toast({ tone: 'danger', title: 'Run not started', body: err instanceof ApiError ? err.message : 'The run could not be started.' });
+      toast({ tone: 'danger', title: 'Couldn’t start a new run', body: err instanceof ApiError ? err.message : 'Try again in a moment.' });
     } finally {
       setRerunning(false);
     }
   };
 
-  if (loading || !data || !run) return <RunSkeleton id={id} />;
+  if (error && !data) {
+    const notFound = error instanceof ApiError && error.status === 404;
+    return (
+      <Page>
+        <PageHeader title="Conversation" />
+        <Card>
+          {notFound ? (
+            <EmptyState
+              icon={<IconInbox />}
+              title="Conversation not found"
+              description="It isn’t in this workspace or the sample history. It may have been removed."
+              actions={
+                <>
+                  <ButtonLink to="/app/runs" size="sm">
+                    All conversations
+                  </ButtonLink>
+                  <ButtonLink to="/app/new" variant="primary" size="sm" icon={<IconPlus size={14} />}>
+                    New conversation
+                  </ButtonLink>
+                </>
+              }
+            />
+          ) : (
+            <ErrorState error={error} onRetry={() => void refresh()} what="this conversation" />
+          )}
+        </Card>
+      </Page>
+    );
+  }
 
-  const screenStep = reveal.steps.find((s) => s.key === 'screen');
+  if (loading || !data || !run) return <RunSkeleton />;
+
+  // ------------------------------------------------ derived view state
+  const screenStep = reveal.steps.find((s) => s.key === 'screen')!;
   const extractDone = reveal.done('extract');
   const scoreDone = reveal.done('score');
   const screenDone = reveal.done('screen');
   const redactDone = reveal.done('redact');
+  const extractIdx = STEP_KEYS.indexOf('extract');
   const stage = { grounded: groundDone, scored: scoreDone, themed: reveal.done('theme'), routed: reveal.done('route'), delivered: reveal.done('deliver') };
-  const negative = screenDone && data.screen && !data.screen.actionable;
+  const negative = screenDone && !!data.screen && !data.screen.actionable;
   const ingestStep = data.steps.find((s) => s.key === 'ingest');
   const duplicateOf = reveal.done('ingest') ? (ingestStep?.detail?.duplicateOf as string | null | undefined) : null;
-  const visibleKept = kept;
-  const reviewN = scoreDone ? visibleKept.filter((i) => i.gate === 'review').length : 0;
-  const autoN = scoreDone ? visibleKept.filter((i) => i.gate === 'auto_route').length : 0;
-  const lastRevealed = reveal.revealed > 0 ? STEP_KEYS[reveal.revealed - 1]! : null;
-  const detailKey = pickedStep ?? (reveal.activeIdx >= 0 ? STEP_KEYS[reveal.activeIdx]! : lastRevealed) ?? 'ingest';
+  const reviewN = scoreDone ? kept.filter((i) => i.gate === 'review').length : 0;
+  const autoN = scoreDone ? kept.filter((i) => i.gate === 'auto_route').length : 0;
+  // Unless a step is picked: the running step, else the failed one, else the last step that did something.
+  const revealedSteps = reveal.steps.slice(0, reveal.revealed);
+  const lastRevealed = revealedSteps.find((s) => s.display === 'failed')?.key ?? [...revealedSteps].reverse().find((s) => s.display !== 'skipped')?.key ?? null;
+  const detailKey: StepKey = pickedStep ?? (reveal.activeIdx >= 0 ? STEP_KEYS[reveal.activeIdx]! : lastRevealed) ?? 'ingest';
   const detailStep = reveal.steps.find((s) => s.key === detailKey)!;
   const shownCost = stepsCostUsd(reveal.steps.filter((s) => s.display !== 'pending' && s.display !== 'running'));
   const failedStep = run.status === 'failed' ? data.steps.find((s) => s.status === 'failed') : undefined;
-
-  const terminal: StepperTerminal | null = reveal.finished
-    ? run.status === 'failed'
-      ? { label: 'Failed', severity: 'red', at: run.finishedAt, message: failedStep?.summary ? rewriteModels(failedStep.summary) : null }
-      : run.actionable === false
-        ? { label: 'Nothing actionable', severity: 'neutral', at: run.finishedAt }
-        : run.status === 'awaiting_review'
-          ? { label: `Awaiting review (${run.reviewCount})`, severity: 'yellow', at: run.finishedAt }
-          : { label: 'Completed', severity: 'green', at: run.finishedAt }
+  const finished = reveal.finished;
+  const inProgress = !finished;
+  const shownStatus = finished ? run.status : run.status === 'queued' && reveal.revealed === 0 ? 'queued' : 'running';
+  const rewrite = (text: string) => models.rewrite(text);
+  // What it is comes from triage: shown once that step is revealed, never ahead of it.
+  const docKind = screenDone
+    ? docKindLabel(run.docKind ?? data.screen?.doc_kind ?? inferDocKind((data.steps.find((s) => s.key === 'normalize')?.detail?.format as string | undefined) ?? null, data.screen?.call_kind))
     : null;
-  const lifecycleCurrent = reveal.done('route') ? 'routed' : scoreDone ? 'gated' : redactDone ? 'processing' : reveal.revealed > 0 ? 'processing' : 'queued';
+  const account = world.account(run.accountId);
+  const runningName = reveal.activeIdx >= 0 ? STEP_NAME[STEP_KEYS[reveal.activeIdx]!] : null;
+
+  const progressDescription = !finished
+    ? runningName
+      ? `Step ${reveal.activeIdx + 1} of ${STEP_KEYS.length}: ${runningName}`
+      : 'Starting'
+    : failedStep
+      ? `Stopped at ${STEP_NAME[failedStep.key]}`
+      : `Finished in ${ms(run.durationMs)}`;
+
+  const routeDecisions = (data.steps.find((s) => s.key === 'route')?.detail?.decisions ?? []) as Array<{ insightId?: string; diverted?: { why?: string; channel?: string } }>;
+  const diversionFor = (insightId: string): Diversion => {
+    const d = Array.isArray(routeDecisions) ? routeDecisions.find((x) => x.insightId === insightId)?.diverted : undefined;
+    return d && (d.why === 'not_connected' || d.why === 'owner_inactive') ? { why: d.why, channel: d.channel ?? '' } : null;
+  };
+  const stoppedEarly = !!failedStep && finished && (!extractDone || kept.length === 0);
+  const insightsDescription = stoppedEarly
+    ? 'Nothing to send'
+    : !extractDone
+      ? reveal.activeIdx === extractIdx
+        ? 'Reading for product feedback'
+        : 'Appear after the Extract step'
+      : negative
+        ? 'Nothing to send'
+        : [
+            plural(kept.length, 'insight'),
+            scoreDone && autoN ? `${autoN} sent automatically` : null,
+            scoreDone && reviewN ? `${reviewN} to review` : null,
+            groundDone && dropped.length ? `${dropped.length} dropped` : null,
+          ]
+            .filter(Boolean)
+            .join(', ');
 
   return (
-    <div className="sl-page">
-      <AppPageHeader
-        title={run.callId ? `Run · ${run.callId}` : 'Run'}
-        subtitle="One conversation, step by step: what was found, checked and sent"
-        dataAsOf={dataAsOf}
-        breadcrumbs={[{ label: 'Runs', href: '/app/runs' }, { label: run.filename }]}
+    <Page>
+      <PageHeader
+        title={<span title={run.filename}>{run.filename}</span>}
+        badge={
+          <span className={styles.badges}>
+            <RunStatusBadge status={shownStatus} />
+            {run.mode === 'replay' ? <ModeBadge run={run} /> : null}
+          </span>
+        }
+        description={run.mode === 'replay' ? (MODE_REASON[run.modeReason ?? ''] ?? 'A recorded live run of this file, replayed at real speed.') : undefined}
+        meta={
+          <>
+            <span className={styles.metaItem}>
+              <IconBuilding size={14} />
+              <span className="ds-truncate">{account?.name ?? (run.accountId ? run.accountId : 'No account')}</span>
+            </span>
+            <SourceLabel source={run.source} />
+            {docKind ? <span className={styles.metaItem}>{docKind}</span> : null}
+            <span className={styles.metaBreak} aria-hidden="true" />
+            <span className={styles.metaItem}>
+              <span className="ds-subtle">Received</span>
+              <When value={run.createdAt} />
+            </span>
+            <span className={styles.metaItem}>
+              <span className="ds-subtle">AI cost</span>
+              <span className="ds-num">{money(shownCost, { precise: true })}</span>
+            </span>
+            <span className={styles.metaItem}>
+              <span className="ds-subtle">Took</span>
+              <span className="ds-num">{finished ? ms(run.durationMs) : '—'}</span>
+            </span>
+          </>
+        }
+        actions={
+          <>
+            <ButtonLink to={`/ops/traces/${run.id}`} iconRight={<IconExternal size={14} />}>
+              Open in Agent Ops
+            </ButtonLink>
+            {finished && run.fileId && !earlier ? (
+              <Button icon={<IconRefresh size={14} />} loading={rerunning} onClick={() => void runAgain()}>
+                Run again
+              </Button>
+            ) : null}
+            {finished && run.reviewCount > 0 ? (
+              <ButtonLink to="/app/review" variant="primary">
+                Review {plural(run.reviewCount, 'insight')}
+              </ButtonLink>
+            ) : null}
+          </>
+        }
       />
 
-      {/* ------------------------------------------------ header + pipeline */}
-      <section className={styles.top} aria-label="Pipeline">
-        <div className={styles.topHead}>
-          <FileGlyph format={formatFormat(run.filename)} size={32} />
-          <div className={styles.topTitle}>
-            <h2 className={styles.fileName} title={run.filename}>
-              {run.filename}
-            </h2>
-            <div className={styles.topMeta}>
-              <span>{account?.name ?? (run.accountId ? run.accountId : 'No account')}</span>
-              {run.callId ? (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <MonoId value={run.callId} keep={12} />
-                </>
-              ) : null}
-              <span aria-hidden="true">·</span>
-              <span>
-                Started <RelativeTime value={run.createdAt} />
-              </span>
-              <span aria-hidden="true">·</span>
-              <span className="sl-subtle" title={`File fingerprint (SHA-256) ${run.sha256}`}>
-                Run <MonoId value={run.id} keep={6} />
-              </span>
-            </div>
-          </div>
-          <div className={styles.topBadges}>
-            <Hint label={run.mode === 'live' ? 'This run called the real AI models: the main model, with a backup model from a different provider as a second opinion. It counts against the shared budget.' : MODE_REASON[run.modeReason ?? ''] ?? 'Plays back a recorded live run of the same file at real speed.'}>
-              <span className={`${styles.mode} ${run.mode === 'live' ? styles.modeLive : styles.modeReplay}`} tabIndex={0}>
-                {earlier ? (run.mode === 'live' ? 'Earlier live run, replayed' : 'Earlier run (a replay)') : run.mode === 'live' ? 'Live' : 'Replay'}
-              </span>
-            </Hint>
-            <StatusChip
-              tone={run.status === 'failed' ? 'danger' : !reveal.finished ? 'info' : run.status === 'awaiting_review' ? 'warning' : run.actionable === false ? 'neutral' : 'success'}
-              size="md"
-            >
-              {!reveal.finished ? 'Running' : run.status === 'awaiting_review' ? 'Awaiting review' : run.status === 'failed' ? 'Failed' : run.actionable === false ? 'Nothing actionable' : 'Completed'}
-            </StatusChip>
-            <Button variant="tertiary" size="sm" onClick={() => { setPickedStep(null); reveal.replay(); }} disabled={!reveal.finished} title={reveal.finished ? 'Replay the reveal from the recorded steps' : 'Available when the run has finished'}>
-              <IconReplay size={14} /> Replay
-            </Button>
-          </div>
-        </div>
-
-        <PipelineGraph steps={reveal.steps} selected={pickedStep} onSelect={(k) => setPickedStep((p) => (p === k ? null : k))} pace={pace} reduced={reduced} />
-
-        <div className={styles.stepStrip} aria-live="polite">
-          <span className={styles.stepStripNum}>{STEP_KEYS.indexOf(detailKey) + 1} of 10</span>
-          <span className={styles.stepStripName}>{STEP_LABELS[detailKey]}</span>
-          <span className={styles.stepStripText}>
-            {detailStep.display === 'pending' ? STEP_HELP[detailKey] : detailStep.display === 'running' ? `${STEP_HELP[detailKey]}` : (detailStep.summary ? rewriteModels(detailStep.summary) : STEP_HELP[detailKey])}
-          </span>
-          <span className={styles.stepStripFacts}>
-            {detailStep.display !== 'pending' && detailStep.display !== 'running' ? (
-              <>
-                {detailStep.model ? <span>{modelLabel(detailStep.model)}</span> : <span>No AI used</span>}
-                {detailStep.tokensIn != null ? <span>{(detailStep.tokensIn + (detailStep.tokensOut ?? 0)).toLocaleString()} tokens</span> : null}
-                {detailStep.costUsd != null ? <span>{money(detailStep.costUsd, { precise: true })}</span> : null}
-                <span>{ms(detailStep.durationMs)}</span>
-              </>
-            ) : detailStep.display === 'running' ? (
-              <span className={styles.working}>Working…</span>
-            ) : null}
-          </span>
-        </div>
-
-        <div className={styles.lifecycle}>
-          <RunStateStepper
-            stages={[
-              { key: 'queued', label: 'Queued', at: run.createdAt },
-              { key: 'processing', label: 'Processing' },
-              { key: 'gated', label: 'Checked and scored' },
-              { key: 'routed', label: 'Sent to owners' },
-            ]}
-            current={lifecycleCurrent}
-            terminal={terminal}
-          />
-          <div className={styles.liveCost}>
-            <span className={styles.liveCostLabel}>AI cost so far</span>
-            <strong>{money(shownCost, { precise: true })}</strong>
-          </div>
-        </div>
-      </section>
-
-      {failedStep && reveal.finished ? (
-        <Banner tone="danger" title={`Run failed at ${STEP_LABELS[failedStep.key]}`} action={<Link to="/app/health">Failed deliveries</Link>}>
-          {(failedStep.summary ? rewriteModels(failedStep.summary) : null) ?? 'A step failed after retrying. Nothing from this run was sent anywhere.'}
-        </Banner>
+      {failedStep && finished ? (
+        <Callout
+          tone="danger"
+          title={`Stopped at ${STEP_NAME[failedStep.key]}`}
+          actions={
+            <ButtonLink to="/app/health" size="sm">
+              Usage and health
+            </ButtonLink>
+          }
+        >
+          {tidySummary(failedStep.summary, rewrite) ?? 'A step failed after retrying.'} Nothing from this conversation was sent.
+        </Callout>
       ) : null}
       {earlier ? (
-        <Banner
+        <Callout
           tone="info"
-          title="Your earlier run, replayed from its saved steps"
-          action={
+          title="Your earlier run of this file"
+          actions={
             run.fileId ? (
-              <Button variant="primary" size="sm" iconLeft="play" loading={rerunning} disabled={rerunning} onClick={() => void runAgainLive()}>
+              <Button variant="primary" size="sm" loading={rerunning} onClick={() => void runAgain()}>
                 Run again live
               </Button>
             ) : undefined
           }
         >
-          You already ran this file, so this reopens that run (started <RelativeTime value={run.createdAt} />). Nothing new is running; the steps, timings and costs are the ones recorded then.
-        </Banner>
+          Nothing new is running. The steps, timings and costs are the ones recorded <When value={run.createdAt} />.
+        </Callout>
       ) : null}
       {duplicateOf ? (
-        <Banner tone="info" title="Duplicate upload: not processed again" action={<Link to={`/app/runs/${duplicateOf}`}>Open the original run</Link>}>
-          This file is identical to an earlier upload, so Signal Loop did no further work and spent nothing.
-        </Banner>
+        <Callout
+          tone="info"
+          title="Same file as an earlier upload"
+          actions={
+            <ButtonLink to={`/app/runs/${duplicateOf}`} size="sm">
+              Open the original
+            </ButtonLink>
+          }
+        >
+          It wasn’t processed again, and nothing was spent.
+        </Callout>
       ) : null}
 
-      {/* ------------------------------------------------ main grid */}
+      <Card
+        title="Progress"
+        description={progressDescription}
+        actions={
+          finished ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<IconRefresh size={14} />}
+              onClick={() => {
+                setPickedStep(null);
+                reveal.replay();
+              }}
+            >
+              Replay steps
+            </Button>
+          ) : null
+        }
+        attrs={{ 'aria-label': 'Pipeline progress' }}
+      >
+        <PipelineProgress
+          steps={reveal.steps}
+          selected={detailKey}
+          onSelect={(k) => setPickedStep((p) => (p === k ? null : k))}
+          story={stepStory(detailStep, { screen: data.screen, insights, rewrite })}
+          modelLabel={models.label(detailStep.model)}
+          stopped={finished && run.status === 'failed'}
+        />
+      </Card>
+
       <div className={styles.grid}>
-        <div className={styles.left}>
+        <div className={styles.main}>
           <Transcript
             turns={data.turns}
             redactions={data.redactions}
@@ -329,135 +391,114 @@ export default function RunViewPage() {
             mode={mode}
             onModeChange={setMode}
             focus={focus}
+            activeInsight={selected}
             onSelectInsight={selectFromTranscript}
-            pending={!redactDone || data.turns.length === 0 && !reveal.finished}
-            pendingLabel={reveal.revealed < 2 ? 'Reading speakers and lines…' : 'Hiding personal details before any AI sees the text…'}
+            pending={!finished && (!redactDone || data.turns.length === 0)}
+            pendingLabel={reveal.revealed < 2 ? 'Reading speakers and lines' : 'Hiding personal details before any AI sees the text'}
+            emptyLabel={failedStep && !redactDone ? `Not shown: the run stopped at ${STEP_NAME[failedStep.key]}, before personal details were hidden.` : 'No lines could be read from this file.'}
           />
         </div>
 
-        <div className={styles.right}>
-          <ScreenCard screen={screenDone ? data.screen : null} pending={!screenDone} model={modelLabel(screenStep?.model)} ms={screenStep?.durationMs ?? null} />
+        <div className={styles.side}>
+          <TriageCard
+            screen={screenDone ? data.screen : null}
+            pending={!screenDone}
+            notRun={!!failedStep && finished && !screenDone}
+            running={reveal.activeIdx === STEP_KEYS.indexOf('screen')}
+            model={models.label(screenStep.model)}
+            took={screenStep.durationMs}
+            docKind={docKind}
+          />
 
-          <section className={styles.insights} aria-label="Insights" {...tourAnchor('run.insights')}>
-            <header className={styles.insightsHead}>
-              <h2 className={styles.insightsTitle}>Insights</h2>
-              <span className={styles.insightsCount}>
-                {!extractDone
-                  ? reveal.activeIdx === STEP_KEYS.indexOf('extract')
-                    ? 'Extracting…'
-                    : 'Appear after the Extract step'
-                  : `${visibleKept.length} kept${groundDone ? ` · ${dropped.length} dropped` : ''}${scoreDone ? ` · ${autoN} sent automatically · ${reviewN} to review` : ''}`}
-              </span>
-            </header>
-
-            {negative ? (
-              <motion.div initial={reduced ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
-                <EmptyState
-                  variant="no-data"
-                  icon="✓"
-                  title="Nothing actionable"
-                  description="A friendly check-in with no feedback, requests, objections or risks. No insights were created and nothing was sent. Signal Loop doesn't invent work."
-                />
-              </motion.div>
+          <Card title="Insights" description={insightsDescription} flush attrs={{ ...tourAnchor('run.insights'), 'aria-label': 'Insights' }}>
+            {stoppedEarly ? (
+              <EmptyState compact icon={<IconInbox />} title="No insights" description={`The run stopped at ${STEP_NAME[failedStep!.key]}, so nothing was found or sent.`} />
+            ) : negative ? (
+              <EmptyState
+                compact
+                icon={<IconCheckCircle />}
+                title="Nothing actionable"
+                description="No product feedback in this conversation. Nothing was created or sent, which is the right outcome."
+              />
             ) : duplicateOf ? (
-              <EmptyState variant="no-data" title="No new insights" description="The original run already found and sent this call's insights." />
+              <EmptyState compact icon={<IconInbox />} title="No new insights" description="The original run already found and sent what was in this file." />
             ) : !extractDone ? (
-              <div className={styles.pendingCards} aria-hidden="true">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className={`${styles.ghostCard} ${reveal.activeIdx === STEP_KEYS.indexOf('extract') ? styles.ghostActive : ''}`}>
-                    <span style={{ width: '38%' }} />
-                    <span style={{ width: '92%' }} />
-                    <span style={{ width: '70%' }} />
-                  </div>
-                ))}
-              </div>
-            ) : visibleKept.length === 0 && dropped.length === 0 ? (
-              <EmptyState variant="no-data" title="No insights in this call" description="Nothing in this conversation matched a feedback type Signal Loop tracks." />
+              <InsightSkeletons />
+            ) : kept.length === 0 && dropped.length === 0 ? (
+              <EmptyState compact icon={<IconCheckCircle />} title="No product feedback found" description="Nothing in this conversation matched a type of feedback Signal Loop tracks." />
+            ) : kept.length === 0 ? (
+              <EmptyState compact icon={<IconInbox />} title="No insights kept" description="Every quote failed the check, so nothing was sent." />
             ) : (
-              <div className={styles.cards}>
-                <AnimatePresence initial={false}>
-                  {visibleKept.map((ins, idx) => (
-                    <InsightCard
-                      key={ins.id}
-                      insight={ins}
-                      index={idx}
-                      stage={stage}
-                      themeName={themeName(ins.themeId)}
-                      ownerName={world.personName(ins.ownerId)}
-                      delivery={data.deliveries.find((d) => d.insightId === ins.id) ?? null}
-                      selected={selected === ins.id}
-                      onFocus={() => focusInsight(ins.id)}
-                      anchorGate={idx === 0}
-                      reduced={reduced}
-                    />
-                  ))}
-                </AnimatePresence>
-              </div>
+              kept.map((ins, idx) => (
+                <InsightRow
+                  key={ins.id}
+                  insight={ins}
+                  stage={stage}
+                  inProgress={inProgress}
+                  themeName={themeName(ins.themeId)}
+                  ownerName={ins.ownerId ? world.personName(ins.ownerId) : null}
+                  delivery={data.deliveries.find((d) => d.insightId === ins.id) ?? null}
+                  diversion={diversionFor(ins.id)}
+                  selected={selected === ins.id}
+                  onFocus={() => focusInsight(ins.id)}
+                  anchorGate={idx === 0}
+                  opinionModel={models.label(ins.secondOpinion?.model)}
+                />
+              ))
             )}
-          </section>
+          </Card>
 
-          {dropped.length > 0 ? <DroppedCard items={dropped} onFocus={focusInsight} reduced={reduced} /> : null}
+          {dropped.length > 0 ? <DroppedCard items={dropped} onFocus={focusInsight} /> : null}
 
-          {reveal.finished && !negative && !duplicateOf && run.status !== 'failed' ? (
-            <motion.div className={styles.done} initial={reduced ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>
-              <div>
-                <strong>Done in {ms(run.durationMs)}</strong>
-                <span className="sl-subtle">
-                  {' '}
-                  · {money(run.costUsd, { precise: true })} · {run.insightCount} insight{run.insightCount === 1 ? '' : 's'} · {run.droppedCount} dropped · {run.reviewCount} to review
-                </span>
-              </div>
-              <div className={styles.doneActions}>
-                {run.reviewCount > 0 ? (
-                  <Button variant="primary" size="sm" onClick={() => navigate('/app/review')}>
-                    Review {run.reviewCount} item{run.reviewCount === 1 ? '' : 's'}
-                  </Button>
-                ) : null}
-                <Button variant="tertiary" size="sm" onClick={() => navigate('/app/routing')}>
-                  See routing
-                </Button>
-              </div>
-            </motion.div>
-          ) : null}
+          <TraceCard runId={run.id} steps={reveal.steps} modelLabel={models.label} totalCost={shownCost} totalMs={finished ? run.durationMs : null} />
         </div>
       </div>
-
-      <TracePanel runId={run.id} steps={reveal.steps} totalCost={shownCost} totalMs={reveal.finished ? run.durationMs : null} />
-    </div>
+    </Page>
   );
 }
 
-function RunSkeleton({ id }: { id: string }) {
+/** First load: the page's shape, so nothing jumps when the data arrives. */
+function RunSkeleton() {
   return (
-    <div className="sl-page" role="status" aria-label="Loading run">
-      <AppPageHeader title="Run" dataAsOf={null} breadcrumbs={[{ label: 'Runs', href: '/app/runs' }, { label: id }]} />
-      <section className={styles.top} aria-hidden="true">
-        <div className={styles.topHead}>
-          <span className={styles.sk} style={{ width: 32, height: 32 }} />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <span className={styles.sk} style={{ width: '40%', height: 16 }} />
-            <span className={styles.sk} style={{ width: '60%', height: 11 }} />
-          </div>
-        </div>
-        <div className={styles.skGraph}>
+    <Page attrs={{ 'aria-busy': 'true', 'aria-label': 'Loading conversation' }}>
+      <div className={styles.skeletonHeader}>
+        <Skeleton width="min(320px, 80%)" height={24} />
+        <Skeleton width="min(480px, 100%)" height={12} />
+      </div>
+      <Card title="Progress">
+        <div className={styles.skeletonSteps}>
           {Array.from({ length: 10 }, (_, i) => (
-            <span key={i} className={styles.skNode}>
-              <span className={styles.sk} style={{ width: 32, height: 32, borderRadius: '50%' }} />
-              <span className={styles.sk} style={{ width: '70%', height: 10 }} />
-            </span>
+            <div key={i} className={styles.skeletonStep}>
+              <Skeleton height={3} radius={999} />
+              <Skeleton width="70%" height={10} />
+              <Skeleton width="40%" height={8} />
+            </div>
           ))}
         </div>
-      </section>
+      </Card>
       <div className={styles.grid}>
-        <div className={styles.left}>
-          <div className={styles.skPanel} style={{ height: 520 }} />
+        <div className={styles.main}>
+          <Card title="Transcript">
+            <div className={styles.skeletonLines}>
+              {Array.from({ length: 6 }, (_, i) => (
+                <Skeleton key={i} width={`${90 - ((i * 17) % 35)}%`} height={10} />
+              ))}
+            </div>
+          </Card>
         </div>
-        <div className={styles.right}>
-          <div className={styles.skPanel} style={{ height: 140 }} />
-          <div className={styles.skPanel} style={{ height: 220 }} />
-          <div className={styles.skPanel} style={{ height: 220 }} />
+        <div className={styles.side}>
+          <Card title="Triage">
+            <div className={styles.skeletonLines}>
+              <Skeleton width="60%" height={10} />
+              <Skeleton width="40%" height={10} />
+              <Skeleton width="50%" height={10} />
+            </div>
+          </Card>
+          <Card title="Insights" flush>
+            <InsightSkeletons count={2} />
+          </Card>
         </div>
       </div>
-    </div>
+    </Page>
   );
 }

@@ -20,6 +20,9 @@ test.describe('Run view', () => {
     await expect(page.locator('[data-tour="run.dropped"]')).toContainText('not found in the conversation');
     await expect(page.locator('[data-tour="run.gate"]')).toBeVisible();
     await expect(page.locator('[data-tour="run.trace"]')).toContainText('$0.00');
+    // the ten steps read in plain words, and the quote check carries its own anchor
+    await expect(page.locator('[data-tour="run.stepper"]')).toContainText('Triage');
+    await expect(page.locator('[data-tour="run.ground"]')).toContainText('Check quotes');
     const list = await events();
     const names = list.map((e) => e.name);
     expect(names).toContain('run.started');
@@ -32,11 +35,20 @@ test.describe('Run view', () => {
     await startRun(page, 'file_c1042');
     await expect(page.locator('[data-step="deliver"]')).toHaveAttribute('data-status', 'passed', { timeout: 20_000 });
     await page.locator('[data-tour="run.insights"] button[aria-label^="Show this quote"]').first().click();
-    await page.locator('[data-tour="run.redaction"]').getByRole('radio', { name: /Before/ }).click();
+    await page.locator('[data-tour="run.redaction"]').getByRole('button', { name: 'Before' }).click();
     const names = (await events()).map((e) => e.name);
     expect(names).toEqual(expect.arrayContaining(['evidence.focused', 'redaction.toggled']));
     // masked previews only, never raw originals
     await expect(page.locator('[data-tour="run.transcript"]')).not.toContainText('[PERSON_1]');
+  });
+
+  test('clicking a step shows what it did', async ({ page }) => {
+    await startRun(page, 'file_c1042');
+    await expect(page.locator('[data-step="deliver"]')).toHaveAttribute('data-status', 'passed', { timeout: 20_000 });
+    await page.locator('[data-step="screen"] button').click();
+    await expect(page.locator('[data-step="screen"] button')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByText('Step 4 of 10')).toBeVisible();
+    await expect(page.getByText(/in English, with product feedback|Product feedback found, in English/)).toBeVisible();
   });
 
   test('negative control shows a calm Nothing actionable state', async ({ page }) => {

@@ -24,7 +24,7 @@ const subscribe = (fn: () => void) => {
 };
 
 /** Matches the ConsoleShell breakpoint where the rail becomes a drawer and the launch bar shows. */
-const MOBILE_QUERY = '(max-width: 760px)';
+const MOBILE_QUERY = '(max-width: 900px)';
 
 function useIsMobile(): boolean {
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && !!window.matchMedia?.(MOBILE_QUERY).matches);

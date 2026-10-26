@@ -9,7 +9,7 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 
 1. Open the main window at `/repo/invoca/` on the shared screen, full screen, browser zoom 100%.
 2. Open `/repo/invoca/presenter` on the laptop screen. Check it says **Connected** and the step titles update when you press → in the main window.
-3. Reset my workspace (Health → *Reset my workspace*, or `POST /api/workspace/reset`) so the scorecard numbers are only from this session.
+3. Reset my workspace (Settings → *Reset workspace*, or `POST /api/workspace/reset`) so the scorecard numbers are only from this session.
 4. Check the budget gauge on Health: live AI should have headroom. If it's at the cap, runs replay and say so; that's fine, and I mention it in Ch7.
 5. Run Brightline once in a private window to warm the pipeline. Close it.
 6. Have the backup list ready in the presenter view (cost, security, failure, build vs buy, metrics, Agent Ops, what I'd do differently).
@@ -25,7 +25,7 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 
 **Say:**
 > This is a thirteen-minute QBR. Twenty seconds in the middle of it, at 06:00, is a roadmap decision: a competitor offering same-day conversions to an account that renews in twelve weeks. Today it probably never reaches the person who makes that call.
-> Invoca turns calls into signals for its customers. I built the same loop for Invoca's own customer calls, and then I built the platform I'd use to operate it.
+> Invoca turns calls into signals for its customers. I built the same loop for Invoca's own customer calls, inside a platform that can run more analyses like it, and Agent Ops to operate it.
 
 ## Part 1 · Where feedback gets lost (1:15)
 
@@ -38,13 +38,14 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 
 ## Part 2 · Why this option (0:35)
 
-**Click:** → twice: the mirrored row, then the reasons.
+**Click:** → twice: the mirrored row, then the reasons and the line on where it generalises.
 
 **Say:**
 > Invoca already does this for its customers' calls. Option 3 asks for the same discipline pointed inward.
 > I picked it because the data already exists, it's internal and additive, a person reviews anything high stakes, and it can show value in weeks.
+> And it generalises: any conversation in, the right people out. That's Switchboard, which I'll show in a minute.
 
-## Part 3 · Jobs to be done (2:15)
+## Part 3 · Jobs to be done (2:00)
 
 **Click:** open all four cards (click, or Tab + Enter) to show what gets in the way. Then → for the emotional job, which replaces the headline.
 
@@ -53,7 +54,7 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 > The CSM wants it captured without retyping, and to know when it ships. The PM wants evidence grouped by theme with ARR attached. The VP wants the cross-account view before the renewal, not after. Sales, competitive and support want it in their channel the same day.
 > The job that matters most is the emotional one: be the advocate, not the stenographer. If the system doesn't make CSMs look good, they stop feeding it, and then nothing else works.
 
-## Part 4 · Today and tomorrow (2:10)
+## Part 4 · Today and tomorrow (1:55)
 
 **Click:** → three times: the leaks appear one by one, Signal Loop takes the middle lane and each leak becomes a check, then the loop closes.
 
@@ -63,13 +64,24 @@ The presenter view (`/presenter`) shows the same notes per part, synced to the m
 > The future state seals each leak with a system, not heroics: capture from the call, quote verbatim, ground in code, route by rule, theme by similarity. The CSM stays in the room.
 > And the loop closes. When it ships, the CSM hears first, with a drafted note for the customer.
 
+## Part 5 · The platform (1:00)
+
+**Click:** → three times: Decide, Analyse, Out. The last beat's button says **Open the product**.
+
+**Say:**
+> One step back before the product. Signal Loop runs inside Switchboard.
+> In: any conversation, from where it already lives (Gong, Zoom, Gmail, Slack, Google Drive) or any file you upload: PDF, Word, slides, transcripts, email, chat exports.
+> Decide: a fast decision model reads it first, in about a second (0.9 s median in the speed test, `docs/reports/decision-models.md`). What is it, which analyses apply, is it safe to read. Later it gives a second opinion at the review gate.
+> Analyse: Signal Loop is the one I built for this brief. Follow-ups, renewal risk, escalations, compliance review and call coaching are on the roadmap, and the screen says "Not built".
+> Out: the right people in the tools they already use, each tagged by their own handle. The connectors are simulated here, and the product says so.
+
 **Transition:** "Let me show you the real thing."
 
 ---
 
 ## Ch1 · A call comes in (1:30)
 
-**Click:** *Bring in a call* → pick the highlighted **Brightline QBR** (or let a panelist choose) → Open → **Run pipeline**.
+**Click:** *Browse conversations* → pick the highlighted **Brightline QBR** (or let a panelist choose) → Open → **Process conversation**.
 
 **Say:**
 > This is the only manual step, and in production it goes away: dlt pulls from whichever recorder and CRM the CS team uses (Gong, Zoom, Salesforce and Zendesk are examples).
@@ -100,7 +112,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 
 ## Ch3 · Human in the loop (2:00)
 
-**Click:** press **A** on the first item. Press **E** on another; the callout follows the edit form. Change the type or severity (Save stays disabled until a field changes), then **Save edit & route**. Then *Continue* (or *Try another file* if I'm ahead of time).
+**Click:** press **A** on the first item. Press **E** on another; the callout follows the edit form. Change the type or severity (Save stays disabled until a field changes), then **Save and send**. Then *Continue* (or *Try another file* if I'm ahead of time).
 
 **Say:**
 > The run is parked awaiting review. Nothing on it is routed until someone approves, edits or rejects it, and that action routes it with an audit row. Every item says why it's here: "confidence 0.71, below 0.80".
@@ -156,7 +168,7 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 
 ---
 
-## Part 13 · Earning trust: rollout (2:30)
+## Part 14 · Earning trust: rollout (2:15)
 
 **Click:** → twice.
 
@@ -167,22 +179,23 @@ Branch extras: **privacy** → have them toggle before/after; **security** → p
 > Hours returned go to execs monthly, with the assumptions labelled. It's additive. It takes the data entry, not the judgement.
 > After launch: a review cadence, the standard, and builder enablement, meaning templates and office hours, so other people's Claude and Gumloop builds get to production too.
 
-## Part 14 · The next 12–18 months (1:30)
+## Part 15 · The next 12–18 months (1:15)
 
 **Click:** → once.
 
 **Say:**
-> First the rollout you just saw: shadow, champions, the team. Then every call by default from month 3 (the card shows today's average AI cost per call, a fraction of a cent), capture during the call, specialist agents checking each other, drafted specs and customer replies, and plugging into Invoca's own Signal AI.
+> First the rollout you just saw: shadow, champions, the team. Then every call by default from month 3 (the card shows today's average AI cost per call, a fraction of a cent), capture during the call, more analyses on the same platform (follow-ups, renewal risk and escalations, then compliance review and coaching), specialist agents checking each other with drafted specs, and plugging into Invoca's own Signal AI.
 > What doesn't change: grounding in code, gates, routing as data, and human judgement where it counts.
 
-## Part 15 · From proof of concept to production (0:45)
+## Part 16 · From proof of concept to production (0:45)
 
 **Click:** → once. The production column fills in row by row.
 
 **Say:**
 > The POC runs entirely on Cloudflare. Production keeps the same boundaries on Vercel, Trigger.dev, Neon with pgvector, ClickHouse and dbt at volume, dlt for ingestion from whichever recorder and CRM the team uses, and Render for long-running workers. Strict TypeScript throughout.
+> The decision model stays the same model, on our own key. Conversations come in through dlt and direct connectors instead of uploads, and results go out through the real Slack, Jira and Salesforce APIs instead of in-app previews.
 
-## Part 16 · Scorecard (0:45)
+## Part 17 · Scorecard (0:45)
 
 **Say:**
 > Every number here is counted from your workspace and this session: what you did and what the system did. Where a counter would be zero, it shows a fact about your own run instead (quotes grounded, values redacted).
@@ -243,5 +256,11 @@ Shadow two CSMs, run the time study, co-design the taxonomy with CSMs and PMs, a
 **17. What happens when the budget runs out during a demo?**
 It switches to replay of recorded real runs and labels them. The walkthrough works for all 7 days. Custom uploads show "Live AI budget reached" so a disabled control always says why.
 
-**18. What would you do differently?**
+**18. Why a separate decision model?**
+A small, fast model from a different family reads every input first: 0.9 s median, run alongside extraction so it adds no time, at about a quarter of the old screen's cost, and it returns more (what the input is, how noisy, which analyses apply). Honest caveat: the old screen was already fast, so the win is cost, richer triage and an independent check, not raw speed. At the gate its independent second opinion can send a borderline item straight to its owner when it agrees, or hold an item that would have gone automatically when it disagrees: fewer items wait for review, and nothing gets less honest. High-stakes items (churn risk, critical bugs, flagged files) are always reviewed by a person, and every insight still needs a quote code finds in the transcript. It runs through OpenRouter here; in production it's the same model on our own key.
+
+**19. Are the Slack, Jira and Salesforce connections real?**
+No, and the product says so. Connecting one records a workspace connection with a simulated account; deliveries render as in-app previews with receipts, tagged with each person's handle from the people directory. In production they'd be the real APIs, switched on one destination at a time.
+
+**20. What would you do differently?**
 Co-design the taxonomy before writing a prompt, run shadow mode before building any UI, and connect real Slack and Jira behind a flag. `/backup/differently` has the full list.

@@ -91,8 +91,16 @@ describe('full live run → review → delivery → ticket shipped → notificat
     const sent = h.mock.requests.filter((q) => q.user.includes('brightline') || q.user.includes('Brightline')).map((q) => q.user).join('\n');
     expect(sent.length).toBeGreaterThan(0);
     expect(sent).not.toContain('704-555-0142');
-    // Provider routing on every call, no temperature for anthropic.
-    for (const q of h.mock.requests) expect(q.body.provider).toMatchObject({ data_collection: 'deny', require_parameters: true, sort: 'throughput' });
+    // Provider routing on every call: decision-model calls (triage, second opinion) sort by
+    // latency, everything else by throughput.
+    for (const q of h.mock.requests) {
+      expect(q.body.provider).toMatchObject({ data_collection: 'deny', require_parameters: true });
+      expect((q.body.provider as { sort: string }).sort).toBe(q.model === 'z-ai/glm-5.3-flash' ? 'latency' : 'throughput');
+    }
+    expect(d.steps.find((s: any) => s.key === 'screen').model).toBe('z-ai/glm-5.3-flash');
+    expect(d.steps.find((s: any) => s.key === 'screen').detail).toMatchObject({ tier: 'decision', docKind: 'call_transcript' });
+    expect(d.run.docKind).toBe('call_transcript');
+    expect(d.run.source).toBe('gong');
     // Every model call is in the ledger.
     const ledger = await h.env.DB.prepare('SELECT COUNT(*) AS n, SUM(cost_usd) AS c FROM ai_calls WHERE run_id = ?').bind(runId).first<{ n: number; c: number }>();
     expect(ledger!.n).toBeGreaterThanOrEqual(2);

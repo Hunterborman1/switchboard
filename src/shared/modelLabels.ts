@@ -5,29 +5,32 @@
  *
  * Resolution order for an id:
  *   1. the configured models passed in (the product session's `models`), when known;
- *   2. the known deployment ids (wrangler.jsonc MODEL_PRIMARY / MODEL_SECONDARY) and the
+ *   2. the known deployment ids (wrangler.jsonc MODEL_PRIMARY / MODEL_SECONDARY / MODEL_DECISION) and the
  *      simulated Agent Ops agents' models (data/platform/agents.json);
  *   3. anything else that looks like a model id reads as a generic "Other model".
  */
 
-export type ModelRole = 'primary' | 'secondary';
-export type ConfiguredModels = { primary: string; secondary: string };
+export type ModelRole = 'primary' | 'secondary' | 'decision';
+export type ConfiguredModels = { primary: string; secondary: string; decision?: string | null };
 
 export const MODEL_ROLE_LABEL: Record<ModelRole, string> = {
   primary: 'Main model',
   secondary: 'Backup model',
+  decision: 'Decision model',
 };
 
 /** Short forms for inline copy ("Runs live on the real models · fast tier, fallback & judge"). */
 export const MODEL_ROLE_SHORT: Record<ModelRole, string> = {
   primary: 'main model',
   secondary: 'backup model',
+  decision: 'decision model',
 };
 
 /** Other Agent Ops agents' models: labelled by order/role, not tier. */
 const OTHER_AGENT_LABEL: Record<ModelRole, string> = {
   primary: 'Primary model',
   secondary: 'Secondary model',
+  decision: 'Decision model',
 };
 
 export const OTHER_MODEL_LABEL = 'Other model';
@@ -42,6 +45,7 @@ const KNOWN: Record<string, Known> = {
   // Signal Loop (wrangler.jsonc vars)
   'deepseek/deepseek-v4.1-flash': { agentId: 'agt_signal_loop', role: 'primary' },
   'anthropic/claude-haiku-5.5': { agentId: 'agt_signal_loop', role: 'secondary' },
+  'z-ai/glm-5.3-flash': { agentId: 'agt_signal_loop', role: 'decision' },
   // Simulated RFP & Security Questionnaire Responder (data/platform/agents.json)
   'anthropic/claude-sonnet-5.5': { agentId: 'agt_rfp_responder', role: 'primary' },
   'openai/gpt-5.4-mini': { agentId: 'agt_rfp_responder', role: 'secondary' },
@@ -66,13 +70,14 @@ export function modelRole(id: string | null | undefined, configured?: Configured
   if (configured) {
     if (id === configured.primary) return 'primary';
     if (id === configured.secondary) return 'secondary';
+    if (configured.decision && id === configured.decision) return 'decision';
   }
   const k = KNOWN[id];
   return k && k.agentId === SIGNAL_LOOP ? k.role : null;
 }
 
 /**
- * Display label for a model id: "Main model", "Backup model",
+ * Display label for a model id: "Main model", "Backup model", "Decision model",
  * "Primary model"/"Secondary model" for other agents, else "Other model".
  * Null or empty input returns null so callers can show their own "code, no model" copy.
  */
@@ -97,7 +102,7 @@ export function rewriteModelIds(text: string | null | undefined, configured?: Co
   if (!text) return text;
   let out = text;
   // Exact configured/known ids first (they may not match the generic pattern).
-  const ids = [...(configured ? [configured.primary, configured.secondary] : []), ...Object.keys(KNOWN)];
+  const ids = [...(configured ? [configured.primary, configured.secondary, configured.decision ?? ''] : []), ...Object.keys(KNOWN)];
   for (const id of ids) if (id && out.includes(id)) out = out.split(id).join(modelLabel(id, configured) ?? OTHER_MODEL_LABEL);
   return out.replace(ID_PATTERN, (m) => modelLabel(m, configured) ?? OTHER_MODEL_LABEL);
 }

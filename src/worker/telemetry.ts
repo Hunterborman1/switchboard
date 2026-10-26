@@ -60,6 +60,9 @@ export function deliveryTelemetry(t: TraceCtx, d: Delivery): void {
 
 /** Pipeline hooks → `step.started` / `step.finished` logs and one span per step. */
 export function pipelineTelemetry(t: TraceCtx): PipelineTelemetry & { stepSpan(key: StepKey): string } {
+  // Step spans hang off the run's root span. The executors repoint t.parentId at the current step
+  // so AI calls and deliveries nest under it; read the root once, here, before that happens.
+  const root = t.parentId;
   const spans = new Map<StepKey, string>();
   const stepSpan = (key: StepKey) => {
     let s = spans.get(key);
@@ -77,7 +80,7 @@ export function pipelineTelemetry(t: TraceCtx): PipelineTelemetry & { stepSpan(k
     stepFinished(row: RunStep) {
       const spanId = stepSpan(row.key);
       t.rep.span({
-        traceId: t.traceId, spanId, parentId: t.parentId, name: `step.${row.key}`, start: row.startedAt ?? new Date().toISOString(), durationMs: row.durationMs ?? 0,
+        traceId: t.traceId, spanId, parentId: root, name: `step.${row.key}`, start: row.startedAt ?? new Date().toISOString(), durationMs: row.durationMs ?? 0,
         status: row.status === 'failed' ? 'error' : 'ok', attrs: { status: row.status, model: row.model, tokensIn: row.tokensIn, tokensOut: row.tokensOut, costUsd: row.costUsd },
       });
       t.rep.log({

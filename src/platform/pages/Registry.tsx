@@ -1,90 +1,139 @@
+/**
+ * Agent registry: every agent in production or on its way there, its owner, its next review
+ * and how it scores against the agent standard.
+ */
 import { Link, useNavigate } from 'react-router-dom';
+import { ButtonLink, Callout, Card, Page, PageHeader, Table } from '../../ds';
+import { IconExternal } from '../../ds/icons';
 import { SIGNAL_LOOP_AGENT_ID } from '../../shared/platform-contracts';
 import { tourAnchor } from '../../tour/anchors';
 import type { RegistryRow } from '../../worker/platform/types';
 import { useApi } from '../lib/api';
 import * as f from '../lib/format';
-import { Spark } from '../ui/charts';
-import { IconArrowUpRight } from '../ui/icons';
-import { AgentDot, AgentStatus, Callout, ErrorState, PageHead, PageSkeleton, Panel, ReviewPill, Score, SourceChip, Table, type Col } from '../ui/kit';
+import { AgentCell, AgentStatus, LoadError, OpsSkeleton, ReviewBadge, Score, SortHead, useOpsTitle, useSorted } from '../ui/kit';
 
 export function Registry() {
+  useOpsTitle('Agent registry');
   const reg = useApi<RegistryRow[]>('/agents', { pollMs: 30_000 });
   const navigate = useNavigate();
-  if (reg.error && !reg.data) return <div className="ao-page"><ErrorState message={reg.error.message} onRetry={reg.reload} /></div>;
-  if (!reg.data) return <PageSkeleton kpis={false} />;
+  const { sorted, state, by } = useSorted<RegistryRow>(
+    reg.data ?? [],
+    {
+      name: (r) => r.name,
+      owner: (r) => r.ownerName,
+      status: (r) => r.status,
+      review: (r) => r.nextReview,
+      std: (r) => r.standardScore.passed,
+      hours: (r) => r.hours30d,
+      cost: (r) => r.cost30d,
+    },
+    { key: 'name', dir: 'asc' },
+  );
+
+  if (reg.error && !reg.data)
+    return (
+      <Page>
+        <LoadError error={reg.error} onRetry={reg.reload} what="the registry" />
+      </Page>
+    );
+  if (!reg.data) return <OpsSkeleton stats={false} />;
   const rows = reg.data;
-
-  const cols: Col<RegistryRow>[] = [
-    {
-      key: 'name',
-      header: 'Agent',
-      sort: (r) => r.name,
-      render: (r) => (
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', minWidth: 190 }}>
-          <AgentDot color={f.seriesColor(r.profile.color)} />
-          <div className="cell-title">
-            <Link className="row-link" to={`/ops/agents/${r.id}`}>
-              {r.name}
-            </Link>
-            <small style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-              {r.version} <SourceChip source={r.source === 'live' ? 'live' : 'simulated'} label={r.source === 'live' ? 'Live' : 'Simulated'} />
-            </small>
-          </div>
-        </div>
-      ),
-    },
-    { key: 'dept', mobileHide: true, wideHide: true, header: 'Team and tool', sort: (r) => r.department, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap' }}><b style={{ fontWeight: 400 }}>{r.department}</b><small>{r.builtWith === 'Code' ? 'Code (Workers + AI SDK)' : r.builtWith}</small></div> },
-    { key: 'owner', mobileHide: true, header: 'Owners', sort: (r) => r.ownerName, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap' }}><b style={{ fontWeight: 400 }}>{r.ownerName}</b><small>{r.businessOwner.replace(/ \(.*/, '')}</small></div> },
-    { key: 'status', header: 'Status', sort: (r) => r.status, render: (r) => <AgentStatus value={r.status} /> },
-    { key: 'review', header: 'Review', sort: (r) => r.nextReview, render: (r) => <div className="cell-title" style={{ whiteSpace: 'nowrap', justifyItems: 'start' }}><ReviewPill value={r.reviewStatus} /><small>Next {f.day(r.nextReview)}, every {r.reviewCadenceDays} days</small></div> },
-    { key: 'std', header: 'Standard', help: 'How many of the nine agent standard checks this agent passes.', sort: (r) => r.standardScore.passed, render: (r) => <Score passed={r.standardScore.passed} total={r.standardScore.total} /> },
-    { key: 'runs', mobileHide: true, wideHide: true, header: 'Runs, 30 days', num: true, sort: (r) => r.runs30d, render: (r) => f.int(r.runs30d) },
-    { key: 'users', mobileHide: true, wideHide: true, header: 'People', num: true, sort: (r) => r.users30d, render: (r) => f.int(r.users30d) },
-    { key: 'hours', mobileHide: true, header: 'Hours saved, 30 days', num: true, sort: (r) => r.hours30d, render: (r) => f.hours(r.hours30d) },
-    { key: 'cost', mobileHide: true, wideHide: true, header: 'AI cost, 30 days', num: true, sort: (r) => r.cost30d, render: (r) => f.money(r.cost30d) },
-    { key: 'trend', mobileHide: true, wideHide: true, header: 'Weekly trend', render: (r) => <Spark values={r.weeklyHours} color={f.seriesColor(r.profile.color)} label={`${r.name} weekly hours`} width={80} /> },
-    {
-      key: 'open',
-      mobileHide: true,
-      header: <span className="ao-sr">Open</span>,
-      render: (r) =>
-        r.href ? (
-          <Link to={r.href} className="ao-btn sm" title="Open the agent itself">
-            Open <IconArrowUpRight size={12} />
-          </Link>
-        ) : null,
-    },
-  ];
-
   const prod = rows.filter((r) => r.status === 'production').length;
+
   return (
-    <div className="ao-page">
-      <PageHead
+    <Page>
+      <PageHeader
         title="Agent registry"
-        sub="Every agent in production or on its way there: who owns it, what it is for, when it is next reviewed, and how it scores against the agent standard."
-        meta={<span>{rows.length} agents · {prod} in production · updated {f.ago(reg.dataAsOf)}</span>}
-        actions={
-          <Link to="/ops/standard/checklist" className="ao-btn">
-            What a new agent needs
-          </Link>
+        description="Every agent, its owners, its next review and its score against the standard."
+        meta={
+          <>
+            <span>
+              {rows.length} agents, {prod} in production
+            </span>
+            <span>Updated {f.ago(reg.dataAsOf)}</span>
+          </>
         }
+        actions={<ButtonLink to="/ops/standard/checklist">What a new agent needs</ButtonLink>}
       />
-      <Panel title="All agents" sub="Select an agent for its purpose, owners, standard checklist, service targets and change history." flush attrs={tourAnchor('ops.registry')}>
-        <Table
-          className="ao-cards"
-          caption="Agent registry"
-          rows={rows}
-          cols={cols}
-          rowKey={(r) => r.id}
-          onRow={(r) => navigate(`/ops/agents/${r.id}`)}
-          rowAttrs={(r) => (r.id === SIGNAL_LOOP_AGENT_ID ? { ...tourAnchor('ops.registry.signal'), 'data-agent': r.id } : { 'data-agent': r.id })}
-        />
-      </Panel>
+
+      <Card flush attrs={tourAnchor('ops.registry')}>
+        <Table label="Agent registry">
+          <thead>
+            <tr>
+              <SortHead active={state('name')} onSort={() => by('name')}>
+                Agent
+              </SortHead>
+              <SortHead className="ao-hide-sm" active={state('owner')} onSort={() => by('owner')}>
+                Owners
+              </SortHead>
+              <SortHead className="ao-hide-md" active={state('status')} onSort={() => by('status')}>
+                Status
+              </SortHead>
+              <SortHead className="ao-hide-sm" active={state('review')} onSort={() => by('review')}>
+                Next review
+              </SortHead>
+              <SortHead className="ao-end-md ao-end-sm" active={state('std')} onSort={() => by('std', true)} help="How many of the nine agent standard checks this agent passes.">
+                Standard
+              </SortHead>
+              <SortHead num className="ao-hide-sm ao-hide-md" active={state('hours')} onSort={() => by('hours', true)}>
+                Hours saved, 30 days
+              </SortHead>
+              <SortHead num className="ao-hide-sm ao-hide-lg" active={state('cost')} onSort={() => by('cost', true)}>
+                AI cost, 30 days
+              </SortHead>
+              <th className="ao-hide-sm ao-hide-md">
+                <span className="ds-sr-only">Open the agent</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((r) => (
+              <tr
+                key={r.id}
+                className="is-clickable has-row-link"
+                onClick={() => navigate(`/ops/agents/${r.id}`)}
+                data-agent={r.id}
+                {...(r.id === SIGNAL_LOOP_AGENT_ID ? tourAnchor('ops.registry.signal') : {})}
+              >
+                <td className="ao-agent-col">
+                  <Link to={`/ops/agents/${r.id}`} className="ds-table__link" onClick={(e) => e.stopPropagation()}>
+                    <AgentCell color={f.seriesColor(r.profile.color)} primary={r.name} secondary={`${r.department}, ${r.builtWith === 'Code' ? 'code' : r.builtWith}`} />
+                  </Link>
+                </td>
+                <td className="ao-hide-sm is-nowrap">
+                  <span className="ds-table__primary">{r.ownerName}</span>
+                  <span className="ds-table__secondary">{r.businessOwner.replace(/ \(.*/, '')}</span>
+                </td>
+                <td className="is-nowrap ao-hide-md">
+                  <AgentStatus value={r.status} />
+                </td>
+                <td className="ao-hide-sm is-nowrap">
+                  <ReviewBadge value={r.reviewStatus} />
+                  <span className="ds-table__secondary">
+                    {f.day(r.nextReview)}, every {r.reviewCadenceDays} days
+                  </span>
+                </td>
+                <td className="is-nowrap ao-end-md ao-end-sm">
+                  <Score passed={r.standardScore.passed} total={r.standardScore.total} />
+                </td>
+                <td className="is-num ao-hide-sm ao-hide-md">{f.hours(r.hours30d)}</td>
+                <td className="is-num ao-hide-sm ao-hide-lg">{f.money(r.cost30d)}</td>
+                <td className="ao-hide-sm ao-hide-md is-shrink">
+                  {r.href ? (
+                    <ButtonLink to={r.href} size="sm" variant="ghost" iconRight={<IconExternal size={13} />} onClick={(e) => e.stopPropagation()} title={`Open ${r.name} itself`}>
+                      Open
+                    </ButtonLink>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
+
       <Callout title="Built where the work happens.">
-        Agents are built in Claude, Gumloop (no-code flows) and Databricks, plus code where needed. Whatever the tool, each one reports its activity, usage and tasks to Agent Ops in the same way,
-        and is reviewed against the same nine-point standard.
+        Agents are built in Claude, Gumloop and Databricks, or in code. Each reports to Agent Ops the same way and is reviewed against the same nine checks.
       </Callout>
-    </div>
+    </Page>
   );
 }

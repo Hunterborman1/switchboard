@@ -1,24 +1,37 @@
+/**
+ * Logs and traces: every request, workflow step, AI call, delivery and budget check from every
+ * agent, newest first. Filters live in the URL; a row opens its detail; lines from one run share
+ * a trace.
+ */
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Badge, Button, ButtonLink, Callout, Card, Checkbox, Drawer, EmptyState, KeyValue, Page, PageHeader, SearchInput, Segmented, Select, Table, TableSkeleton, type Tone } from '../../ds';
+import { IconFileText, IconX } from '../../ds/icons';
 import { relabelModelsDeep, rewriteModelIds } from '../../shared/modelLabels';
 import type { LogEntry } from '../../shared/platform-contracts';
+import { PLATFORM_API_BASE } from '../../shared/platform-contracts';
 import { tourAnchor } from '../../tour/anchors';
-import { useTimezone } from '../../uis/TimezoneContext';
+import { useTimezone } from '../../ds/time/TimezoneContext';
 import type { LogsPage, RegistryRow, YourLastRun } from '../../worker/platform/types';
 import { ApiError, useApi } from '../lib/api';
-import { PLATFORM_API_BASE } from '../../shared/platform-contracts';
 import * as f from '../lib/format';
-import { IconTrace, IconX } from '../ui/icons';
-import { Callout, Drawer, Empty, ErrorState, PageHead, Panel, Seg, SourceChip } from '../ui/kit';
+import { IconTrace } from '../ui/icons';
+import { LoadError, SourceBadge, useOpsTitle } from '../ui/kit';
 
 const LEVELS = ['debug', 'info', 'warn', 'error'] as const;
 const LEVEL_LABEL: Record<string, string> = { debug: 'Debug', info: 'Info', warn: 'Warning', error: 'Error' };
+const LEVEL_TONE: Record<string, Tone> = { debug: 'neutral', info: 'info', warn: 'warning', error: 'danger' };
 export const levelLabel = (l: string) => LEVEL_LABEL[l] ?? l;
 const FILTER_LABEL: Record<string, string> = { agentId: 'Agent', level: 'Level', component: 'Area', traceId: 'Trace', runId: 'Run', q: 'Search', source: 'Data', web: 'Web requests' };
 const COMPONENTS = ['api', 'workflow', 'ai', 'delivery', 'budget', 'gumloop', 'telemetry', 'gate'];
 /** Plain names for the log components (the raw key stays in the URL and the detail panel). */
 export const AREA_LABEL: Record<string, string> = { api: 'API', workflow: 'Workflow', ai: 'AI call', delivery: 'Delivery', budget: 'Budget', gumloop: 'Gumloop', telemetry: 'Usage tracking', gate: 'Sign-in' };
 const FILTER_KEYS = ['agentId', 'level', 'component', 'traceId', 'runId', 'q', 'source', 'web'] as const;
+
+/** A log level as a badge (colour and word). */
+export function LevelBadge({ level }: { level: string }) {
+  return <Badge tone={LEVEL_TONE[level] ?? 'neutral'}>{levelLabel(level)}</Badge>;
+}
 
 async function getJson<T>(path: string): Promise<{ data: T; dataAsOf: string }> {
   const hint = (() => {
@@ -35,6 +48,7 @@ async function getJson<T>(path: string): Promise<{ data: T; dataAsOf: string }> 
 }
 
 export function Logs() {
+  useOpsTitle('Logs and traces');
   const [params, setParams] = useSearchParams();
   const { timezone } = useTimezone();
   const navigate = useNavigate();
@@ -49,7 +63,7 @@ export function Logs() {
   }, [params]);
   const [pages, setPages] = useState<LogsPage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [asOf, setAsOf] = useState<string | null>(null);
   const [open, setOpen] = useState<LogEntry | null>(null);
   const [q, setQ] = useState(params.get('q') ?? '');
@@ -63,7 +77,7 @@ export function Logs() {
       setPages((p) => (cursor ? [...p, r.data] : [r.data]));
       setAsOf(r.dataAsOf);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load logs');
+      setError(e instanceof Error ? e : new Error('Could not load logs'));
     } finally {
       setLoading(false);
     }
@@ -95,6 +109,7 @@ export function Logs() {
   // run or API-area filter always shows them (the same rule as the API: includesWebRequests).
   const webForced = !!params.get('traceId') || !!params.get('runId') || params.get('component') === 'api';
   const webOn = webForced || params.get('web') === '1';
+  const firstLoad = loading && pages.length === 0;
 
   const yourLastRun = async () => {
     setLastRun({ state: 'loading' });
@@ -113,86 +128,103 @@ export function Logs() {
     }
   };
 
+  const chipValue = (k: string) => {
+    const v = params.get(k)!;
+    if (k === 'agentId') return names[v] ?? v;
+    if (k === 'component') return AREA_LABEL[v] ?? v;
+    if (k === 'level') return v.split(',').map(levelLabel).join(', ');
+    if (k === 'source') return v === 'live' ? 'Live' : v === 'simulated' ? 'Simulated' : v;
+    return v;
+  };
+
   return (
-    <div className="ao-page">
-      <PageHead
+    <Page>
+      <PageHeader
         title="Logs and traces"
-        sub="Every request, workflow step, AI call, delivery and budget check from every agent. Lines from the same run share a trace. Signal Loop’s lines are live; the rest is simulated history."
+        description="Every request, step, AI call and delivery from every agent, newest first."
         meta={
-          <span>
-            {total != null ? `${f.int(total)} matching lines` : 'Counting…'}
-            {webOn ? '' : ', routine web requests hidden'} · updated {f.ago(asOf)}
-          </span>
+          <>
+            <span>
+              {total != null ? `${f.int(total)} matching lines` : 'Counting lines'}
+              {webOn ? '' : ', routine web requests hidden'}
+            </span>
+            {asOf ? <span>Updated {f.ago(asOf)}</span> : null}
+          </>
         }
         actions={
-          <button type="button" className="ao-btn primary" onClick={yourLastRun} {...tourAnchor('ops.logs.trace')} disabled={lastRun.state === 'loading'}>
-            <IconTrace /> {lastRun.state === 'loading' ? 'Finding your run…' : 'Your last run'}
-          </button>
+          <Button variant="primary" icon={<IconTrace />} onClick={yourLastRun} loading={lastRun.state === 'loading'} {...tourAnchor('ops.logs.trace')}>
+            {lastRun.state === 'loading' ? 'Finding your run' : 'Your last run'}
+          </Button>
         }
       />
 
       {lastRun.state === 'none' ? (
-        <Callout title="No live Signal Loop run yet.">
-          Run a call in <Link to="/app/new" className="ao-link">Signal Loop</Link> (or follow the walkthrough), then press “Your last run” again. Its trace appears here with every step, AI call and delivery.
+        <Callout tone="info" title="No live Signal Loop run yet.">
+          Run a conversation in <Link to="/app/new">Switchboard</Link> (or follow the walkthrough), then select Your last run again.
         </Callout>
       ) : null}
       {lastRun.state === 'found' && lastRun.run ? (
-        <Callout tone="live" title={lastRun.run.isYours ? 'Your latest Signal Loop run.' : 'Latest live Signal Loop run (none from your workspace yet).'}>
-          Run <span className="ao-mono">{lastRun.run.runId ?? '—'}</span> at {f.time(lastRun.run.at, timezone)}.{' '}
-          <Link to={`/ops/traces/${lastRun.run.traceId}`} className="ao-link">
-            Open the trace →
-          </Link>
+        <Callout
+          tone="success"
+          title={lastRun.run.isYours ? 'Your latest Signal Loop run.' : 'Latest live Signal Loop run (none from your workspace yet).'}
+          actions={
+            <ButtonLink size="sm" to={`/ops/traces/${lastRun.run.traceId}`} icon={<IconTrace size={14} />}>
+              Open the trace
+            </ButtonLink>
+          }
+        >
+          Run <span className="ao-mono">{lastRun.run.runId ?? 'unknown'}</span> at {f.time(lastRun.run.at, timezone)}.
         </Callout>
       ) : null}
 
-      <Panel flush attrs={tourAnchor('ops.logs')}>
-        <form
-          className="ao-filters"
-          role="search"
-          onSubmit={(e) => {
-            e.preventDefault();
-            set('q', q.trim() || null);
-          }}
-        >
-          <label className="ao-field grow">
-            <span>Search message, event, trace or run id</span>
-            <input className="ao-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="For example: fallback, delivery.retry, run_sl_0042" />
-          </label>
-          <label className="ao-field">
-            <span>Agent</span>
-            <select className="ao-select" value={params.get('agentId') ?? ''} onChange={(e) => set('agentId', e.target.value || null)}>
-              <option value="">All agents</option>
-              {(reg.data ?? []).map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="ao-field">
-            <span>Area</span>
-            <select className="ao-select" value={params.get('component') ?? ''} onChange={(e) => set('component', e.target.value || null)}>
-              <option value="">Any area</option>
-              {COMPONENTS.map((c) => (
-                <option key={c} value={c}>
-                  {AREA_LABEL[c] ?? c}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="ao-field">
-            <span>Level</span>
-            <div className="ao-chiprow" role="group" aria-label="Levels">
+      <form
+        className="ao-filters"
+        role="search"
+        onSubmit={(e) => {
+          e.preventDefault();
+          set('q', q.trim() || null);
+        }}
+      >
+        <div className="ds-toolbar">
+          <div className="ds-toolbar__group">
+            <SearchInput aria-label="Search message, event, trace or run id" placeholder="Search messages, events or ids" value={q} onChange={(e) => setQ(e.target.value)} width={300} />
+            <Button type="submit">Search</Button>
+          </div>
+          <div className="ds-toolbar__group">
+            <Select
+              aria-label="Agent"
+              value={params.get('agentId') ?? ''}
+              onChange={(e) => set('agentId', e.target.value || null)}
+              options={[{ value: '', label: 'All agents' }, ...(reg.data ?? []).map((r) => ({ value: r.id, label: r.name }))]}
+              style={{ width: 200 }}
+            />
+            <Select
+              aria-label="Area"
+              value={params.get('component') ?? ''}
+              onChange={(e) => set('component', e.target.value || null)}
+              options={[{ value: '', label: 'Any area' }, ...COMPONENTS.map((c) => ({ value: c, label: AREA_LABEL[c] ?? c }))]}
+              style={{ width: 150 }}
+            />
+          </div>
+        </div>
+        <div className="ds-toolbar">
+          <div className="ds-toolbar__group">
+            <div className="ao-levels" role="group" aria-label="Levels">
               {LEVELS.map((l) => (
-                <button key={l} type="button" aria-pressed={!levels.length || levels.includes(l)} onClick={() => toggleLevel(l)} aria-label={l}>
-                  <span className={`ao-lv ${l}`}>{levelLabel(l)}</span>
+                <button key={l} type="button" className="ao-level" aria-pressed={!levels.length || levels.includes(l)} onClick={() => toggleLevel(l)} aria-label={l}>
+                  <span className={`ao-level__dot ao-level__dot--${l}`} aria-hidden="true" />
+                  {levelLabel(l)}
                 </button>
               ))}
             </div>
+            <span title={webForced ? 'A trace, a run or the API area always includes its web requests.' : 'Successful page and API requests. Failed requests always show.'}>
+              <Checkbox checked={webOn} disabled={webForced} onChange={(v) => set('web', v ? '1' : null)}>
+                Include web requests
+              </Checkbox>
+            </span>
           </div>
-          <div className="ao-field">
-            <span>Source</span>
-            <Seg
+          <div className="ds-toolbar__group">
+            <Segmented
               label="Source"
               value={params.get('source') ?? 'all'}
               onChange={(v) => set('source', v === 'all' ? null : v)}
@@ -203,171 +235,186 @@ export function Logs() {
               ]}
             />
           </div>
-          <label className="ao-checkfield" title={webForced ? 'A trace, a run or the API area always includes its web requests.' : 'Successful page and API requests. Failed requests always show.'}>
-            <input type="checkbox" checked={webOn} disabled={webForced} onChange={(e) => set('web', e.target.checked ? '1' : null)} data-testid="logs-include-web" />
-            <span>Include web requests</span>
-          </label>
-          <button type="submit" className="ao-btn">
-            Search
-          </button>
-        </form>
-        {active.length ? (
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '10px 20px', borderBottom: '1px solid var(--ao-border)', alignItems: 'center' }}>
-            <span className="ao-muted" style={{ fontSize: 13 }}>
-              Filtered by
-            </span>
-            {active.map((k) => (
-              <button key={k} type="button" className="ao-tag" onClick={() => set(k, null)} aria-label={`Remove filter ${FILTER_LABEL[k] ?? k}`}>
-                {FILTER_LABEL[k] ?? k}:{' '}
-                {k === 'traceId' || k === 'runId' ? <span className="ao-mono">{params.get(k)}</span> : <span>{k === 'agentId' ? names[params.get(k)!] ?? params.get(k) : k === 'component' ? AREA_LABEL[params.get(k)!] ?? params.get(k) : k === 'level' ? params.get(k)!.split(',').map(levelLabel).join(', ') : params.get(k)}</span>}{' '}
-                <IconX size={10} />
-              </button>
-            ))}
-            <button type="button" className="ao-btn ghost sm" onClick={() => setParams(new URLSearchParams())}>
-              Clear all
-            </button>
-            {params.get('traceId') ? (
-              <Link to={`/ops/traces/${params.get('traceId')}`} className="ao-btn sm primary" style={{ marginLeft: 'auto' }}>
-                <IconTrace /> Open trace
-              </Link>
-            ) : null}
-          </div>
-        ) : null}
+        </div>
+      </form>
 
-        {error ? (
-          <div style={{ padding: 20 }}>
-            <ErrorState message={error} onRetry={() => load(null)} />
-          </div>
-        ) : rows.length === 0 && !loading ? (
-          <Empty title="No log lines match">Loosen a filter, or run something in Signal Loop to create live rows.</Empty>
-        ) : (
-          <div className="ao-table-wrap" style={{ maxHeight: 640, overflowY: 'auto' }}>
-            <table className="ao-table ao-logtable compact ao-fit">
-              <caption className="ao-sr">Log lines, newest first</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Time ({f.tzLabel(timezone)})</th>
-                  <th scope="col">Level</th>
-                  <th scope="col" className="ao-hide-sm">Agent</th>
-                  <th scope="col" className="ao-hide-sm ao-hide-md">Event</th>
-                  <th scope="col">Message</th>
-                  <th scope="col" className="ao-hide-sm">Trace</th>
-                  <th scope="col" className="num ao-hide-sm ao-hide-md">
-                    Took
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((l) => (
-                  <tr
-                    key={l.id}
-                    className={`clickable lvl-${l.level}`}
-                    tabIndex={0}
-                    onClick={(e) => {
-                      if ((e.target as HTMLElement).closest('a,button')) return;
-                      setOpen(l);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
-                    }}
-                    aria-label={`${levelLabel(l.level)} ${l.event}: ${rewriteModelIds(l.message)}`}
-                  >
-                    <td className="when" title={f.time(l.at, timezone, true)}>
-                      <span className="ao-hide-sm">{f.day(l.at)}, </span>
-                      {f.clock(l.at, timezone)}
-                    </td>
-                    <td>
-                      <span className={`ao-lv ${l.level}`}>{levelLabel(l.level)}</span>
-                    </td>
-                    <td className="ao-hide-sm" style={{ whiteSpace: 'nowrap' }}>
-                      <span style={{ display: 'grid' }}>
-                        <span>{names[l.agentId] ?? l.agentId}</span>
-                        <small className="ao-muted" style={{ fontSize: 12 }}>
-                          {AREA_LABEL[l.component] ?? l.component}
-                          {l.source === 'live' ? ' · live' : ''}
-                        </small>
-                      </span>
-                    </td>
-                    <td className="ao-mono ao-hide-sm ao-hide-md" style={{ whiteSpace: 'nowrap', color: 'var(--ao-text-2)' }}>
-                      {l.event}
-                    </td>
-                    <td className="msg">
-                      <span title={rewriteModelIds(l.message)}>{rewriteModelIds(l.message)}</span>
-                    </td>
-                    <td className="ao-hide-sm">
-                      <Link className="ao-trace-btn" to={`/ops/traces/${l.traceId}`} title={l.traceId}>
-                        {l.traceId.slice(0, 8)}…
-                      </Link>
-                    </td>
-                    <td className="num ao-hide-sm ao-hide-md" style={{ whiteSpace: 'nowrap', color: 'var(--ao-text-2)' }}>{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <div className="ao-panel-foot">
-          <span>
-            Showing {f.int(rows.length)}
-            {total != null ? ` of ${f.int(total)}` : ''}, newest first
-          </span>
-          {next ? (
-            <button type="button" className="ao-btn sm" onClick={() => load(next)} disabled={loading}>
-              {loading ? 'Loading…' : 'Load 100 more'}
+      {active.length ? (
+        <div className="ao-chips" aria-label="Active filters">
+          <span className="ao-note">Filtered by</span>
+          {active.map((k) => (
+            <button key={k} type="button" className="ao-chip" onClick={() => set(k, null)} aria-label={`Remove filter ${FILTER_LABEL[k] ?? k}`}>
+              <span className="ao-chip__key">{FILTER_LABEL[k] ?? k}</span>
+              <span className={`ao-chip__value${k === 'traceId' || k === 'runId' ? ' ao-mono' : ''}`}>{chipValue(k)}</span>
+              <IconX size={12} />
             </button>
-          ) : rows.length ? (
-            <span>End of results</span>
+          ))}
+          <Button size="sm" variant="ghost" onClick={() => setParams(new URLSearchParams())}>
+            Clear all
+          </Button>
+          {params.get('traceId') ? (
+            <span className="ao-chips__end">
+              <ButtonLink to={`/ops/traces/${params.get('traceId')}`} size="sm" variant="primary" icon={<IconTrace size={14} />}>
+                Open trace
+              </ButtonLink>
+            </span>
           ) : null}
         </div>
-      </Panel>
+      ) : null}
+
+      {firstLoad ? (
+        <TableSkeleton rows={10} cols={6} />
+      ) : error && !rows.length ? (
+        <LoadError error={error} onRetry={() => void load(null)} what="logs" />
+      ) : (
+        <Card
+          flush
+          attrs={tourAnchor('ops.logs')}
+          footer={
+            rows.length ? (
+              <>
+                <span>
+                  Showing {f.int(rows.length)}
+                  {total != null ? ` of ${f.int(total)}` : ''}, newest first
+                </span>
+                {next ? (
+                  <Button size="sm" variant="ghost" onClick={() => void load(next)} loading={loading}>
+                    Load 100 more
+                  </Button>
+                ) : (
+                  <span>End of results</span>
+                )}
+              </>
+            ) : undefined
+          }
+        >
+          {rows.length === 0 ? (
+            <EmptyState
+              icon={<IconFileText />}
+              title="No log lines match"
+              description="Loosen a filter, or run something in Switchboard to create live lines."
+              actions={
+                active.length ? (
+                  <Button size="sm" onClick={() => setParams(new URLSearchParams())}>
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
+            />
+          ) : (
+            <div className="ao-logscroll">
+              <Table label="Log lines, newest first" compact>
+                <thead>
+                  <tr>
+                    <th>Time ({f.tzLabel(timezone)})</th>
+                    <th>Level</th>
+                    <th className="ao-hide-sm">Agent</th>
+                    <th className="ao-hide-sm ao-hide-md">Event</th>
+                    <th className="ao-end-sm">Message</th>
+                    <th className="ao-hide-sm ao-end-md">Trace</th>
+                    <th className="is-num ao-hide-sm ao-hide-md">Took</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((l) => (
+                    <tr
+                      key={l.id}
+                      className="is-clickable"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        if ((e.target as HTMLElement).closest('a,button')) return;
+                        setOpen(l);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && e.target === e.currentTarget) setOpen(l);
+                      }}
+                      aria-label={`${levelLabel(l.level)} ${l.event}: ${rewriteModelIds(l.message)}`}
+                    >
+                      <td className="is-nowrap ds-num" title={f.time(l.at, timezone, true)}>
+                        <span className="ao-hide-sm">{f.day(l.at)}, </span>
+                        {f.clock(l.at, timezone)}
+                      </td>
+                      <td className="is-nowrap">
+                        <LevelBadge level={l.level} />
+                      </td>
+                      <td className="ao-hide-sm is-nowrap">
+                        <span className="ds-table__primary">{names[l.agentId] ?? l.agentId}</span>
+                        <span className="ds-table__secondary">
+                          {AREA_LABEL[l.component] ?? l.component}
+                          {l.source === 'live' ? ', live' : ''}
+                        </span>
+                      </td>
+                      <td className="ao-hide-sm ao-hide-md is-nowrap">
+                        <span className="ao-mono ds-muted">{l.event}</span>
+                      </td>
+                      <td className="ao-end-sm">
+                        <span className="ao-msg" title={rewriteModelIds(l.message)}>
+                          {rewriteModelIds(l.message)}
+                        </span>
+                      </td>
+                      <td className="ao-hide-sm ao-end-md is-nowrap">
+                        <Link className="ao-mono" to={`/ops/traces/${l.traceId}`} title={`Open trace ${l.traceId}`}>
+                          {l.traceId.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="is-num ao-hide-sm ao-hide-md ds-muted">{l.durationMs != null ? f.ms(l.durationMs) : '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
+        </Card>
+      )}
 
       <Drawer
         open={!!open}
         onClose={() => setOpen(null)}
-        title={open ? open.event : ''}
-        sub={open ? `${names[open.agentId] ?? open.agentId} · ${f.time(open.at, timezone, true)}` : undefined}
-        foot={
+        title={open ? <span className="ao-mono" style={{ fontSize: 15 }}>{open.event}</span> : ''}
+        description={open ? `${names[open.agentId] ?? open.agentId}, ${f.time(open.at, timezone, true)}` : undefined}
+        footer={
           open ? (
             <>
               {open.runId ? (
-                <button type="button" className="ao-btn" onClick={() => { setOpen(null); navigate(`/ops/logs?runId=${open.runId}`); }}>
+                <Button
+                  onClick={() => {
+                    setOpen(null);
+                    navigate(`/ops/logs?runId=${open.runId}`);
+                  }}
+                >
                   All logs for this run
-                </button>
+                </Button>
               ) : null}
-              <Link to={`/ops/traces/${open.traceId}`} className="ao-btn primary">
-                <IconTrace /> Open trace
-              </Link>
+              <ButtonLink to={`/ops/traces/${open.traceId}`} variant="primary" icon={<IconTrace />}>
+                Open trace
+              </ButtonLink>
             </>
           ) : null
         }
       >
         {open ? (
           <>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span className={`ao-lv ${open.level}`}>{levelLabel(open.level)}</span>
-              <SourceChip source={open.source} />
-              <span className="ao-tag">{AREA_LABEL[open.component] ?? open.component}</span>
+            <div className="ao-inline">
+              <LevelBadge level={open.level} />
+              <SourceBadge source={open.source} />
+              <Badge outline>{AREA_LABEL[open.component] ?? open.component}</Badge>
             </div>
-            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5, color: 'var(--ao-text)' }}>{rewriteModelIds(open.message)}</p>
-            <dl className="ao-kv">
-              <dt>Trace id</dt>
-              <dd className="ao-mono">{open.traceId}</dd>
-              <dt>Step id</dt>
-              <dd className="ao-mono">{open.spanId ?? '—'}</dd>
-              <dt>Run id</dt>
-              <dd className="ao-mono">{open.runId ?? '—'}</dd>
-              <dt>Workspace</dt>
-              <dd className="ao-mono">{open.workspaceId ?? '—'}</dd>
-              <dt>Duration</dt>
-              <dd>{open.durationMs != null ? f.ms(open.durationMs) : '—'}</dd>
-            </dl>
-            <div>
-              <h3 style={{ fontSize: 13, fontWeight: 500, color: 'var(--ao-text-2)' }}>Details</h3>
+            <p className="ao-drawer-message">{rewriteModelIds(open.message)}</p>
+            <KeyValue
+              items={[
+                { label: 'Trace id', value: <span className="ao-mono">{open.traceId}</span> },
+                { label: 'Step id', value: <span className="ao-mono">{open.spanId ?? '—'}</span> },
+                { label: 'Run id', value: <span className="ao-mono">{open.runId ?? '—'}</span> },
+                { label: 'Workspace', value: <span className="ao-mono">{open.workspaceId ?? '—'}</span> },
+                { label: 'Duration', value: open.durationMs != null ? f.ms(open.durationMs) : '—' },
+              ]}
+            />
+            <section>
+              <h3 className="ao-subhead">Details</h3>
               <pre className="ao-json">{JSON.stringify(relabelModelsDeep(open.fields), null, 2)}</pre>
-            </div>
+            </section>
           </>
         ) : null}
       </Drawer>
-    </div>
+    </Page>
   );
 }
