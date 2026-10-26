@@ -1,16 +1,12 @@
 /**
- * Chapter 4 · Why this option, and not the others. Beat 0: the brief's three options as cards,
- * each with a one-line verdict; Option 3 chosen, and Switchboard built so 1 and 2 can become
- * analyses later. Beat 1: why it is built the way it is (raw code, three measured model roles,
- * one Worker for the proof of concept). Both visuals share one grid cell, so nothing moves
- * between beats. Reasons are Hunter's recorded ones; facts come from docs/reports/
- * decision-models.md, docs/ARCHITECTURE.md and the Production scene.
+ * Chapter 3 · Why this option. Everything on one screen: the brief's three options as cards, each
+ * with a one-line verdict (Option 3 chosen, and Switchboard built so 1 and 2 can become analyses
+ * later), then why it is built the way it is (raw code, three measured model roles, one Worker for
+ * the proof of concept). Reasons are Hunter's recorded ones; facts come from
+ * docs/reports/decision-models.md, docs/ARCHITECTURE.md and the Making it real scene.
  */
 import { Badge, ProductMark } from '../../ds';
-import { Check, SceneHead } from '../components';
-import { useCalm } from '../hooks';
-import { motion } from 'motion/react';
-import { DUR, EASE } from '../motion';
+import { Check, Enter, SceneHead } from '../components';
 
 type Option = { n: number; name: string; what: string; chosen?: boolean; verdict: string; later: string };
 
@@ -50,71 +46,59 @@ const BUILD = [
   },
   {
     k: 'One Cloudflare Worker for the proof of concept',
-    v: 'Fast to ship, one deploy, behind a gate. The production design keeps the same boundaries on Neon, Vercel and Trigger.dev, in chapter 18.',
+    v: 'Fast to ship, one deploy, behind a gate. The production design keeps the same boundaries on Neon, Vercel and Trigger.dev, in chapter 9.',
   },
 ];
 
-const HEADS = [
-  { title: 'Three options. I chose the feedback loop.', line: 'Option 3 is the same work Invoca’s product does, pointed at Invoca’s own customer calls.' },
-  { title: 'Why it’s built the way it is.', line: 'Each choice is about trust: the model proposes, code checks, people decide.' },
-];
-
-export function Why({ beat }: { beat: number }) {
-  const calm = useCalm();
-  const b = Math.min(beat, 1);
-  const fade = (on: boolean, delay = 0) => ({
-    initial: false as const,
-    animate: { opacity: on ? 1 : 0, y: on || calm ? 0 : 6 },
-    transition: { duration: calm ? 0 : DUR.layout, ease: EASE, delay: on && !calm ? delay : 0 },
-    style: { visibility: on ? ('visible' as const) : ('hidden' as const) },
-    'aria-hidden': on ? undefined : true,
-  });
+export function Why() {
   return (
     <div className="sc sc-why">
-      <SceneHead heads={HEADS} active={b} />
-      <div className="sc-why__stage">
-        <motion.div className="sc-why__layer" {...fade(b === 0)} data-testid="why-options">
-          <ol className="sc-why__options">
-            {OPTIONS.map((o) => (
-              <li key={o.n} className="sc-why__option" data-chosen={o.chosen ? 'true' : undefined}>
-                <div className="sc-why__ohead">
-                  <span className="sc-why__onum">Option {o.n}</span>
-                  {o.chosen ? (
-                    <Badge tone="accent" dot>
-                      Chosen
-                    </Badge>
-                  ) : (
-                    <Badge outline>Not chosen</Badge>
-                  )}
-                </div>
-                <h2 className="sc-why__oname">{o.name}</h2>
-                <p className="sc-why__owhat">{o.what}</p>
-                <p className="sc-why__verdict">{o.verdict}</p>
-                <p className="sc-why__later">{o.later}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="sc-why__general">
-            <ProductMark product="switchboard" size={20} />
-            <span>
-              <b>Switchboard is built so options 1 and 2 can become analyses on the same platform later.</b> Same intake, same decision model, same delivery.
-            </span>
-          </p>
-        </motion.div>
-        <motion.div className="sc-why__layer" {...fade(b === 1, 0.05)} data-testid="why-build">
-          <ul className="sc-why__build">
-            {BUILD.map((x) => (
-              <li key={x.k}>
-                <Check />
-                <div>
-                  <b>{x.k}</b>
-                  <span>{x.v}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </motion.div>
+      <SceneHead
+        title="Three options. I chose the feedback loop."
+        line="Option 3 is the same work Invoca’s product does, pointed at Invoca’s own customer calls. Each build choice is about trust: the model proposes, code checks, people decide."
+      />
+      <div className="sc-why__layer" data-testid="why-options">
+        <ol className="sc-why__options">
+          {OPTIONS.map((o, i) => (
+            <Enter as="li" key={o.n} delay={0.04 + i * 0.06} className="sc-why__option" attrs={o.chosen ? { 'data-chosen': 'true' } : undefined}>
+              <div className="sc-why__ohead">
+                <span className="sc-why__onum">Option {o.n}</span>
+                {o.chosen ? (
+                  <Badge tone="accent" dot>
+                    Chosen
+                  </Badge>
+                ) : (
+                  <Badge outline>Not chosen</Badge>
+                )}
+              </div>
+              <h2 className="sc-why__oname">{o.name}</h2>
+              <p className="sc-why__owhat">{o.what}</p>
+              <p className="sc-why__verdict">{o.verdict}</p>
+              <p className="sc-why__later">{o.later}</p>
+            </Enter>
+          ))}
+        </ol>
+        <Enter delay={0.24} className="sc-why__general">
+          <ProductMark product="switchboard" size={20} />
+          <span>
+            <b>Switchboard is built so options 1 and 2 can become analyses on the same platform later.</b> Same intake, same decision model, same delivery.
+          </span>
+        </Enter>
       </div>
+      <Enter as="section" delay={0.34} className="sc-why__buildwrap" attrs={{ 'aria-label': 'How it is built', 'data-testid': 'why-build' }}>
+        <h2 className="n-label">How it’s built, and why</h2>
+        <ul className="sc-why__build">
+          {BUILD.map((x) => (
+            <li key={x.k}>
+              <Check />
+              <div>
+                <b>{x.k}</b>
+                <span>{x.v}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Enter>
     </div>
   );
 }

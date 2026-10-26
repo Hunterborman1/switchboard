@@ -20,42 +20,39 @@ over the product is `sl-n-portal`.
 ## Frame and components
 
 - **Scene** (`Scene.tsx`): the product's 52px top bar (mark and "Switchboard", the chapter crumb,
-  "4 of 19", and a slot for the chapter menu and presenter timer, `tour/hud/sceneSlot.tsx`), the
+  "4 of 10", and a slot for the chapter menu and presenter timer, `tour/hud/sceneSlot.tsx`), the
   1120px column, and a bottom bar with one muted key hint, Back / Next and one thin progress line.
-  Clicking empty stage advances; interactive children opt out with `data-no-advance`. On screens
-  1200px and wider the page is a deck: the persistent chapter rail (`tour/hud/Hud.tsx`,
-  `ChapterRailNav`) sits to the left. Scene layouts respond to the scene's own width through
-  container queries (`@container scene`), so they read the same with or without the rail.
+  Only Back / Next (and ← →, or a clicker's PageUp / PageDown) move on; a click on the page never
+  does. On screens 1200px and wider the page is a deck: the persistent chapter rail
+  (`tour/hud/Hud.tsx`, `ChapterRailNav`) sits to the left. The top bar, bottom bar and rail stay
+  mounted between scenes and never re-animate; only the stage cross-fades. Scene layouts respond
+  to the scene's own width through container queries (`@container scene`), so they read the same
+  with or without the rail.
 - **SiteBar**: the same 52px bar for the hub, write-up, Q&A, presenter and not-found pages.
-- **SceneHead**: one headline and one supporting line per beat. All beats share one grid cell, so
-  the head is as tall as its longest version and nothing moves when the beat changes.
-- **Appear**: a part of a scene that arrives on a beat. It keeps its space from the start and is
-  invisible (and out of the accessibility tree) until shown, so labels never appear before their
-  content and nothing jumps.
-- **Stat** (count-up, 600ms once), **PersonaCard** (click or Enter reveals struggles and success),
-  **Check**, **Arrow**, **Label**, **Display**, **Lede**.
+- **SceneHead**: the headline, an optional metadata row (a byline, a link) and one supporting line.
+  A scene has one head, and it never changes while the scene is on screen.
+- **Enter**: one part of a scene arriving once, with the scene: a fade and a 6px rise after a
+  `delay`. Scenes stagger their parts so the whole entrance settles within about 600–850 ms.
+  Nothing waits for a click; reduced motion draws the final frame.
+- **Stat** (count-up, 600ms once), **Check**, **Arrow**, **Label**, **Display**, **Lede**.
 
 Hooks (`hooks.ts`): `useCalm()` (reduced motion, or `?motion=reduced`), `useCountUp`, `useSize`,
 `useMediaQuery`. Motion constants are in `motion.ts`.
 
 ## Scenes (`scenes/`)
 
-Each scene is `({ beat, beats }) => JSX`, registered in `scenes/index.ts`, with a head and one
-visual, its final frame at once under reduced motion, and one column at 390px. Every beat fits
-between the bars at 1440×900 and 1024×768.
+Each scene is a component with no props, registered in `scenes/index.ts`. It shows all of its
+content at once: a head, then its visual, entering once on arrival (staggered with `Enter`), its
+final frame at once under reduced motion, and one column at 390px. Every scene fits between the
+bars at 1440×900.
 
-| Scene | Beats |
-|---|---|
-| ColdOpen | the recorded QBR with the 06:00 quote → "Every call is a signal." and what the sentence becomes |
-| Real | built and working (all of the AI, inputs, outputs) beside simulated, each with its reason (one beat) |
-| BlackHole | where feedback comes from and the starting 100 → the handoffs and what each loses → the total and the assumption |
-| Why | the three options, each with its verdict, Option 3 chosen → how it is built (raw code, three measured model roles, one Worker) |
-| Jtbd | four persona cards (open each) → the emotional job as the headline |
-| States | the relay → leaks one by one → Signal Loop seals them → the loop closes up the right edge |
-| Platform | In (any conversation) → Decide (the decision model) → Analyse (Signal Loop built, the rest not built) → Out (the right people, by handle) |
-| Rollout | four phases → what is measured and reported → the operating loop |
-| Horizon | six milestones over 18 months → what doesn't change |
-| Production | today's stack → the production column fills in row by row |
-| Scorecard | real numbers from the viewer's workspace and Agent Ops |
+| Scene | Chapter | What is on screen |
+|---|---|---|
+| Signal | 1 · Every call is a signal | the recorded QBR with the 06:00 quote, where feedback gets lost (100 → 72 → 55 → 40, labelled an assumption), and what Signal Loop makes of that sentence |
+| Real | 2 · Built in 48 hours: what's real | the byline and the GitHub link under the headline; built and working (all of the AI, inputs, outputs) beside simulated, each with its reason |
+| Why | 3 · Why this option | the three options, each with its verdict, Option 3 chosen, and how it is built (raw code, three measured model roles, one Worker) |
+| Platform | 4 · A call comes in (first step) | In (any conversation), Decide (the decision model), Analyse (Signal Loop built, the rest not built), Out (the right people, by handle) |
+| Production | 9 · Making it real | three sections side by side: roll it out (phases, the hours assumption, operating it), grow it (six milestones, what doesn't change), run it (the production stack, today's piece under each) |
+| Scorecard | 10 · Scorecard | real numbers from the viewer's workspace and Agent Ops |
 
 Q&A pages live in `backup/` and are deep-linkable at `/backup/:topic`.

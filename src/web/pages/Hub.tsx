@@ -38,11 +38,11 @@ export function Hub() {
   const tour = useTour();
   const navigate = useNavigate();
   const calm = useCalm();
-  const resumable = tour.status !== 'idle' && !tour.finished && tour.step.id !== 'cold-open';
+  const resumable = tour.status !== 'idle' && !tour.finished && tour.step.id !== 'signal';
 
   const startTour = () => {
     tour.start();
-    navigate('/walkthrough/cold-open');
+    navigate('/walkthrough/signal');
   };
   const resumeTour = () => tour.resume();
   const explore = () => {
@@ -89,7 +89,7 @@ export function Hub() {
                 primary
                 icon={<IconPlay size={18} />}
                 title="Start the presentation"
-                body={`${CHAPTERS.length} chapters: the story, then you use the real product, with a guide in the corner you can leave and resume.`}
+                body={`${CHAPTERS.length} chapters: three to set up the problem, five in the real product with a guide in the corner you can leave and resume, and two to close.`}
                 meta={`About ${Math.round(TOTAL_TARGET_SEC / 60)} minutes`}
                 cta="Start"
               />

@@ -12,7 +12,7 @@ export const ANCHORS = {
   'nav.loop': 'Sidebar item: CSM loop',
   'nav.evals': 'Sidebar item: Evals',
   'budget.pill': 'Live-AI budget pill in the header',
-  // ch1 · new call + file picker
+  // call · new call + file picker
   'new.upload': 'The Browse conversations button (opens the library picker) on New conversation',
   'picker.dialog': 'The file picker dialog',
   'picker.folder': 'The folder tree in the picker',
@@ -20,19 +20,19 @@ export const ANCHORS = {
   'picker.preview': 'The file preview pane',
   'picker.open': 'The picker Open button',
   'new.run': 'The Process conversation button',
-  // ch2 · run view
+  // call · run view
   'run.stepper': 'The 10-step pipeline graph / stepper',
   'run.transcript': 'The transcript pane',
   'run.redaction': 'Redaction before/after toggle',
   'run.screen': 'Screen result card (actionable / injection flag)',
   'run.insights': 'Extracted insight cards list',
   'run.dropped': 'The insight/quote that failed grounding',
-  'run.ground': 'The Ground step in the pipeline stepper (ch2.ground on runs where every quote grounds)',
+  'run.ground': 'The Ground step in the pipeline stepper (call.ground on runs where every quote grounds)',
   'run.gate': 'Confidence gauge / gate result',
   'run.trace': 'Trace panel: model, tokens, cost, ms per step',
   'run.clock': 'The live elapsed clock on the conversation page ("Running · 3.4 s", then the real total)',
   'run.timing': 'Timing card: the waterfall of real step timestamps, wall time, tokens, AI cost, link to the trace',
-  // ch3 · review
+  // review
   'review.queue': 'Review queue list',
   'review.item': 'First item in the queue',
   'review.why': 'The why-is-this-here severity chip',
@@ -40,7 +40,7 @@ export const ANCHORS = {
   'review.approve': 'Approve button',
   'review.edit': 'Edit button',
   'review.editform': 'The edit form that replaces the Edit button',
-  // ch4 · routing
+  // routing
   'routing.rules': 'Rules table',
   'routing.rule.pricing': 'The pricing-objection rule row',
   'routing.sankey': 'Routing Sankey',
@@ -48,18 +48,18 @@ export const ANCHORS = {
   'dest.jira': 'Jira ticket preview',
   'dest.slack': 'Slack message preview',
   'connections.grid': 'The connected tools on the Connections page',
-  // ch5 · themes
+  // patterns · themes
   'themes.list': 'Theme list',
   'theme.c1042': 'The theme the C-1042 insight joined',
   'theme.trend': 'Theme trend chart',
   'theme.quotes': 'Representative quotes',
   'theme.arr': 'ARR at stake stat',
-  // ch6 · close the loop
+  // patterns · close the loop
   'ticket.state': 'Jira ticket state control (move to Shipped)',
   'loop.inbox': 'CSM notifications inbox',
   'loop.shipped': 'The newest Shipped notification in the CSM inbox',
   'loop.note': 'Draft note to the customer',
-  // ch7 · evals
+  // operate · evals
   'evals.metrics': 'Precision/recall bars',
   'evals.levels': 'Per-mess-level heatmap',
   'evals.candidate': 'Candidate prompt card',
@@ -69,7 +69,7 @@ export const ANCHORS = {
   // signal loop → platform
   'nav.agentops': 'Link from Signal Loop into Agent Ops (header or sidebar)',
   'nav.menu': 'Mobile Menu button that opens the nav drawer (phones only)',
-  // ch8 · operate it (Agent Ops platform, /ops)
+  // operate · Agent Ops (/ops)
   'ops.overview.kpis': 'Agent Ops overview KPI strip (hours returned, value, AI cost, ROI, active users)',
   'ops.overview.chart': 'Hours returned per week, stacked by agent',
   'ops.overview.attention': 'Needs-attention list (overdue reviews, SLO breaches, standard gaps)',

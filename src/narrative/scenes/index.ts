@@ -1,34 +1,25 @@
 import type { ComponentType } from 'react';
 import type { SceneId } from '../../tour/engine/types';
-import { ColdOpen } from './ColdOpen';
+import { Signal } from './Signal';
 import { Real } from './Real';
-import { BlackHole } from './BlackHole';
 import { Why } from './Why';
-import { Jtbd } from './Jtbd';
-import { States } from './States';
 import { Platform } from './Platform';
-import { Rollout } from './Rollout';
-import { Horizon } from './Horizon';
 import { Production } from './Production';
 import { ScorecardScene } from './Scorecard';
 
 export type SceneDef = {
-  component: ComponentType<{ beat: number; beats: number }>;
-  /** Label for the advance button on the last beat. */
+  /** Draws the whole scene at once: every part is on screen after one short entrance. */
+  component: ComponentType;
+  /** Label for the advance button. */
   exitLabel?: string;
   bare?: boolean;
 };
 
 export const SCENES: Record<SceneId, SceneDef> = {
-  'cold-open': { component: ColdOpen },
+  signal: { component: Signal },
   real: { component: Real },
-  'black-hole': { component: BlackHole },
   why: { component: Why },
-  jtbd: { component: Jtbd },
-  states: { component: States },
   platform: { component: Platform, exitLabel: 'Open the product' },
-  rollout: { component: Rollout },
-  horizon: { component: Horizon },
   production: { component: Production, exitLabel: 'Scorecard' },
   scorecard: { component: ScorecardScene, bare: true },
 };

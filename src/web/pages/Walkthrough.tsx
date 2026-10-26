@@ -4,8 +4,9 @@
  * renders the scene for it, and on a direct visit (deep link without ?tour) starts the
  * tour at that part.
  *
- * The scene chrome (top bar, bottom bar) stays put between scenes; only the stage
- * cross-fades: the outgoing and incoming stage share one grid cell for 180 ms, so there is never a blank frame.
+ * The scene chrome (top bar, bottom bar, the rail) stays mounted between scenes and never
+ * re-animates; only the stage cross-fades: the outgoing and incoming stage share one grid cell
+ * for 180 ms, so there is never a blank frame. Each scene then runs its own entrance once.
  */
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
@@ -47,6 +48,7 @@ export function Walkthrough() {
   stepRef.current = tour.step;
   const statusRef = useRef(tour.status);
   statusRef.current = tour.status;
+  const alignedRef = useRef(false);
 
   // Direct visit: align the engine with the URL (only when the URL part changes).
   useEffect(() => {
@@ -54,7 +56,7 @@ export function Walkthrough() {
     const want = valid ? firstStepOf(part as ChapterId) : FIRST_STEP;
     const cur = stepRef.current;
     if (statusRef.current !== 'active') {
-      if (cur.chapter === (part ?? 'cold-open') && cur.kind === 'scene') tour.resume();
+      if (cur.chapter === (part ?? 'signal') && cur.kind === 'scene') tour.resume();
       else tour.goto(want, { replace: true });
       return;
     }
@@ -64,11 +66,14 @@ export function Walkthrough() {
   }, [part]);
 
   const step = tour.step;
-  if (step.kind !== 'scene' || !step.scene) return <SceneSkeleton />;
+  // On a deep link the engine still holds the previous (or first) step for a frame: show the
+  // skeleton until it matches the URL, so the wrong scene never flashes. Once aligned, moving
+  // between scenes changes the step before the URL, and the page keeps drawing the step.
+  const wantChapter = part && CHAPTERS.some((c) => c.id === part) ? part : CHAPTERS[0]!.id;
+  if (step.chapter === wantChapter) alignedRef.current = true;
+  if (step.kind !== 'scene' || !step.scene || !alignedRef.current) return <SceneSkeleton />;
   const def = SCENES[step.scene];
   const ch = chapterById(step.chapter);
-  const beats = step.beats ?? 1;
-  const last = tour.beat >= beats - 1;
   const C = def.component;
   return (
     <main className="ds-app sl-n n-page n-deck" data-scene={step.scene}>
@@ -79,24 +84,24 @@ export function Walkthrough() {
         index={ch.part}
         total={CHAPTERS.length}
         progress={tour.progress}
-        beat={tour.beat}
-        beats={beats}
         onNext={def.bare ? undefined : () => tour.next()}
         onBack={tour.canGoBack ? tour.back : undefined}
-        nextLabel={last ? def.exitLabel ?? 'Next' : 'Next'}
+        nextLabel={def.exitLabel ?? 'Next'}
         bare={def.bare}
         testId={`scene-${step.scene}`}
       >
-        <AnimatePresence initial={false}>
+        {/* No initial={false} here: it would also block every part's entrance on the first scene
+            after the hub, a deep link or the product. The first scene fades in like the rest. */}
+        <AnimatePresence>
           <motion.div
             key={step.id}
             className="n-scene__stage"
-            initial={{ opacity: 0 }}
+            initial={calm ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, pointerEvents: 'none', transition: { duration: calm ? 0 : 0.18, ease: [0.4, 0, 1, 1] } }}
             transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
           >
-            <C beat={tour.beat} beats={beats} />
+            <C />
           </motion.div>
         </AnimatePresence>
       </Scene>

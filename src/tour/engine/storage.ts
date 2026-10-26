@@ -10,7 +10,6 @@ export const EMPTY_COUNTERS: Counters = {
 export const freshPersisted = (stepId: string): Persisted => ({
   status: 'idle',
   stepId,
-  beat: 0,
   history: [],
   ctx: { path: 'main', fileId: null, runId: null, themeId: null, explored: [], counters: { ...EMPTY_COUNTERS } },
   startedAt: null,

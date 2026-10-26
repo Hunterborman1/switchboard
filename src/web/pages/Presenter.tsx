@@ -93,7 +93,6 @@ export function Presenter() {
   const totalTone = elapsed > TOTAL_TARGET_SEC * 1000 ? 'red' : elapsed > TOTAL_TARGET_SEC * 900 ? 'amber' : 'green';
 
   const where = chapterLabel(ch.id);
-  const beatNote = step?.kind === 'scene' && step.beats && step.beats > 1 ? `Step ${(state?.beat ?? 0) + 1} of ${step.beats}` : null;
   const waits = step?.waitFor && step.waitFor !== 'next' && typeof step.waitFor === 'object' ? (step.waitFor.hint ?? 'an action') : null;
 
   return (
@@ -110,7 +109,7 @@ export function Presenter() {
           </span>
         )}
         {!connected && (
-          <ButtonLink variant="secondary" size="sm" to="/walkthrough/cold-open" target="_blank" rel="noopener" iconRight={<IconExternal size={14} />}>
+          <ButtonLink variant="secondary" size="sm" to="/walkthrough/signal" target="_blank" rel="noopener" iconRight={<IconExternal size={14} />}>
             Open the main window
           </ButtonLink>
         )}
@@ -137,7 +136,6 @@ export function Presenter() {
               <div className="pv__where">
                 <Badge tone="accent">{where}</Badge>
                 <span className="pv__chapter">{ch.title}</span>
-                {beatNote && <span className="pv__beat">{beatNote}</span>}
               </div>
               <h2 className="pv__title" data-testid="pv-current">
                 {step ? resolveCopy(step.title, ctx) : 'Not started'}
@@ -164,7 +162,7 @@ export function Presenter() {
             <div className="pv__card">
               <span className="pv__k">Up next</span>
               <h3 className="pv__next" data-testid="pv-next-title">
-                {nextStep ? resolveCopy(nextStep.title, ctx) : step?.kind === 'scene' && (state?.beat ?? 0) < (step.beats ?? 1) - 1 ? 'The next step of this scene' : 'Nothing queued'}
+                {nextStep ? resolveCopy(nextStep.title, ctx) : 'Nothing queued'}
               </h3>
               {nextStep && <span className="pv__meta">{chapterById(nextStep.chapter).title}</span>}
               {waits && (

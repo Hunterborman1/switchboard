@@ -2,8 +2,9 @@
  * The walkthrough engine: a step machine over STEPS, driven by product events
  * (src/shared/events.ts), predicates over live API state, and the presenter.
  *
- * State lives in the URL (?tour=<stepId>&path=<branch>[&beat=n]) plus sessionStorage, so a
- * refresh or a deep link lands exactly where you were.
+ * State lives in the URL (?tour=<stepId>&path=<branch>) plus sessionStorage, so a refresh or a
+ * deep link lands exactly where you were. A scene is one step: it shows everything at once, and
+ * only Back / Next (the buttons, ← → or a clicker's PageUp / PageDown) move on.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,7 +27,6 @@ export const RAIL_QUERY = '(min-width: 1200px)';
 export type TourValue = {
   status: TourStatus;
   step: Step;
-  beat: number;
   ctx: TourCtx;
   /** 0..1 along the main path. */
   progress: number;
@@ -46,7 +46,7 @@ export type TourValue = {
   resume: () => void;
   restart: () => void;
   finish: () => void;
-  /** Advance if allowed (scene beat, or a 'next' step that is ready). */
+  /** Advance if allowed (a scene, or a 'next' step that is ready). */
   next: () => boolean;
   /** Advance unconditionally (fallback "Continue", skip). */
   skip: () => void;
@@ -76,14 +76,14 @@ function initial(): Persisted {
   const params = new URLSearchParams(window.location.search);
   const urlStep = params.get('tour');
   const urlPath = params.get('path');
-  const base = stored ?? freshPersisted(FIRST_STEP);
+  const stored0 = stored ?? freshPersisted(FIRST_STEP);
+  // A session saved by an earlier version of the script may name steps that no longer exist.
+  const base: Persisted = { ...stored0, history: (stored0.history ?? []).filter((id) => !!STEP_BY_ID[id]) };
   if (urlStep && STEP_BY_ID[urlStep]) {
-    const beat = Number(params.get('beat') ?? '0') || 0;
     return {
       ...base,
       status: 'active',
       stepId: urlStep,
-      beat,
       startedAt: base.startedAt ?? Date.now(),
       chapterEnteredAt: base.stepId && STEP_BY_ID[base.stepId]?.chapter === STEP_BY_ID[urlStep]?.chapter ? base.chapterEnteredAt : Date.now(),
       ctx: { ...base.ctx, path: isPath(urlPath) ? urlPath : base.ctx.path, runId: params.get('run') ?? base.ctx.runId },
@@ -160,7 +160,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
       ...prev,
       status: 'active',
       stepId,
-      beat: opts?.beat ?? 0,
       history: opts?.replace ? prev.history : [...prev.history, prev.stepId].slice(-80),
       startedAt: prev.startedAt ?? Date.now(),
       chapterEnteredAt: STEP_BY_ID[prev.stepId]?.chapter === target.chapter && prev.status === 'active' ? prev.chapterEnteredAt : Date.now(),
@@ -177,11 +176,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const resolveNext = useCallback((s: Step, c: TourCtx) => (typeof s.next === 'function' ? s.next(c) : s.next), []);
 
   const skip = useCallback(() => {
-    const { step: s, ctx: c, state: st } = ref.current;
-    if (s.kind === 'scene' && st.beat < (s.beats ?? 1) - 1) {
-      setState((prev) => ({ ...prev, beat: prev.beat + 1 }));
-      return;
-    }
+    const { step: s, ctx: c } = ref.current;
     const n = resolveNext(s, c);
     if (n === s.id) return;
     goto(n);
@@ -196,6 +191,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const next = useCallback((): boolean => {
     const { step: s, ctx: c, state: st } = ref.current;
     if (st.status !== 'active') return false;
+    // A scene has nothing to wait for: everything is on screen.
     if (s.kind === 'scene') {
       skip();
       return true;
@@ -216,11 +212,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
   }, [skip, goto, setCtx]);
 
   const back = useCallback(() => {
-    const { step: s, state: st } = ref.current;
-    if (s.kind === 'scene' && st.beat > 0) {
-      setState((prev) => ({ ...prev, beat: prev.beat - 1 }));
-      return;
-    }
     setState((prev) => {
       const history = [...prev.history];
       let prevId = history.pop();
@@ -228,7 +219,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
       if (!prevId) prevId = sceneFallbackBack(prev.stepId) ?? undefined;
       if (!prevId || !STEP_BY_ID[prevId]) return prev;
       const ps = STEP_BY_ID[prevId]!;
-      return { ...prev, stepId: prevId, history, beat: ps.kind === 'scene' ? Math.max(0, (ps.beats ?? 1) - 1) : 0, chapterEnteredAt: ps.chapter === STEP_BY_ID[prev.stepId]?.chapter ? prev.chapterEnteredAt : Date.now() };
+      return { ...prev, stepId: prevId, history, chapterEnteredAt: ps.chapter === STEP_BY_ID[prev.stepId]?.chapter ? prev.chapterEnteredAt : Date.now() };
     });
   }, []);
 
@@ -330,7 +321,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   // ------------------------------------------------------------------ run detail polling
   const runId = state.ctx.runId;
-  const pollChapters = step.chapter === 'ch1' || step.chapter === 'ch2' || step.chapter === 'ch3';
+  const pollChapters = step.chapter === 'call' || step.chapter === 'review';
   useEffect(() => {
     if (!runId || state.status !== 'active' || !pollChapters) return;
     let stop = false;
@@ -365,17 +356,17 @@ export function TourProvider({ children }: { children: ReactNode }) {
   // ------------------------------------------------------------------ lazy data per chapter
   useEffect(() => {
     if (state.status !== 'active') return;
-    if (step.chapter === 'ch7' && !evals) tourApi.evals().then(setEvals).catch(() => undefined);
-    if (step.chapter === 'ch7' && !budget)
+    if (step.chapter === 'operate' && !evals) tourApi.evals().then(setEvals).catch(() => undefined);
+    if (step.chapter === 'operate' && !budget)
       tourApi
         .health()
         .then((h) => setBudget(h.budget))
         .catch(() => tourApi.session().then((s) => setBudget(s.budget)).catch(() => undefined));
   }, [step.chapter, state.status, evals, budget]);
 
-  // ch2: find a real run with a rejected quote (for the optional "see a rejected quote" beat)
+  // call: find a real run with a rejected quote (for the optional "see a rejected quote" step)
   useEffect(() => {
-    if (state.status !== 'active' || step.chapter !== 'ch2' || peek) return;
+    if (state.status !== 'active' || step.chapter !== 'call' || peek) return;
     let alive = true;
     tourApi
       .runs(200)
@@ -390,11 +381,11 @@ export function TourProvider({ children }: { children: ReactNode }) {
     };
   }, [step.chapter, state.status, peek, state.ctx.runId]);
 
-  // ch5: the theme the copy narrates must be the one on screen. Once a theme is opened, that
-  // one; before that, the card ch5.intro spotlights (theme.c1042); else the viewer's own
+  // patterns: the theme the copy narrates must be the one on screen. Once a theme is opened, that
+  // one; before that, the card patterns.intro spotlights (theme.c1042); else the viewer's own
   // insight's theme; else the biggest.
   useEffect(() => {
-    if (state.status !== 'active' || step.chapter !== 'ch5') return;
+    if (state.status !== 'active' || step.chapter !== 'patterns') return;
     let alive = true;
     const opened = state.ctx.themeId;
     if (theme && (opened ? theme.id === opened : isSpotlitTheme(theme))) return;
@@ -417,7 +408,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   }, [step.chapter, state.status, state.ctx.themeId, run, theme]);
 
   useEffect(() => {
-    if (state.status !== 'active' || step.chapter !== 'ch8' || ops) return;
+    if (state.status !== 'active' || step.chapter !== 'operate' || ops) return;
     const out: OpsData = { overview: null, agent: null, live: null, traceId: null, logCount: null };
     setOps(out);
     const rid = state.ctx.runId;
@@ -435,7 +426,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
             out.traceId = v.rows.find((r) => r.runId)?.traceId ?? v.rows[0]?.traceId ?? null;
           }),
     ])
-      // ch8.trace explains any red spans from the same trace the page shows.
+      // operate.trace explains any red spans from the same trace the page shows.
       .then(() =>
         out.traceId
           ? platformGet<{ spans: Span[] }>(`/traces/${encodeURIComponent(out.traceId)}`)
@@ -470,7 +461,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
       if (sp.has('tour')) {
         sp.delete('tour');
         sp.delete('path');
-        sp.delete('beat');
         navigate({ pathname: stripBase(window.location.pathname), search: sp.toString() ? `?${sp}` : '' }, { replace: true });
       }
       return;
@@ -478,8 +468,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
     const tourParams = (sp: URLSearchParams) => {
       sp.set('tour', step.id);
       sp.set('path', state.ctx.path);
-      if (state.beat > 0) sp.set('beat', String(state.beat));
-      else sp.delete('beat');
       return sp;
     };
     // 1) On entering a step (or when its route resolves), drive the app there once.
@@ -500,7 +488,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     const liveSearch = window.location.search;
     const search = `?${tourParams(new URLSearchParams(liveSearch)).toString()}`;
     if (search !== liveSearch) navigate({ pathname: livePath, search }, { replace: true });
-  }, [routeTarget, step.id, state.status, state.beat, state.ctx.path, pathname, location.search, navigate]);
+  }, [routeTarget, step.id, state.status, state.ctx.path, pathname, location.search, navigate]);
 
   // ------------------------------------------------------------------ presenter channel
   const chanRef = useRef<BroadcastChannel | null>(null);
@@ -533,7 +521,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     };
     const post = () => {
       const { state: s } = ref.current;
-      const msg: PresenterMsg = { type: 'state', stepId: s.stepId, beat: s.beat, status: s.status, path: s.ctx.path, explored: s.ctx.explored, startedAt: s.startedAt, chapterEnteredAt: s.chapterEnteredAt, sentAt: Date.now() };
+      const msg: PresenterMsg = { type: 'state', stepId: s.stepId, status: s.status, path: s.ctx.path, explored: s.ctx.explored, startedAt: s.startedAt, chapterEnteredAt: s.chapterEnteredAt, sentAt: Date.now() };
       ch.postMessage(msg);
     };
     (ch as BroadcastChannel & { __post?: () => void }).__post = post;
@@ -546,7 +534,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const ch = chanRef.current as (BroadcastChannel & { __post?: () => void }) | null;
     ch?.__post?.();
-  }, [state.stepId, state.beat, state.status, state.ctx.path, state.ctx.explored]);
+  }, [state.stepId, state.status, state.ctx.path, state.ctx.explored]);
 
   // ------------------------------------------------------------------ keyboard
   useEffect(() => {
@@ -568,10 +556,12 @@ export function TourProvider({ children }: { children: ReactNode }) {
       }
       // Inside a menu or popover (the chapter picker), the arrow keys move through its items.
       if ((e.target as HTMLElement | null)?.closest?.('.ds-popover, .ds-menu, [data-tour-rail-drawer]')) return;
-      // Enter / Space on a focused control belong to that control (persona cards, buttons, links).
+      // Enter / Space on a focused control belong to that control (buttons, links).
       const onControl = !!(e.target as HTMLElement | null)?.closest?.('button, a[href], [role="button"], summary');
       if ((e.key === 'Enter' || e.key === ' ') && onControl) return;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || (isScene && (e.key === ' ' || e.key === 'Enter')) || (!isScene && e.key === 'Enter' && inNarrative && (e.target as HTMLElement).tagName !== 'BUTTON')) {
+      // Scenes move only on explicit presenter controls: → / ← and a clicker's PageDown / PageUp.
+      // Space and Enter keep their normal meaning there (scroll, activate the focused control).
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || (!isScene && e.key === 'Enter' && inNarrative && (e.target as HTMLElement).tagName !== 'BUTTON')) {
         if (cur.kind === 'scene' && cur.id === 'scorecard') return;
         if (next()) e.preventDefault();
         else if (!isScene) document.dispatchEvent(new CustomEvent('sl-tour-nudge'));
@@ -593,7 +583,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   // ------------------------------------------------------------------ derived
   const idx = MAIN_ORDER.indexOf(step.id);
-  const progress = idx >= 0 ? (idx + (step.kind === 'scene' && (step.beats ?? 1) > 1 ? state.beat / (step.beats ?? 1) : 0)) / (MAIN_ORDER.length - 1) : 0;
+  const progress = idx >= 0 ? idx / (MAIN_ORDER.length - 1) : 0;
 
   // The product reveals runs at their real speed now; the tour never slows it down.
   const pace: TourPace = useMemo(() => ({ active: state.status === 'active', slow: false, stepRevealMs: 0, stepId: state.status === 'active' ? step.id : null }), [state.status, step.id]);
@@ -601,7 +591,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const value: TourValue = {
     status: state.status,
     step,
-    beat: state.beat,
     ctx,
     progress: Math.max(0, Math.min(1, progress)),
     presenting,
@@ -609,7 +598,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     startedAt: state.startedAt,
     chapterEnteredAt: state.chapterEnteredAt,
     railOpen,
-    canGoBack: state.history.length > 0 || state.beat > 0 || !!sceneFallbackBack(state.stepId),
+    canGoBack: state.history.length > 0 || !!sceneFallbackBack(state.stepId),
     isReady: isReadyFn(step, ctx),
     setRailOpen,
     start,

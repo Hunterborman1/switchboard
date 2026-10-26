@@ -22,7 +22,7 @@ export function stepDone(run: RunDetail | null, key: StepKey): boolean {
 }
 
 /**
- * ch1.run intro. The branch (path) says what story the file tells; the format says what the
+ * call.process intro. The branch (path) says what story the file tells; the format says what the
  * file actually is, so a Slack export never gets the speech-to-text line.
  */
 export function introFor(ctx: Pick<TourCtx, 'path' | 'fileFormat'>): { title: string; body: string } {
@@ -47,7 +47,7 @@ function allEvidence(run: RunDetail): Evidence[] {
   return run.insights.flatMap((i) => i.evidence);
 }
 
-/** ch2.intro title: the run's real state, never a promise. */
+/** call.watch title: the run's real state, never a promise. */
 export function introTitle(ctx: TourCtx): string {
   const run = ctx.run;
   if (ctx.runReused) return 'Your earlier run of this file';
@@ -56,7 +56,7 @@ export function introTitle(ctx: TourCtx): string {
   return runSettled(run) && run.run.durationMs ? `Done in ${durationText(run.run.durationMs)}, live` : 'Running live, right now';
 }
 
-/** ch2.intro: "real execution" is only true live; a replay says what it is. The latency beat starts here. */
+/** call.watch: "real execution" is only true live; a replay says what it is. The latency story starts here. */
 export function introCopy(ctx: TourCtx): string {
   if (ctx.runReused) {
     return 'This file was already run, so this is that earlier run, revealed from its saved steps. Nothing new is executing.';
@@ -70,7 +70,7 @@ export function introCopy(ctx: TourCtx): string {
   return 'The real execution, not an animation. Watch the clock: a whole call takes seconds, not minutes.';
 }
 
-/** ch3.edit: once the edit form is open, say what saving needs. */
+/** review.edit: once the edit form is open, say what saving needs. */
 export function editCopy(): string {
   const formOpen = typeof document !== 'undefined' && !!document.querySelector('[data-tour="review.editform"]');
   if (formOpen) return 'Change the type, area or severity, then Save and send. The fix is saved as labelled data with a before/after diff.';
@@ -92,7 +92,7 @@ const KIND: Record<string, string> = {
   support_ticket: 'A support ticket', survey_response: 'A survey response', document: 'A document', other: 'A conversation',
 };
 
-/** ch2.screen: the decision model's triage, read from the run. Honest generic text before it lands. */
+/** call.screen: the decision model's triage, read from the run. Honest generic text before it lands. */
 export function screenCopy(ctx: TourCtx): { title: string; body: string } {
   const s = ctx.run?.screen;
   if (ctx.path === 'security' || s?.injection_suspected) {
@@ -128,7 +128,7 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
   };
 }
 
-/** ch2.ground: what extraction found and what the quote check (code) did with it, in one beat. */
+/** call.ground: what extraction found and what the quote check (code) did with it, in one step. */
 export function groundCopy(ctx: TourCtx): { title: string; body: string; more: string } {
   const run = ctx.run;
   const chunks = Number(run?.steps.find((x) => x.key === 'extract')?.detail?.chunks ?? 1);
@@ -156,7 +156,7 @@ export function groundCopy(ctx: TourCtx): { title: string; body: string; more: s
 }
 
 /**
- * The optional beat: a real rejected quote from another run. It is only offered when a run
+ * The optional step: a real rejected quote from another run. It is only offered when a run
  * with a dropped quote exists (TourProvider.peek); it describes exactly what is on screen.
  */
 export function rejectedCopy(ctx: TourCtx): { title: string; body: string } {
@@ -170,7 +170,7 @@ export function rejectedCopy(ctx: TourCtx): { title: string; body: string } {
   };
 }
 
-/** ch2.gate title: only mention a second opinion when this run had one (recordings predate it). */
+/** call.gate title: only mention a second opinion when this run had one (recordings predate it). */
 export function gateTitle(ctx: TourCtx): string {
   return ctx.run?.insights.some((i) => i.secondOpinion) ? 'Scored, then a second opinion' : 'Scored: who sees it next';
 }
@@ -189,7 +189,7 @@ export function gateCopy(ctx: TourCtx): string {
 }
 
 /**
- * ch2.timing: why it's this fast, in plain words, with this run's real numbers (the same
+ * call.timing: why it's this fast, in plain words, with this run's real numbers (the same
  * runTiming() the Timing card draws). Generic and honest when the data isn't there.
  */
 export function timingCopy(ctx: Pick<TourCtx, 'run'>): { title: string; body: string; more: string } {
@@ -245,7 +245,7 @@ export function evalTradeoff(ctx: TourCtx): { cost: string; speed: string; cheap
   };
 }
 
-/** ch7.candidate title: only promise a saving when the eval data shows one. */
+/** operate.promote title: only promise a saving when the eval data shows one. */
 export function candidateTitle(ctx: TourCtx): string {
   const t = evalTradeoff(ctx);
   if (t?.cheaper && t.faster) return 'A cheaper, faster prompt?';
@@ -308,7 +308,7 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?:
 }
 
 /**
- * The theme card ch5 spotlights. Mirrors isC1042Theme in src/app/pages/Themes.tsx, which
+ * The theme card patterns.intro spotlights. Mirrors isC1042Theme in src/app/pages/Themes.tsx, which
  * places the `theme.c1042` anchor: the copy and the spotlight must name the same theme.
  */
 export function isSpotlitTheme(t: Pick<Theme, 'id' | 'name'>): boolean {
@@ -331,7 +331,7 @@ export function budgetCopy(ctx: TourCtx): string {
   return `${usd(b.spentUsd, 2)} of ${usd(b.limitUsd, 2)} used across ${plural(b.liveRuns, 'live run')}. Past the cap it replays: never an outage.`;
 }
 
-// ---------------------------------------------------------------- platform (ch8)
+// ---------------------------------------------------------------- Agent Ops (operate.kpis, operate.trace)
 
 export function opsKpiCopy(ctx: TourCtx): string {
   const t = ctx.ops?.overview?.totals;
@@ -360,7 +360,7 @@ export function opsLogsCopy(ctx: TourCtx): string {
   return 'Filtered to your own run: every step, model call and delivery, as structured logs with one trace ID.';
 }
 
-/** ch4.sankey: only claim a re-route when the viewer actually changed a rule. */
+/** routing: only claim a re-route when the viewer actually changed a rule. */
 export function sankeyCopy(ctx: TourCtx): { title: string; body: string } {
   if (ctx.counters.rulesChanged > 0) {
     return { title: 'The flows re-route', body: 'Same insights, new owner. No prompt changed, no redeploy. The edit is in your workspace only.' };
@@ -368,7 +368,7 @@ export function sankeyCopy(ctx: TourCtx): { title: string; body: string } {
   return { title: 'Where today’s rules send them', body: 'From type to product area to owner, under the current rules. Change a rule and the flows move.' };
 }
 
-/** ch8.trace: name any red spans instead of leaving them unexplained. */
+/** operate.trace: name any red spans instead of leaving them unexplained. */
 export function opsTraceCopy(ctx: TourCtx): string {
   const base = 'Every span of your run: the steps, each model call, retries and deliveries.';
   const e = ctx.ops?.traceErrors;
@@ -376,7 +376,7 @@ export function opsTraceCopy(ctx: TourCtx): string {
 }
 
 /**
- * ch4.rule revisit: the pricing rule already carries this workspace's override, so choosing the
+ * routing.rule revisit: the pricing rule already carries this workspace's override, so choosing the
  * same owner again shows no Save. Read from the routing table the step spotlights.
  */
 export function pricingRuleOverridden(_ctx?: TourCtx): boolean {

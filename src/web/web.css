@@ -320,11 +320,6 @@ body {
   font-weight: var(--weight-medium);
   color: var(--text);
 }
-.pv__beat {
-  font-size: var(--text-sm);
-  color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-}
 .pv__title {
   margin: var(--space-1) 0 0;
   font-size: var(--text-2xl);
