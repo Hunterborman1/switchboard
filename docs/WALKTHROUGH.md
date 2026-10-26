@@ -556,8 +556,6 @@ Each gap names its evidence. These are the answers to give rather than overstati
 | v4 was scored with no judge calls, v5 with 2 | details-v4.json, details-v5.json → judgeCalls | Re-run both under identical settings |
 | Theme quality has no eval | none in data/evals | Merge and split review with PMs |
 | The backup model has never been scored as primary | docs/speaker-notes.md Q13 | One `npm run eval` with it as primary |
-| The cost backup page shows a fixed cost split (12 / 71 / 7 / 2 / 8%) that differs from the measured split on recorded runs (screen 23%, extract 69%, theme naming 9%) | src/narrative/backup/BackupPage.tsx → STEP_COST; computed from data/replays/*.json | Read the split from the ledger |
-| `docs/speaker-notes.md` Q1 quotes a mean of $0.00136 per call; the current recordings average $0.00141 | data/replays/*.json | Quote the live cost backup page |
 | The production stack is a design, not a port | Production.tsx | Port adapters, prove parity with the eval suite |
 
 ---
