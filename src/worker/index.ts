@@ -7,6 +7,7 @@
  *   /repo/invoca/?k=…           signed link → hb_invoca_link cookie → 302 with k stripped
  *   /repo/invoca/?owner=…       OWNER_TOKEN → hb_invoca_owner cookie → 302 with owner stripped
  *   /repo/invoca/api/*          gated JSON API (src/worker/api)
+ *   /repo/invoca/walkthrough.md gated Markdown walkthrough (docs/WALKTHROUGH.md, bundled)
  *   /repo/invoca/*              gated SPA assets (dist/), prefix stripped
  *
  * Every other app under repos.hunterborman.com/repo/* shares this origin, so state-changing
@@ -18,6 +19,8 @@ import { clientIp, html, json, NOTICES, noticeFor, redirect, sameOrigin, secure,
 import { loginPage } from './login';
 import { api } from './api';
 import type { Env } from './env';
+// Bundled as a string at build time (wrangler.jsonc "rules": Text for *.md).
+import WALKTHROUGH_MD from '../../docs/WALKTHROUGH.md';
 
 export { PipelineWorkflow } from './workflow';
 
@@ -132,6 +135,11 @@ export default {
       if (blocked) return blocked;
       const res = await api.fetch(req, { ...env, ACCESS: access }, ctx);
       return secure(res);
+    }
+
+    // ---- the walkthrough as Markdown for AI assistants (gated like everything above)
+    if (path === `${PREFIX}/walkthrough.md`) {
+      return secure(new Response(req.method === 'HEAD' ? null : WALKTHROUGH_MD, { headers: { 'content-type': 'text/markdown; charset=utf-8' } }));
     }
 
     // ---- SPA assets (prefix stripped). Hashed assets cache long; HTML never caches.
