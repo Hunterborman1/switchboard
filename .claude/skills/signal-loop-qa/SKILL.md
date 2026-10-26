@@ -9,7 +9,7 @@ description: Answer Invoca panel questions about Signal Loop and Agent Ops with 
 
 1. Data and code: `data/evals/latest.json`, `data/evals/details-v4.json`, `data/evals/details-v5.json`, `data/replays/*.json`, `data/backfill/runs.json`, `data/platform/agents.json`, `src/shared/scoring.ts`, `src/pipeline/score.ts`, `wrangler.jsonc`.
 2. `docs/WALKTHROUGH.md`: every number already has a source tag; the ADRs hold the justifications; "Honest gaps and next steps" holds the caveats.
-3. `docs/speaker-notes.md` → Likely questions, and `/backup/<topic>` pages, for phrasing.
+3. `docs/speaker-notes.md` → Likely questions, and the Q&A sections of the write-up (`/write-up#<topic>`, prose in `src/shared/writeup/content.ts`), for phrasing.
 
 If two sources disagree, the data file wins; say which file you used.
 
@@ -40,7 +40,7 @@ Avoid "fully", "guaranteed", "production-ready", "zero retention". Say "a routin
 6. **"Did you tune on the test set?"** Yes; there is no held-out split, so v4 is optimistic. 48 files catch big regressions like v5, not small differences.
 7. **"Grounding caught nothing on v4. What's it for?"** 275/275 grounded (`latest.json`). It is a seatbelt; v5 shows the limit.
 8. **"Did you build v5 to fail?"** Yes, the cost-cutting rewrite people make. 211 insights instead of 141; 38 extra praise, 20 extra churn; $0.113 vs $0.093 and p95 6.3 s vs 3.8 s on the eval set (`latest.json`). Caveat: v4 ran with 0 judge calls, v5 with 2 (`details-*.json`); re-run both under identical settings.
-9. **"What does it cost per call?"** Recorded runs average $0.00141 (48 runs, `data/replays/*.json`); backfill $0.00133 (218 runs). Worst-case reservation $0.02 (`scoring.ts` → `RUN_COST_ESTIMATE_USD`). Model spend is small next to review time and hosting. Read the live figure from `/backup/cost` if asked during the session.
+9. **"What does it cost per call?"** Recorded runs average $0.00141 (48 runs, `data/replays/*.json`); backfill $0.00133 (218 runs). Worst-case reservation $0.02 (`scoring.ts` → `RUN_COST_ESTIMATE_USD`). Model spend is small next to review time and hosting. Read the live figure from `/write-up#cost` if asked during the session.
 10. **"PHI leakage 0 of 2 is two files."** Correct. Redaction runs before any model call with reversible tokens; recall on unanchored patient names is unproven. A labelled PHI set and redaction recall as a release gate come first.
 11. **"Where does the data go?"** Raw files stay in our storage; only redacted text reaches a model; providers that collect or train on data are excluded by a routing setting, not a contract. DPA and zero-retention terms are production items.
 12. **"Prompt injection?"** Text is wrapped as data, output is schema-only, the model has no tools; triage (the decision model, OR-ed with a code check) flags it (2 of 2) and the whole file goes to review (`data/replays/file_ridgeway_prep_injection.json`). Two files is too few.
