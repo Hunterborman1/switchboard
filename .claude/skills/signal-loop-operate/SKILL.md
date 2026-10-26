@@ -81,6 +81,6 @@ Do not call it done from a deploy log or a single HTTP 200.
 4. A featured run (Brightline) completes, live or labelled replay; the trace shows every step.
 5. Agent Ops → Logs shows that run under one trace id.
 6. Health budget gauge reads sensibly; live flag is what you expect.
-7. `/repo/invoca/walkthrough.md` returns 200 `text/markdown` when signed in, and redirects to login without auth.
+7. `/repo/invoca/walkthrough.md` and `/repo/invoca/write-up.md` return 200 `text/markdown`, `/repo/invoca/llms.txt` 200 `text/plain` and `/repo/invoca/switchboard-docs.zip` 200 `application/zip` when signed in; each redirects to login without auth.
 8. `npx wrangler tail` shows no new errors for a few minutes.
 9. Note the deployed version id as the next rollback target.

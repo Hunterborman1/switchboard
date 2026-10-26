@@ -112,7 +112,7 @@ export function Hub() {
           <nav className="hub__backups" aria-label="Questions and answers">
             <span className="hub__backups-k">Questions</span>
             {BACKUPS.map((b) => (
-              <Link key={b.topic} className="n-link" to={`/backup/${b.topic}`}>
+              <Link key={b.topic} className="n-link" to={{ pathname: '/write-up', hash: b.topic }}>
                 {b.title}
               </Link>
             ))}
@@ -123,6 +123,9 @@ export function Hub() {
             </Link>
             <a className="n-link hub__md" href={`${import.meta.env.BASE_URL}walkthrough.md`} data-testid="hub-markdown">
               Markdown version for AI assistants
+            </a>
+            <a className="n-link" href={`${import.meta.env.BASE_URL}switchboard-docs.zip`} download data-testid="hub-zip">
+              Download for AI (.zip)
             </a>
             <a className="n-link" href={REPO_URL} target="_blank" rel="noreferrer" data-testid="hub-repo">
               Source code on GitHub

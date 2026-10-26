@@ -8,6 +8,10 @@
  *   /repo/invoca/?owner=…       OWNER_TOKEN → hb_invoca_owner cookie → 302 with owner stripped
  *   /repo/invoca/api/*          gated JSON API (src/worker/api)
  *   /repo/invoca/walkthrough.md gated Markdown walkthrough (docs/WALKTHROUGH.md, bundled)
+ *   /repo/invoca/write-up.md    gated write-up and Q&A as Markdown (rendered from the page's content)
+ *   /repo/invoca/README.md, docs/…md   every other doc in the registry (src/worker/mcp/docs.ts), gated
+ *   /repo/invoca/switchboard-docs.zip  every doc plus INDEX.md, gated
+ *   /repo/invoca/llms.txt       gated index in the llms.txt convention
  *   /repo/invoca/mcp            remote MCP server, bearer-token auth (src/worker/mcp)
  *   /repo/invoca/*              gated SPA assets (dist/), prefix stripped
  *
@@ -21,8 +25,7 @@ import { loginPage } from './login';
 import { api } from './api';
 import { handleMcp } from './mcp/server';
 import type { Env } from './env';
-// Bundled as a string at build time (wrangler.jsonc "rules": Text for *.md).
-import WALKTHROUGH_MD from '../../docs/WALKTHROUGH.md';
+import { docByPath, docsZip, llmsTxt, ZIP_NAME } from './mcp/docs';
 
 export { PipelineWorkflow } from './workflow';
 
@@ -142,9 +145,16 @@ export default {
       return secure(res);
     }
 
-    // ---- the walkthrough as Markdown for AI assistants (gated like everything above)
-    if (path === `${PREFIX}/walkthrough.md`) {
-      return secure(new Response(req.method === 'HEAD' ? null : WALKTHROUGH_MD, { headers: { 'content-type': 'text/markdown; charset=utf-8' } }));
+    // ---- for AI assistants (gated like everything above): each doc as Markdown, the docs .zip
+    // and llms.txt, all from the one registry in src/worker/mcp/docs.ts
+    const head = req.method === 'HEAD';
+    const doc = docByPath(path.slice(PREFIX.length + 1));
+    if (doc) return secure(new Response(head ? null : doc.text, { headers: { 'content-type': 'text/markdown; charset=utf-8' } }));
+    if (path === `${PREFIX}/${ZIP_NAME}`) {
+      return secure(new Response(head ? null : docsZip(), { headers: { 'content-type': 'application/zip', 'content-disposition': `attachment; filename="${ZIP_NAME}"` } }));
+    }
+    if (path === `${PREFIX}/llms.txt`) {
+      return secure(new Response(head ? null : llmsTxt(), { headers: { 'content-type': 'text/plain; charset=utf-8' } }));
     }
 
     // ---- SPA assets (prefix stripped). Hashed assets cache long; HTML never caches.
