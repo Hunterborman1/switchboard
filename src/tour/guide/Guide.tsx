@@ -1,20 +1,21 @@
 /**
- * The Guide: one persistent box on every Switchboard and Agent Ops page.
+ * The Guide: one persistent bar on every Switchboard and Agent Ops page.
  *
  * - Presentation mode (the tour is on a product step): the chapter and its picker, the step's
  *   title and why, "How this works", a "Your turn" line when the step waits for the viewer (with
- *   "Show me"), Back / Next (or "Skip this step"), and "Explore on your own".
+ *   "Show me"), Back / Next (or "Skip this step"), "Explore on your own", and the presentation's
+ *   progress along its top edge, like the scenes' bottom bar.
  * - Explore mode (after leaving the presentation, after the scorecard, or opening the product
  *   from the hub): a nudge for whatever page is open ("Try it: …"), "Show me", and "Resume
  *   presentation", which returns to the step they left (or starts from the beginning).
  *
- * It never blocks the product: no scrim. The step's target gets a calm ring and is scrolled into
- * the part of the page the Guide leaves free; the Guide then takes the first corner that covers
- * neither the target, an open dialog nor a page's sticky action bar (src/tour/guide/dock.ts),
- * folding to a compact bar or a pill when no corner is free. Desktop: bottom-right, 380px. Phones
- * (≤ 900px): a bottom sheet.
+ * It covers nothing. Desktop: a dock along the bottom of the content column; the page reserves
+ * its height, and dialogs, drawers, toasts and sticky action bars sit above it (tour.css). It
+ * folds to a one-line strip when minimized or while a dialog is open. Phones (≤ 900px): a bottom
+ * sheet that folds to its bar. The step's target gets a calm ring and is scrolled into the band
+ * the dock leaves free (src/tour/guide/dock.ts).
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
@@ -28,12 +29,11 @@ import { awaitingUser, type ChapterId, type Step, type TourCtx } from '../engine
 import { findAnchor, useAnchor, useRect } from '../engine/useAnchor';
 import type { AnchorId } from '../anchors';
 import { ChapterList } from '../hud/ChapterList';
-import { bandFor, chooseDock, GUIDE_W, scrollDelta, sheetPlan, type Dock, type GuideSize, type Rect, type Viewport } from './dock';
+import { dockBand, scrollDelta, sheetPlan, type Rect, type Viewport } from './dock';
 import { nudgeFor } from './nudges';
 
 const MIN_KEY = 'sl-guide-min';
 const SHEET_QUERY = '(max-width: 900px)';
-const SHEET_BAR_H = 52;
 const OBSTACLES = '.ds-dialog, .ds-drawer, .ds-sidebar-drawer';
 
 /** The viewer's own choice, or null when they haven't made one. */
@@ -58,22 +58,12 @@ function viewport(): Viewport {
   const top = bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 52;
   const main = document.getElementById('main-content');
   const l = main ? main.getBoundingClientRect().left : 0;
-  return {
-    vw: window.innerWidth,
-    vh: window.innerHeight,
-    top,
-    left: l > 0 && l < window.innerWidth / 2 ? l : 0,
-  };
+  return { vw: window.innerWidth, vh: window.innerHeight, top, left: l > 0 && l < window.innerWidth / 2 ? l : 0 };
 }
 
 const rectOf = (el: Element, pad = 6): Rect => {
   const r = el.getBoundingClientRect();
-  return {
-    x: r.left - pad,
-    y: r.top - pad,
-    w: r.width + pad * 2,
-    h: r.height + pad * 2,
-  };
+  return { x: r.left - pad, y: r.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 };
 };
 
 /** Open product dialogs and drawers (never the Guide's own popovers). */
@@ -85,25 +75,6 @@ function openObstacles(): HTMLElement[] {
   });
 }
 
-/** Bottom-sticky action bars on screen (the review's decision bar): the Guide never covers their controls. */
-function stickyBars(): HTMLElement[] {
-  return Array.from(document.querySelectorAll<HTMLElement>('.ds-card__footer')).filter((el) => {
-    if (el.closest('[data-tour-ui]')) return false;
-    const cs = getComputedStyle(el);
-    if (cs.position !== 'sticky' || cs.bottom === 'auto') return false;
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight;
-  });
-}
-
-/** Everything the Guide must leave uncovered besides its target. */
-const avoidRects = (exclude?: HTMLElement | null): Rect[] => [
-  ...openObstacles()
-    .filter((o) => !exclude || !o.contains(exclude))
-    .map((o) => rectOf(o, 0)),
-  ...stickyBars().map((b) => rectOf(b, 0)),
-];
-
 /** Scroll `el` (in whatever scrolls it) so it sits inside the band, minimally. */
 function scrollIntoBand(el: HTMLElement, band: { top: number; bottom: number }, smooth: boolean) {
   const prevT = el.style.scrollMarginTop;
@@ -112,11 +83,7 @@ function scrollIntoBand(el: HTMLElement, band: { top: number; bottom: number }, 
   const tall = r.height + 12 > band.bottom - band.top;
   el.style.scrollMarginTop = `${Math.max(0, band.top + 6)}px`;
   el.style.scrollMarginBottom = `${Math.max(0, window.innerHeight - band.bottom + 6)}px`;
-  el.scrollIntoView({
-    block: tall ? 'start' : 'nearest',
-    inline: 'nearest',
-    behavior: smooth ? 'smooth' : 'auto',
-  });
+  el.scrollIntoView({ block: tall ? 'start' : 'nearest', inline: 'nearest', behavior: smooth ? 'smooth' : 'auto' });
   el.style.scrollMarginTop = prevT;
   el.style.scrollMarginBottom = prevB;
 }
@@ -148,6 +115,13 @@ function stepOfChapter(step: Step): { n: number; of: number } {
     i = Math.max(0, order.slice(0, Math.max(0, order.indexOf(step.id))).filter((id) => main.includes(id)).length - 1);
   }
   return { n: i + 1, of: Math.max(1, main.length) };
+}
+
+/** How far through the presentation this step is, 0–1, for the progress line. */
+function progressOf(step: Step): number {
+  const ch = chapterById(step.chapter);
+  const pos = stepOfChapter(step);
+  return Math.min(1, (ch.part - 1 + pos.n / (pos.of + 1)) / CHAPTERS.length);
 }
 
 /** Elements for a list of anchor ids, re-checked while the page settles. */
@@ -256,75 +230,62 @@ function GuideInner() {
     return () => window.clearInterval(t);
   }, [present, nudge.show, location.pathname]);
 
-  // ------------------------------------------------------------------ where the Guide sits
+  // ------------------------------------------------------------------ folding
   const panelRef = useRef<HTMLDivElement>(null);
-  const [fullH, setFullH] = useState(260);
-  const fullHRef = useRef(fullH);
-  fullHRef.current = fullH;
-  const [dock, setDock] = useState<Dock>('br');
-  const [autoSize, setAutoSize] = useState<GuideSize>('full');
-  const [width, setWidth] = useState(GUIDE_W);
-  const [sheetFold, setSheetFold] = useState(false);
-  const size: GuideSize = userMin ? 'min' : autoSize;
+  /** Height of the open Guide, for the phone sheet's fold decision. */
+  const openH = useRef(260);
+  const [autoFold, setAutoFold] = useState(false);
+  const folded = userMin || autoFold;
   const elRef = useRef<HTMLElement | null>(null);
   elRef.current = anchor.el;
 
-  /** Pick the corner (or the fold) from where everything is now. Never scrolls. */
-  // The viewer opened the whole Guide on purpose: leave it open (and where it is) until the next step.
+  // The viewer opened the Guide on purpose: leave it open until the next step.
   const keptOpen = useRef(false);
   useEffect(() => {
     keptOpen.current = false;
   }, [anchorKey]);
+
+  /** Fold while a dialog or drawer is open (it gets the room); on phones also for a tall target. */
   const placeGuide = useCallback(() => {
-    const el = elRef.current;
     const vp = viewport();
-    const obs = openObstacles();
     document.documentElement.style.setProperty('--sl-content-left', `${Math.round(vp.left)}px`);
-    if (window.matchMedia(SHEET_QUERY).matches) {
-      // Phones: a dialog over the page folds the sheet to its bar; so does a target taller than the space above it.
-      const fold = !keptOpen.current && (obs.length > 0 || (!!el && sheetPlan(rectOf(el), fullHRef.current, SHEET_BAR_H, vp).fold));
-      setSheetFold(fold);
+    if (keptOpen.current) {
+      setAutoFold(false);
       return;
     }
-    if (keptOpen.current) return;
-    const choice = chooseDock(el ? rectOf(el) : null, [...obs.map((o) => rectOf(o, 0)), ...stickyBars().map((b) => rectOf(b, 0))], fullHRef.current, vp);
-    setDock(choice.dock);
-    setAutoSize(choice.size);
-    setWidth(choice.width);
+    const el = elRef.current;
+    const dialogOpen = openObstacles().length > 0;
+    const tall = window.matchMedia(SHEET_QUERY).matches && !!el && sheetPlan(rectOf(el), openH.current, vp).fold;
+    setAutoFold(dialogOpen || tall);
   }, []);
 
-  /** Bring the target into the part of the page the Guide leaves free, then place the Guide. */
+  /** Bring the target into the band between the top bar and the Guide. */
   const bringIntoView = useCallback(
     (smooth: boolean) => {
       const el = elRef.current;
-      if (!el) {
-        placeGuide();
-        return;
-      }
+      placeGuide();
+      if (!el) return;
       // Inside a dialog (the file picker): only its own list scrolls; bring the row fully into view there.
       if (el.closest(OBSTACLES)) {
         el.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: smooth ? 'smooth' : 'auto' });
-        placeGuide();
         return;
       }
-      const vp = viewport();
-      const T = rectOf(el);
-      const band = window.matchMedia(SHEET_QUERY).matches ? sheetPlan(T, fullHRef.current, SHEET_BAR_H, vp).band : bandFor(T, fullHRef.current, vp, avoidRects(el)).band;
-      // A bottom-sticky target (the review's decision bar) sticks to the viewport's bottom edge,
-      // under the Guide, until its container ends: scroll the container's end into the band instead.
+      const h = panelRef.current?.getBoundingClientRect().height ?? 0;
+      const band = dockBand(viewport(), h);
+      // A bottom-sticky target (the review's decision bar) rides just above the Guide until its
+      // container ends: scroll the container's end into the band instead.
       const sticky = stickyBottom(el);
       if (sticky?.parentElement) {
         const box = rectOf(sticky.parentElement, 0);
         if (box.y + box.h > band.bottom) scrollEndIntoBand(sticky.parentElement, band, smooth);
-      } else if (scrollDelta(T, band) !== 0) scrollIntoBand(el, band, smooth);
-      placeGuide();
+      } else if (scrollDelta(rectOf(el), band) !== 0) scrollIntoBand(el, band, smooth);
     },
     [placeGuide],
   );
 
-  // A new target (a new step, or "Show me"): bring it into view, then settle the Guide's corner.
-  // Pages fill in as their data arrives, so the target can move: keep correcting for a moment,
-  // unless the viewer has started scrolling themselves.
+  // A new target (a new step, or "Show me"): bring it into view. Pages fill in as their data
+  // arrives, so the target can move: keep correcting for a moment, unless the viewer has started
+  // scrolling themselves.
   const viewerMoved = useRef(false);
   useEffect(() => {
     viewerMoved.current = false;
@@ -356,9 +317,9 @@ function GuideInner() {
     };
   }, [anchor.el, anchorKey, calm, bringIntoView, placeGuide]);
 
-  // Keep the corner right as the page changes under it (dialogs opening, content growing, resizes).
+  // Dialogs open and close under it: keep the fold right.
   useEffect(() => {
-    const t = window.setInterval(placeGuide, 700);
+    const t = window.setInterval(placeGuide, 500);
     window.addEventListener('resize', placeGuide);
     return () => {
       window.clearInterval(t);
@@ -366,23 +327,22 @@ function GuideInner() {
     };
   }, [placeGuide]);
 
-  // Measure the full-size panel; publish the Guide's footprint for page padding and toasts.
+  // Publish the Guide's height: the page, dialogs, drawers, toasts and sticky bars keep clear of it.
   useLayoutEffect(() => {
     const node = panelRef.current;
     if (!node) return;
     const root = document.documentElement;
     const publish = () => {
       const h = Math.ceil(node.getBoundingClientRect().height);
-      if (size === 'full' && !isSheet) setFullH((prev) => (Math.abs(prev - h) > 4 ? h : prev));
-      if (isSheet && !sheetFold) setFullH((prev) => (Math.abs(prev - h) > 4 ? h : prev));
+      if (!folded) openH.current = h;
       root.style.setProperty('--sl-guide-h', `${h}px`);
-      root.dataset.slGuide = isSheet ? 'sheet' : size === 'min' ? 'min' : dock;
+      root.dataset.slGuide = isSheet ? 'sheet' : 'dock';
     };
     publish();
     const ro = new ResizeObserver(publish);
     ro.observe(node);
     return () => ro.disconnect();
-  }, [size, dock, isSheet, sheetFold, step.id, present]);
+  }, [folded, isSheet, step.id, present]);
   useEffect(
     () => () => {
       const root = document.documentElement;
@@ -393,14 +353,17 @@ function GuideInner() {
     [],
   );
 
+  const open = useCallback(() => {
+    keptOpen.current = true;
+    setMinimized(false);
+    setAutoFold(false);
+  }, [setMinimized]);
+
   const showMe = useCallback(() => {
-    if (!present) {
-      if (nudge.show) setShowId(nudge.show);
-    }
+    if (!present && nudge.show) setShowId(nudge.show);
     setFlashKey((k) => k + 1);
-    if (isSheet) setSheetFold(false);
     window.setTimeout(() => bringIntoView(!calm), present ? 0 : 60);
-  }, [present, nudge.show, isSheet, bringIntoView, calm]);
+  }, [present, nudge.show, bringIntoView, calm]);
 
   // → while the step waits for the viewer: point at what to do instead of moving on.
   useEffect(() => {
@@ -430,14 +393,9 @@ function GuideInner() {
   }, [present, step.id, waiting, anchor.el, tour.isReady]);
 
   // ------------------------------------------------------------------ render
-  const sheetOpen = isSheet && !userMin && !sheetFold;
-  const cls = [
-    't-guide',
-    'sl-n-portal',
-    isSheet ? 't-guide--sheet' : `t-guide--${dock}`,
-    isSheet ? (sheetOpen ? 'is-open' : 'is-folded') : `t-guide--${size}`,
-    present ? 'is-present' : 'is-explore',
-  ].join(' ');
+  const layout = isSheet ? 'sheet' : 'dock';
+  const cls = ['t-guide', 'sl-n-portal', `t-guide--${layout}`, folded ? 'is-folded' : 'is-open', present ? 'is-present' : 'is-explore'].join(' ');
+  const hint = waiting && typeof step.waitFor === 'object' ? step.waitFor.hint : undefined;
 
   return (
     <>
@@ -449,51 +407,33 @@ function GuideInner() {
         data-tour-ui
         data-testid="guide"
         data-mode={present ? 'present' : 'explore'}
-        data-size={isSheet ? (sheetOpen ? 'sheet' : 'bar') : size}
+        data-size={folded ? 'folded' : 'open'}
         data-step={present ? step.id : undefined}
         role="region"
         aria-label={present ? 'Presentation' : 'Guide'}
-        style={!isSheet && size !== 'min' && width < GUIDE_W ? { width } : undefined}
       >
+        {present ? (
+          <div className="t-guide__progress" aria-hidden="true">
+            <i style={{ width: `${Math.round(progressOf(step) * 1000) / 10}%` }} />
+          </div>
+        ) : null}
         {isSheet ? (
           <SheetBar
-            open={sheetOpen}
+            open={!folded}
             present={present}
             waiting={waiting}
-            onToggle={() => {
-              if (sheetOpen) setMinimized(true);
-              else {
-                keptOpen.current = true;
-                setMinimized(false);
-                setSheetFold(false);
-              }
-            }}
-            title={present ? (waiting && typeof step.waitFor === 'object' && step.waitFor.hint ? `Your turn: ${step.waitFor.hint}` : resolveCopy(step.title, ctx)) : nudge.title}
+            onToggle={() => (folded ? open() : setMinimized(true))}
+            title={present ? (hint ? `Your turn: ${hint}` : resolveCopy(step.title, ctx)) : nudge.title}
           />
         ) : null}
-        {size === 'min' && !isSheet ? (
-          <button
-            type="button"
-            className="t-guide__pill"
-            onClick={() => {
-              keptOpen.current = true;
-              setMinimized(false);
-              setAutoSize('full');
-            }} data-testid="guide-pill" aria-label={present ? 'Show the presentation guide' : 'Show the guide'}>
-            <span className="t-guide__dot" data-on={present ? 'true' : undefined} aria-hidden="true" />
-            Guide
-          </button>
-        ) : (size === 'compact' || size === 'bar') && !isSheet ? (
-          <Compact rich={size === 'compact'} present={present} waiting={waiting} onExpand={() => {
-              keptOpen.current = true;
-              setAutoSize('full');
-            }} primaryRef={primaryRef} nudge={nudge} />
-        ) : !isSheet || sheetOpen ? (
+        {!isSheet && folded ? (
+          <Strip present={present} waiting={waiting} hint={hint} onOpen={open} primaryRef={primaryRef} nudge={nudge} />
+        ) : !folded ? (
           present ? (
             <PresentBody
               step={step}
               ctx={ctx}
-              waiting={waiting}
+              hint={hint}
               missing={targets.length > 0 && anchor.status === 'missing'}
               onShowMe={showMe}
               canShow={!!anchor.el}
@@ -570,65 +510,48 @@ function SheetBar({ open, present, onToggle, title, waiting }: { open: boolean; 
   );
 }
 
-/**
- * When no corner has room for the whole Guide: compact (the title and the why, with the action)
- * or a one-line bar (what to do now). The expand button shows everything, over the page.
- */
-function Compact({
-  rich,
+/** Desktop, folded: one line that says where the presentation is (or what to try) and the next action. */
+function Strip({
   present,
   waiting,
-  onExpand,
+  hint,
+  onOpen,
   primaryRef,
   nudge,
 }: {
-  rich: boolean;
   present: boolean;
   waiting: boolean;
-  onExpand: () => void;
-  primaryRef: React.RefObject<HTMLButtonElement>;
+  hint: string | undefined;
+  onOpen: () => void;
+  primaryRef: RefObject<HTMLButtonElement>;
   nudge: ReturnType<typeof nudgeFor>;
 }) {
   const tour = useTour();
   const { step, ctx } = tour;
-  const hint = waiting && typeof step.waitFor === 'object' ? step.waitFor.hint : undefined;
-  const title = present ? resolveCopy(step.title, ctx) : nudge.title;
-  const body = present ? resolveCopy(step.body, ctx) : nudge.body;
+  const ch = chapterById(step.chapter);
   return (
-    <div className={`t-guide__compact${rich ? ' t-guide__compact--rich' : ''}`} data-testid="guide-compact">
-      <span className="t-guide__compacttext">
-        <span className="t-guide__eyebrow">{present ? (hint ? `Your turn: ${hint}` : chapterLabel(step.chapter)) : 'Try it'}</span>
-        <span className="t-guide__compacttitle" data-testid="guide-title">
-          {present && hint && !rich ? sentence(hint) : title}
+    <div className="t-guide__strip" data-testid="guide-strip">
+      <span className="t-guide__dot" data-on={present ? 'true' : undefined} aria-hidden="true" />
+      <span className="t-guide__striptext">
+        <span className="t-guide__stripk">{present ? `${chapterLabel(step.chapter)}, ${ch.title}` : 'Try it'}</span>
+        <span className="t-guide__stripv" data-testid="guide-title">
+          {present ? (hint ? `Your turn: ${hint}` : resolveCopy(step.title, ctx)) : nudge.title}
         </span>
-        {rich ? <span className="t-guide__compactbody">{body}</span> : null}
       </span>
       {present ? (
         waiting ? (
-          <Button size="sm" variant="ghost" onClick={tour.skip}>
+          <Button size="sm" variant="secondary" onClick={tour.skip}>
             Skip this step
           </Button>
         ) : (
-          <Button ref={primaryRef} size="sm" variant="primary" onClick={() => tour.next() || tour.skip()} disabled={!tour.isReady}>
+          <Button ref={primaryRef} size="sm" variant="primary" onClick={() => tour.next() || tour.skip()} disabled={!tour.isReady} iconRight={<IconArrowRight size={14} />}>
             Next
           </Button>
         )
       ) : (
-        <ResumeButton size="sm" short />
+        <ResumeButton size="sm" />
       )}
-      <IconButton size="sm" label="Show the whole guide" tooltip={false} title="Show the whole guide" icon={<IconChevronUp size={14} />} onClick={onExpand} />
-    </div>
-  );
-}
-
-const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-function Head({ picker, onMinimize }: { picker: React.ReactNode; onMinimize: () => void }) {
-  return (
-    <div className="t-guide__head t-guide__head--row">
-      {picker}
-      <span className="t-guide__spacer" />
-      <IconButton size="sm" label="Minimize" tooltip={false} title="Minimize" icon={<IconMinus size={14} />} onClick={onMinimize} data-testid="guide-minimize" />
+      <IconButton size="sm" label="Show the guide" tooltip={false} title="Show the guide" icon={<IconChevronUp size={16} />} onClick={onOpen} data-testid="guide-expand" />
     </div>
   );
 }
@@ -636,7 +559,7 @@ function Head({ picker, onMinimize }: { picker: React.ReactNode; onMinimize: () 
 function PresentBody({
   step,
   ctx,
-  waiting,
+  hint,
   missing,
   onShowMe,
   canShow,
@@ -647,12 +570,12 @@ function PresentBody({
 }: {
   step: Step;
   ctx: TourCtx;
-  waiting: boolean;
+  hint: string | undefined;
   missing: boolean;
   onShowMe: () => void;
   canShow: boolean;
   onMinimize: () => void;
-  primaryRef: React.RefObject<HTMLButtonElement>;
+  primaryRef: RefObject<HTMLButtonElement>;
   sheet: boolean;
   calm: boolean;
 }) {
@@ -665,105 +588,117 @@ function PresentBody({
   const body = resolveCopy(step.body, ctx);
   const moreText = step.more ? resolveCopy(step.more, ctx) : null;
   const actions = typeof step.actions === 'function' ? step.actions(ctx) : step.actions;
-  const hint = waiting && typeof step.waitFor === 'object' ? step.waitFor.hint : undefined;
   const readyLabel = step.readyLabel ? resolveCopy(step.readyLabel, ctx) : 'Working…';
-  const lastOfChapter = pos.n === pos.of;
-  const cp = lastOfChapter && step.checkpoint ? step.checkpoint(ctx) : null;
+  const cp = pos.n === pos.of && step.checkpoint ? step.checkpoint(ctx) : null;
+  // The dock's Back / Next match the scenes' bottom bar; the phone sheet uses small buttons.
+  const size = sheet ? 'sm' : 'md';
+  const explore = (
+    <Button variant="ghost" size="sm" className="t-guide__exitbtn" onClick={tour.exit} data-testid="guide-explore">
+      Explore on your own
+    </Button>
+  );
   return (
-    <>
+    <div className="t-guide__grid">
       {sheet ? null : (
-        <Head
-          onMinimize={onMinimize}
-          picker={
-            <ChapterPicker
-              current={step.chapter}
-              trigger={
-                <button type="button" className="t-guide__chapter" data-testid="guide-chapters" aria-label={`${chapterLabel(step.chapter)}: ${ch.title}. All chapters`}>
-                  <span className="t-guide__chapternum">{chapterLabel(step.chapter)}</span>
-                  <span className="t-guide__chaptertitle">{ch.title}</span>
-                  <IconChevronDown size={14} className="t-guide__chev" />
-                </button>
-              }
-            />
-          }
-        />
-      )}
-      <div className="t-guide__body">
-        <motion.div key={step.id} initial={calm ? { opacity: 0 } : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}>
+        <div className="t-guide__meta">
+          <ChapterPicker
+            current={step.chapter}
+            trigger={
+              <button type="button" className="t-guide__chapter" data-testid="guide-chapters" aria-label={`${chapterLabel(step.chapter)}: ${ch.title}. All chapters`}>
+                <span className="t-guide__chapternum">{chapterLabel(step.chapter)}</span>
+                <span className="t-guide__chaptertitle">{ch.title}</span>
+                <IconChevronDown size={14} className="t-guide__chev" />
+              </button>
+            }
+          />
           <span className="t-guide__count">
             Step {pos.n} of {pos.of}
           </span>
-          <h2 className="t-guide__title" data-testid="guide-title">
-            {title}
-          </h2>
-          <p className="t-guide__text">{body}</p>
-          {!tour.isReady && !waiting && !missing && !(actions && actions.length > 0) ? (
-            <p className="t-guide__wait" role="status">
-              <span className="ds-spinner" aria-hidden="true" />
-              {readyLabel}
-            </p>
-          ) : null}
-          {missing ? <p className="t-guide__missing">That part of the page isn’t on screen right now. Carry on when you’re ready.</p> : null}
-          {hint ? (
-            <p className="t-guide__turn" role="status" data-testid="guide-turn">
-              <span className="t-guide__turnk">Your turn:</span> <span>{hint}</span>
-              {canShow ? (
-                <button type="button" className="t-guide__showme" onClick={onShowMe}>
-                  Show me
-                </button>
-              ) : null}
-            </p>
-          ) : null}
+          <span className="t-guide__spacer" />
+          {explore}
+          <IconButton size="sm" label="Minimize" tooltip={false} title="Minimize" icon={<IconMinus size={14} />} onClick={onMinimize} data-testid="guide-minimize" />
+        </div>
+      )}
+      <motion.div
+        key={step.id}
+        className="t-guide__main"
+        initial={calm ? { opacity: 0 } : { opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
+      >
+        <h2 className="t-guide__title" data-testid="guide-title">
+          {title}
+        </h2>
+        <p className="t-guide__text">
+          {body}
           {moreText ? (
-            <div className="t-guide__more">
+            <>
+              {' '}
               <button type="button" className="t-guide__morebtn" onClick={() => setMore((v) => !v)} aria-expanded={more}>
-                <IconChevronRight size={14} className="t-guide__chev" data-open={more ? 'true' : 'false'} />
                 How this works
+                <IconChevronRight size={14} className="t-guide__chev" data-open={more ? 'true' : 'false'} />
               </button>
-              <AnimatePresence initial={false}>
-                {more ? (
-                  <motion.p
-                    className="t-guide__moretext"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      duration: calm ? 0 : 0.18,
-                      ease: [0.2, 0, 0, 1],
-                    }}
-                  >
-                    {moreText}
-                  </motion.p>
-                ) : null}
-              </AnimatePresence>
-            </div>
+            </>
           ) : null}
-          {cp ? (
-            <p className="t-guide__checkpoint" data-testid="guide-checkpoint">
-              <span className="t-guide__cpvalue">
-                {cp.prefix ?? ''}
-                {cp.decimals ? cp.value.toFixed(cp.decimals) : cp.value.toLocaleString('en-US')}
-                {cp.suffix ?? ''}
-              </span>{' '}
-              <span>{cp.label}</span>
-              {cp.sub ? <span className="t-guide__cpsub">{cp.sub}</span> : null}
-            </p>
+        </p>
+        <AnimatePresence initial={false}>
+          {more && moreText ? (
+            <motion.p
+              className="t-guide__moretext"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: calm ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
+            >
+              {moreText}
+            </motion.p>
           ) : null}
-        </motion.div>
-      </div>
-      <div className="t-guide__foot t-guide__foot--row">
-        <Button variant="ghost" size="sm" className="t-guide__exitbtn" onClick={tour.exit} data-testid="guide-explore">
-          Explore on your own
-        </Button>
-        <span className="t-guide__spacer" />
-        {tour.canGoBack ? <IconButton size="sm" variant="ghost" label="Back" title="Back (←)" tooltip={false} icon={<IconArrowLeft size={14} />} onClick={tour.back} data-testid="guide-back" /> : null}
+        </AnimatePresence>
+        {!tour.isReady && !hint && !missing && !(actions && actions.length > 0) ? (
+          <p className="t-guide__wait" role="status">
+            <span className="ds-spinner" aria-hidden="true" />
+            {readyLabel}
+          </p>
+        ) : null}
+        {missing ? <p className="t-guide__missing">That part of the page isn’t on screen right now. Carry on when you’re ready.</p> : null}
+        {cp ? (
+          <p className="t-guide__checkpoint" data-testid="guide-checkpoint">
+            <span className="t-guide__cpvalue">
+              {cp.prefix ?? ''}
+              {cp.decimals ? cp.value.toFixed(cp.decimals) : cp.value.toLocaleString('en-US')}
+              {cp.suffix ?? ''}
+            </span>{' '}
+            <span>{cp.label}</span>
+            {cp.sub ? <span className="t-guide__cpsub">{cp.sub}</span> : null}
+          </p>
+        ) : null}
+      </motion.div>
+      {hint ? (
+        <p className="t-guide__turn" role="status" data-testid="guide-turn">
+          <span>
+            <span className="t-guide__turnk">Your turn:</span> {hint}
+          </span>
+          {canShow ? (
+            <button type="button" className="t-guide__showme" onClick={onShowMe}>
+              Show me
+            </button>
+          ) : null}
+        </p>
+      ) : null}
+      <div className="t-guide__nav">
+        {sheet ? explore : null}
+        {tour.canGoBack ? (
+          <Button variant="ghost" size={size} icon={<IconArrowLeft size={16} />} onClick={tour.back} title="Back (←)" data-testid="guide-back">
+            Back
+          </Button>
+        ) : null}
         {actions && actions.length > 0 && tour.isReady ? (
           actions.map((a, i) => (
             <Button
               key={a.label}
               ref={a.variant === 'primary' || i === actions.length - 1 ? primaryRef : undefined}
               variant={a.variant === 'primary' ? 'primary' : 'secondary'}
-              size="sm"
+              size={size}
               onClick={() => {
                 if (a.apply) tour.setCtx(a.apply(ctx));
                 tour.goto(typeof a.to === 'function' ? a.to(ctx) : a.to);
@@ -772,28 +707,27 @@ function PresentBody({
               {a.label}
             </Button>
           ))
-        ) : waiting || (!tour.isReady && !missing) ? (
-          <Button variant="secondary" size="sm" onClick={tour.skip} data-testid="guide-skip">
+        ) : hint || (!tour.isReady && !missing) ? (
+          <Button variant="secondary" size={size} onClick={tour.skip} data-testid="guide-skip">
             Skip this step
           </Button>
         ) : (
-          <Button ref={primaryRef} variant="primary" size="sm" onClick={tour.skip} iconRight={<IconArrowRight size={14} />} title="Next (→)" data-testid="guide-next">
+          <Button ref={primaryRef} variant="primary" size={size} onClick={tour.skip} iconRight={<IconArrowRight size={16} />} title="Next (→)" data-testid="guide-next">
             Next
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
-function ResumeButton({ size = 'md', block, short }: { size?: 'sm' | 'md'; block?: boolean; short?: boolean }) {
+function ResumeButton({ size = 'md', short }: { size?: 'sm' | 'md'; short?: boolean }) {
   const tour = useTour();
   const label = tour.status === 'idle' ? (short ? 'Start' : 'Start the presentation') : tour.finished ? (short ? 'Replay' : 'Replay the presentation') : short ? 'Resume' : 'Resume presentation';
   return (
     <Button
       variant="primary"
       size={size}
-      block={block}
       icon={<IconPlay size={14} />}
       data-testid="guide-resume"
       onClick={() => {
@@ -810,11 +744,21 @@ function ResumeButton({ size = 'md', block, short }: { size?: 'sm' | 'md'; block
 function ExploreBody({ nudge, canShow, onShowMe, onMinimize, sheet }: { nudge: ReturnType<typeof nudgeFor>; canShow: boolean; onShowMe: () => void; onMinimize: () => void; sheet: boolean }) {
   const tour = useTour();
   const left = tour.status === 'explore' && !tour.finished ? tour.step.chapter : null;
-  return (
+  const where: ReactNode = left ? (
     <>
+      You left at chapter {chapterById(left).part}: {chapterById(left).title}
+    </>
+  ) : tour.finished ? (
+    'You finished it. Everything is unlocked.'
+  ) : (
+    `${CHAPTERS.length} chapters, about ${Math.round(CHAPTERS.reduce((a, c) => a + c.targetSec, 0) / 60)} minutes`
+  );
+  return (
+    <div className="t-guide__grid">
       {sheet ? null : (
-        <div className="t-guide__head t-guide__head--row">
-          <span className="t-guide__mode">Guide</span>
+        <div className="t-guide__meta">
+          <span className="t-guide__mode">Try it</span>
+          <span className="t-guide__count">{where}</span>
           <span className="t-guide__spacer" />
           <ChapterPicker
             current={left}
@@ -827,8 +771,8 @@ function ExploreBody({ nudge, canShow, onShowMe, onMinimize, sheet }: { nudge: R
           <IconButton size="sm" label="Minimize" tooltip={false} title="Minimize" icon={<IconMinus size={14} />} onClick={onMinimize} data-testid="guide-minimize" />
         </div>
       )}
-      <div className="t-guide__body">
-        <span className="t-guide__try">Try it</span>
+      <div className="t-guide__main">
+        {sheet ? <span className="t-guide__try">Try it</span> : null}
         <h2 className="t-guide__title t-guide__title--sm" data-testid="guide-title">
           {nudge.title}
         </h2>
@@ -844,20 +788,10 @@ function ExploreBody({ nudge, canShow, onShowMe, onMinimize, sheet }: { nudge: R
           ) : null}
         </p>
       </div>
-      <div className="t-guide__foot t-guide__foot--row">
-        <ResumeButton size="sm" />
-        <span className="t-guide__left">
-          {left ? (
-            <>
-              You left at chapter {chapterById(left).part}: {chapterById(left).title}
-            </>
-          ) : tour.finished ? (
-            'You finished it. Everything is unlocked.'
-          ) : (
-            `${CHAPTERS.length} chapters, about ${Math.round(CHAPTERS.reduce((a, c) => a + c.targetSec, 0) / 60)} minutes`
-          )}
-        </span>
+      <div className="t-guide__nav">
+        {sheet ? <span className="t-guide__left">{where}</span> : null}
+        <ResumeButton size={sheet ? 'sm' : 'md'} />
       </div>
-    </>
+    </div>
   );
 }

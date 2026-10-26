@@ -279,18 +279,18 @@
   }
 }
 
-/* ---------------------------------------------------------------- the Guide */
+/* ---------------------------------------------------------------- the Guide
+   Docked, never floating. Desktop: a bar along the bottom of the content column, the product's
+   counterpart to the scenes' bottom bar. Phones: a bottom sheet. The page and every overlay keep
+   clear of it (end of this section), so it covers nothing. */
 .t-guide {
   position: fixed;
   z-index: 910;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  width: min(380px, calc(100vw - 32px));
-  max-height: 60vh;
   background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-2);
+  border-top: 1px solid var(--border);
   color: var(--text);
   animation: t-guide-in var(--dur-base, 180ms) var(--ease-enter);
 }
@@ -304,70 +304,82 @@
     animation: none;
   }
 }
-.t-guide--br {
-  right: 16px;
-  bottom: 16px;
+.t-guide--dock {
+  left: var(--sl-content-left, var(--sidebar-w));
+  right: 0;
+  max-height: 50vh;
 }
-.t-guide--tr {
-  right: 16px;
-  top: calc(var(--topbar-h) + 16px);
+
+/* The presentation's progress, along the top edge (as on the scenes). */
+.t-guide__progress {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
 }
-.t-guide--bl {
-  left: calc(var(--sl-content-left, 0px) + 16px);
-  bottom: 16px;
+.t-guide__progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur-slow) var(--ease-enter);
 }
-.t-guide--min {
-  width: auto;
-  border-radius: var(--radius-full);
+
+.t-guide__grid {
+  display: grid;
+  min-height: 0;
+  overflow-y: auto;
 }
-.t-guide--compact {
-  width: min(380px, calc(100vw - 32px));
+.t-guide--dock .t-guide__grid {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'meta meta meta'
+    'main turn nav';
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-2) var(--page-gutter) var(--space-4);
 }
-/* Explore mode is the same box, smaller. */
-.t-guide.is-explore:not(.t-guide--sheet) {
-  width: min(340px, calc(100vw - 32px));
+.t-guide--dock .t-guide__grid:not(:has(> .t-guide__turn)) {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'meta meta'
+    'main nav';
 }
-.t-guide__head.t-guide__head--row {
+.t-guide__meta {
+  grid-area: meta;
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 32px;
+}
+.t-guide__main {
+  grid-area: main;
+  min-width: 0;
+  max-width: 760px;
+}
+.t-guide__nav {
+  grid-area: nav;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }
 .t-guide__spacer {
   flex: 1 1 auto;
 }
-.t-guide__title--sm {
-  font-size: 15px;
-  line-height: 20px;
-}
-.t-guide__foot.t-guide__foot--row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-}
-.t-guide__foot--row .t-guide__left {
-  min-width: 0;
-  text-align: left;
-}
 
-.t-guide__head {
-  display: grid;
-  gap: 2px;
-  padding: var(--space-3) var(--space-3) var(--space-2) var(--space-4);
-  border-bottom: 1px solid var(--border);
-}
 .t-guide__mode {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
-  color: var(--text-tertiary);
+  color: var(--accent-text);
 }
 .t-guide__chapter {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
-  margin: 0 0 0 calc(-1 * var(--space-2));
+  margin-left: calc(-1 * var(--space-2));
   padding: 4px var(--space-2);
   border: 0;
   border-radius: var(--radius-sm);
@@ -410,25 +422,24 @@
   max-height: min(70vh, 560px);
   padding: var(--space-2) var(--space-1);
 }
-
-.t-guide__body {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--space-3) var(--space-4) var(--space-3);
-}
-.t-guide__count,
-.t-guide__try {
-  display: block;
-  margin-bottom: 4px;
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
+.t-guide__count {
+  flex: none;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border);
+  font-size: var(--text-sm);
+  line-height: 18px;
   color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .t-guide__try {
+  display: block;
+  margin-bottom: 2px;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
   color: var(--accent-text);
 }
+
 .t-guide__title {
   margin: 0;
   font-size: var(--text-lg);
@@ -437,80 +448,55 @@
   color: var(--text);
   text-wrap: balance;
 }
+.t-guide__title--sm {
+  font-size: 15px;
+  line-height: 20px;
+}
 .t-guide__text {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   font-size: var(--text-md);
   line-height: 20px;
   color: var(--text-secondary);
 }
-.t-guide__missing {
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-sm);
-  color: var(--text-tertiary);
-}
-.t-guide__turn {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px var(--space-1);
-  margin: var(--space-3) 0 0;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--accent-subtle);
-  font-size: var(--text-sm);
-  line-height: 18px;
-  color: var(--text);
-}
-.t-guide__turnk {
-  font-weight: var(--weight-semibold);
-  color: var(--accent-text);
-}
-.t-guide__showme {
-  margin-left: auto;
+.t-guide__morebtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
   padding: 0;
   border: 0;
   background: none;
   font: inherit;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
-  color: var(--accent-text);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-.t-guide__showme:hover {
-  color: var(--accent-hover);
-}
-.t-guide__showme--inline {
-  margin-left: 0;
+  color: var(--text);
   white-space: nowrap;
-}
-.t-guide__more {
-  margin-top: var(--space-2);
-}
-.t-guide__morebtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: -2px;
-  padding: 2px;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: none;
-  font: inherit;
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--text-secondary);
   cursor: pointer;
 }
 .t-guide__morebtn:hover {
-  color: var(--text);
+  color: var(--accent-text);
+}
+.t-guide__morebtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 .t-guide__moretext {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   overflow: hidden;
   font-size: var(--text-sm);
   line-height: 19px;
+  color: var(--text-secondary);
+}
+.t-guide__missing,
+.t-guide__wait {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+.t-guide__wait {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--text-secondary);
 }
 .t-guide__checkpoint {
@@ -518,9 +504,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 2px var(--space-1);
-  margin: var(--space-3) 0 0;
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--border-row);
+  margin: var(--space-2) 0 0;
   font-size: var(--text-sm);
   line-height: 18px;
   color: var(--text-secondary);
@@ -535,107 +519,83 @@
   color: var(--text-tertiary);
 }
 
-.t-guide__foot {
-  display: grid;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3) var(--space-3);
-  border-top: 1px solid var(--border);
-}
-.t-guide__wait {
+/* "Your turn": what to do on the page, and Show me. */
+.t-guide__turn {
+  grid-area: turn;
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: var(--space-3) 0 0;
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-}
-/* Ghost buttons at the panel's edge line their text up with the body. */
-.t-guide__exitbtn {
-  margin-left: calc(-1 * var(--space-2));
-}
-.t-guide__left {
-  font-size: var(--text-xs);
-  line-height: 16px;
-  text-align: center;
-  color: var(--text-tertiary);
-}
-.t-guide.is-explore .t-guide__body {
-  padding-top: var(--space-3);
-  padding-bottom: var(--space-3);
-}
-
-/* compact: one row */
-.t-guide__compact {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 58px;
-  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
-}
-.t-guide__compacttext {
-  display: grid;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.t-guide__compact--rich {
-  align-items: flex-start;
-  padding-top: var(--space-3);
-  padding-bottom: var(--space-3);
-}
-.t-guide__compact--rich .t-guide__eyebrow {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.t-guide__compactbody {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  margin-top: 2px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px var(--space-3);
+  max-width: 380px;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-subtle);
   font-size: var(--text-sm);
   line-height: 18px;
-  color: var(--text-secondary);
-}
-.t-guide__eyebrow {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  line-height: 16px;
-  color: var(--text-tertiary);
-}
-.t-guide__compacttitle,
-.t-guide__bartitle {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--text-md);
-  font-weight: var(--weight-semibold);
-  line-height: 20px;
   color: var(--text);
 }
-
-/* minimized: the pill */
-.t-guide__pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 32px;
-  padding: 0 var(--space-3);
+.t-guide__turnk {
+  font-weight: var(--weight-semibold);
+  color: var(--accent-text);
+}
+.t-guide__showme {
+  padding: 0;
   border: 0;
-  border-radius: var(--radius-full);
   background: none;
   font: inherit;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
-  color: var(--text);
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
   cursor: pointer;
 }
-.t-guide__pill:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
+.t-guide__showme:hover {
+  color: var(--accent-hover);
+}
+.t-guide__left {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+/* Ghost buttons at the edge line their text up with the body. */
+.t-guide__exitbtn {
+  margin-right: calc(-1 * var(--space-1));
+}
+
+/* Folded (desktop): one line, where the presentation is and the next action. */
+.t-guide__strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--page-gutter);
+}
+.t-guide__striptext {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.t-guide__stripk {
+  flex: none;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+.t-guide__stripv {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--text);
 }
 .t-guide__dot {
+  flex: none;
   width: 8px;
   height: 8px;
   border-radius: var(--radius-full);
@@ -645,16 +605,39 @@
   background: var(--accent);
 }
 
-/* phones: a bottom sheet with a bar that folds and unfolds it */
+/* Phones: a bottom sheet with a bar that folds and unfolds it. */
 .t-guide--sheet {
   left: 0;
   right: 0;
-  bottom: 0;
-  width: auto;
   max-height: 58vh;
+  border: 1px solid var(--border);
   border-width: 1px 0 0;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-2);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.t-guide--sheet .t-guide__progress {
+  display: none;
+}
+.t-guide--sheet .t-guide__grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'main'
+    'turn'
+    'nav';
+  row-gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) 0;
+}
+.t-guide--sheet .t-guide__turn {
+  max-width: none;
+}
+.t-guide--sheet .t-guide__nav {
+  margin: 0 calc(-1 * var(--space-4));
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.t-guide--sheet .t-guide__nav > :first-child:not(:only-child) {
+  margin-right: auto;
 }
 .t-guide__bar {
   display: flex;
@@ -662,6 +645,9 @@
   gap: var(--space-1);
   min-height: 52px;
   padding: 0 var(--space-2) 0 0;
+}
+.t-guide--sheet.is-open .t-guide__bar {
+  border-bottom: 1px solid var(--border);
 }
 .t-guide__bartoggle {
   display: flex;
@@ -677,35 +663,44 @@
   color: inherit;
   cursor: pointer;
 }
-.t-guide--sheet.is-open .t-guide__bar {
-  border-bottom: 1px solid var(--border);
-}
 .t-guide__barlabel {
   display: grid;
   flex: 1 1 auto;
   min-width: 0;
 }
-.t-guide--sheet .t-guide__body {
-  padding-top: var(--space-3);
+.t-guide__eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: 16px;
+  color: var(--text-tertiary);
 }
-.t-guide--sheet .t-guide__foot {
-  padding-bottom: var(--space-2);
-}
-.t-guide--sheet .t-guide__count {
-  display: none;
+.t-guide__bartitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  color: var(--text);
 }
 
-/* The page keeps room for the Guide at the bottom, and toasts stack above it. */
+/* Everything keeps clear of the Guide: the page's end, focus scrolling, toasts, dialogs (centred
+   in the space above it), drawers and sticky action bars (var(--sl-guide-h) in their own CSS). */
+html[data-sl-guide] {
+  scroll-padding-bottom: calc(var(--sl-guide-h, 0px) + 16px);
+}
 html[data-sl-guide] #main-content {
   padding-bottom: calc(var(--sl-guide-h, 0px) + 32px);
 }
-html[data-sl-guide='br'] .ds-toasts,
-html[data-sl-guide='br'] .sl-toasts,
-html[data-sl-guide='sheet'] .ds-toasts,
-html[data-sl-guide='sheet'] .sl-toasts {
-  bottom: calc(var(--sl-guide-h, 0px) + 28px);
+html[data-sl-guide] .ds-toasts,
+html[data-sl-guide] .sl-toasts {
+  bottom: calc(var(--sl-guide-h, 0px) + 20px);
 }
-html[data-sl-guide='min'] .ds-toasts,
-html[data-sl-guide='min'] .sl-toasts {
-  bottom: 64px;
+html[data-sl-guide] .ds-dialog {
+  top: calc((100dvh - var(--sl-guide-h, 0px)) / 2);
+  max-height: min(84vh, 760px, calc(100dvh - var(--sl-guide-h, 0px) - 32px));
+}
+html[data-sl-guide] .ds-drawer {
+  bottom: var(--sl-guide-h, 0px);
 }

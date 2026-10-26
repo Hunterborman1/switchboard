@@ -103,11 +103,11 @@ test.describe('presentation state, exits and the Guide', () => {
     test.skip(phone(page), 'phones fold the sheet instead of minimizing');
     await go(page, '/app/overview');
     await guide(page).getByTestId('guide-minimize').click();
-    await expect(page.getByTestId('guide-pill')).toBeVisible();
+    await expect(page.getByTestId('guide-strip')).toBeVisible();
     await page.reload();
-    await expect(page.getByTestId('guide-pill')).toBeVisible();
-    await page.getByTestId('guide-pill').click();
-    await expect(guide(page).getByTestId('guide-title')).toBeVisible();
+    await expect(page.getByTestId('guide-strip')).toBeVisible();
+    await page.getByTestId('guide-expand').click();
+    await expect(guide(page).getByTestId('guide-nudge')).toBeVisible();
   });
 
   test('keyboard only: scenes into the product, and → through a product step', async ({ page }) => {
