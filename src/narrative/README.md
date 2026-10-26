@@ -6,7 +6,7 @@ share with the site pages. Scenes are pages of the same product. They use the de
 
 ## Read first
 
-- `Scene.tsx`: the scene frame. The 52 px top bar shows the mark, the chapter and "4 of 10". Its
+- `Scene.tsx`: the scene frame. The 52 px top bar shows the mark, the chapter and "Chapter 4 of 10". Its
   right end is a slot for the chapter menu and the timer (`src/tour/hud/sceneSlot.tsx`). The
   bottom bar has a key hint, Back and Next, and a thin progress line.
 - `components.tsx`: the shared parts.
@@ -29,11 +29,13 @@ Page roots use the classes `ds-app sl-n n-page`. Walkthrough UI drawn over the p
 | Scene | Chapter | What is on screen |
 |---|---|---|
 | Signal | 1 · Every call is a signal | The QBR quote at 06:00, where feedback gets lost (labelled an assumption), and what Signal Loop makes of it |
-| Real | 2 · Built in 48 hours: what's real | The byline and GitHub link, then what is built beside what is simulated, each with its reason |
-| Why | 3 · Why this option | The three options with a verdict each, and how this one is built |
+| Jobs | 2 · Jobs to be done, today and tomorrow | The four people and their jobs, then today's workflow and tomorrow's as two rows of steps |
+| Built | 3 · What I built, and why | The byline and GitHub link, the three options with a verdict each, how it's built, what's real and what's simulated |
 | Platform | 4 · A call comes in (first step) | In, Decide, Analyse, Out: the platform on one screen |
-| Production | 9 · Making it real | Roll it out, grow it, run it: three columns side by side |
-| Scorecard | 10 · Scorecard | Real numbers from the viewer's workspace and Agent Ops |
+| Hood | 8 · Under the hood (first step) | How the prompts work, when something fails, how the data is shaped: three columns |
+| Trust | 9 · Earning trust: rollout and adoption | Roll it out, helpful not replacing, reasons to trust it: three columns |
+| Future | 10 · The next 12–18 months (first step) | What comes next, what changes the game, the path to production: three columns |
+| Scorecard | 10 · The next 12–18 months (last step) | Real numbers from the viewer's workspace and Agent Ops |
 
 ## How it connects
 
@@ -41,7 +43,7 @@ Page roots use the classes `ds-app sl-n n-page`. Walkthrough UI drawn over the p
   in `src/tour/script/steps.ts` picks it.
 - On screens 1,200 px and wider, the chapter rail (`src/tour/hud/Hud.tsx`) sits left of the
   scene. The bars and the rail stay mounted between scenes. Only the stage cross-fades.
-- Production and Scorecard read live numbers through `src/tour/api.ts`.
+- Future and Scorecard read live numbers through `src/tour/api.ts`.
 
 ## Change it safely
 
