@@ -29,7 +29,7 @@ export function introFor(ctx: Pick<TourCtx, 'path' | 'fileFormat'>): { title: st
   const f = ctx.fileFormat ?? null;
   const noun = f === 'eml' ? 'email thread' : f === 'chat' ? 'Slack export' : f === 'md' ? 'set of notes' : 'transcript';
   const p: TourPath = ctx.path;
-  if (p === 'main') return { title: 'Run the pipeline', body: 'A real QBR: thirteen minutes of conversation with product signals buried in it.' };
+  if (p === 'main') return { title: 'Run the pipeline', body: 'A full QBR: thirteen minutes of talk, with product feedback buried in it.' };
   if (p === 'clean') return { title: 'Clean notes: the easy case', body: 'A tidy CSM template. A good baseline before the messy ones.' };
   if (p === 'messy') {
     if (f === 'chat') return { title: 'A Slack export. Good test.', body: 'Handles instead of speakers, threads, shorthand and half-sentences. Let’s see if it stays honest.' };
@@ -38,7 +38,7 @@ export function introFor(ctx: Pick<TourCtx, 'path' | 'fileFormat'>): { title: st
   }
   if (p === 'security') return { title: 'This one is hostile', body: `Somebody planted an instruction in this ${noun}. Watch what the system does with it.` };
   if (p === 'negative') return { title: 'A friendly check-in', body: 'Pleasant, and nothing actionable in it. The right output is nothing.' };
-  return { title: f === 'eml' ? 'A healthcare email, full of PHI' : 'A healthcare call, full of PHI', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model.' };
+  return { title: f === 'eml' ? 'A healthcare email, full of patient data' : 'A healthcare call, full of patient data', body: 'Patient names, dates of birth, member IDs. Watch what reaches the model.' };
 }
 
 export const runSettled = (run: RunDetail | null) => !!run && ['completed', 'failed', 'awaiting_review'].includes(run.run.status);
@@ -59,29 +59,29 @@ export function introTitle(ctx: TourCtx): string {
 /** call.watch: "real execution" is only true live; a replay says what it is. The latency story starts here. */
 export function introCopy(ctx: TourCtx): string {
   if (ctx.runReused) {
-    return 'This file was already run, so this is that earlier run, revealed from its saved steps. Nothing new is executing.';
+    return 'This file was already run, so this is that earlier run, shown from its saved steps. Nothing new is running.';
   }
   if (ctx.run?.run.mode === 'replay') {
-    return 'A recorded real execution, replayed at its recorded speed and labelled as a replay. The clock shows its timing.';
+    return 'A recording of a real run, played back at its recorded speed and labelled as a replay. The clock shows its timing.';
   }
   if (ctx.run && runSettled(ctx.run)) {
-    return 'That clock is real: the real execution, not an animation. A whole call takes seconds; the last step shows why.';
+    return 'That clock is real. This is the real run, not an animation. A whole call takes seconds, and the last step shows why.';
   }
-  return 'The real execution, not an animation. Watch the clock: a whole call takes seconds, not minutes.';
+  return 'This is the real run, not an animation. Watch the clock: a whole call takes seconds, not minutes.';
 }
 
 /** review.edit: once the edit form is open, say what saving needs. */
 export function editCopy(): string {
   const formOpen = typeof document !== 'undefined' && !!document.querySelector('[data-tour="review.editform"]');
-  if (formOpen) return 'Change the type, area or severity, then Save and send. The fix is saved as labelled data with a before/after diff.';
-  return 'Press E or click Edit. Your fix is saved as labelled data, with a before/after audit diff.';
+  if (formOpen) return 'Change the type, area or severity, then Save and send. Your fix is saved as a labelled example, with the before and after.';
+  return 'Press E or click Edit. Your fix is saved as a labelled example, with the before and after.';
 }
 
 export function redactCopy(ctx: TourCtx): string {
   const run = ctx.run;
   if (!run) return 'Names, phones and health details are swapped for tokens before any model sees a word.';
   const n = run.redactions.reduce((a, r) => a + r.count, 0);
-  if (n === 0) return 'Nothing personal to redact in this one. When there is, it’s tokenised before any model sees it.';
+  if (n === 0) return 'Nothing personal to redact in this one. When there is, it’s swapped for a token before any model sees it.';
   const kinds = [...new Set(run.redactions.map((r) => r.kind))].slice(0, 3).join(', ');
   return `${plural(n, 'value')} redacted (${kinds}) before any model saw the text.`;
 }
@@ -97,14 +97,14 @@ export function screenCopy(ctx: TourCtx): { title: string; body: string } {
   const s = ctx.run?.screen;
   if (ctx.path === 'security' || s?.injection_suspected) {
     return {
-      title: 'Injection flagged, and kept inert',
-      body: 'Caught by the decision model and a code check. Treated as data: output stays schema-only, with an audit row.',
+      title: 'Hidden instruction flagged and made harmless',
+      body: 'Caught by the decision model and a code check. It’s handled as plain text, never followed, and logged.',
     };
   }
   if (ctx.path === 'negative' || s?.actionable === false) {
-    return { title: 'Read first, by a fast model', body: 'Friendly, nothing for the product team. The main pass that started alongside is discarded, so nothing gets invented.' };
+    return { title: 'Read first, by a fast model', body: 'Friendly, with nothing for the product team. The main read that started alongside is thrown away, so nothing gets invented.' };
   }
-  if (!s) return { title: 'Read first, by a fast model', body: 'What is it, what language, which analyses apply, is anyone steering the AI? One quick call answers.' };
+  if (!s) return { title: 'Read first, by a fast model', body: 'One quick call answers: what is it, what language, which analyses apply, and is anyone steering the AI?' };
   const kind = KIND[s.doc_kind ?? ''] ?? 'A conversation';
   const lang = LANGUAGE[s.language] ?? s.language.toUpperCase();
   const others = (s.analyses ?? []).filter((a) => a !== 'product_feedback').length;
@@ -118,13 +118,13 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
   const run = ctx.run;
   const n = run ? run.insights.length : null;
   if (ctx.path === 'negative' || n === 0) {
-    return { title: 'Nothing actionable, and that’s the right answer', body: 'Zero insights. A calm empty state. It doesn’t invent work to look busy.' };
+    return { title: 'Nothing actionable, and that’s the right answer', body: 'Zero insights. It doesn’t invent work to look busy.' };
   }
   const chunks = Number(run?.steps.find((x) => x.key === 'extract')?.detail?.chunks ?? 1);
-  const found = n != null ? `${plural(n, 'candidate insight')}, each with a verbatim quote.` : 'Every candidate carries a verbatim quote.';
+  const found = n != null ? `${plural(n, 'candidate insight')}, each with a word-for-word quote.` : 'Every candidate carries a word-for-word quote.';
   return {
-    title: 'Structured, quoted, typed',
-    body: `${found.charAt(0).toUpperCase()}${found.slice(1)}${chunks > 1 ? ` Read in ${chunks} parts at once.` : ''} No quote, no insight.`,
+    title: 'Insights, each with a quote',
+    body: `${found.charAt(0).toUpperCase()}${found.slice(1)}${chunks > 1 ? ` Read in ${chunks} parts at the same time.` : ''} No quote, no insight.`,
   };
 }
 
@@ -132,14 +132,14 @@ export function extractCopy(ctx: TourCtx): { title: string; body: string } {
 export function groundCopy(ctx: TourCtx): { title: string; body: string; more: string } {
   const run = ctx.run;
   const chunks = Number(run?.steps.find((x) => x.key === 'extract')?.detail?.chunks ?? 1);
-  const more = `The main model returns typed insights (type, summary, product area, severity, confidence) in a fixed schema, each with a verbatim quote${chunks > 1 ? `; this long file was read in ${chunks} parts at once` : ''}. The check is code, not the model: normalise both texts, try an exact match, then slide a window scored by edit distance; 0.90 or better passes. A quote that doesn’t match is dropped with its insight and counted, never shown as fact.`;
-  if (!run) return { title: 'Every quote, checked in code', body: 'Each insight carries the customer’s exact words. Code checks they are in the transcript; if not, the insight is dropped.', more };
+  const more = `The main model returns each insight in a fixed format: type, summary, product area, severity and confidence, plus a word-for-word quote.${chunks > 1 ? ` This long file was read in ${chunks} parts at once.` : ''} The check is code, not the model. It tidies both texts and tries an exact match. If that fails, it scores the closest span by how many characters differ. 0.90 or better passes. A quote that doesn’t match is dropped with its insight and counted, never shown as fact.`;
+  if (!run) return { title: 'Every quote, checked in code', body: 'Each insight carries the customer’s exact words. Code checks they’re in the transcript. If not, the insight is dropped.', more };
   const ev = allEvidence(run);
   const failed = ev.filter((e) => e.method === 'failed').length;
   const dropped = Math.max(run.run.droppedCount, run.insights.filter((i) => i.status === 'dropped_ungrounded').length, failed);
   const fuzzy = ev.filter((e) => e.method === 'fuzzy').length;
   const grounded = ev.length - failed;
-  if (ev.length === 0) return { title: 'Nothing to check', body: 'No insights means no quotes to check. The check still ran, and passed trivially.', more };
+  if (ev.length === 0) return { title: 'Nothing to check', body: 'No insights means no quotes to check. The check still ran, with nothing to fail.', more };
   if (dropped > 0) {
     return {
       title: dropped === 1 ? 'One quote didn’t survive' : `${dropped} quotes didn’t survive`,
@@ -150,7 +150,7 @@ export function groundCopy(ctx: TourCtx): { title: string; body: string; more: s
   const kept = run.insights.filter((i) => i.gate !== 'dropped' && i.status !== 'dropped_ungrounded').length;
   return {
     title: `${plural(kept, 'insight')}, ${ev.length} of ${ev.length} quotes found`,
-    body: `Each insight carries the customer’s exact words. Code found every quote in the transcript${fuzzy ? `, ${fuzzy === 1 ? 'one' : fuzzy} as a close match` : ', word for word'}; a missing one drops its insight.`,
+    body: `Code found every customer quote in the transcript${fuzzy ? `, ${fuzzy === 1 ? 'one' : fuzzy} as a close match` : ', word for word'}. A missing quote would drop its insight.`,
     more,
   };
 }
@@ -162,11 +162,11 @@ export function groundCopy(ctx: TourCtx): { title: string; body: string; more: s
 export function rejectedCopy(ctx: TourCtx): { title: string; body: string } {
   const p = ctx.peek;
   const bad = p?.insights.flatMap((i) => i.evidence).find((e) => e.method === 'failed');
-  if (!p || !bad) return { title: 'What grounding does with a missing quote', body: 'When a quote can’t be found in the transcript, its insight is dropped and counted. It never reaches a person as fact.' };
+  if (!p || !bad) return { title: 'What happens to a quote that isn’t there', body: 'When a quote can’t be found in the transcript, its insight is dropped and counted. It never reaches a person as fact.' };
   const q = bad.quote.length > 90 ? `${bad.quote.slice(0, 88)}…` : bad.quote;
   return {
     title: 'A quote that wasn’t in the transcript',
-    body: `“${q}” Code couldn’t find it in ${p.run.filename}: the closest span scored ${bad.score.toFixed(2)}, under 0.90, so the insight was dropped before review.`,
+    body: `“${q}” Code couldn’t find it in ${p.run.filename}. The closest match scored ${bad.score.toFixed(2)}, under 0.90, so the insight was dropped before review.`,
   };
 }
 
@@ -177,7 +177,7 @@ export function gateTitle(ctx: TourCtx): string {
 
 export function gateCopy(ctx: TourCtx): string {
   const run = ctx.run;
-  if (!run || run.insights.length === 0) return '0.80+ routes itself, 0.55–0.80 goes to a person, below that is held. High stakes always get reviewed.';
+  if (!run || run.insights.length === 0) return '0.80 or more routes itself. 0.55 to 0.80 goes to a person. Lower is held. High stakes always get reviewed.';
   const live = run.insights.filter((i) => i.gate !== 'dropped');
   const auto = live.filter((i) => i.gate === 'auto_route').length;
   const review = live.filter((i) => i.gate === 'review').length;
@@ -256,11 +256,11 @@ export function candidateTitle(ctx: TourCtx): string {
 export function candidateCopy(ctx: TourCtx): string {
   const c = ctx.evals?.candidate;
   const l = ctx.evals?.latest;
-  if (!c) return 'A candidate prompt is ready, scored on the same golden files. Should it ship?';
+  if (!c) return 'A candidate prompt is ready, scored on the same hand-labelled files. Should it ship?';
   const vs = l && l.id !== c.id ? ` as ${l.promptVersion}` : '';
   const t = evalTradeoff(ctx);
-  if (!t) return `${c.promptVersion} is the candidate, scored on the same golden files${vs}. Should it ship?`;
-  return `${c.promptVersion} is the candidate, scored on the same golden files${vs}. It’s ${t.cost} and ${t.speed}. Should it ship?`;
+  if (!t) return `${c.promptVersion} is the candidate, scored on the same hand-labelled files${vs}. Should it ship?`;
+  return `${c.promptVersion} is the candidate, scored on the same hand-labelled files${vs}. It’s ${t.cost} and ${t.speed}. Should it ship?`;
 }
 
 export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?: string } {
@@ -271,7 +271,7 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?:
     return {
       title: 'Promoted',
       body: `Every gate check passed, so ${cand?.promptVersion ?? 'the candidate'} ships.`,
-      more: 'The checks: overall precision and recall, level-5 recall, grounding, the safety checks, and no regression over 2 points.',
+      more: 'The checks: overall precision and recall, level-5 recall, the quote check, the safety checks, and no score dropping more than 2 points.',
     };
   }
   const failed = cand?.metrics.filter((m) => m.passed === false) ?? [];
@@ -293,7 +293,7 @@ export function promoteCopy(ctx: TourCtx): { title: string; body: string; more?:
     const regressed = reg && reg.passed === false && drop != null ? `a ${Math.round(drop)}-point regression` : '';
     const reasons = [underBar, regressed].filter(Boolean).join(' and ');
     const why = key?.startsWith('precision')
-      ? 'It over-labelled real sentences as feedback: the quotes were real, the labels weren’t.'
+      ? 'It labelled too many real sentences as feedback. The quotes were real, the labels weren’t.'
       : key?.startsWith('recall')
         ? 'It missed real insights.'
         : 'A gate check failed.';
@@ -317,7 +317,7 @@ export function isSpotlitTheme(t: Pick<Theme, 'id' | 'name'>): boolean {
 
 export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
   const t = ctx.theme;
-  if (!t) return { intro: 'One complaint is an anecdote; the same thing from several accounts is a pattern. Open the highlighted theme.', arr: 'ARR summed across distinct accounts, an eight-week trend, and quotes that link back to each call.' };
+  if (!t) return { intro: 'One complaint is an anecdote. The same thing from several accounts is a pattern. Open the highlighted theme.', arr: 'The ARR of each account that raised it, counted once, an eight-week trend, and quotes that link back to each call.' };
   const yours = ctx.run?.insights.some((i) => i.themeId === t.id) ? ' Your call’s insight just joined it.' : '';
   return {
     intro: `“${t.name}”: ${plural(t.insightCount, 'insight')} from ${plural(t.accountCount, 'account')}.${yours} Open it.`,
@@ -327,15 +327,15 @@ export function themeCopy(ctx: TourCtx): { intro: string; arr: string } {
 
 export function budgetCopy(ctx: TourCtx): string {
   const b = ctx.budget;
-  if (!b) return 'A hard $15 cap on live AI for viewers. Past it, runs replay recorded executions, so nothing breaks.';
-  return `${usd(b.spentUsd, 2)} of ${usd(b.limitUsd, 2)} used across ${plural(b.liveRuns, 'live run')}. Past the cap it replays: never an outage.`;
+  if (!b) return 'A hard $15 cap on live AI for viewers. Past it, runs replay recorded runs, so nothing breaks.';
+  return `${usd(b.spentUsd, 2)} of ${usd(b.limitUsd, 2)} used across ${plural(b.liveRuns, 'live run')}. Past the cap, it replays recorded runs instead of going down.`;
 }
 
 // ---------------------------------------------------------------- Agent Ops (operate.kpis, operate.trace)
 
 export function opsKpiCopy(ctx: TourCtx): string {
   const t = ctx.ops?.overview?.totals;
-  if (!t) return 'Hours returned, value of that time and AI cost, per agent. Two agents today; built for fifty.';
+  if (!t) return 'Hours returned, what that time is worth, and AI cost, per agent. Two agents today, built for fifty.';
   // Lead with hours; the value ratio is against metered AI spend only, so say so instead of quoting a multiple.
   return `${Math.round(t.hoursReturned).toLocaleString()} hours returned across ${plural(t.agentsInProduction, 'agent')}: about ${compactUsd(t.valueUsd)} of time, against ${compactUsd(t.aiCostUsd)} of metered AI spend (build time not included).`;
 }
@@ -350,8 +350,8 @@ export function opsRegistryCopy(ctx: TourCtx): string {
 
 export function opsLiveCopy(ctx: TourCtx): string {
   const l = ctx.ops?.live;
-  if (!l) return 'This session is in the data. Adoption is measured from usage events, not surveys; the six-week history behind it is simulated users.';
-  return `This session is in the data: ${plural(l.activeNow, 'session')} active now, ${plural(l.tourStarts, 'walkthrough')} started in the last 24 hours. Measured from usage events, not surveys; the history behind it is simulated users.`;
+  if (!l) return 'This session is in the data. Adoption is measured from usage events, not surveys. The six-week history behind it is simulated users.';
+  return `This session is in the data: ${plural(l.activeNow, 'session')} active now, ${plural(l.tourStarts, 'walkthrough')} started in the last 24 hours. Measured from usage events, not surveys. The history behind it is simulated users.`;
 }
 
 export function opsLogsCopy(ctx: TourCtx): string {
@@ -370,7 +370,7 @@ export function sankeyCopy(ctx: TourCtx): { title: string; body: string } {
 
 /** operate.trace: name any red spans instead of leaving them unexplained. */
 export function opsTraceCopy(ctx: TourCtx): string {
-  const base = 'Every span of your run: the steps, each model call, retries and deliveries.';
+  const base = 'Every timed part of your run: the steps, each model call, retries and deliveries.';
   const e = ctx.ops?.traceErrors;
   return e ? `${base} The red ones: ${e.charAt(0).toLowerCase()}${e.slice(1)}` : base;
 }
