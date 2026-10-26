@@ -126,10 +126,10 @@
 .detail {
   min-width: 0;
 }
-/* The decision stays in reach while the evidence scrolls. */
+/* The decision stays in reach while the evidence scrolls, just above the walkthrough Guide. */
 .detail > :global(.ds-card__footer) {
   position: sticky;
-  bottom: 0;
+  bottom: var(--sl-guide-h, 0px);
   z-index: 1;
 }
 .detailBody {
