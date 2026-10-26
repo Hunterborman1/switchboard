@@ -56,3 +56,17 @@ Page roots use the classes `ds-app sl-n n-page`. Walkthrough UI drawn over the p
   [`signal-loop-extend` skill](../../.claude/skills/signal-loop-extend/SKILL.md).
 - Tests: `npx playwright test --project=tour-desktop --project=tour-mobile` and
   `npx vitest run --project unit tests/unit/tour`.
+
+## The write-up and the Q&A
+
+The write-up and the Q&A are read-through pages in `src/web/pages/writeup/`, with all prose as data in
+`src/shared/writeup/` (which also renders each page's Markdown):
+
+- `/write-up`: short answers on process design, the build, rollout and trust and the next 12–18
+  months, the "For AI assistants" block, then the ten chapters and the Q&A topics.
+- `/write-up/:chapter`: one page per chapter (`chapters.ts`), with a contents column, previous and
+  next, "Open in the presentation" (`/walkthrough/<chapter>`) and links to its Markdown and the .zip.
+- `/backup` and `/backup/:topic`: one page per Q&A topic (`questions.ts`, topics as `BACKUPS` in
+  `src/tour/script/chapters.ts`): a tab strip of topic links, then the cards. The cost page reads
+  its figures live. Nothing needs a click to be read. The presenter view's Q&A buttons open these
+  pages, and old `/write-up#<topic>` links land on them.

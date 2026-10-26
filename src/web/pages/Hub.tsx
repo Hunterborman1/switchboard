@@ -1,7 +1,7 @@
 /**
  * / — the landing page. "Every call is a signal." What Switchboard is (built from scratch in 48
  * hours), the analysis built for this brief, and three ways in: the presentation, the product
- * itself (with the Guide on every screen), and the write-up.
+ * itself (with the Guide on every screen), and the write-up (one page per chapter, plus the Q&A).
  */
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -102,7 +102,7 @@ export function Hub() {
           </motion.div>
           <motion.div {...enter(4)} className="hub__doorwrap">
             <Link className="hub-door" to="/write-up" data-testid="door-writeup">
-              <DoorInner icon={<IconBook size={18} />} title="Read the write-up" body="The problem, the platform, the rollout and what comes next, then the questions and answers." meta="About 15 minutes to read" cta="Read" />
+              <DoorInner icon={<IconBook size={18} />} title="Read the write-up" body="One short page per chapter, with the decisions, numbers and honest gaps behind it. Then the questions and answers." meta={`${CHAPTERS.length} chapters, ${BACKUPS.length} questions`} cta="Read" />
             </Link>
           </motion.div>
         </section>
@@ -112,7 +112,7 @@ export function Hub() {
           <nav className="hub__backups" aria-label="Questions and answers">
             <span className="hub__backups-k">Questions</span>
             {BACKUPS.map((b) => (
-              <Link key={b.topic} className="n-link" to={{ pathname: '/write-up', hash: b.topic }}>
+              <Link key={b.topic} className="n-link" to={`/backup/${b.topic}`}>
                 {b.title}
               </Link>
             ))}

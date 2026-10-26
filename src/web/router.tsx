@@ -1,51 +1,13 @@
-import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { RootLayout } from './RootLayout';
 import { Hub } from './pages/Hub';
 import { Walkthrough } from './pages/Walkthrough';
 import { AppMount, OpsMount } from './mounts';
 import { appRoutes, platformRoutes } from './bridge';
-import { ButtonLink } from '../ds';
-import { SiteBar } from '../narrative/components';
+import { NotFound } from './NotFound';
 import { RouteError } from './RouteError';
 
 export const BASENAME = '/repo/invoca';
-
-function NotFound() {
-  return (
-    <main className="ds-app sl-n n-page nf" data-testid="not-found">
-      <SiteBar />
-      <div className="nf__body">
-        <div className="nf__card">
-          <span className="nf__code">404</span>
-          <h1 className="nf__title">There’s nothing here.</h1>
-          <p className="nf__text">That page doesn’t exist. Pick up from one of these instead.</p>
-          <div className="nf__actions">
-            <ButtonLink variant="primary" to="/">
-              Back to the start
-            </ButtonLink>
-            <ButtonLink variant="secondary" to="/walkthrough">
-              Start the presentation
-            </ButtonLink>
-            <ButtonLink variant="secondary" to="/write-up">
-              Read the write-up
-            </ButtonLink>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/**
- * The Q&A used to be pages of their own. It is now part of the write-up, one section per topic
- * (#cost, #security, …), so /backup/:topic (old links, the presenter's "jump to backup") lands
- * on that section. The write-up scrolls to the anchor once it renders.
- */
-function BackupRedirect() {
-  const { topic } = useParams();
-  const { search } = useLocation();
-  return <Navigate replace to={{ pathname: '/write-up', search, hash: topic ?? 'questions' }} />;
-}
 
 export const router = createBrowserRouter(
   [
@@ -56,10 +18,12 @@ export const router = createBrowserRouter(
       errorElement: <RouteError />,
       children: [
         { index: true, element: <Hub /> },
-        // Off the first-load path: loaded when opened.
-        { path: 'write-up', lazy: async () => ({ Component: (await import('./pages/WriteUp')).WriteUp }) },
+        // The read-through pages (src/web/pages/writeup), off the first-load path: loaded when
+        // opened. The write-up is one page per chapter; the Q&A one page per topic.
+        { path: 'write-up', lazy: async () => ({ Component: (await import('./pages/writeup/WriteUpIndex')).WriteUpIndex }) },
+        { path: 'write-up/:chapter', lazy: async () => ({ Component: (await import('./pages/writeup/WriteUpChapter')).WriteUpChapter }) },
+        { path: 'backup/:topic?', lazy: async () => ({ Component: (await import('./pages/writeup/QuestionPage')).QuestionPage }) },
         { path: 'walkthrough/:part?', element: <Walkthrough /> },
-        { path: 'backup/:topic?', element: <BackupRedirect /> },
         { path: 'app', element: <AppMount />, errorElement: <RouteError />, children: appRoutes.length ? appRoutes : [{ path: '*', element: null }] },
         {
           path: 'ops',

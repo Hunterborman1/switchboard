@@ -78,7 +78,7 @@ Simulated: every connector (${CONNECTORS.map((c) => c.name).join(', ')}): nothin
 
 Your access: this token's private workspace plus the shared sample history. Processing a conversation or reviewing an insight changes only this workspace. Live AI runs draw on a capped demo budget.
 
-Docs (read_doc): ${DOCS.map((d) => d.name).join(', ')}. The walkthrough doc is the best place to start.
+Docs (read_doc): ${DOCS.map((d) => d.name).join(', ')}. Start with the walkthrough doc for the whole picture, or writeup_<chapter> for one short page per chapter; question_<topic> answers the likely questions.
 
 Source code: ${REPO_URL} (README, AGENTS.md, docs/ and .claude/skills/ for adding connectors, people, SSO and analyses).`;
 
@@ -91,7 +91,7 @@ export const TOOLS: Tool[] = [
   },
   {
     name: 'read_doc', title: 'Read a project doc', annotations: read,
-    description: `Full Markdown of a project document: ${DOCS.map((d) => `${d.name} (${d.description})`).join('; ')}`,
+    description: `Full Markdown of a project document. Project docs: ${DOCS.filter((d) => d.group === 'project').map((d) => `${d.name} (${d.description})`).join('; ')}. The write-up, one page per chapter: ${DOCS.filter((d) => d.group === 'writeup').map((d) => `${d.name} (${d.title})`).join('; ')}. Questions and answers: ${DOCS.filter((d) => d.group === 'questions').map((d) => `${d.name} (${d.title})`).join('; ')}.`,
     inputSchema: obj({ name: str('Which document', { enum: DOCS.map((d) => d.name) }) }, ['name']),
     run: async (a) => {
       const d = docByName(String(a.name));

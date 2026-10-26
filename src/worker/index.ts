@@ -8,9 +8,10 @@
  *   /repo/invoca/?owner=…       OWNER_TOKEN → hb_invoca_owner cookie → 302 with owner stripped
  *   /repo/invoca/api/*          gated JSON API (src/worker/api)
  *   /repo/invoca/walkthrough.md gated Markdown walkthrough (docs/WALKTHROUGH.md, bundled)
- *   /repo/invoca/write-up.md    gated write-up and Q&A as Markdown (rendered from the page's content)
+ *   /repo/invoca/write-up.md, write-up/<chapter>.md, backup.md, backup/<topic>.md
+ *                               gated Markdown of every write-up and Q&A page (rendered from the pages' data)
  *   /repo/invoca/README.md, docs/…md   every other doc in the registry (src/worker/mcp/docs.ts), gated
- *   /repo/invoca/switchboard-docs.zip  every doc plus INDEX.md, gated
+ *   /repo/invoca/switchboard-docs.zip  every chapter, question and doc plus INDEX.md, gated
  *   /repo/invoca/llms.txt       gated index in the llms.txt convention
  *   /repo/invoca/mcp            remote MCP server, bearer-token auth (src/worker/mcp)
  *   /repo/invoca/*              gated SPA assets (dist/), prefix stripped

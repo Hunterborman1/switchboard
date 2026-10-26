@@ -516,7 +516,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
           if (!next()) skip();
         } else back();
       } else if (m.type === 'goto') goto(m.stepId);
-      else if (m.type === 'backup') navigate({ pathname: '/write-up', hash: m.topic });
+      else if (m.type === 'backup') navigate(`/backup/${encodeURIComponent(m.topic)}`);
       else if (m.type === 'bye') setPresenting(false);
     };
     const post = () => {
