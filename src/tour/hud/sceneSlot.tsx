@@ -1,7 +1,8 @@
 /**
  * Dock for the walkthrough controls on a scene (the chapter menu, and the timer while
- * presenting). The scene's top bar renders the slot at its right end, after "4 of 18", and the
- * HUD portals into it, so the controls sit in the bar's own flow instead of floating over it.
+ * presenting). The scene's top bar renders the slot at its right end, after "4 of 10", and
+ * SceneTools (Hud.tsx) portals into it, so the controls sit in the bar's own flow instead of
+ * floating over it.
  */
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 

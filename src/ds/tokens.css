@@ -2,8 +2,9 @@
    Switchboard design system · tokens (docs/DESIGN.md is the spec)
 
    The one source of truth for colour, type, space, radius, elevation and
-   motion. Every other token layer in the repo (--cn-*, --uis-*, --n-*,
-   --ao-*) aliases these, so a value changes here and nowhere else.
+   motion. The other token layers (--ao-* in Agent Ops, --n-* for the
+   presentation) only alias these or add a value the system lacks, so a
+   value changes here and nowhere else.
 
    Declared on :root and again on .ds-app (the product root): a value set on
    the element beats one inherited from a legacy :root block, so inside the

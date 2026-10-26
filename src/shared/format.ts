@@ -1,6 +1,6 @@
 /**
  * One set of number formatters for every surface that shows the same figure twice
- * (product pages, the walkthrough callouts, Agent Ops). If a number appears in two places,
+ * (product pages, the walkthrough's Guide, Agent Ops). If a number appears in two places,
  * both must come from the same field and go through the same function here.
  */
 
@@ -104,7 +104,7 @@ type CostStep = { key?: string; costUsd?: number | null; detail?: Record<string,
 
 /**
  * A run's AI cost, as shown on the Run view ("AI cost so far", the Trace total) and in the
- * walkthrough's trace callout: the sum of the step rows. Deferred theme naming adds its cost to
+ * Guide's trace step: the sum of the step rows. Deferred theme naming adds its cost to
  * the theme step after the run is final, so callers keep polling while `themeNamingPending`.
  */
 export function stepsCostUsd(steps: ReadonlyArray<CostStep>): number {

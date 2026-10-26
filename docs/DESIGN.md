@@ -1,7 +1,7 @@
 # Design system (v3: Switchboard)
 
 One visual language for everything a viewer sees: the Switchboard product (Signal Loop is one
-analysis inside it), Agent Ops, the walkthrough overlay, the narrative scenes, the hub, the
+analysis inside it), Agent Ops, the walkthrough Guide, the narrative scenes, the hub, the
 write-up and the login page. It should read like a mature B2B SaaS product, not a demo.
 
 The code is the source of truth: tokens in `src/ds/tokens.css`, components in `src/ds/`
@@ -65,8 +65,8 @@ intent and the rules the code cannot enforce.
 ## Layout
 
 - **Shell** (`Shell`): sidebar on `--bg-subtle` with the product switcher, the primary create
-  action, nav groups (Overview and Conversations; Signal Loop; Workspace) and a footer (walkthrough
-  pill, Agent Ops, the user menu). The selected nav item is a white raised row with an accent
+  action, nav groups (Overview and Conversations; Signal Loop; Workspace) and a footer (Agent Ops
+  and the user menu). The selected nav item is a white raised row with an accent
   icon. A 52px top bar holds the breadcrumb and the "Live AI" status. Below 900px the sidebar is
   a drawer opened from the top bar.
 - **Page** (`Page` → `PageHeader` → optional `Toolbar` → content). Title 24/600; one short

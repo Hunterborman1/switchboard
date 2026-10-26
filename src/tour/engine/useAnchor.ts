@@ -28,7 +28,7 @@ export function findFirstAnchor(ids: readonly AnchorId[]): HTMLElement | null {
 /**
  * Waits for `[data-tour="id"]` (the first of `ids` that is visible) to mount (MutationObserver + a
  * light poll for elements that become visible without a DOM mutation). After `timeoutMs` the status
- * becomes 'missing' so the callout can fall back to the centre with a Continue button. Keeps
+ * becomes 'missing' so the Guide can say that part isn't on screen and let the viewer carry on. Keeps
  * tracking: if the element appears later, it switches back to 'found'. A higher-priority id that
  * appears later takes over (e.g. the edit form replacing the Edit button).
  */

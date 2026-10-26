@@ -1,14 +1,13 @@
 /* =========================================================================
    Narrative layer · tokens
-   The presentation layer (scenes, hub, write-up, Q&A, presenter, walkthrough
-   overlay) draws on the Switchboard design system: every value below is an
-   alias of a token in src/ds/tokens.css, so a colour, size or duration
-   changes there and nowhere else. New CSS should read the ds tokens
-   directly; these names stay for anything that still reads --n-*.
+   The presentation pages (scenes, hub, write-up, Q&A, presenter, the Guide)
+   draw on the Switchboard design system: most values below alias a token in
+   src/ds/tokens.css, so a colour, size or duration changes there and nowhere
+   else. New CSS reads the ds tokens directly.
 
-   The only values defined here are the ones the system has no token for:
-   the presentation column and gutter, headline sizes, the data-reveal
-   duration and the overlay layers.
+   Only two of these are read today: --n-column (the 1120px presentation
+   column) and --n-display (the headline size). The rest are older aliases
+   that nothing reads.
    ========================================================================= */
 
 .sl-n,

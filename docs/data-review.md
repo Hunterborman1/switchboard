@@ -14,7 +14,7 @@ Reviewer notes on the synthetic library: what was built, how it was checked, and
 | Step | Script | Notes |
 |---|---|---|
 | World | `scripts/data/world.ts` | Writes `data/world/{accounts,people,routing,taxonomy,departments}.json`. |
-| Scenario cards | `scripts/data/scenarios.ts` | 48 hand-written featured cards (`scenarios/featured.ts`; C-1042 is fully hand-written in `scenarios/c1042.ts`) and 218 backfill cards built from 14 theme seeds with a seeded RNG (`scenarios/backfill.ts`). |
+| Scenario cards | `scripts/data/scenarios.ts` | 48 hand-written featured cards (`scripts/data/scenarios/featured.ts`; C-1042 is fully hand-written in `scripts/data/scenarios/c1042.ts`) and 218 backfill cards built from 14 theme seeds with a seeded RNG (`scripts/data/scenarios/backfill.ts`). |
 | Clean text | `scripts/data/generate.ts` | One model call per card. Output is validated for planted lines (verbatim, right speaker, used once), AI-tell phrases, stray feedback keywords, account facts copied verbatim, and truncation. An **audit call** then lists any product feedback the card didn't plant; the file is regenerated with that feedback, up to 5 attempts. |
 | Corruption | `scripts/data/corrupt.ts` | Pure and seeded. Level 3 adds fillers and stutters. Level 4 adds homophones ("in vocal", "call rail", "presence", "signal a eye", "google adds", "genesis", "mar checks"), dropped punctuation and casing, `[inaudible]`, `[crosstalk]`, words bleeding across turn boundaries and timestamp drift. Level 5 is heavier still, with merged turns, a truncated start and shorthand typos and abbreviations in Slack and notes. Golden quotes never get fillers or markers inserted inside them. |
 | Reviewer edits | `scripts/data/scenarios/edits.ts` | My post-read fixes, applied before corruption so a rebuild reproduces them (listed below). |
@@ -134,7 +134,7 @@ I read every featured file after the final build. Overall the voice is natural. 
 ## Consistency rules this world follows
 
 - Each account's open issues hold steady over time. For example, Brightline's Google Ads lag starts in late September, shows up in Priyanka's Oct 13 email and peaks in the Oct 21 QBR. Northwind's PreSense transfer issue starts with the Genesys update on Oct 3, comes up in Slack on Oct 12 and becomes a critical escalation on Oct 16.
-- Each account only mentions products it owns and the partner platforms it actually connects (`INTEGRATIONS_USED` in `scenarios/contacts.ts`). Atlas never talks about PreSense; Cedar Ridge never mentions Salesforce.
+- Each account only mentions products it owns and the partner platforms it actually connects (`INTEGRATIONS_USED` in `scripts/data/scenarios/contacts.ts`). Atlas never talks about PreSense; Cedar Ridge never mentions Salesforce.
 - Customers' internal staff never share first names with Invoca staff or with other accounts' contacts.
 
 ## Backfill and themes

@@ -1,5 +1,5 @@
 /**
- * Every element the walkthrough spotlights. The product UI places these as
+ * Every element the walkthrough points at. The product UI places these as
  * `data-tour="<id>"` attributes (use the `tourAnchor(id)` helper); the tour engine finds
  * them by `[data-tour="<id>"]`. Add new ids here first so both sides agree.
  */

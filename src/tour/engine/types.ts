@@ -127,7 +127,7 @@ export type Step = {
   route?: string | ((ctx: TourCtx) => string | null);
   /** kind 'scene': the scene to draw. A scene shows all of its content on arrival; only Back / Next move on. */
   scene?: SceneId;
-  /** What to spotlight. A list is a priority order: the first one on screen wins. */
+  /** What the Guide points at (it gets a ring). A list is a priority order: the first one on screen wins. */
   target?: AnchorId | AnchorId[] | ((ctx: TourCtx) => AnchorId | AnchorId[]);
   /** Extra anchors that get a soft ring (e.g. the recommended file inside the picker). */
   highlight?: AnchorId[];
