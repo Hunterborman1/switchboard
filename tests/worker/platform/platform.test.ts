@@ -193,6 +193,8 @@ describe('roll-forward', () => {
     const live = await db.prepare("SELECT at FROM work_units WHERE id = 'wu_live_1'").first<{ at: string }>();
     const before = await db.prepare("SELECT value FROM meta WHERE key = 'sim_to'").first<{ value: string }>();
     const firstSim = await db.prepare("SELECT min(at) AS at FROM work_units WHERE source = 'simulated'").first<{ at: string }>();
+    // Earlier requests may already have rolled the history to today's calendar; count only this roll.
+    const rolledBefore = Number((await db.prepare("SELECT value FROM meta WHERE key = 'rolled_days'").first<{ value: string }>())!.value);
     const future = new Date(Date.parse(`${before!.value}T12:00:00Z`) + 16 * 86_400_000);
     const days = await rollForward(db, future, true);
     expect(days).toBe(14);
@@ -202,6 +204,6 @@ describe('roll-forward', () => {
     const firstSim2 = await db.prepare("SELECT min(at) AS at FROM work_units WHERE source = 'simulated'").first<{ at: string }>();
     expect(Date.parse(firstSim2!.at) - Date.parse(firstSim!.at)).toBe(14 * 86_400_000);
     expect((await db.prepare("SELECT at FROM work_units WHERE id = 'wu_live_1'").first<{ at: string }>())!.at).toBe(live!.at);
-    expect((await db.prepare("SELECT value FROM meta WHERE key = 'rolled_days'").first<{ value: string }>())!.value).toBe('14');
+    expect((await db.prepare("SELECT value FROM meta WHERE key = 'rolled_days'").first<{ value: string }>())!.value).toBe(String(rolledBefore + 14));
   });
 });

@@ -1,4 +1,37 @@
-# Signal Loop architecture (brief)
+# Signal Loop architecture
+
+## At a glance
+
+```mermaid
+flowchart LR
+  In["A conversation<br/>upload, paste or sample"] --> Gate["Sign-in gate"]
+  Gate --> Worker["Cloudflare Worker<br/>API and pipeline"]
+  Worker --> Steps["10 steps<br/>read, redact, triage, extract,<br/>check quotes, score, theme, route"]
+  Steps <--> Models["Three AI models<br/>via OpenRouter"]
+  Steps --> Review["Review queue<br/>a person decides"]
+  Review --> Out["Delivery previews<br/>Slack, Jira, Salesforce…<br/>(simulated)"]
+  Worker --> DB[("D1 databases<br/>Switchboard + Agent Ops")]
+  Worker --> Ops["Agent Ops<br/>logs, traces, cost, usage"]
+```
+
+| Part | What it does | Where |
+|---|---|---|
+| Site | The walkthrough, the product (`/app`), Agent Ops (`/ops`) and the write-up, one React app | `src/web`, `src/app`, `src/platform`, `src/tour` |
+| Worker | Sign-in, the JSON API, runs, the spend cap and the MCP server, all in one Cloudflare Worker | `src/worker` |
+| Pipeline | The ten steps every conversation goes through. Plain TypeScript with no Cloudflare code, so it can move | `src/pipeline` |
+| AI | A fast decision model for triage, a main model for extraction, a backup model. Code checks every answer | `src/worker/ai.ts` |
+| Data | Two D1 databases, Vectorize for theme matching, KV for the live-AI switch | `migrations/`, `wrangler.jsonc` |
+| Simulated | The connectors and the data. Deliveries are previews and nothing leaves the Worker | `src/pipeline/deliver.ts` |
+
+Three rules hold it together:
+
+- **Code decides, the model suggests.** Quote checks, scoring thresholds, theme membership and routing are code. The model reads and writes; it never picks an owner.
+- **Nothing high stakes skips a person.** Churn risk, serious bugs and anything uncertain wait in the review queue.
+- **Every step is recorded.** Each step saves its timing, model, tokens and cost, and reports to Agent Ops.
+
+The rest of this page is the detail.
+
+## The detail
 
 One Cloudflare Worker behind `repos.hunterborman.com/repo/invoca`: the gate, the JSON API, the SPA assets, the pipeline and the Agent Ops platform. Two D1 databases: `invoca-signal-loop` (`DB`) and `invoca-agent-ops` (`PLATFORM_DB`).
 
